@@ -627,4 +627,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (flatLessons.length > 0) {
         selectLesson(flatLessons[0]);
     }
+
+    // Force terminal visible after everything is initialized
+    // Monaco editor layout can push terminal out of view
+    setTimeout(() => {
+        const codeWs = document.getElementById('code-workspace');
+        const termWs = document.getElementById('terminal-workspace');
+        if (codeWs && termWs) {
+            codeWs.style.flex = '1 1 65%';
+            termWs.style.flex = '1 1 35%';
+        }
+        if (editorInstance) editorInstance.layout();
+    }, 100);
 });
