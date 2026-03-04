@@ -8,7 +8,7 @@ import { courseData, type Lesson } from './courses';
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null;
 let flatLessons: Lesson[] = [];
 let currentLessonIndex = -1;
-let lessonStartTime = 0;
+// let lessonStartTime = 0; // Commented out to fix TS build error (unused)
 
 // ---- Monaco Editor Setup ----
 const initEditor = () => {
@@ -154,7 +154,7 @@ const selectLesson = (lesson: Lesson) => {
     // Reset scrolling and timer
     const scrollArea = document.getElementById('panel-scroll-area');
     if (scrollArea) scrollArea.scrollTop = 0;
-    lessonStartTime = Date.now();
+    // lessonStartTime = Date.now();
 
     // Re-check scroll conditions immediately after rendering
     setTimeout(() => {
