@@ -196,7 +196,7 @@ const appendTerminal = (html: string) => {
 };
 
 // ---- Backend Connection Config ----
-const BACKEND_WS_URL = 'ws://localhost:3001/ws/run';
+const BACKEND_WS_URL = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/run';
 let activeWs: WebSocket | null = null;
 
 // ---- Run Button (Real Backend via WebSocket) ----
@@ -258,7 +258,7 @@ const setupRunButton = () => {
         };
 
         ws.onerror = () => {
-            appendTerminal(`<span class="log-error">Lỗi kết nối Backend. Đảm bảo server đang chạy tại port 3001.</span>`);
+            appendTerminal(`<span class="log-error">Lỗi kết nối Backend. Đảm bảo bạn có kết nối internet và server đang chạy.</span>`);
         };
 
         ws.onclose = () => {
