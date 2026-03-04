@@ -719,6 +719,194 @@ println!("The value of number is: {number}"); // 5</code></pre>
 }
 `,
       expectedOutput: '7 là số lẻ\nx = 5\nResult từ loop: 20\n3...\n2...\n1...\nĐếm ngược:\n  5...\n  4...\n  3...\n  2...\n  1...\n  🚀 GO!'
+    },
+    {
+      id: 'ch03-01-ex',
+      title: 'Bài tập 3.1: Biến (Variables)',
+      duration: '10 phút',
+      type: 'practice',
+      isExercise: true,
+      content: `
+<p>Hãy cùng kiểm tra kiến thức của bạn về Biến và Tính bất biến!</p>
+<h3 class="task-heading">Yêu cầu</h3>
+<ol class="task-list">
+  <li>Trong hàm <code>main()</code>, hãy tạo một biến <strong>bất biến</strong> tên là <code>x</code> và gán cho nó giá trị <code>5</code>.</li>
+  <li>Sau đó, tạo một biến <strong>khả biến (mutable)</strong> tên là <code>y</code> và gán cho nó giá trị <code>10</code>.</li>
+  <li>Cuối cùng, hãy thay đổi giá trị của <code>y</code> thành <code>20</code>.</li>
+</ol>
+<div class="cyber-alert info">
+  <strong>Gợi ý:</strong> Sử dụng từ khóa <code>mut</code> cho biến có thể thay đổi giá trị. Sau khi hoàn thành, hãy nhấn <strong>Run</strong> để hệ thống chấm điểm!
+</div>
+`,
+      defaultCode: `fn main() {
+    // 1. Tạo biến bất biến x = 5
+
+    // 2. Tạo biến khả biến y = 10
+
+    // 3. Thay đổi giá trị của y thành 20
+
+    // (Code tự động in ra để bạn xem thử)
+    // println!("x = {}, y = {}", x, y);
+}
+`,
+      testCode: `
+#[cfg(test)]
+mod tests {
+    use std::fs;
+
+    #[test]
+    fn test_variables_exercise() {
+        let code = fs::read_to_string("main.rs").expect("Unable to read main.rs");
+        
+        // Kiểm tra xem có khai báo biến x bất biến không: let x = 5
+        let has_immutable_x = code.contains("let x = 5;") || code.contains("let x: i32 = 5;");
+        assert!(has_immutable_x, "Bạn chưa khai báo biến bất biến x = 5 đúng cách!");
+        assert!(!code.contains("let mut x = 5;"), "Biến x phải là bất biến (không dùng mut)!");
+
+        // Kiểm tra xem có khai báo biến y khả biến không: let mut y = 10
+        let has_mutable_y = code.contains("let mut y = 10;") || code.contains("let mut y: i32 = 10;");
+        assert!(has_mutable_y, "Bạn chưa khai báo biến khả biến y = 10 đúng cách!");
+
+        // Kiểm tra việc gán lại y = 20
+        let assigns_y_to_20 = code.contains("y = 20;");
+        assert!(assigns_y_to_20, "Bạn chưa gán lại giá trị y = 20!");
+    }
+}
+`
+    },
+    {
+      id: 'ch03-02-ex',
+      title: 'Bài tập 3.2: Kiểu dữ liệu (Data Types)',
+      duration: '10 phút',
+      type: 'practice',
+      isExercise: true,
+      content: `
+<p>Hãy cùng kiểm tra kiến thức của bạn về Kiểu dữ liệu, Tuple và Array!</p>
+<h3 class="task-heading">Yêu cầu</h3>
+<ol class="task-list">
+  <li>Trong hàm <code>main()</code>, hãy tạo một <strong>tuple</strong> tên là <code>my_tuple</code> chứa các giá trị sau: một số nguyên <code>500</code>, một số thực <code>6.4</code>, và một ký tự <code>'Z'</code> (Lưu ý chữ Z in hoa và dùng ngoặc đơn cho char).</li>
+  <li>Giải nén (destructure) tuple đó thành 3 biến tương ứng <code>x</code>, <code>y</code>, <code>z</code>.</li>
+  <li>Tạo một <strong>mảng (array)</strong> tên là <code>my_array</code> chứa 5 số nguyên đầu tiên (1, 2, 3, 4, 5).</li>
+</ol>
+<div class="cyber-alert info">
+  Sau khi code xong, hãy nhấn <strong>Run</strong> để vượt qua bài kiểm tra!
+</div>
+`,
+      defaultCode: `fn main() {
+    // 1. Tạo tuple: my_tuple = (500, 6.4, 'Z')
+
+    // 2. Giải nén tuple thành (x, y, z)
+
+    // 3. Tạo array: my_array = [1, 2, 3, 4, 5]
+
+}
+`,
+      testCode: `
+#[cfg(test)]
+mod tests {
+    use std::fs;
+
+    #[test]
+    fn test_types_exercise() {
+        let code = fs::read_to_string("main.rs").expect("Unable to read main.rs");
+        let code = code.replace(" ", ""); // Xóa khoảng trắng để dễ so sánh
+        
+        let has_tuple = code.contains("my_tuple=(500,6.4,'Z');") || code.contains("my_tuple:(i32,f64,char)=(500,6.4,'Z');");
+        assert!(has_tuple, "Tuple my_tuple chưa chính xác!");
+
+        let has_destructure = code.contains("let(x,y,z)=my_tuple;");
+        assert!(has_destructure, "Bạn chưa giải nén tuple thành (x, y, z)!");
+
+        let has_array = code.contains("my_array=[1,2,3,4,5];") || code.contains("my_array:[i32;5]=[1,2,3,4,5];");
+        assert!(has_array, "Array my_array chưa chính xác!");
+    }
+}
+`
+    },
+    {
+      id: 'ch03-03-ex',
+      title: 'Bài tập 3.3: Hàm (Functions)',
+      duration: '15 phút',
+      type: 'practice',
+      isExercise: true,
+      content: `
+<p>Hãy viết một hàm tùy chỉnh trong Rust!</p>
+<h3 class="task-heading">Yêu cầu</h3>
+<ol class="task-list">
+  <li>Tôi đã để sẵn hàm <code>main()</code> gọi hàm <code>calculate_volume</code> để kiểm tra.</li>
+  <li>Bạn hãy <strong>định nghĩa hàm <code>calculate_volume</code></strong> bên dưới hàm <code>main()</code>. Hàm này:</li>
+  <ul>
+    <li>Nhận 3 tham số kiểu <code>i32</code> lần lượt là: <code>length</code>, <code>width</code>, và <code>height</code></li>
+    <li>Trả về <strong>(Return)</strong> một giá trị kiểu <code>i32</code> là thể tích khối hộp (tích của cả 3 chiều).</li>
+  </ul>
+</ol>
+<div class="cyber-alert info">
+  <strong>Gợi ý:</strong> Ở phần thân hàm tính toán, bạn nhớ không dùng dấu chấm phẩy (;) ở cuối biểu thức để implicit return (hoặc dùng từ khóa return).
+</div>
+`,
+      defaultCode: `fn main() {
+    let vol = calculate_volume(2, 3, 4);
+    println!("Thể tích là: {}", vol);
+}
+
+// Hãy định nghĩa hàm calculate_volume ở đây!
+// fn calculate_volume(...) ... {
+
+// }
+`,
+      testCode: `
+#[cfg(test)]
+mod tests {
+    // Gọi hàm con của user luôn trong file main.rs do cùng module context
+    #[test]
+    fn test_calculate_volume() {
+        assert_eq!(super::calculate_volume(1, 1, 1), 1, "Tính toán sai thể tích");
+        assert_eq!(super::calculate_volume(2, 3, 4), 24, "Tính toán sai thể tích");
+        assert_eq!(super::calculate_volume(5, 5, 5), 125, "Tính toán sai thể tích");
+    }
+}
+`
+    },
+    {
+      id: 'ch03-05-ex',
+      title: 'Bài tập 3.5: Luồng điều khiển (Control Flow)',
+      duration: '15 phút',
+      type: 'practice',
+      isExercise: true,
+      content: `
+<p>Hãy sử dụng biểu thức <code>if-else</code> và kết hợp vòng lặp.</p>
+<h3 class="task-heading">Yêu cầu</h3>
+<ol class="task-list">
+  <li>Bên dưới, có một hàm tên là <code>is_even</code>. Bạn hãy hoàn thiện <strong>logic (thân hàm)</strong> của hàm này.</li>
+  <li>Hàm <code>is_even(n: i32) -> bool</code> sẽ <strong>trả về <code>true</code></strong> nếu số <code>n</code> là số chẵn, còn nếu là số lẻ thì trả về <code>false</code>.</li>
+</ol>
+<div class="cyber-alert info">
+  <strong>Toán tử Modulo:</strong> Sử dụng <code>n % 2 == 0</code> để kiểm tra số chẵn nhé.
+</div>
+`,
+      defaultCode: `fn main() {
+    println!("4 là số chẵn? {}", is_even(4));
+    println!("7 là số chẵn? {}", is_even(7));
+}
+
+fn is_even(n: i32) -> bool {
+    // Hoàn thành logic if-else ở đây
+    
+}
+`,
+      testCode: `
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn test_is_even() {
+        assert_eq!(super::is_even(2), true, "2 phải là số chẵn");
+        assert_eq!(super::is_even(3), false, "3 phải là số lẻ");
+        assert_eq!(super::is_even(0), true, "0 phải là số chẵn");
+        assert_eq!(super::is_even(-4), true, "-4 phải là số chẵn");
+        assert_eq!(super::is_even(-5), false, "-5 phải là số lẻ");
+    }
+}
+`
     }
   ]
 };

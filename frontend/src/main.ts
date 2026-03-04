@@ -75,9 +75,9 @@ const renderCurriculum = () => {
         const chapterHeader = document.createElement('div');
         chapterHeader.className = 'chapter-header';
         chapterHeader.innerHTML = `
-      <span class="material-symbols-outlined chapter-arrow">expand_more</span>
-      <span class="chapter-title">${chapter.title}</span>
-      <span class="chapter-count">${chapter.lessons.length}</span>
+        <span class="material-symbols-outlined chapter-arrow">expand_more</span>
+        <span class="chapter-title">${chapter.title}</span>
+        <span class="chapter-count">${chapter.lessons.length}</span>
     `;
 
         const lessonList = document.createElement('div');
@@ -240,8 +240,19 @@ const setupRunButton = () => {
         activeWs = ws;
 
         ws.onopen = () => {
+            let codeToSend = code;
+            let is_test = false;
+
+            if (currentLessonIndex >= 0) {
+                const lesson = flatLessons[currentLessonIndex];
+                if (lesson.isExercise && lesson.testCode) {
+                    codeToSend = code + '\n' + lesson.testCode;
+                    is_test = true;
+                }
+            }
+
             // Send code to compile & run
-            ws.send(JSON.stringify({ type: 'run', code }));
+            ws.send(JSON.stringify({ type: 'run', code: codeToSend, is_test }));
         };
 
         ws.onmessage = (event) => {
@@ -268,6 +279,18 @@ const setupRunButton = () => {
                         const exitClass = msg.code === 0 ? 'log-info' : 'log-error';
                         appendTerminal(`<span class="${exitClass}">[Exited with code ${msg.code}] (${msg.execution_time_ms}ms)</span>`);
                         updateStats('—', `${msg.execution_time_ms}ms`);
+
+                        // Pass check for Exercises
+                        if (currentLessonIndex >= 0) {
+                            const lesson = flatLessons[currentLessonIndex];
+                            if (lesson.isExercise && msg.code === 0) {
+                                appendTerminal(`<span class="log-success">🎉 CHÚC MỪNG BẠN ĐÃ VƯỢT QUA BÀI TẬP!</span>`);
+                                const activeEl = document.querySelector(`[data-lesson-id="${lesson.id}"]`);
+                                if (activeEl) {
+                                    activeEl.classList.add('passed');
+                                }
+                            }
+                        }
                         break;
                     case 'error':
                         appendTerminal(`<span class="log-error">Error: ${escapeHtml(msg.message)}</span>`);
@@ -314,7 +337,39 @@ const setupInlineCodeRunners = () => {
         newLang.textContent = langText;
         header.appendChild(newLang);
 
-        // Run button (right) — only for rust code
+        // Action group (right)
+        const actionGroup = document.createElement('div');
+        actionGroup.className = 'code-action-group';
+
+        // Copy button (always show)
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'code-copy-btn';
+        copyBtn.innerHTML = `<span class="material-symbols-outlined">content_copy</span> Copy`;
+
+        copyBtn.addEventListener('click', () => {
+            const codeEl = preEl.querySelector('code');
+            if (!codeEl) return;
+            let text = codeEl.textContent || '';
+
+            // If bash/cmd/powershell, clean prefixes like '$ ' or '> '
+            if (['bash', 'cmd', 'powershell'].includes(langText.toLowerCase())) {
+                text = text.split('\n').map(line => {
+                    return line.replace(/^(\$|>)\s?/, '');
+                }).join('\n');
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                copyBtn.classList.add('copied');
+                copyBtn.innerHTML = `<span class="material-symbols-outlined">check</span> Copied!`;
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtn.innerHTML = `<span class="material-symbols-outlined">content_copy</span> Copy`;
+                }, 2000);
+            });
+        });
+        actionGroup.appendChild(copyBtn);
+
+        // Run button (only for rust code)
         if (langText.toLowerCase() === 'rust') {
             const runBtn = document.createElement('button');
             runBtn.className = 'code-run-btn';
@@ -382,8 +437,10 @@ const setupInlineCodeRunners = () => {
                 };
             });
 
-            header.appendChild(runBtn);
+            actionGroup.appendChild(runBtn);
         }
+
+        header.appendChild(actionGroup);
 
         // Insert header before pre
         snippet.insertBefore(header, preEl);
@@ -560,9 +617,9 @@ const setupResizers = () => {
             const newHeight = e.clientY - panelRect.top;
             const totalHeight = panelRect.height;
 
-            // Clamp: code min 100px, terminal min 40px (~1cm)
+            // Clamp: code min 100px, terminal min 35px
             const minCodeH = 100;
-            const minTermH = 40;
+            const minTermH = 35;
             const clampedCodeH = Math.max(minCodeH, Math.min(newHeight, totalHeight - minTermH));
             const codePercent = (clampedCodeH / totalHeight) * 100;
 
@@ -634,8 +691,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const codeWs = document.getElementById('code-workspace');
         const termWs = document.getElementById('terminal-workspace');
         if (codeWs && termWs) {
-            codeWs.style.flex = '1 1 65%';
-            termWs.style.flex = '1 1 35%';
+            codeWs.style.flex = '1 1 auto';
+            termWs.style.flex = '0 0 35px';
         }
         if (editorInstance) editorInstance.layout();
     }, 100);

@@ -65,7 +65,7 @@ async fn handle_ws_connection(socket: WebSocket) {
         };
 
         match client_msg {
-            WsClientMessage::Run { code } => {
+            WsClientMessage::Run { code, is_test } => {
                 // Kill previous process if any
                 if let Some(kill_tx) = child_kill.take() {
                     let _ = kill_tx.send(());
@@ -76,9 +76,11 @@ async fn handle_ws_connection(socket: WebSocket) {
                 let (kill_sender, kill_receiver) = tokio::sync::oneshot::channel::<()>();
                 child_kill = Some(kill_sender);
 
+                let is_test = is_test.unwrap_or(false);
+
                 // Spawn execution task
                 tokio::spawn(async move {
-                    run_interactive(code, tx_clone, kill_receiver).await;
+                    run_interactive(code, is_test, tx_clone, kill_receiver).await;
                 });
             }
             WsClientMessage::Stdin { data } => {
@@ -105,6 +107,7 @@ async fn handle_ws_connection(socket: WebSocket) {
 /// Compile and run code interactively, streaming output via channel
 async fn run_interactive(
     code: String,
+    is_test: bool,
     tx: tokio::sync::mpsc::Sender<WsServerMessage>,
     mut kill_rx: tokio::sync::oneshot::Receiver<()>,
 ) {
@@ -127,14 +130,18 @@ async fn run_interactive(
     // Step 1: Compile
     let _ = tx.send(WsServerMessage::Compiling).await;
 
-    let compile_result = Command::new("rustc")
-        .arg(work_dir.join("main.rs"))
+    let mut cmd_compile = Command::new("rustc");
+    cmd_compile.arg(work_dir.join("main.rs"))
         .arg("-o")
         .arg(work_dir.join("main"))
         .arg("--edition")
-        .arg("2021")
-        .output()
-        .await;
+        .arg("2021");
+
+    if is_test {
+        cmd_compile.arg("--test");
+    }
+
+    let compile_result = cmd_compile.output().await;
 
     match compile_result {
         Ok(output) if !output.status.success() => {

@@ -23,14 +23,15 @@ const MAX_OUTPUT_BYTES: usize = 1024 * 64; // 64KB
 // ---- REST API Handler ----
 
 pub async fn handle_run(Json(req): Json<RunRequest>) -> Json<RunResponse> {
-    let result = compile_and_run(&req.code, req.stdin.as_deref()).await;
+    let is_test = req.is_test.unwrap_or(false);
+    let result = compile_and_run(&req.code, req.stdin.as_deref(), is_test).await;
     Json(result)
 }
 
 // ---- Core Logic (reused by both REST and WebSocket) ----
 
 /// Compile and run Rust code, returns structured result
-pub async fn compile_and_run(code: &str, stdin_input: Option<&str>) -> RunResponse {
+pub async fn compile_and_run(code: &str, stdin_input: Option<&str>, is_test: bool) -> RunResponse {
     let session_id = Uuid::new_v4().to_string();
     let work_dir = PathBuf::from(SANDBOX_DIR).join(&session_id);
 
@@ -47,7 +48,7 @@ pub async fn compile_and_run(code: &str, stdin_input: Option<&str>) -> RunRespon
     let start = Instant::now();
 
     // Step 1: Compile
-    let compile_result = compile(&work_dir).await;
+    let compile_result = compile(&work_dir, is_test).await;
     match compile_result {
         Err(stderr) => {
             cleanup(&work_dir).await;
@@ -99,19 +100,24 @@ async fn setup_workspace(work_dir: &PathBuf, code: &str) -> Result<(), String> {
     Ok(())
 }
 
-async fn compile(work_dir: &PathBuf) -> Result<(), String> {
+async fn compile(work_dir: &PathBuf, is_test: bool) -> Result<(), String> {
     let source = work_dir.join("main.rs");
     let output = work_dir.join("main");
 
+    let mut cmd = Command::new("rustc");
+    cmd.arg(&source)
+       .arg("-o")
+       .arg(&output)
+       .arg("--edition")
+       .arg("2021");
+
+    if is_test {
+        cmd.arg("--test");
+    }
+
     let result = tokio::time::timeout(
         std::time::Duration::from_secs(TIMEOUT_SECS),
-        Command::new("rustc")
-            .arg(&source)
-            .arg("-o")
-            .arg(&output)
-            .arg("--edition")
-            .arg("2021")
-            .output(),
+        cmd.output(),
     )
     .await;
 

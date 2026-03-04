@@ -378,6 +378,128 @@ fn main() {
 }
 `,
       expectedOutput: 'Guess the number!\nPlease input your guess.'
+    },
+    {
+      id: 'ch02-01-ex',
+      title: 'Bài tập 2.1: Khởi tạo biến String',
+      duration: '5 phút',
+      type: 'practice',
+      isExercise: true,
+      content: `
+<p>Hãy khởi tạo một biến có thể thay đổi để chứa dữ liệu nhập vào!</p>
+<h3 class="task-heading">Yêu cầu</h3>
+<ol class="task-list">
+  <li>Trong hàm <code>main()</code>, hãy tạo một biến <strong>khả biến (mutable)</strong> tên là <code>guess</code>.</li>
+  <li>Gán cho nó một đối tượng <code>String</code> mới và rỗng bằng cách gọi <code>String::new()</code>.</li>
+</ol>
+`,
+      defaultCode: `fn main() {
+    // Viết code của bạn ở đây
+    
+}
+`,
+      testCode: `
+#[cfg(test)]
+mod tests {
+    use std::fs;
+
+    #[test]
+    fn test_guess_variable() {
+        let code = fs::read_to_string("main.rs").expect("Unable to read main.rs");
+        let code_clean = code.replace(" ", "");
+        
+        let has_mut_guess = code_clean.contains("letmutguess=String::new();") || code_clean.contains("letmutguess:String=String::new();");
+        assert!(has_mut_guess, "Bạn cần khai báo 'let mut guess = String::new();'");
+    }
+}
+`
+    },
+    {
+      id: 'ch02-04-ex',
+      title: 'Bài tập 2.4: Shadowing và Ép kiểu',
+      duration: '10 phút',
+      type: 'practice',
+      isExercise: true,
+      content: `
+<p>Hãy thực hành Shadowing để chuyển đổi kiểu dữ liệu!</p>
+<h3 class="task-heading">Yêu cầu</h3>
+<ol class="task-list">
+  <li>Tôi có sẵn biến <code>guess</code> là một chuỗi <code>"  42  "</code>.</li>
+  <li>Bạn hãy tạo một biến <code>guess</code> mới (shadowing) với kiểu <code>u32</code>.</li>
+  <li>Sử dụng các phương thức <code>.trim()</code> và <code>.parse()</code> để chuyển đổi chuỗi đó thành số.</li>
+  <li>Sử dụng <code>.expect()</code> để xử lý lỗi nếu không parse được.</li>
+</ol>
+`,
+      defaultCode: `fn main() {
+    let guess = "  42  ";
+    
+    // Viết lệnh shadowing ở đây
+    // let guess: u32 = ...
+    
+    println!("Số đã parse: {}", guess);
+}
+`,
+      testCode: `
+#[cfg(test)]
+mod tests {
+    use std::fs;
+
+    #[test]
+    fn test_shadowing_parse() {
+        let code = fs::read_to_string("main.rs").expect("Unable to read main.rs");
+        let code_clean = code.replace(" ", "");
+        
+        let has_shadowing = code_clean.contains("letguess:u32=guess.trim().parse().expect(");
+        assert!(has_shadowing, "Bạn chưa thực hiện shadowing đúng cách: 'let guess: u32 = guess.trim().parse().expect(...);'");
+    }
+}
+`
+    },
+    {
+      id: 'ch02-05-ex',
+      title: 'Bài tập 2.5: So sánh Matching',
+      duration: '10 phút',
+      type: 'practice',
+      isExercise: true,
+      content: `
+<p>Hãy sử dụng biểu thức <code>match</code> để so sánh hai số!</p>
+<h3 class="task-heading">Yêu cầu</h3>
+<ol class="task-list">
+  <li>Trong hàm <code>main()</code>, tôi đã có <code>guess</code> và <code>secret_number</code>.</li>
+  <li>Bạn hãy dùng <code>match guess.cmp(&secret_number)</code> để in ra:</li>
+  <ul>
+    <li><code>Ordering::Less</code> => "Too small!"</li>
+    <li><code>Ordering::Greater</code> => "Too big!"</li>
+    <li><code>Ordering::Equal</code> => "You win!"</li>
+  </ul>
+</ol>
+`,
+      defaultCode: `use std::cmp::Ordering;
+
+fn main() {
+    let guess = 50;
+    let secret_number = 77;
+    
+    // Viết khối match so sánh ở đây
+    
+}
+`,
+      testCode: `
+#[cfg(test)]
+mod tests {
+    use std::fs;
+
+    #[test]
+    fn test_match_ordering() {
+        let code = fs::read_to_string("main.rs").expect("Unable to read main.rs");
+        let code_clean = code.replace(" ", "").replace("\n", "");
+        
+        assert!(code_clean.contains("Ordering::Less=>println!(\"Toosmall!\")"), "Thiếu trường hợp Less");
+        assert!(code_clean.contains("Ordering::Greater=>println!(\"Toobig!\")"), "Thiếu trường hợp Greater");
+        assert!(code_clean.contains("Ordering::Equal=>println!(\"Youwin!\")"), "Thiếu trường hợp Equal");
+    }
+}
+`
     }
   ]
 };

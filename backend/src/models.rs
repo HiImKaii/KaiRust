@@ -11,6 +11,8 @@ pub struct RunRequest {
     pub code: String,
     /// Optional stdin input to feed to the program
     pub stdin: Option<String>,
+    /// Optional flag to compile with --test. Defaults to false.
+    pub is_test: Option<bool>,
 }
 
 /// Response body for POST /api/run
@@ -29,7 +31,11 @@ pub struct RunResponse {
 pub enum WsClientMessage {
     /// Submit code to compile and run
     #[serde(rename = "run")]
-    Run { code: String },
+    Run { 
+        code: String,
+        /// Optional flag to compile with --test. Defaults to false.
+        is_test: Option<bool>,
+    },
     /// Send stdin input to running process
     #[serde(rename = "stdin")]
     Stdin { data: String },
