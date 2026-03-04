@@ -1,4 +1,4 @@
-FROM rust:1.79-slim as builder
+FROM rust:1.85-slim as builder
 
 # Set the working directory
 WORKDIR /app
@@ -15,7 +15,7 @@ RUN cargo build --release
 # -----------------
 # Production stage
 # -----------------
-FROM rust:1.79-slim
+FROM rust:1.85-slim
 
 WORKDIR /app
 
