@@ -10,14 +10,9 @@ services:
       dockerfile: Dockerfile
     container_name: kairust_backend
     restart: unless-stopped
-    ports:
-      - "3001:3001"
     environment:
       - RUST_LOG=info
-    # NOTE: Since the backend executes user code, in a real scenario you might
-    # want to mount a specific volatile directory or restrict resources
-    # mem_limit: 512m
-    # cpus: 0.5
+    # We remove "ports: 3001:3001" because Caddy will proxy traffic internally
 
   # -------------------------
   # FRONTEND SERVICE (VITE/NGINX)
@@ -28,7 +23,32 @@ services:
       dockerfile: Dockerfile
     container_name: kairust_frontend
     restart: unless-stopped
-    ports:
-      - "80:80"
     depends_on:
       - backend
+    # We remove "ports: 80:80" because Caddy will proxy traffic internally
+
+  # -------------------------
+  # REVERSE PROXY & HTTPS (CADDY + DUCKDNS)
+  # -------------------------
+  caddy:
+    build:
+      context: ./caddy
+      dockerfile: Dockerfile
+    container_name: kairust_caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+      - DUCKDNS_TOKEN=${DUCKDNS_TOKEN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+
+volumes:
+  caddy_data:
+  caddy_config:

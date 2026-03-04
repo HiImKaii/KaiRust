@@ -1,0 +1,17 @@
+{
+    email admin@{$DOMAIN}
+}
+
+{$DOMAIN} {
+    tls {
+        dns duckdns {$DUCKDNS_TOKEN}
+    }
+    
+    # Static Frontend
+    reverse_proxy frontend:80
+    
+    # API / WebSockets to Backend
+    handle_path /ws* {
+        reverse_proxy backend:3001
+    }
+}
