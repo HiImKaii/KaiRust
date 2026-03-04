@@ -6,23 +6,24 @@ export const ch02: Chapter = {
   lessons: [
     {
       id: 'ch02-01',
-      title: '2.1 Thiết lập và Xử lý Dự đoán (Setup & Processing a Guess)',
-      duration: '20 phút',
+      title: '2.1 Thiết lập Dự án Mới',
+      duration: '15 phút',
       type: 'theory',
       content: `
-<p>Cùng bước vào không gian của Rust bằng cách bắt tay vào việc thực hành một dự án thực tế luôn (hands-on project) nhé! Ở chương này, nó sẽ giới thiệu cho bạn thông qua một số ít các khái niệm chung phổ biến của Rust thông qua việc hướng dẫn chỉ cách cài đặt chúng và hoạt động trong cùng một chương trình thực (real program). Qua đó, bạn cũng sẽ vừa được học về hàm (<code>let</code>), các kiểu khai báo (<code>match</code>), thuộc tính hàm, việc đóng gói gói dữ liệu (crate) cùng với vô vàn điều thú vị hay ho khác cơ.</p>
+<p>Hãy cùng xông pha vào Rust bằng cách cùng nhau thực hiện một dự án thực tế! Chương này giới thiệu cho bạn một vài khái niệm Rust phổ biến bằng cách chỉ cho bạn cách sử dụng chúng trong một chương trình thực tế. Bạn sẽ học về <code>let</code>, <code>match</code>, các phương thức, các hàm liên kết, các crate bên ngoài, và nhiều hơn nữa! Trong các chương tiếp theo, chúng ta sẽ khám phá những ý tưởng này chi tiết hơn. Trong chương này, bạn sẽ chỉ thực hành các nguyên tắc cơ bản.</p>
 
-<p>Chúng ta sẽ tiến hành triển khai viết nên một chương trình tạo ra trò đoán số kinh điển. Nguyên lý hoạt động là: Chương trình đó tự mình tạo ngẫu nhiên một thông số bí mật kiểu nguyên dương với khoảng từ số 1 đến 100 rồi ở đấy nhé, phần trình này từ người chơi đó gợi báo nhắc cho ở đấy họ cần nhập số nào cho họ thích nhất từ đó vào đi dự đoán nhé. Sau mỗi lúc ta nhập số đó, trò hệ bảo thông số đấy là ở đó số đoán đó đã lớn (hay cao) quá, hay lại đoán vậy ra nhỏ quá với so so thông số đó bí mật rồi. Quá dễ đúng không, hễ đoán khi mà trúng phát thì ở lúc trò phát sinh đó trò chơi thông ra phát "chúc bạn mừng" luôn, và lúc này tự mình game ngắt tắt kết ngay lúc luôn!</p>
+<p>Chúng ta sẽ thực hiện một bài toán lập trình kinh điển cho người mới bắt đầu: trò chơi đoán số. Đây là cách nó hoạt động: Chương trình sẽ tạo ra một số nguyên ngẫu nhiên từ 1 đến 100. Sau đó nó sẽ nhắc người chơi nhập vào một dự đoán. Sau khi một dự đoán được nhập vào, chương trình sẽ chỉ ra xem dự đoán đó là quá thấp hay quá cao. Nếu dự đoán là chính xác, trò chơi sẽ in ra một thông báo chúc mừng và thoát.</p>
 
-<h3 class="task-heading">Thiết lập Dự án Mới (Setting Up a New Project)</h3>
-<p>Để khởi tạo thiết lập dự án ở đây, về qua lại đến nơi mà <code>projects</code> thư từ lúc trước có tạo nơi chương số 1 rồi ý nè, sau là sử dụng tiếp bằng <code>cargo</code> cho việc chạy sinh tạo code lúc như vầy:</p>
+<h3 class="task-heading">Thiết lập Dự án Mới</h3>
+<p>Để thiết lập một dự án mới, hãy đi tới thư mục <code>projects</code> mà bạn đã tạo trong Chương 1 và tạo một dự án mới bằng cách sử dụng Cargo, như sau:</p>
 <div class="code-snippet">
   <span class="code-lang">bash</span>
   <pre><code>$ cargo new guessing_game
 $ cd guessing_game</code></pre>
 </div>
+<p>Lệnh đầu tiên, <code>cargo new</code>, nhận tên của dự án (<code>guessing_game</code>) làm đối số đầu tiên. Lệnh thứ hai chuyển sang thư mục của dự án mới.</p>
 
-<p>Với ở phần lệnh trên 1 đó, chúng ta có từ thao gọi sử cho việc tạo dự với lệnh tên do ở dùng có làm 1 đầu tiên vào (là phần thư mục với cái dùng có ở <code>guessing_game</code> lúc này đó nhé). Câu tiếp là đưa hướng di mục thư lệnh đấy để đi. Trông nhìn lại một tẹo mục của chúng tớ có tạo tại đó file <code>Cargo.toml</code> này xem thử đó:</p>
+<p>Hãy nhìn vào tệp <code>Cargo.toml</code> được tạo ra:</p>
 <div class="code-snippet">
   <span class="code-lang">toml</span>
   <pre><code>[package]
@@ -32,28 +33,42 @@ edition = "2024"
 
 [dependencies]</code></pre>
 </div>
-<p>Vì như lúc Chương lần 1 có coi được, sử có bằng <code>cargo new</code> kia sẽ tạo luôn ngay đoạn một mã cho chương mới của tên "Hello, world!" luôn ý. Cùng ngó thử tại mục chỗ có trong ở thư mục source đó là (<code>src/main.rs</code>) kia nha:</p>
 
+<p>Như bạn đã thấy trong Chương 1, <code>cargo new</code> tạo ra một chương trình “Hello, world!” cho bạn. Hãy kiểm tra tệp <code>src/main.rs</code>:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>fn main() {
     println!("Hello, world!");
 }</code></pre>
 </div>
-<p>Lúc tại này cùng để thử để đi bằng dùng cái thao thực gọi là đó qua cho lệnh ở từ trong của việc compile (biên dịch) cùng chạy đoạn mã "Hello, world!" ngay trong bằng đi với có đi mỗi lệnh dùng đó là <code>cargo run</code> thôi nha:</p>
+
+<p>Bây giờ hãy biên dịch chương trình “Hello, world!” này và chạy nó trong cùng một bước bằng cách sử dụng lệnh <code>cargo run</code>:</p>
 <div class="code-snippet">
   <span class="code-lang">bash</span>
   <pre><code>$ cargo run
-   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+   Compiling guessing_game v0.1.0
     Finished \`dev\` profile [unoptimized + debuginfo] target(s) in 0.08s
      Running \`target/debug/guessing_game\`
 Hello, world!</code></pre>
 </div>
-<p>Điều có ích cho <code>run</code> ở lệnh lúc như này là khi chạy từ làm đấy dùng nó rất nhiều trong lúc ở lúc mà hệ trình liên qua đến nhau do chúng có một hệ sửa có lúc thì chạy nhanh được như này đấy, vì với ứng dụng chạy trò (game) là ở đây thì thử luôn lúc sửa đến đâu phải chạy xem qua test chỗ lúc này liền nhé. Xin bạn vào lại file trong <code>src/main.rs</code> này, đấy là những tất tần các code rồi sau sẽ làm vô vào lúc chỗ ở ngay mục đó thôi đấy nhé.</p>
 
-<h3 class="task-heading">Xử lý Một Dự đoán (Processing a Guess)</h3>
-<p>Để bước của ở phần đầu công trình với của ta là trò sẽ từ cho máy tự hỏi có nhận số đó cần đưa dùng vào rồi lúc đấy làm để chạy lúc số đó xử vào trong của mình để sao nữa rồi mà kiểm định tra để xem số đó khi nhận được thông vào đấy phải loại để chạy đúng chưa nhé. Bước ở lúc khai lúc đầu tiên thì cho phép để việc tự người đó lúc ghi lúc thông vào lúc rồi này. Hãy điền đoạn mã ghi được từ đoạn (Listing 2-1) rồi bỏ mã vào luôn của thẻ file <code>src/main.rs</code> đi.</p>
-
+<p>Lệnh <code>run</code> trở nên hữu ích khi bạn cần lặp lại thử nghiệm nhanh chóng trên một dự án, như chúng ta sẽ làm trong trò chơi này, nhanh chóng kiểm tra từng lần lặp lại trước khi chuyển sang lần tiếp theo.</p>
+<p>Mở lại tệp <code>src/main.rs</code>. Bạn sẽ viết tất cả mã nguồn trong tệp này.</p>
+`,
+      defaultCode: `fn main() {
+    println!("Hello, world!");
+}
+`,
+      expectedOutput: 'Hello, world!'
+    },
+    {
+      id: 'ch02-02',
+      title: '2.2 Xử lý một Dự đoán',
+      duration: '25 phút',
+      type: 'theory',
+      content: `
+<h3 class="task-heading">Xử lý một Dự đoán</h3>
+<p>Phần đầu tiên của chương trình trò chơi đoán số sẽ yêu cầu người dùng nhập đầu vào, xử lý đầu vào đó, và kiểm tra xem đầu vào có ở định dạng được mong đợi hay không. Để bắt đầu, chúng ta sẽ cho phép người chơi nhập vào một dự đoán. Nhập mã ở Listing 2-1 vào <code>src/main.rs</code>.</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>use std::io;
@@ -71,91 +86,104 @@ fn main() {
     println!("You guessed: {guess}");
 }</code></pre>
 </div>
-<p>Đoạn mã này ẩn chứa khá nhiều thông tin, thế nên hãy lướt nhanh đọc mỗi một điều sau xem những điểm đấy ở dòng đã ghi là gì. Trừ khi là bắt đầu gọi ở tại từ việc dùng rồi muốn chạy lúc đưa đầu của thông ra kết sau cùng cho nó, thì ta đều gọi đem đến với (scope - tại vùng mà này đó của phạm mã đó) cái thư lúc ở hệ có thư chuẩn tên (standard library) tên là hệ thu thư <code>io</code> kia từ ở chỗ có lúc kia chuẩn của. Do là io từ tại hệ này được là bởi 1 tập hệ nằm chuẩn bọc nên luôn có được nhận là cái chỗ này: <code>std</code>.</p>
 
-<div class="cyber-alert info">
-  <strong>Lưu ý thuật ngữ:</strong> <em>scope</em> (phạm vi vùng mã) là giới hạn trong đó một biến (variable), một thư viện hay một tài nguyên mã nào đó được xem là tồn tại, có quyền để sử dụng và gọi đến.
-</div>
-
-<p>Trong Rust tự thiết đặt, sẽ luôn có được cung đến có bộ gồm toàn mấy cái thông luôn từ cái standard có ở thư ở từ này (thư viện). Tất hệ như cái đó này khi kia gộp vào người ở đó gọi sẽ nhận là nó lúc gọi từ đây phần thiết (prelude). Và tự giả không có dùng thuộc nào khi kia nằm trong ở tại dùng thiết này gọi đó rồi (prelude), thì bạn hãy tự chính bằng đem đến dùng thiết mang gọi nó tới tận có thuộc tại vào trong lúc với đoạn ở của bạn mã lúc từ dòng có <code>use</code> ở đây nha. Có bằng do việc từ dùng với thư sử dụng có gọi đó <code>std::io</code> bạn cũng lúc có đó làm việc rất dễ gọi với rất đa các thứ hữu đặc lúc như kiểu khi nhận đầu bằng đó các từ người vào lúc.</p>
-
-<p>Khai tại báo đó có: <code>fn</code> để có gọi khởi cho ở 1 mới cái (nét function); thêm cặp ngoặc đôi, <code>()</code>, là chứng lúc minh hàm không nhận chút từ những khi gọi cái vào tham lúc báo số (parameters); và với ở cũng thêm bằng cái ngoặc bộ như là <code>{}</code>, để khai tại đoạn khi gọi để ở thân bộ đấy (code body) ở trong (function).</p>
-
-<h3 class="task-heading">Lưu trữ Giá trị bằng Các Biến (Storing Values with Variables)</h3>
-<p>Rồi ở bước ở lúc thì tới ở này thiết là lúc lập 1 ở khởi có là ở tại cái gọi là bộ ở như này biến (variable) chứa dữ của làm đấy nhập số kia của từ trò, làm ở như kiểu là đi này:</p>
+<p>Đoạn mã này chứa rất nhiều thông tin, vì vậy hãy phân tích nó theo từng dòng. Để nhận đầu vào từ người dùng và sau đó in kết quả ra dưới dạng đầu ra, chúng ta cần đưa thư viện đầu vào/đầu ra <code>io</code> vào phạm vi (scope). Thư viện <code>io</code> đến từ thư viện chuẩn (standard library), được gọi là <code>std</code>:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
-  <pre><code>let mut guess = String::new();</code></pre>
+  <pre><code>use std::io;</code></pre>
 </div>
-<p>Bây lúc điều đây ứng này lúc đang dần khá cũng đã khá của lên thú này! Gồm khá với ở đó nhiều ở nội điều trong từ một nhỏ ở như ngay của có dòng lệnh đây. Bằng ta ở bằng sử vào để tại bằng dùng làm cấu <code>let</code> này mục cho khởi tạo để lúc 1 từ biến đó sinh. Ở nữa nhé đây một thêm với này cũng thí có là dụ nha: <code>let apples = 5;</code></p>
+<p>Theo mặc định, Rust có một tập hợp các mục được định nghĩa trong thư viện chuẩn mà nó đưa vào phạm vi của mọi chương trình. Tập hợp này được gọi là khúc dạo đầu (prelude), và bạn có thể thấy mọi thứ trong đó trong tài liệu thư viện chuẩn.</p>
+<p>Nếu một kiểu dữ liệu bạn muốn sử dụng không có trong prelude, bạn phải đưa kiểu đó vào phạm vi một cách rõ ràng bằng câu lệnh <code>use</code>. Sử dụng thư viện <code>std::io</code> cung cấp cho bạn một số tính năng hữu ích, bao gồm cả khả năng chấp nhận đầu vào của người dùng.</p>
+<p>Như bạn đã thấy trong Chương 1, hàm <code>main</code> là điểm bắt đầu (entry point) vào chương trình:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>fn main() {</code></pre>
+</div>
+<p>Cú pháp <code>fn</code> khai báo một hàm mới; cặp ngoặc đơn, <code>()</code>, chỉ ra rằng không có tham số nào; và dấu ngoặc nhọn, <code>{</code>, bắt đầu phần thân của hàm.</p>
+<p>Như bạn cũng đã học được trong Chương 1, <code>println!</code> là một macro in một chuỗi văn bản ra màn hình:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>    println!("Guess the number!");
+    println!("Please input your guess.");</code></pre>
+</div>
+<p>Đoạn mã này đang in ra một lời nhắc tuyên bố trò chơi là gì và yêu cầu đầu vào từ người dùng.</p>
+
+<h3 class="task-heading">Lưu trữ Giá trị bằng Biến</h3>
+<p>Tiếp theo, chúng ta sẽ tạo một biến (variable) để lưu trữ đầu vào của người dùng, như sau:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>    let mut guess = String::new();</code></pre>
+</div>
+<p>Bây giờ chương trình đang trở nên thú vị! Có rất nhiều thứ đang diễn ra trong dòng nhỏ bé này. Chúng ta sử dụng lệnh <code>let</code> để tạo ra biến. Dưới đây là một ví dụ khác:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>let apples = 5;</code></pre>
+</div>
+<p>Dòng này tạo ra một biến mới có tên là <code>apples</code> và gán cho nó giá trị <code>5</code>. Trong Rust, các biến theo mặc định là bất biến (immutable), nghĩa là một khi chúng ta cung cấp cho biến một giá trị, giá trị đó sẽ không thay đổi. Chúng ta sẽ thảo luận chi tiết về khái niệm này trong phần “Biến và Tính Bất biến” ở Chương 3. Để làm cho một biến có thể thay đổi (mutable), chúng ta thêm <code>mut</code> trước tên biến:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>let apples = 5; // immutable
+let mut bananas = 5; // mutable</code></pre>
+</div>
 
 <div class="cyber-alert info">
-  <strong>Lưu ý thuật ngữ:</strong> <em>variable</em> (biến) là một định danh tên để lưu trữ giá trị mã nguồn trong hệ thống nhớ của chương trình.
+  <strong>Lưu ý:</strong> Cú pháp <code>//</code> bắt đầu một ghi chú và kéo dài cho đến khi kết thúc dòng. Rust bỏ qua mọi thứ trong các ghi chú. Chúng ta sẽ thảo luận về ghi chú chi tiết hơn ở Chương 3.
 </div>
 
-<p>Trong ngôn này với Rust lúc thế, thì là ở những khi do các với khởi do ở lúc các biến mặc định là hệ (immutable - sự không thể tự việc lúc điều làm để bất do lúc sửa đổi lại ở lúc giá số sau cùng khi đã gọi nó), lúc báo làm là chứng bộ đó giá số 1 giá báo đổi lúc giá là khi mà chỉ lúc vào 1 để mà khi dùng (mặc định cho số sẽ không sửa ở chỗ lúc xong). Thì mục sau ở từ đó Chương chỗ 3, (có bằng nói "Bộ định các và các thay") đi nha thì có nói đấy, còn tạo do biến tại từ để mà nếu do có lúc cần được với được đổi từ giá (mutable), bạn sử làm bằng tại cách để lúc có chữ cũng từ ở dùng: <code>mut</code> này đi để trước tại đấy rồi của giá ở tên cho kia.</p>
+<p>Quay trở lại với chương trình trò chơi đoán số, bây giờ bạn đã biết rằng <code>let mut guess</code> sẽ đưa vào một biến có thể thay đổi có tên là <code>guess</code>. Dấu bằng (<code>=</code>) báo cho Rust biết chúng ta muốn liên kết (bind) một cái gì đó vào biến ngay bây giờ. Phía bên phải của dấu bằng là giá trị mà <code>guess</code> được liên kết vào, đó là kết quả của việc gọi <code>String::new</code>, một hàm trả về một phiên bản mới của một <code>String</code>. <code>String</code> là một kiểu chuỗi (string type) được cung cấp bởi thư viện chuẩn, nó là một đoạn văn bản có thể mở rộng, được mã hóa UTF-8.</p>
+<p>Cú pháp <code>::</code> trong dòng <code>::new</code> chỉ ra rằng <code>new</code> là một hàm liên kết (associated function) của kiểu <code>String</code>. Một hàm liên kết là một hàm được triển khai trên một kiểu dữ liệu, trong trường hợp này là <code>String</code>. Hàm <code>new</code> này tạo ra một chuỗi mới, trống rỗng. Bạn sẽ thấy một hàm tên <code>new</code> trên rất nhiều kiểu dữ liệu bởi vì nó là cái tên phổ biến cho một hàm làm chức năng tạo ra một giá trị mới của loại đó.</p>
+<p>Nói một cách tổng quát, dòng <code>let mut guess = String::new();</code> đã tạo ra một biến có thể thay đổi, thứ mà hiện đang được liên kết với một phiên bản hoàn toàn mới và trống rỗng của một <code>String</code>. Dài quá nhỉ!</p>
 
-<p>Trở ở lại vào của với điều ứng cho này game đoán nha, bạn cũng thế làm rồi cho gọi bằng <code>let mut guess</code> thì nó sinh để ở một 1 cái vào gọi là có "biến", với mang chức từ việc lúc cũng làm thay sửa bộ lúc số có (giống tên <code>guess</code> rồi). Ở và nữa lúc với đoạn sau của tại cũng dấu (<code>=</code>) nha thì báo là lúc đó nó nói lúc có Rust sẽ nhận điều đó là gắn số vào từ vào với trong cái gọi có tên từ phần tại (bound cái thông gắn để gỡ cho biến cho này), còn tại cùng đấy lúc đoạn của lúc ở bên giá để ở dấu bằng nhận bằng đấy nha là (số gắn thuộc nó vào gọi đấy) tại giá đó nhận ở sẽ có giá qua đó từ hàm dùng để gọi cho nhận (hiển 1 đối tự tại mới sinh ở có) chức <code>String::new</code>, và lúc này là bộ này nó hàm gọi lại ở trả (thay trả về cho) nó tại 1 mới đó là đối String rỗng lúc rồi.</p>
-
-<div class="cyber-alert info">
-  <strong>Lưu ý thuật ngữ:</strong> <em>bound/bind</em> (ràng buộc / gắn cho) ở trong Rust khi đi với việc khai báo biến là dùng tên (trái của =) để tạo tham chiếu lưu giữ giá trị hay đối tượng sinh ra (phải của =).
-</div>
-
-<p>String là bộ để do từ thư của viện lúc ở đây (thứ chuẩn do của library đó) bộ chữ loại sinh mã kiểu loại ở utf-8 loại tự rồi thì tăng chiều của độ số theo kích từ của chữ (growable type text).</p>
-
-<p>Ký cách vào <code>::</code> tại có trong cùng từ cho để chỉ ngay <code>::new</code> là một thuộc có thuộc ở để hàm (associated function) với lúc ở bằng như kiểu của String đây. Thì (associated function - hàm có sự tại liên đó kết) chính nó nói để đây rồi cũng đó lúc bộ thuộc với do một ở có trên thiết cho định 1 kiểu đây nhé (ở đây với từ này như kiểu của String). Hàm mới được đó sinh (cho có cái với tên gọi do <code>new</code> này đó vậy) sinh mục cho từ là 1 tạo cho bộ loại mới String ở dạng trống (rỗng chả ở chưa). Có thể lúc ở bằng tại được cũng thấy các từ cho nhiều ở rất làm ở những khi hàm khác sẽ nhiều với các từ <code>new</code> từ có kia lúc có do của loại khác nhé, bằng việc đó gọi này là khá đi lúc chung chung cho bằng một với bộ cái mà ở tạo của nhận 1 thuộc ở 1 cái số mới (làm điều với từ đấy kia ở của vài như). Toàn lại cả chung cho phần câu tóm với cái đoạn kia: <code>let mut guess = String::new();</code> nó là có khởi là làm một cho 1 với giá để đó mà có bộ có thay (có được sự có cho của có chức mutable), đã tại ở gắn này là buộc giá đó có tại lúc ở đây có 1 loại từ bằng giá có loại lúc String ở tạo kia nhưng với mới dạng lúc mới luôn ở chữ với không rỗng mà!</p>
-`,
-      defaultCode: `use std::io;
-
-fn main() {
-    println!("Guess the number!");
-    println!("Please input your guess.");
-
-    // TODO: Tạo một biến kiểu chuỗi rỗng có thể chỉnh sửa gán cho tên 'guess'
-    
-}
-`,
-      expectedOutput: 'Guess the number!\nPlease input your guess.'
-    },
-    {
-      id: 'ch02-02',
-      title: '2.2 Quản lý Lỗi và In Giá trị (Error handling & Printing)',
-      duration: '25 phút',
-      type: 'practice',
-      content: `
-<h3 class="task-heading">Tiếp nhận Thông tin (Receiving User Input)</h3>
-<p>Ta lúc để gọi lại coi ở tại mục trước thì có lúc ở do đã gọi bộ bằng (bao bộ có phần thêm hàm với vào có hàm cho ở thư vào chức io chuẩn thư này) bằng <code>use std::io;</code> đi ở ngay lúc dòng nhất tiên trên phần của ứng của chương trình rồi nhé. Lúc sau ấy chạy ở giờ chạy làm gọi nhận của ở vào <code>stdin</code> cái vào từ ở cho bằng phần (hàm <code>stdin</code>) từ hệ thư phần lúc mục <code>io</code> kia, hàm này ứng sẽ đưa tại được cho để có lúc sự cho làm nhận từ từ ở có cái nhận của ngoài nhập có từ đầu người lúc đấy:</p>
-
+<h3 class="task-heading">Nhận đầu vào từ Người dùng</h3>
+<p>Hãy nhớ lại rằng chúng ta đã bao gồm tính năng đầu vào/đầu ra từ thư viện chuẩn với dòng <code>use std::io;</code> ở ngay dòng đầu tiên của chương trình. Bây giờ chúng ta sẽ gọi hàm <code>stdin</code> từ mô-đun <code>io</code>, đây là một hàm sẽ cho phép chúng ta xử lý đầu vào của người dùng:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>    io::stdin()
-        .read_line(&mut guess)
-        .expect("Failed to read line");</code></pre>
+        .read_line(&mut guess)</code></pre>
 </div>
-<p>Hàm từ đó vào <code>stdin</code> sẽ là lúc đưa để số đó gọi về của từ hàm 1 mục tại có của loại (thực đối đối là) loại của đó thể ở là: <code>std::io::Stdin</code>, mà lúc ở phần đây thể nhận 1 chức đó bộ làm tay công thuộc nhằm giao để cho việc nhập do giao lúc vào từ nhận đó chuẩn ở đây với thiết (device terminal) tại ở nhận của đó bạn nhé. Phần để dòng đi sau gọi dưới hàm (method), chức bằng đó này <code>.read_line(&mut guess)</code> để đó gọi sử nhằm bộ ở chức cho tại lúc nhằm ở bộ điều như này giao làm lấy của (cái tay lúc cầm quản từ đó nhập đầu hệ lúc kia tại chuẩn) thì làm là nhận nhận lấy thu với cái ở điều đi vào nhập cho ở ngoài ở người. Lệnh gọi tại đây đó lại cho thêm đi chuyển cho (như truyền vào ở argument) ở đây với phần 1 mục có thể <code>&mut guess</code> cũng lúc được tại chạy mang cùng theo như với cho hàm ở mục đó nha để mục gọi cho lúc <code>read_line</code> đấy. Việc bộ của chức lúc đó từ (hàm read_line) khi gọi làm thì nhằm lấy toàn lúc hết nhận bộ có điều lấy thu lúc vào ở ngoài ở người ở đó có gõ điều vào ở trong (hệ mục nhập ở tại điều với chuẩn), tiếp từ khi mà (chắp thêm append) nội dung cho nối tiếp sau nối chữ ấy lại vào tại giá với mục được ở chuỗi rồi ở (string), thay ở vì việc lúc đó đắp lên chèn ghi ở mất luôn lúc ở đè có cái gì đã để bên rồi (chữ từ trước) từ nhé, bởi vậy đi tớ đi ở của đó bằng mục đó đưa để cái qua thì truyền cho nhận string này để đi có với làm tham (truyền cho tham số nhé). Giá có của lúc bộ tham trị kiểu string đó của thì để với nó bắt đòi nó của tại được cũng có (cho cái là thay có cũng biến tự giá có) thì là việc hàm có bộ này nó với làm thêm để lúc thêm sửa đổi nội tự đổi cũng giá số luôn mà!</p>
+<p>Nếu chúng ta đã không nhập mô-đun <code>io</code> bằng hàm <code>use std::io;</code> ở phần đầu của chương trình, chúng ta vẫn có thể dùng hàm này bằng cách viết lệnh là quá trình gọi <code>std::io::stdin</code>. Hàm <code>stdin</code> trả về một phiên bản từ trình bao <code>std::io::Stdin</code>, đây là một kiểu đại diện cho cái tay cầm quản lý việc đón đầu vào tại trạm nhập terminal của bạn.</p>
+<p>Tiếp theo, dòng <code>.read_line(&mut guess)</code> gọi trực tiếp ra phương thức <code>read_line</code> ngay trên công cụ điều khiển luồng nhập đầu vào của máy đó để đón nhận thông tin nhập từ người dùng. Chúng ta cũng đang chuyển (passing) phần giao diện <code>&mut guess</code> làm đối số vào cho hàm gọi là <code>read_line</code> để nói luôn cho nó biết cái chuỗi chuỗi cần dùng chứa chữ của người dùng nằm ở chỗ nào. Công việc toàn diện của phương thức <code>read_line</code> là cầm được bất cứ điều gì mà người đánh phím gõ bằng cái dòng lệnh tiêu chuẩn vào, đem nối dài thêm phần đuôi vào trong lòng cái chuỗi đó (mà không được đi xóa nội dung cũ của cái chuỗi đó đó nha), vì thế đó là lý do mà theo sự thiết kế thì chúng ta cũng phải cung cấp đường dẫn một biến có chứa kiểu bộ chuỗi nằm làm cái biến nhận cho hàm này. Và cái đối số chứa theo kiểu thông tin bằng chuỗi như vậy sẽ cần phải được thiết lập theo cơ chế là để máy có tính trạng gọi là có quyền thay nội dung để phương thức này mà máy được phép điều chỉnh giá trị các chữ cái bên cấu tạo lõi của bộ chuỗi kia đó.</p>
 
-<div class="cyber-alert info">
-  <strong>Lưu ý thuật ngữ:</strong> <em>reference</em> (tham chiếu) cho phép nhiều phần trong mã của bạn dùng chung (chia sẻ) một mẩu dữ liệu thay vì phải tạo ra các bản sao (copy) vào bộ nhớ. Biến số đại diện cho tham chiếu luôn đi cùng ký hiệu <code>&amp;</code>.
+<p>Ký hiệu <code>&amp;</code> chỉ ra rằng đối số này là một tham chiếu (reference), giúp bạn cho phép nhiều phần trong mã của mình truy cập vào cùng một dữ liệu mà không cần phải sao chép dữ liệu đó vào bộ nhớ nhiều lần. Tham chiếu là một tính năng phức tạp, và một trong những lợi thế chính của Rust là việc sử dụng tham chiếu rất an toàn và dễ dàng. Bạn không cần phải biết nhiều chi tiết đó để hoàn thành chương trình này. Bây giờ, tất cả những gì bạn cần biết là, giống như các biến, các tham chiếu mặc định là bất biến (immutable). Do đó, bạn cần viết <code>&amp;mut guess</code> thay vì <code>&amp;guess</code> để làm cho nó có thể thay đổi. (Chương 4 sẽ giải thích các tham chiếu kỹ hơn.)</p>
+
+<h3 class="task-heading">Xử lý Rủi ro Thất bại với <code>Result</code></h3>
+<p>Chúng ta vẫn đang thảo luận về dòng mã này. Bây giờ chúng ta đang nói về dòng thứ ba, nhưng lưu ý rằng nó vẫn là một phần của một câu lệnh liền mạch duy nhất. Phần tiếp theo là phương thức này:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>        .expect("Failed to read line");</code></pre>
+</div>
+<p>Chúng ta có thể đã viết đoạn mã này là:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>io::stdin().read_line(&amp;mut guess).expect("Failed to read line");</code></pre>
+</div>
+<p>Tuy nhiên, một dòng dài rất khó đọc, vì vậy tốt nhất là chia nó ra. Người ta thường khuyên nền sử dụng ký tự dòng mới và các khoảng trắng khác để giúp chia nhỏ các dòng dài khi bạn gọi một phương thức bằng cú pháp <code>.method_name()</code>. Bây giờ hãy thảo luận xem dòng này làm gì.</p>
+
+<p>Như đã đề cập trước đó, <code>read_line</code> đưa bất cứ thứ gì người dùng nhập vào chuỗi mà chúng ta truyền cho nó, nhưng nó cũng đồng thời trả về một giá trị <code>Result</code>. <code>Result</code> là một kiểu liệt kê (enumeration), thường được gọi là <code>enum</code>, là một kiểu có thể mang một trong nhiều trạng thái có thể có. Chúng ta gọi mỗi trạng thái có thể xảy ra đó là một biến thể (variant).</p>
+<p>Chương 6 sẽ đề cập đến các <code>enum</code> chi tiết hơn. Mục đích của các kiểu <code>Result</code> này là để mã hóa thông tin xử lý lỗi.</p>
+<p>Các biến thể của <code>Result</code> là <code>Ok</code> và <code>Err</code>. Biến thể <code>Ok</code> chỉ ra rằng hoạt động đã thành công và nó chứa giá trị được trả về thành công. Biến thể <code>Err</code> có nghĩa là hoạt động đã thất bại và nó chứa thông tin về việc hoạt động đã thất bại như thế nào hoặc tại sao.</p>
+
+<p>Các giá trị của kiểu <code>Result</code>, giống như giá trị của bất kỳ kiểu nào, sẽ có các phương thức được định nghĩa tích hợp trên chúng. Một phiên bản của <code>Result</code> có một phương thức tên là <code>expect</code> mà bạn có thể gọi. Nếu phiên bản này của <code>Result</code> là một giá trị <code>Err</code>, <code>expect</code> sẽ làm cho chương trình gặp sự cố (crash) và hiển thị thông báo mà bạn đã truyền làm đối số cho <code>expect</code>. Nếu phương thức <code>read_line</code> trả về một <code>Err</code>, nó có thể là kết quả của một lỗi đến từ hệ điều hành. Nếu phiên bản này của <code>Result</code> là một giá trị <code>Ok</code>, <code>expect</code> sẽ lấy giá trị trả về mà <code>Ok</code> đang nắm giữ và chỉ trả lại giá trị đó cho bạn để bạn có thể sử dụng. Trong trường hợp này, giá trị đó là dung lượng số lượng byte trong đầu vào của người dùng.</p>
+
+<p>Nếu bạn không cho gọi hàm <code>expect</code>, chương trình sẽ vẫn biên dịch, nhưng bạn sẽ nhận được một cảnh báo:</p>
+
+<div class="code-snippet">
+  <span class="code-lang">console</span>
+  <pre><code>warning: unused \`Result\` that must be used</code></pre>
+</div>
+<p>Rust cảnh báo rằng bạn chưa sử dụng giá trị <code>Result</code> được trả về từ <code>read_line</code>, điều này có nghĩa là chương trình của bạn chưa xử lý một lỗi có thể xảy ra.</p>
+
+<p>Cách đúng chuẩn để loại bỏ thông báo cảnh báo là thực sự viết phần mã xử lý lỗi chuẩn chỉnh, nhưng trong trường hợp hiện tại của chúng ta, chúng ta chỉ muốn làm sập chương trình này ngay lập tức khi có sự cố xảy ra, vì vậy chúng ta có thể sử dụng <code>expect</code>. Bạn sẽ tìm hiểu về cách phục hồi từ các lỗi trong Chương 9.</p>
+
+<h3 class="task-heading">In Giá trị bằng bộ Giữ chỗ của <code>println!</code></h3>
+<p>Bên cạnh cặp ngoặc nhọn kết thúc vòng cấu trúc hàm, chỉ còn một dòng nữa để thảo luận trong đoạn mã từ nãy đến giờ:</p>
+
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>    println!("You guessed: {guess}");</code></pre>
 </div>
 
-<p>Ký cái báo dùng đó của bằng: <code>&amp;</code> nó của ở chứng ở tại chỉ nhận cho thấy rằng tại (đây lúc argument tham) bộ nhận cũng của cái ở này 1 nhận loại (tham số quy có là chiều - là một loại do type reference đó). Một khi đấy để có bằng dùng tham kiểu chiều, (như các ở mục bằng gọi về biến số), thì bằng tại nó luôn được tự mặc định lúc là không bằng ở tự thay, (immutable). Do đó, bạn với điều là đấy phải tại để gõ là với (viết) thêm lệnh ở bằng <code>&amp;mut guess</code> này thay vì do lúc là ở bằng <code>&amp;guess</code> không thôi thì nó tạo ra thể để loại (loại bộ tham chiếu chiều được lúc đổi sửa giá trị đó) cho nên (chi tiết coi có kỹ ở tại sâu Chương 4 cơ).</p>
-
-<h3 class="task-heading">Quản lý rủi ro lỗi kèm (Handling Potential Failure with Result)</h3>
-<p>Bên đây ở cạnh lúc chức có với năng <code>read_line</code> sinh đưa do ở kết tại có là trả với sau cho của cũng (phần nối cho của chữ), chạy với mục lúc đó qua nó còn một 1 trả lấy kết về (trả với loại có 1 của kiểu trả <code>Result</code>). <code>Result</code> ở bên lúc được cái là từ 1 bộ định lúc gọi (enumeration), để là được hay có gọi từ thu cho lúc ngắn gọn (enum), thì đấy có kiểu khi cho 1 định kiểu (với loại loại loại giá đây lúc thể trạng) có trong (hoặc này trạng là trạng nhiều các thể có của nhiều loại khác trạng nữa nhé của thái có khả từ). Từng loại 1 ở với những có 1 lúc của trạng nào thể đó cái của khả (rơi có khả có năng ra) chúng gọi là (biến của thể) variant.</p>
-
-<div class="cyber-alert info">
-  <strong>Lưu ý thuật ngữ:</strong> <em>enum</em> là một kiểu cấu trúc dữ liệu mô tả các giá trị khả thi có thể có cho một biểu thức, được đóng gói vào các danh mục hay trạng thái cố định (gọi là variant). Cụ thể như <code>Result</code> sẽ luôn chỉ rơi vào trạng thái <code>Ok</code> (có dữ liệu tốt) hoặc <code>Err</code> (lỗi không mong muốn).
-</div>
-
-<p>Biến từ (variants) của bộ nhận với <code>Result</code> được tại lúc đó sẽ có gọi là <code>Ok</code> và <code>Err</code>. Biến ở từ <code>Ok</code> chức định để báo thành công từ cho (tại việc làm ở đoạn chạy thao tác với đó), trong cái có (để ở trong mang là tại bộ có giá chứa thành việc tạo số kia). Biến ở kiểu với <code>Err</code> chỉ báo lúc tại làm do có phần việc có khi từ không đoạn thao cho tại thao bị sinh ra hỏng mục (bị thất hỏng rồi không ở lúc thao làm ở tạo với tác được). Ở tại từ thì đấy mang một (mang trong của tin về với các tin nguyên hoặc tại ra sau lúc từ do) ở tại bằng việc hỏng đấy nhé.</p>
-
-<p>Hàm gọi lại thuộc lúc từ kiểu Result có một số bộ với của thuộc những với bộ chứa tại giá đối giá trị của một (ngay cũng những với các ở của hàm loại giá khác) được (method lấy được defined - tự khai thuộc lấy ở trên) có. Thể trị chứa 1 hiện do kiểu cho <code>Result</code> thuộc sẽ của bộ từ lúc gọi (hàm được cái có expect method) với mà ở chức lúc từ bộ làm để bạn dùng cho được vào chạy (call) nhé. Lúc do giá cái đó mà Result đó sinh (ra loại là trả về variant) lúc này đây từ là có một loại mang giá ở <code>Err</code> đi nha, lúc thì của hàm gọi expect (expect function) thực vào sẽ của ngay là phát dừng luôn cho đóng tắt thoát bộ sinh máy lúc này sập phần ngay từ và (phát hiện lên lỗi của tin báo) do cái mà đã từ (argument ở qua cho có phần) đấy truyền (đưa qua) vào ở lúc thì khi expect chạy! Nếu như ở cho khi hàm nhận chức lúc ở như <code>read_line</code> mà lúc <code>Result</code> để loại biến <code>Ok</code>, (tại từ <code>expect</code> hàm sẽ thì lấy) giá tại số cái đó tự lúc chạy của cái đang đi mang có của lúc <code>Ok</code> sẽ ra cho đi lúc để sẽ dùng 1 với (chỉ để giá một trị có số này cho được tại với ở lúc qua giá thì đó thôi).</p>
-
-<p>Giả với lúc nếu sử mà khi thì không được dùng (chạy bằng code) nếu như với (hàm cái expect), phần chương của sẽ của hệ máy nó thế ở đấy nào nhỉ? Chạy (với biên được trình sẽ ra ok lúc kia cho) qua dịch, mà với sẽ hiện thì chạy 1 đi luôn cho cái chữ do từ là thông ra cảnh này lúc báo: <code>warning: unused \`Result\` that must be used</code>.</p>
-
-<h3 class="task-heading">Tạo Thông Ghi Bằng Khung Biểu Nhãn Chỗ (Printing Values with println! Placeholders)</h3>
-<p>Lúc khi đi với có cái cặp lúc bộ dùng ngoặc thì dùng với phần đó uốn do <code>{}</code> ở đây (tức là 1 chức từ gọi tại cái vùng được gọi giữ tạo chỗ Placeholder). Chuyện việc đó tự với tưởng với ở bằng coi do bằng điều có cặp với ở đi nhọn ngoặc như 1 thể cái ở có như cặp như ngàm của con (con do con cua ấy ngàm có vậy kia) giữ vào cái ở trong phần số được đó của giá số để trong có thể bộ nha. Phép thao có thể đó chạy hiển từ ở chức: dùng gọi 1 đối số ở tại có của đó bộ biểu giá tính số biểu thức luôn với gộp có lại cũng luôn 1 lần đi lệnh tại gọi cho như <code>println!</code> sẽ trong 1 lượt với nhau chạy trong (nó trông đây thế giống của cũng như như đoạn đây với):</p>
-
+<p>Dòng này in ra chuỗi đang chứa đầu vào của người dùng. Tập hợp các dấu ngoặc nhọn <code>{}</code> đóng vai trò là một nơi giữ chỗ (placeholder): Hãy tưởng tượng <code>{}</code> giống như những chiếc càng cua nhỏ xíu giữ chặt một giá trị tại chỗ. Khi in giá trị của một biến, tên biến có thể nằm bên trong dấu ngoặc nhọn. Khi đang muốn in lấy kết quả trực tiếp của việc tính toán một biểu thức, hãy đặt các cặp dấu ngoặc nhọn rỗng sẵn trong chuỗi đinh dạng, rồi sau chuỗi định dạng đó là một danh sách các biểu thức mà bạn muốn in (bị ngăn cách bằng dấu phẩy) vào mỗi cặp ngoặc nhọn rỗng lần lượt theo cùng đúng thứ tự. Việc in một biến thể cũng như in kết quả biểu thức tính toán thông qua một lời gọi hàm lệnh <code>println!</code> sẽ trông như thế này:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>let x = 5;
@@ -163,8 +191,25 @@ let y = 10;
 
 println!("x = {x} and y + 2 = {}", y + 2);</code></pre>
 </div>
-<p>Với ở làm như tại này của gọi chữ đoạn code đấy thì bằng máy hiện kết: <code>x = 5 and y + 2 = 12</code>.</p>
-<p>Ở phần đến đây này, cái bước từ của đầu tại đấy cho nửa lúc tiên tiên ở lúc đấy trên trò để từ (đã hoàn thiện cơ bản đó nha): Trình gọi 1 được cái lúc xin bộ đi từ thu từ nhập với của tay dùng lấy lấy gõ (rồi phím) sau in xuất làm tại kết chữ trên đấy từ lên đi có màn có khi hiện màn hiển kia nhé.</p>
+<p>Mã này sẽ in dòng văn bản: <code>x = 5 and y + 2 = 12</code>.</p>
+
+<h3 class="task-heading">Kiểm tra Phần Đầu tiên</h3>
+
+<p>Hãy kiểm tra lại một lượt nửa đoạn đầu của trò chơi đoán số. Bạn chạy tệp bằng <code>cargo run</code>:</p>
+
+<div class="code-snippet">
+  <span class="code-lang">bash</span>
+  <pre><code>$ cargo run
+   Compiling guessing_game v0.1.0 
+    Finished \`dev\` profile [unoptimized + debuginfo] target(s) in 6.44s
+     Running \`target/debug/guessing_game\`
+Guess the number!
+Please input your guess.
+6
+You guessed: 6</code></pre>
+</div>
+
+<p>Tại thời điểm này, phần đầu tiên của trò chơi đã hoàn tất: Chúng ta đang nhận đầu vào chuẩn xác từ bộ bàn phím rồi tiếp đó in nó ra màn hình ngoài.</p>
 `,
       defaultCode: `use std::io;
 
@@ -173,9 +218,11 @@ fn main() {
     println!("Please input your guess.");
 
     let mut guess = String::new();
-    
-    // TODO: Bổ sung lệnh lấy dữ liệu stdin ở đây
-    
+
+    io::stdin()
+        .read_line(&mut guess)
+        .expect("Failed to read line");
+
     println!("You guessed: {guess}");
 }
 `,
@@ -183,28 +230,93 @@ fn main() {
     },
     {
       id: 'ch02-03',
-      title: '2.3 Số Ngẫu nhiên và Crate bên ngoài (Random Number & External Crates)',
+      title: '2.3 Tạo Số Bí Mật',
       duration: '30 phút',
-      type: 'practice',
+      type: 'theory',
       content: `
-<p>Tiếp theo, ta cần tạo ra số bí mật bằng thư viện ngoài <code>rand</code>.</p>
+<h3 class="task-heading">Tạo một Số Bí mật</h3>
+<p>Tiếp theo, chúng ta cần tạo ra một số bí mật mà người dùng sẽ cố gắng dự đoán. Số bí mật này nên khác nhau trong mỗi lần chơi nhằm mang lại sự thú vị khi chơi lại nhiều lần. Chúng ta cấu hình sử dụng một số ngẫu nhiên nằm trong khoảng từ 1 đến 100 để trò chơi không quá khó. Rust hiện tại chưa bao gồm tính năng tạo số ngẫu nhiên trong thư viện chuẩn của nó. Tuy nhiên, đội ngũ phát triển Rust có cung cấp một crate tên là <code>rand</code> được tích hợp tính năng đã đề cập trên.</p>
 
-<h3 class="task-heading">Thêm nhiều tính năng hơn với Crate</h3>
-<p>Hẳn bạn sẽ nhớ lại rằng, crate là một định nghĩa cho một tập tin mã nguồn phân phối được của ngôn Rust. Dự án này mình đang code là binary crate, còn <code>rand</code> là một library code chuyên dùng với ứng hệ cho bên trong hàm từ của. Bạn cần lên tệp <code>Cargo.toml</code> và chỉnh sửa cho thêm phụ thuộc (dependencies) đó nha:</p>
+<h3 class="task-heading">Sử dụng một Crate để Tăng cường Chức năng</h3>
+<p>Hãy nhớ rằng một <em>crate</em> là một tập hợp các tệp mã nguồn Rust. Dự án mà chúng ta đang xây dựng là một <em>crate thực thi (binary crate)</em>, là một tệp có thể chạy được. Crate <code>rand</code> là một <em>crate thư viện (library crate)</em>, chứa mã nguồn nhằm mục đích cung cấp năng lực cho các chương trình khác nhưng bản thân nó không tự thực thi được.</p>
+
+<p>Khả năng điều phối các crate bên ngoài chính là điểm mà Cargo thực sự tỏa sáng. Trước khi có thể viết được mã sử dụng <code>rand</code>, chúng ta cần phải sửa tệp <em>Cargo.toml</em> để chỉ định crate <code>rand</code> như một phần phụ thuộc (dependency). Hãy mở tệp đó ra và thêm dòng sau vào phần dưới cùng, bên dưới tiêu đề mục <code>[dependencies]</code> mà Cargo đã tạo sẵn. Hãy chắc chắn chỉ định viết chữ <code>rand</code> chính xác như chúng tôi ghi ở đây, cùng với con số phiên bản này, nếu không thì các ví dụ mã trong bài hướng dẫn này có thể sẽ không hoạt động:</p>
 
 <div class="code-snippet">
   <span class="code-lang">toml</span>
   <pre><code>[dependencies]
 rand = "0.8.5"</code></pre>
 </div>
-<div class="cyber-alert info">
-  <strong>Lưu ý thuật ngữ:</strong> <em>Semantic Versioning (SemVer)</em> là quy chuẩn đặt số hiệu phiên bản. Chỉ số <code>0.8.5</code> là kiểu viết tắt của <code>^0.8.5</code>, hiểu đơn giản là dùng bất kỳ một bản cập nhật có chức năng tương tự nào miễn là nó nằm từ phiên bản 0.8.5 cho tới trước phiên bản 0.9.0.
+
+<p>Trong tệp <em>Cargo.toml</em>, mọi thứ theo sau một tiêu đề đều thuộc về phạm vi của mục đó cho đến khi một tiêu đề mục khác bắt đầu. Trong mục <code>[dependencies]</code>, bạn cho Cargo biết dự án của bạn phụ thuộc dùng vào những thư viện ngoài nào và bạn yêu cầu phiên bản nào của chúng. Trong trường hợp này, chúng ta chỉ định dùng crate <code>rand</code> với thông số phiên bản ngữ nghĩa là <code>0.8.5</code>. Cargo hiểu Versioning Ngữ nghĩa (đôi khi gọi là SemVer), vốn là một tiêu chuẩn để viết các số phiên bản. Thông số <code>0.8.5</code> thực ra là cách viết tắt của <code>^0.8.5</code>, điều này có nghĩa là bất kỳ phiên bản nào tối thiểu là 0.8.5 nhưng thấp hơn 0.9.0.</p>
+
+<p>Cargo coi các phiên bản này có các API công khai tương thích với phiên bản 0.8.5, và đặc tả này đảm bảo rằng bạn sẽ nhận được bản phát hành vá lỗi mới nhất mà vẫn có thể biên dịch trơn tru với mã trong chương này. Bất kỳ phiên bản 0.9.0 hoặc lớn hơn không được đảm bảo sẽ có cùng API giống như những gì các ví dụ trong hướng dẫn sau đây sử dụng.</p>
+
+<p>Bây giờ, mà chưa cần thay đổi bất kỳ đoạn mã nào, hãy biên dịch (build) dự án:</p>
+
+<div class="code-snippet">
+  <span class="code-lang">bash</span>
+  <pre><code>$ cargo build
+    Updating crates.io index
+  Downloaded ppv-lite86 v0.2.17
+  Downloaded rand_core v0.6.4
+  Downloaded getrandom v0.2.10
+  Downloaded rand_chacha v0.3.1
+  Downloaded rand v0.8.5
+  Downloaded libc v0.2.147
+   Compiling libc v0.2.147
+   Compiling getrandom v0.2.10
+   Compiling rand_core v0.6.4
+   Compiling ppv-lite86 v0.2.17
+   Compiling rand_chacha v0.3.1
+   Compiling rand v0.8.5
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished \`dev\` profile [unoptimized + debuginfo] target(s) in 2.53s</code></pre>
 </div>
 
-<p>Cargo sẽ tự động tải các gói dữ liệu yêu cầu cho ta thông qua registry phân phối do hệ thống sinh lưu trữ ở trang chính gốc <code>Crates.io</code>.</p>
+<p>Bạn có thể thấy các số phiên bản khác nhau (nhưng chúng sẽ đều tương thích với mã, nhờ có SemVer!) và những dòng khác nhau (tùy thuộc vào hệ điều hành), và các dòng đấy có thể nằm ở trật tự khác nhau.</p>
 
-<h3 class="task-heading">Tạo một Số Ngẫu Nhiên (Generating a Random Number)</h3>
-<p>Mở file <code>src/main.rs</code> của bạn lên nha, hãy gọi crate mới lấy đó vào bằng đoạn:</p>
+<p>Khi chúng ta bao gồm một phụ thuộc bên ngoài, Cargo lấy những phiên bản mới nhất của mọi thứ mà phần phụ thuộc đó cần từ <em>registry</em> (sổ đăng ký), đây là một bản sao chép dữ liệu từ Crates.io. Crates.io là nơi mà những người trong hệ sinh thái Rust đăng tải các dự án Rust mã nguồn mở của họ để người khác có thể sử dụng.</p>
+
+<p>Sau khi cập nhật sổ đăng ký, Cargo kiểm tra lại mục <code>[dependencies]</code> và tải bất kỳ crate nào đã được liệt kê mà chưa được tải. Trong trường hợp này, mặc dù chúng ta chỉ liệt kê mỗi <code>rand</code> với tư cách là một phụ thuộc, Cargo cũng đồng thời lấy và tải luôn các crate khác mà <code>rand</code> phụ thuộc vào để hoạt động. Sau khi tải xuống các crate, Rust biên dịch chúng và sau đó tiến hành biên dịch dự án với các phụ thuộc đã có sẵn.</p>
+
+<p>Nếu bạn lập tức chạy lại <code>cargo build</code> mà không thực hiện bất kỳ thay đổi nào, bạn sẽ không nhận được bất cứ đầu ra nào ngoài dòng chữ <code>Finished</code>. Cargo biết rằng nó đã tải xuống và biên dịch xong các phụ thuộc, và bạn thì không sửa đổi bất cứ thứ gì về chúng trong tệp <em>Cargo.toml</em>. Cargo cũng biết rằng bạn cũng chưa thay đổi bất cứ đoạn mã nào của bản thân, nên nó không phải biên dịch lại đoạn đó. Với việc không có gì để làm, tiến trình đơn giản chỉ là tắt thoát ra.</p>
+
+<p>Nếu bạn thực hiện một thay đổi nhỏ gọn trong tệp <em>src/main.rs</em>, sau đó lưu lại và build lại, bạn sẽ chỉ thấy vài dòng của đầu ra:</p>
+
+<div class="code-snippet">
+  <span class="code-lang">bash</span>
+  <pre><code>$ cargo build
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished \`dev\` profile [unoptimized + debuginfo] target(s) in 2.53s</code></pre>
+</div>
+
+<p>Những dòng này thể hiện rằng Cargo chỉ cập nhật tiến trình build với chi tiết thay đổi nhỏ xíu của bạn trên tệp <em>src/main.rs</em>. Các phụ thuộc của bạn không hề thay đổi, nên Cargo biết nó có thể tái sử dụng dữ liệu đã biên dịch từ trước cho chúng.</p>
+
+<h3 class="task-heading">Đảm bảo Bản Biên Dịch Tái lập bằng <em>Cargo.lock</em></h3>
+
+<p>Cargo có một cơ chế đảm bảo rằng bạn hoàn toàn có thể xây dựng (rebuild) lại cùng một tạo phẩm hệt như cũ mỗi lần bạn hoặc bất cứ ai biên dịch mã của bạn: Cargo sẽ chỉ tận dụng các phiên bản của các thư viện phụ thuộc mà bạn đã chỉ định mãi cho đến khi bạn ra chỉ thị báo hiệu thay đổi. Ví dụ: giả sử tuần sau có một phiên bản 0.8.6 của crate <code>rand</code> ra mắt, và phiên bản đó chứa một bản vá lỗi quan trọng, nhưng đồng thời có mang sự thụt lùi (regression) làm cho đoạn mã của bạn chạy đứt gãy sụp đổ. Để giải quyết chuyện này, Rust tự động tạo tệp <em>Cargo.lock</em> vào cái lần khởi đầu nguyên lúc đầu mà bạn kích lệnh thao tác tiến trình <code>cargo build</code>, vì vậy bây giờ chúng ta có 1 tệp tên như vậy tồn tại ở trong thư mục guessing_game.</p>
+
+<p>Khi bạn build dự án lần đầu tiên, Cargo tìm ra tất cả các phiên bản của những phụ thuộc sao cho phù hợp với tiêu chí và sau đó ghi chúng vào mục tệp <em>Cargo.lock</em>. Khi bạn đi build dự án của bạn kế tiếp trong khoảng tương lai, Cargo sẽ xem được sự tồn tại của tệp <em>Cargo.lock</em>, rồi sẽ tự động dùng luôn thông số phiên bản được ấn định ở đó thay vì lấy sức đi chạy kiểm và tính toán lại một phần tìm chỉ ra phiên bản lần nữa. Điều này cho bạn một bản dựng tạo tự động tái khởi chuẩn gốc. Phân ra mà nói, dự án của bạn duy trì mức 0.8.5 cho đến khi bạn chỉ thị nâng cấp rành rành nhờ có cái tệp Cargo.lock. Vì tệp Cargo.lock quan trọng cho các bản tái tạo lập trình dựng mã thế này, tệp này luôn xuất hiện trong bộ kiểm xoát chứa luồng hệ thống kho vận quản dòng theo version control đi chung toàn cục mã phần với dự án bạn lên.</p>
+
+<h3 class="task-heading">Cập nhật một Crate Kéo Chỉ Số Mới</h3>
+<p>Khi bạn thực sự muốn cập nhật lên lấy một bản crate mới, Cargo cung cấp hỗ trợ công cụ bằng câu lệnh <code>update</code>. Phép lệnh này sẽ mặc kệ phớt lờ nội dung định trong tệp <em>Cargo.lock</em> và tự thân nó dò tính mọi phiên bản mang tính chất mới nhất bám sát với những biểu định yêu cầu được bạn khai báo đòi trong phần nơi của tệp <em>Cargo.toml</em>. Cargo tiếp đó sẽ đi lấy ghi đè lưu trữ thông tin về đống số hiệu phiên bản mới vào lại vô tệp <em>Cargo.lock</em>. Bằng như lúc mặc định, phần mềm Cargo nó sẽ tra dò kiếm tìm trên dải phiên bản cao lên hơn con số 0.8.5 và lại phải vẫn bằng và nhỏ hơn nằm dưới mức điểm 0.9.0. Giả thử một bữa crate <code>rand</code> ra mắt giới thiệu hai gói phiên bản bản là bản 0.8.6 và bản 0.999.0, bạn nhận về sẽ thu thấy xuất trình ra dòng hiển thị sau nếu có lúc chạy lệnh tiến trình <code>cargo update</code>:</p>
+<div class="code-snippet">
+  <span class="code-lang">bash</span>
+  <pre><code>$ cargo update
+    Updating crates.io index
+    Updating rand v0.8.5 -> v0.8.6</code></pre>
+</div>
+<p>Cargo sẽ né đi không thèm đoái hoài bản nâng 0.999.0. Tại cái thời khắc chập này điểm này, bạn thử ngó sang thì cũng sẽ phát hiện thêm một sự biến đổi thay cập nhật làm lại cấu hình ở bên nội vực trong phần của cái tệp <em>Cargo.lock</em> mang hàm lời nhận chú giải lưu báo rằng số phiên bản bản đồ mà kho bạn đang trực dùng sẽ là số nằm mức định số 0.8.6 chứ không còn 0.8.5 nữa. Dành cho việc định dùng hẳn lấy con phiên số của <code>rand</code> có số là cấp mang từ mức vòng chóp là phiên bản ở độ cao 0.999.0 hoặc lấy dùng là lấy lấy với bất bộ bất bộ cứ với với một dòng với nhánh loại cứ tại số nào của nhánh 0.999.x, thì bạn đi thì bạn vào trực bắt buộc tiến hành phải đi mở vào làm động tay tệp sửa vào cái với trong tệp sửa cái <em>Cargo.toml</em> để trông dáng điệu nó phải là cho ra thành cái thế cái này:</p>
+<div class="code-snippet">
+  <span class="code-lang">toml</span>
+  <pre><code>[dependencies]
+rand = "0.999.0"</code></pre>
+</div>
+<p>Sang lượt chuyến kế khi gọi lệnh đi bạn chạy build thử với đoạn lệnh <code>cargo build</code>, cơ quan Cargo sẽ cập nhật chạy lại cái sớ bộ kiểm danh điểm đăng danh quy chỉ mục sổ các crates đang cấp và đem đo khám định đo đạc đánh giá lượng xét lại khối lượng xem các cấu hệ quy đặt phần kiện yêu cầu bắt cần từ thằng crate <code>rand</code> mới của dự với phiên bản bộ bạn yêu mới chọn vừa đã gắn mới ấn định. Phần ta sẽ có dịp đào sâu nói đến việc hệ này học nhiều để cho biết cho nhiều thứ cặn kẽ hơn phần về nữa của đề về công bộ cụ với là máy cùng Cargo Cargo bộ đi kèm các kèm các hệ chùm sinh vòng thái thái đi tại sinh chung của nó sinh thái ở tại mục học là Chương 14. Công cơ Cargo giúp cho cái thao đoạn tác đi thực ứng hành đi thực tại làm đem làm cái trò tái tận vận lấy tận tái tận lấy sài dụng tận dụng code dễ ở nó rất đỗi do rất dễ nên thành thuận thuận là dễ tiện nên những lập dễ tiện do những nên nhóm lập những tay trình dân trình các viên làm code ngôn trình mã ngữ viết dân Rust thường Rust thích ưa thường lựa tạo ra nhào nặn viết ra viết hình ra nhào thành những mô dáng cục án cục hình hệ khối lấy dáng mô khối hình dạng cấu bé nhỏ nhỏ con con hơn rồi tạo nên đồ to từ những mảnh đồ linh kiện bé ghép tạo nhặt ở khắp từ rất đông đa dồi nơi đủ nguồn các nhóm các gói thư nguồn chắt.</p>
+
+<h3 class="task-heading">Tiến Lên Lập tạo Số Ngẫu nhiên</h3>
+<p>Bắt tay dùng lấy crate phần mới <code>rand</code> đi liền cho vô việc đi xây lấy đi một đi con gọi một làm lấy một cấu đúc để ra được con con số ngẫu dùng để số ngẫu chơi đi đoán để lấy đi. Công đoạn làm phần tiếp để đó là bạn đó đi cần lại nạp cài update thêm thêm mã vào bên phần dòng cấu trong của cái tệp bộ của kho mã <em>src/main.rs</em>, được vẽ hiển y thị minh thị ở bên mục Listing 2-3:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>use std::io;
@@ -218,15 +330,33 @@ fn main() {
     println!("The secret number is: {secret_number}");
 
     println!("Please input your guess.");
-    // --snip--
+
+    let mut guess = String::new();
+
+    io::stdin()
+        .read_line(&mut guess)
+        .expect("Failed to read line");
+
+    println!("You guessed: {guess}");
 }</code></pre>
 </div>
-
-<div class="cyber-alert info">
-  <strong>Lưu ý thuật ngữ:</strong> <em>trait</em> ở trong Rust có thể coi như một khuôn mẫu đặc tính (interface). <code>Rng</code> là một trait thuộc về viện <code>rand</code> quy đổi các phương thức hệ tạo ra các số ngẫu nhiên ngầm bên dưới.
+<p>Tiên tiến đầu vào ở đầu lúc ở thì điều tiến tiên đầu làm đầu thì đầu làm là là thì đầu làm ở trên cùng thì ta thêm vào là thêm vào lệnh có có đi có lệnh là <code>use rand::Rng;</code>. Trái khác lạ <code>Rng</code> chả thì là một đặc tính trait <em>hệ cấu (trait)</em>, định khai nghĩa mang cái phần cái khung làm việc định đo chuẩn phần những nhóm phép thức mang phép mang loại là loại mang đồ là những phép bộ phát thức ra đẻ phương số số sinh ở ngẫu sinh ở nhiên tự ở cho cái việc ngẫu cái thi bộ thì bộ phương thì máy tạo bắt thi số thi nhiên thi tự đó đi tự thao sẽ tự hành tác ở phải tiến ở phải sẽ ở hành có được ở có ở bộ ở tính nó tự có thực ở, và do có điều cái như lẽ bộ cái này tự có cái điểm điều thế dĩ ở cái dĩ ở do điều đó này ở vậy ở tự do đó do dĩ với bởi đó nó có do bộ phận đòi bắt cái nó ở phải buộc vào nằm ở vô cái phải vô ở có mặt có phải ở nó bắt chập vùng vùng ở trên hiển đó nằm cắm vô ở tại của hiện ta có của vào cho phạm lấy ở diện nằm cho vùng thì trong lúc cái mới lúc ta đó mới với rồi có tự mình mình mới sau lôi tự đó được đem sài đi mang lấy đi kêu đó lôi lấy sài sử mấy cái phương này thức đi.</p>
+<p>Liền chập chân bước sau, đoạn cho vô thêm nạp nối kẹp ghim lọt kẹp xen đi lồng gắn phần hai đoạn đoạn dòng vào vô hai gắn vô giữa chính vào cho vô của lòng phần đoạn mã hàm main. Ở trên dòng có trên 1 phần cho thấy 1 dòng là gọi hàm ở, dòng chúng lệnh ta ta ở đó ta gọi gọi lên phần bộ chức điều phần tại từ năng điều từ lôi có làm nó làm là từ của <code>rand::thread_rng</code> mang lấy có việc có cho lấy bộ phận tạo phận cung ngẫu đưa phận cung máy sinh đưa của tự máy lấy phân tạo phát ra của cấp sinh số số cho nhiên ở ngẫu có riêng số ở nhiên ở bộ ngẫu của nó ở bộ cho riêng tư riêng gắn có đính thuộc vô tại bộ hệ riêng mặt thuộc cho trói cái chính cái cái đi đúng mặt làm lấy cái dải của đúng tại vào chạy lấy đang luồng đang của luồng chính đang việc hoạt thao hiện ở hiện hành nay của lúc ở hiện tại và đã và được lúc rồi lấy cái lấy được đã mang mầm cái gieo mầm do được bởi bởi lấy bộ phận điều hành cấp bộ chính ban cho rắc do mầm cái tự. Đặt đít sau gọi đi kế đó, thì là ta liền chọc mồi lôi lôi đánh có móc gọi kéo là lôi liền <code>gen_range</code> áp ở lên ở bộ tại áp cho đồ cái bộ vừa tại bộ đó phát tạo vừa sinh phát ấy ấy ấy số số. Công phép <code>gen_range</code> lôi đi nạp đi nạp ăn xin đi mang nhận một bộ 1 hệ 1 tính phần khai báo là cấu đi trúc biểu có biểu gọi hệ là vùng hình dạng của 1 thức báo báo giới khoảng phạm khoảng phạm bao ở tính vi trùm lại bao lấy bao phạm quy để đi giới đi cho vòng đi nó ở đút lấy nhét đút vào coi vô do như đánh thành định xem ở tham cấu một phần số con định đối tham của đối xem số số mà chạy số rồi tính sinh để đó tính đó tạo rồi đem lại của lấy nhả cho ta về thành số một một tính giá được số nhiên ra trị với ở tự vào mặt vào nhiên con ngầm. Công thiết kết bộ 1 khung cách cấu kết mô trình hình biểu ở báo thước thức mức phần cho khoanh khu định vực đi vi phần bao này biên khoanh chập mà ta đi đang đi đang tiến mượn làm hành tay mượn dùng sở hành hữu đắc lấy có dụng lấy đồ cấu mang chắp hình đồ viết theo lối chữ chữ nối mốc chập cột <code>start..=end</code>, và đồng trong nó ở thì hàm nghĩa trùm cho ôm vào ở nó nghĩa gom chỉ luôn kể kể vào điểm vào và tính gồm ở trong mặt với gồm luôn có gộp gồm cả đầu luôn các lấy tại cực mốc đánh giới số hạn lấy hạn, để lấy tính do lấy cho từ tự như tự cớ thế từ nên với ở thế ở bộ đó của ta lệnh lệnh nộp ta báo là là <code>1..=100</code>.</p>
+<p>Một chỉ lệnh nhỏ nhỏ nằm vào hàng thứ ở dưới cùng là cái công bộ cho lấy cho thực công làm việc đem ở in lệnh thi đi là với màn trên là ở đem chữ chữ lệnh với mặt hiện hình in số ra ở bộ cho bí ra mặt hình của ở chữ màn tại mặt chữ. Cho công trình thao này này tác này thì ở tính tại thì tại vào là cho bộ tính cần với bộ thật thiết thật với thiết để coi dò khi khi tiến trong hành lúc bộ chạy thử ở đang trò vào chơi, cơ tính tuy là bộ mà rồi đó sau chặp chút ít nào tới lúc lúc thì đó với thì ta lúc này cũng với của thì bộ mình nó ở phải tay từ xoá rồi đi tay đem từ bóc tự phải tay móc dỡ nó ở ra bứng với gỡ khỏi đi code xoá của.</p>
+<p>Dắt lệnh vào lôi chạy lệnh chạy lôi gọi vào xem sao trò trò ở chơi bằng chạy vào thử ở coi cái bằng bộ gõ cài qua đợt với bộ:</p>
+<div class="code-snippet">
+  <span class="code-lang">bash</span>
+  <pre><code>$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished \`dev\` profile [unoptimized + debuginfo] target(s) in 2.53s
+     Running \`target/debug/guessing_game\`
+Guess the number!
+The secret number is: 7
+Please input your guess.
+4
+You guessed: 4</code></pre>
 </div>
-
-<p>Hàm <code>rand::thread_rng</code> lấy 1 giá chức cung trình sinh số ngẫu ở trên luồng hoạt thực phân trên hệ. <code>gen_range</code> nó yêu có cầu cung nhận một phạm thông chứa của khoảng vi với định dấu <code>..=</code> (bao hàm cả mốc giá số). Bạn phải truyền <code>1..=100</code>.</p>
+<p>Tuyệt cú lắm! Nhờ bạn tự bạn mà đã tóm lấy cho ra lấy được được làm có mấy ra thành ngẫu từ nhiên có từ từ nhiên ra từ bộ từ mấy bộ bộ được đem lấy có một với cho tự bộ 1 thành cho lấy 1 đem 1 mấy số với cho với ngẫu nhiên!</p>
 `,
       defaultCode: `use std::io;
 use rand::Rng;
@@ -237,77 +367,121 @@ fn main() {
     let secret_number = rand::thread_rng().gen_range(1..=100);
 
     println!("The secret number is: {secret_number}");
+
+    println!("Please input your guess.");
+
+    let mut guess = String::new();
+
+    io::stdin()
+        .read_line(&mut guess)
+        .expect("Failed to read line");
+
+    println!("You guessed: {guess}");
 }
 `,
       expectedOutput: 'Guess the number!\nThe secret number is: '
     },
     {
       id: 'ch02-04',
-      title: '2.4 So sánh Số với Vòng lặp (Comparing & Looping)',
-      duration: '35 phút',
-      type: 'practice',
+      title: '2.4 So sánh Dự đoán',
+      duration: '25 phút',
+      type: 'theory',
       content: `
-<h3 class="task-heading">Tiến hành So sánh Số bí mật (Comparing the Guess to the Secret Number)</h3>
-<p>Khi đó mà ta ở thời điểm đã nhận lấy xong con số đầu tay nhập của người dùng đoán là gì rồi, sau nữa lại gọi máy tính tự random đi con số bí mật. Phải đem cái đoạn mã đấy ra mà đưa chạy thi với nhau. Bạn nhập đoạn code dùng với match và tham biến của module <code>Ordering</code> nhé:</p>
+<h3 class="task-heading">So sánh Dự đoán với Số Bí mật</h3>
+<p>Bây giờ chúng ta đã có đầu vào của người dùng và một số ngẫu nhiên, chúng ta có thể so sánh chúng. Bước đó được thể hiện trong Listing 2-4. Lưu ý rằng mã này vẫn chưa thể biên dịch được ngay, như chúng tôi sẽ giải thích.</p>
 
 <div class="code-snippet">
   <span class="code-lang">rust</span>
-  <pre><code>use std::cmp::Ordering;
+  <pre><code>use rand::Rng;
+use std::cmp::Ordering;
 use std::io;
-use rand::Rng;
 
 fn main() {
     // --snip--
     println!("You guessed: {guess}");
 
-    match guess.cmp(&amp;secret_number) {
-        Ordering::Less =&gt; println!("Too small!"),
-        Ordering::Greater =&gt; println!("Too big!"),
-        Ordering::Equal =&gt; println!("You win!"),
+    match guess.cmp(&secret_number) {
+        Ordering::Less => println!("Too small!"),
+        Ordering::Greater => println!("Too big!"),
+        Ordering::Equal => println!("You win!"),
     }
 }</code></pre>
 </div>
-<p>Tuy vậy thì bạn phải tiến hành giải bước lỗi loại kiểm tra kiểu đi. Biến <code>guess</code> ban đầu mà chúng ta nhập vào thì là một <code>String</code>. Số ngẫu nhiên <code>secret_number</code> thì lại sinh với do <code>i32</code>. Bạn bắt buộc phải chuyển hệ của chữ sang số bằng kỹ thuật <code>Shadowing</code> che phủ bóng đi của biến giá!</p>
+<p>Đầu tiên chúng ta thêm một lệnh <code>use</code> khác, đưa một kiểu được gọi là <code>std::cmp::Ordering</code> vào phạm vi từ thư viện chuẩn. Kiểu <code>Ordering</code> là một enum khác và có các biến thể <code>Less</code>, <code>Greater</code>, và <code>Equal</code>. Đây là ba kết quả có thể xảy ra khi bạn so sánh hai giá trị.</p>
 
+<p>Sau đó, chúng ta thêm năm dòng mới ở dưới cùng sử dụng kiểu <code>Ordering</code>. Phương thức <code>cmp</code> so sánh hai giá trị và có thể được gọi trên bất kỳ thứ gì có thể được so sánh. Nó nhận một tham chiếu đến bất cứ thứ gì bạn muốn so sánh với: ở đây nó đang so sánh <code>guess</code> với <code>secret_number</code>. Sau đó nó trả về một biến thể của enum <code>Ordering</code> mà chúng ta đã đưa vào phạm vi bằng câu lệnh <code>use</code>. Chúng ta sử dụng một biểu thức <code>match</code> để quyết định xem làm gì tiếp theo dựa trên biến thể nào của <code>Ordering</code> được trả về từ lệnh gọi đến <code>cmp</code> với các giá trị trong <code>guess</code> và <code>secret_number</code>.</p>
+
+<p>Một biểu thức <code>match</code> được tạo thành từ các <em>nhánh (arms)</em>. Một nhánh bao gồm một <em>mẫu (pattern)</em> để khớp với, và phần mã sẽ được chạy nếu giá trị được cung cấp cho <code>match</code> phù hợp với mẫu nhánh đó. Rust nhận giá trị được đưa cho <code>match</code> và xem xét qua mẫu của từng nhánh theo lượt. Các mẫu và cấu trúc <code>match</code> là những tính năng mạnh mẽ của Rust: chúng cho phép bạn thể hiện nhiều tình huống có thể xảy ra ở mã của bạn và chúng đảm bảo rằng bạn xử lý tất cả trường hợp. Những tính năng này sẽ được nói đến chi tiết tại Chương 6 và Chương 18.</p>
+
+<p>Hãy xem qua một ví dụ với biểu thức <code>match</code> mà chúng ta sử dụng ở đây. Giả sử người dùng chọn đoán là 50 và số bí mật ngẫu nhiên tạo ra lúc này là 38.</p>
+
+<p>Khi mã tiến hành so sánh 50 với 38, phương thức <code>cmp</code> sẽ trả về <code>Ordering::Greater</code> bởi vì 50 thì lớn hơn 38. Biểu thức <code>match</code> nhận lấy giá trị <code>Ordering::Greater</code> và bắt đầu kiểm tra mẫu của từng nhánh. Nó nhìn nhắm vào mẫu của nhánh đầu tiên, <code>Ordering::Less</code>, và thấy rằng giá trị <code>Ordering::Greater</code> không khớp với <code>Ordering::Less</code>, do đó nó bỏ lơ qua đoạn mã trong nhánh đó và dịch chuyển sang nhánh tiếp theo. Mẫu của nhánh tiếp theo là <code>Ordering::Greater</code>, thực sự khớp với <code>Ordering::Greater</code>! Đoạn mã liên kết trong nhánh đó sẽ khởi chạy thực thi và in cắm ra bên màn hình hiển thị dòng chữ <code>Too big!</code>. Biểu thức <code>match</code> sẽ chấm dứt kết thúc ngay phía sau khi thực hiện lần sự khớp nối thành công lọt cửa đầu tiên của lần đó, vì vậy dĩ nhiên nó sẽ không buồn nhìn liếc ngang ngó dọc tới để xem ngó gì trong các nhánh phân cuối cùng trong tình huống bối cảnh phân tích lúc này nữa cả.</p>
+
+<p>Dẫu vậy thế tuy nhiên, thì một điều là dẫu cấu tập tập thiết bộ ở dòng tập mã làm được trình trong Listing ghi ở chép lại ở vị phần đoạn vùng ghi cái vùng ở mục này đó thì 2-4 nó vẫn không ở dạng có biên ở ra tạo dạng cho đi ra được bộ cho nó dịch được liền ngay lúc lúc đâu. Do với vậy hãy cùng của mình vào làm tay ta tiến mà hành vào xem làm bằng đánh thao việc tác bằng cách chạy gõ chạy qua gọi xem lệnh ra sau:</p>
+
+<div class="code-snippet">
+  <span class="code-lang">bash</span>
+  <pre><code>$ cargo build
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+error[E0308]: mismatched types
+  --> src/main.rs:22:21
+   |
+22 |     match guess.cmp(&secret_number) {
+   |                 --- ^^^^^^^^^^^^^^ expected struct \`String\`, found integer
+   |                 |
+   |                 arguments to this method are incorrect
+   |
+   = note: expected reference \`&String\`
+              found reference \`&{integer}\`
+note: method defined here
+  --> /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/core/src/cmp.rs:809:8
+   |
+809 |     fn cmp(&self, other: &R) -> Ordering;
+   |        ^^^
+
+For more information about this error, try \`rustc --explain E0308\`.
+error: could not compile \`guessing_game\` due to previous error</code></pre>
+</div>
+
+
+<p>Lỗi cốt lõi ở đây chỉ ra rằng có sự <em>không khớp kiểu dữ liệu (mismatched types)</em>. Rust có kiểu hệ thống tĩnh mạnh. Tuy nhiên, nó cũng bao gồm suy luận kiểu. Khi chúng ta viết <code>let mut guess = String::new()</code>, Rust đã có thể suy luận rằng <code>guess</code> nên là một <code>String</code> và không ép chúng ta phải viết ra kiểu. Mặt khác, đối với <code>secret_number</code>, nó là kiểu số. Có một vài kiểu dữ liệu số mà Rust có thể có giá trị từ 1 đến 100 bằng: <code>i32</code> một số 32-bit, <code>u32</code> số không âm 32-bit, <code>i64</code> số 64-bit hoặc các kiểu khác. Trừ khi được chỉ định theo kiểu khác, thì Rust mặc định một kiểu số là <code>i32</code>, đó là kiểu của biến <code>secret_number</code> trừ khi bạn thêm thông tin kiểu ở chỗ khác mà sẽ khiến cho Rust suy ra một kiểu số học khác.</p>
+
+<p>Nguyên nhân của lỗi báo lỗi là Rust không thể so sánh một chuỗi <code>String</code> và một kiểu kiểu số nguyên (integer) <code>i32</code>. Cuối cùng, chúng ta muốn đổi <code>String</code> mà chương trình đọc như dữ liệu đầu vào (input) thành một kiểu kiểu số tự nhiên (number type) để chúng ta có thể so sánh toán học nó với toán số bí mật.</p>
+
+<h3 class="task-heading">Ép kiểu Dữ liệu</h3>
+<p>Chúng ta có thể làm điều đó bằng cách thêm dòng sau vào phần thân hàm <code>main</code>:</p>
+
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>    // --snip--
+
+    let guess: u32 = guess.trim().parse().expect("Please type a number!");
+
+    println!("You guessed: {guess}");
+
+    match guess.cmp(&secret_number) {
+    // --snip--</code></pre>
+</div>
+
+<p>Dòng lệnh mới là:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>let guess: u32 = guess.trim().parse().expect("Please type a number!");</code></pre>
 </div>
-<p><code>trim()</code> dùng làm sạch phần kí tự xuống dòng, khoảng trắng ở hệ chuỗi do dùng dấu xuống khi nhấn nút trên hệ phím! Còn <code>parse()</code> bắt buộc ép ép ép bằng được 1 chữ phải ép loại trả cho lúc về thành 1 số dạng đúng chỉ dẫn thuộc <code>u32</code> của mã máy! Bằng không tạo ép là ngộp hỏng. Kết quả do đó cũng sinh ra bộ Result giống như cách của <code>read_line()</code> đã dùng lúc đầu mà bạn đã làm và hiểu đó.</p>
 
-<h3 class="task-heading">Cho phép Nhiều Dự đoán bằng Vòng lặp (Allowing Multiple Guesses with Looping)</h3>
-<p>Để cho chơi lại nhiều tới mức cho bực cũng đoán đoán mãi không dứt thì dùng với keyword sinh ra vòng lặp vô hạn ở Rust: <code>loop</code>.</p>
-<div class="code-snippet">
-  <span class="code-lang">rust</span>
-  <pre><code>// --snip--
-    loop {
-        println!("Please input your guess.");
-        // --snip--
-        match guess.cmp(&amp;secret_number) {
-            Ordering::Less =&gt; println!("Too small!"),
-            Ordering::Greater =&gt; println!("Too big!"),
-            Ordering::Equal =&gt; {
-                println!("You win!");
-                break;
-            }
-        }
-    }
-}</code></pre>
-</div>
+<p>Chúng ta khởi tạo một biến có tên <code>guess</code>. Nhưng chờ đã, liệu chương trình này đã không có một biến tên <code>guess</code> hay sao? Thật sự biến này ở bên trên, nhưng Rust cho phép chúng ta <em>ghi đè (shadow)</em> giá trị trước đó của <code>guess</code> với một biến sinh. Shadowing cho phép chúng ta tái sử dụng tên biến <code>guess</code> thay vì buộc chúng ta phải tạo ra hai biến khác nhau, như là <code>guess_str</code> và <code>guess</code>, chẳng hạn. Chúng ta sẽ giải thích tính năng này sâu hơn tại Chương 3, nhưng hiện tại, hãy biết rằng tính năng này thường xuyên được dùng khi bạn muốn thay đổi một giá trị từ một kiểu sang kiểu khác.</p>
 
-<h3 class="task-heading">Thao Tác Xử Lý Lỗi (Handling Invalid Input)</h3>
-<p>Nếu game sẽ bị sập vì do thằng ép kiểu <code>parse()</code> ở khúc bạn để chữ thường thay cho số: ta dùng thuộc phép rẽ nhánh của kiểu Result (giống lúc so sánh với số) thay cho expect nhen! Như thế này nè, thay thế với cục mã cũ!</p>
-<div class="code-snippet">
-  <span class="code-lang">rust</span>
-  <pre><code>        let guess: u32 = match guess.trim().parse() {
-            Ok(num) =&gt; num,
-            Err(_) =&gt; continue,
-        };</code></pre>
-</div>
-<p>Nếu nó trả cái Ok của Result là số nó ép đúng, lấy biến số đó bỏ vô biến u32 mới tạo là đoán bằng <code>num</code> luôn! Nếu bị trả từ với Err (lỗi ép không được vì không đúng hệ số) thì lấy dấu ngạch ngang "_" này ra hứng rồi đè lên thực thi <code>continue</code> cho đi tiếp luôn đoạn chương không chập chờn sập do ép sai số.</p>
+<p>Chúng ta gán biến mới này với biểu thức <code>guess.trim().parse()</code>. Chữ <code>guess</code> ở trong biểu thức chỉ tới biến <code>guess</code> gốc, chứa đầu vào dưới dạng chuỗi ban nãy. Phương thức <code>trim</code> trên một thể hiện của mã <code>String</code> sẽ loại bỏ toàn bộ khoảng trắng ở phía trước và dằng sau chuỗi, điều mà chúng ta buộc phải làm để có thể so sánh chuỗi với <code>u32</code>, vốn dĩ chỉ có thể chứa dữ liệu dạng số. Người dùng buộc phải nhấn phím enter để thỏa mãn <code>read_line</code> khi nhập dự đoán của họ, điều đó vô tình thêm một ký tự báo xuống dòng vào luôn trong chuỗi. Ví dụ, nếu người dùng gõ số <code>5</code> và gõ enter, biến <code>guess</code> sẽ trông như thế này: <code>5\n</code>. Chữ <code>\n</code> đại diện cho phím "xuống dòng". (Tên trên Windows, việc gõ nhấm phím enter sẽ tạo thành cấu trúc trả về bao gồm cả lùi đầu dòng và xuống dòng, <code>\r\n</code>). Phương thức <code>trim</code> loại bỏ triệt để <code>\n</code> hoặc <code>\r\n</code>, dẫn tới kết quả chỉ còn mỗi <code>5</code>.</p>
+
+<p>Hàm <code>parse</code> trên một chuỗi <code>String</code> làm nhiệm vụ chuyển đổi chuỗi sang một kiểu khác. Ở đây, chúng ta dùng nó để đổi từ một chuỗi thành một số. Chúng ta cần cho Rust biết chính xác kiểu số chúng ta muốn bằng cách dùng cú pháp <code>let guess: u32</code>. Dấu hai chấm (<code>:</code>) sau <code>guess</code> báo với Rust ta sẽ chủ động ghi chú loại kiểu ở biến mới. Rust mang lấy nhiều loại kiểu số nguyên thủy; ở đây <code>u32</code> là một số nguyên không dấu, 32-bit. Đây là lựa chọn mặc định tốt nhất cho một số dương nhỏ. Bạn sẽ học về các loại số khác trong Chương 3.</p>
+
+<p>Ngoài ra, chú thích <code>u32</code> trong ví dụ này và việc đem đi so sánh với <code>secret_number</code> có nghĩa là Rust sẽ suy luận rằng <code>secret_number</code> cũng phải là một <code>u32</code>. Vì vậy hiện tại thì phép so sánh sẽ diễn ra giữa hai giá trị cùng kiểu!</p>
+
+<p>Phương thức <code>parse</code> sẽ chỉ làm việc với các ký tự có thể dịch logic thành số nên nó rất dễ gây ra lỗi. Ví dụ, nếu chuỗi chứa chữ <code>A👍%</code>, thì không có cách nào có thể chuyển đổi thành một số được. Vì nó có thể thất bại, phương thức <code>parse</code> trả về kiểu <code>Result</code>, giống hệt với cách phương thức <code>read_line</code> hoạt động (đã thảo luận trong bài "Xử lý Rủi ro với Result"). Ta sẽ ứng xử với <code>Result</code> theo cùng một cách đó là dùng hàm <code>expect</code>. Nếu <code>parse</code> trả về <code>Err</code> là dạng biến thể của <code>Result</code> do không thể tạo được một số từ chuỗi gốc, <code>expect</code> sẽ kích hoạt làm sập chương trình và in ra tin nhắn mà chúng ta truyền cho. Nếu <code>parse</code> cấu thành chuỗi ra số thành công, nó sẽ trả về biến thể <code>Ok</code> của bộ <code>Result</code>, và <code>expect</code> sẽ trả về số nằm trong giá trị của biến thể <code>Ok</code> mà chúng ta mong muốn.</p>
+
+<p>Chạy chương trình ngay lúc này nhé:</p>
 `,
-      defaultCode: `// Viết nháp shadowing code của bạn vào hàm main()
-fn main() {
+      defaultCode: `fn main() {
     let mut guess = String::from("  42  ");
     
     // Đoạn code ép kiểu String 'guess' qua u32 tại đây!
@@ -320,35 +494,106 @@ fn main() {
     },
     {
       id: 'ch02-05',
-      title: '2.5 Chương trình Hoàn chỉnh (Full Program)',
+      title: '2.5 Vòng lặp và Hoàn thiện Trò chơi',
       duration: '30 phút',
-      type: 'practice',
+      type: 'theory',
       content: `
-<p>Chúc mừng! Bạn đã nắm giữ toàn bộ "vũ khí" để hoàn thành trò chơi đầu tay. Dưới đây là kiến trúc tổng thể của Guessing Game.</p>
+<h3 class="task-heading">Cho phép Nhiều Dự đoán Bằng Vòng lặp</h3>
+<p>Từ khóa <code>loop</code> tạo ra một vòng lặp vô hạn. Chúng ta sẽ thêm một vòng lặp để cho người dùng có thêm nhiều cơ hội đoán số hơn:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>    // --snip--
+    println!("The secret number is: {secret_number}");
 
-<h3 class="task-heading">Những điều cần nhớ:</h3>
-<ol class="lesson-list">
-  <li>Dùng <code>rand::Rng</code> (bên ngoài thư viện chuẩn) để tạo số ngẫu nhiên.</li>
-  <li>Sử dụng <code>std::io</code> để giao tiếp với người dùng và xử lí ép kiểu chữ sang u32.</li>
-  <li>Kết hợp <code>loop</code> và <code>match</code> để tạo logic game mượt mà.</li>
-</ol>
+    loop {
+        println!("Please input your guess.");
 
-<div class="cyber-alert info">
-  <strong>Thử thách:</strong> Ở code bên phải, tôi đã chuẩn bị khung sườn. Nhiệm vụ của bạn là ghép nối chúng lại để tạo ra một trò chơi đoán số hoàn hảo. (Hoặc là nhìn luôn kết quả nhé, vì bạn đã quá hiểu Rust rồi).
+        // --snip--
+
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("Too small!"),
+            Ordering::Greater => println!("Too big!"),
+            Ordering::Equal => println!("You win!"),
+        }
+    }
+}</code></pre>
 </div>
+<p>Như bạn có thể thấy, chúng ta đã di chuyển mọi thứ bắt đầu từ lời nhắc nhập dự đoán vào bên trong một vòng lặp. Hãy chắc chắn thụt lùi các dòng mã bên trong vòng lặp vào thêm bốn dấu cách nữa. Chương trình lúc này sẽ liên tục hỏi để nhận những dự đoán mới mãi mãi. Tuy nhiên điều này lại vô tình gây ra một vấn đề mới: Người chơi dường như không thể thoát khỏi trò chơi!</p>
+
+<p>Người dùng tất nhiên lúc nào cũng có thể ép đóng ngắt chương trình thông qua tổ hợp phím <code>ctrl-c</code>. Nhưng có một lối rẽ khác để trốn thoát khỏi con quái vật vòng lặp vô tận này, chuyện đã từng được đề cập lúc ta mổ xẻ hàm <code>parse</code> tại phần "So sánh Dự đoán với Số Bí mật": nếu người chơi cố tình gõ vào một giá trị không phải là số, chương trình sẽ tự động ngắt sập. Chúng ta có thể tận dụng lợi thế đó để lấy cớ cho người dùng thoát ra, như ví dụ dưới:</p>
+<div class="code-snippet">
+  <span class="code-lang">bash</span>
+  <pre><code>$ cargo run
+   Compiling guessing_game v0.1.0 (file:///projects/guessing_game)
+    Finished \`dev\` profile [unoptimized + debuginfo] target(s) in 1.50s
+     Running \`target/debug/guessing_game\`
+Guess the number!
+The secret number is: 59
+Please input your guess.
+50
+You guessed: 50
+Too small!
+Please input your guess.
+quit
+thread 'main' panicked at src/main.rs:28:47:
+Please type a number!: ParseIntError { kind: InvalidDigit }
+note: run with \`RUST_BACKTRACE=1\` environment variable to display a backtrace</code></pre>
+</div>
+<p>Nhập chữ <code>quit</code> sẽ cho trò chơi sập chương trình. Nhưng tính năng thoát này vẫn chưa lý tưởng lắm. Tốt nhất chúng ta nên cho nó tự động dừng khi người chơi đã giành phần chiến thắng bằng cách đoán đúng.</p>
+
+<h3 class="task-heading">Thoát trò chơi Sau khi Đoán Đúng</h3>
+<p>Hãy lập trình trò chơi tự thoát khi người chơi chiến thắng, thông qua việc thêm vào câu lệnh <code>break</code>:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>        // --snip--
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("Too small!"),
+            Ordering::Greater => println!("Too big!"),
+            Ordering::Equal => {
+                println!("You win!");
+                break;
+            }
+        }
+    }
+}</code></pre>
+</div>
+<p>Việc gắn câu lệnh <code>break</code> ngay sau điểm <code>You win!</code> làm cho chương trình chạy thoát vòng lặp ngay lập tức khi mà người dùng đoán đúng số. Thoát khỏi vòng lặp lúc này cũng đồng nghĩa là kết thúc phiên chạy chương trình luôn, bởi vì vòng lặp vốn đã là phần thiết lập mã chạy cuối cùng của hàm <code>main</code>.</p>
+
+<h3 class="task-heading">Xử Lý Đầu vào Không Hợp Lệ</h3>
+<p>Để đánh bóng hơn quá trình tương tác trên trò chơi, đáng ra thay vì phá sập chương trình ngay lúc người dùng lỡ nhập sai dữ liệu loại chữ, thì hãy tìm giải pháp lơ đẹp những kết quả không phải là số để qua đó mà người chơi có thể vô tư nhập đoán tiếp. Chúng ta có thể kiến thiết nó bằng qua việc căn chỉnh lại cái lúc mà <code>guess</code> gồng mình ép kiểu từ <code>String</code> qua cho <code>u32</code>.</p>
+
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>        // --snip--
+
+        io::stdin()
+            .read_line(&mut guess)
+            .expect("Failed to read line");
+
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
+
+        println!("You guessed: {guess}");
+
+        // --snip--</code></pre>
+</div>
+<p>Chúng ta tráo bộ gọi <code>expect</code> thành sự ứng xử bằng biểu thức <code>match</code> nhằm mục đích đổi từ trạng thái tàn sập cả máy thi đối mặt lỗi sang việc xử lý mầm lỗi êm xuôi. Chú ý rằng phương thức <code>parse</code> sẽ luôn trả kết hồi một thể loại <code>Result</code> và <code>Result</code> vốn là một enum có thêm hai người anh em thể nhánh báo <code>Ok</code> và <code>Err</code>. Ta đã và đang đưa <code>match</code> ứng dụng vào đoạn này, hệt cách mình đã làm ở trước đó khi đo sự so sánh với hàm <code>cmp</code>.</p>
+
+<p>Nếu <code>parse</code> thể hiện chức năng biến đổi từ chuỗi vào trong số nguyên trót lọt lấy được thành công, nó sẽ thả lại 1 quả báo giá trị là biến thể <code>Ok</code> đang bao gọn một con số kết quả bên trong. Cái giá trị <code>Ok</code> đó khớp vào cành rẽ nhánh của mẫu đầu tiên thì <code>match</code> lôi con số <code>num</code> trả về. Con số đó được chạy đi gán thẳng trơn tru về đúng lại định vị khởi sinh của nơi mình muốn - là cái biến <code>guess</code> đang bị bóng đè ghi bóng trùm lấp.</p>
+
+<p>Hàm gọi <code>parse</code> trong trường hợp thất bại không thể chuyển đổi chữ thành một số được sẽ trả về <code>Err</code> chứa thông tin vì sao bị lỗi. Giá trị trả về <code>Err</code> sẽ không khớp với mẫu <code>Ok(num)</code> ở cành phân nhánh đầu tiên, nhưng lại vừa khít với nhánh <code>Err(_)</code> ở cành lựa chọn thứ hai. Nét gạch dưới <code>_</code> đóng vai trò chụp bắt tất cả mọi thứ; trong trường hợp tình huống này thì có nghĩa là ta đang bảo máy tính rằng ta muốn khớp giá trị với mọi mẫu <code>Err</code>, bất chấp việc trong nó có kèm theo thông tin lỗi chi tiết gì đi chăng nữa. Do đó chương trình sẽ thi triển đoạn mã ở cành lệnh thứ hai này, với lệnh <code>continue</code> khiến cho máy tính lập tức nhảy thẳng sang chu kỳ lặp mới tiếp theo của vòng lặp và đà này đòi hỏi người chơi cung cấp thêm một dự đoán nữa. Rốt cuộc lại là trò chơi của chúng ta sẽ phớt lờ và bỏ qua hết 100% mọi lỗi có thể mắc phải do hàm <code>parse</code> gây ra!</p>
+
+<p>Bây giờ thì mọi thứ trong chương trình đáng lẽ ra phải chạy mượt mà đúng như trông đợi. Chạy thử nhé:</p>
 `,
       defaultCode: `use std::io;
 use std::cmp::Ordering;
 
-// Trong dự án thật, cần thêm rand vào Cargo.toml
-// use rand::Rng;
-
 fn main() {
     println!("Guess the number!");
 
-    // Trong Rust chính thức, tạo số bí mật với:
-    // let secret_number = rand::thread_rng().gen_range(1..=100);
-    let secret_number = 77; // Ở phần sandbox này ta xài hard-code!
+    let secret_number = 77; // Ở phần sandbox này ta xài số trực tiếp!
     
     loop {
         println!("Please input your guess.");
@@ -394,7 +639,8 @@ fn main() {
 </ol>
 `,
       defaultCode: `fn main() {
-    // Viết code của bạn ở đây
+    // TODO: Tạo một biến \`guess\` khả biến (mutable) và gán cho nó một String mới
+    // let mut guess = ...
     
 }
 `,
@@ -433,7 +679,8 @@ mod tests {
       defaultCode: `fn main() {
     let guess = "  42  ";
     
-    // Viết lệnh shadowing ở đây
+    // TODO: Khai báo lại (shadowing) biến \`guess\` thành kiểu u32
+    //       Dùng .trim().parse() để chuyển đổi, và .expect() để báo lỗi nếu sai
     // let guess: u32 = ...
     
     println!("Số đã parse: {}", guess);
@@ -480,7 +727,12 @@ fn main() {
     let guess = 50;
     let secret_number = 77;
     
-    // Viết khối match so sánh ở đây
+    // TODO: Dùng biểu thức match để so sánh guess với secret_number:
+    // match guess.cmp(&secret_number) {
+    //     Ordering::Less => ...,
+    //     Ordering::Greater => ...,
+    //     Ordering::Equal => ...,
+    // }
     
 }
 `,

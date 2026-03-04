@@ -873,6 +873,42 @@ code {
   line-height: 1.5;
 }
 
+.terminal-input-wrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.terminal-input {
+  background: transparent;
+  border: none;
+  color: var(--color-teal);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  flex: 1;
+  outline: none;
+  padding: 0;
+  margin-left: 2px;
+}
+
+.user-input {
+  color: var(--color-teal);
+  font-weight: bold;
+}
+
+.submit-btn {
+  background: rgba(220, 20, 100, 0.1) !important;
+  color: #ff4081 !important;
+  border: 1px solid rgba(255, 64, 129, 0.4) !important;
+  box-shadow: 0 0 10px rgba(255, 64, 129, 0.2);
+}
+
+.submit-btn:hover {
+  background: rgba(220, 20, 100, 0.25) !important;
+  border-color: #ff4081 !important;
+  box-shadow: 0 0 15px rgba(255, 64, 129, 0.4);
+}
+
 .log-prompt {
   color: var(--color-teal);
   margin-right: 8px;

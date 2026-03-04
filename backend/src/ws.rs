@@ -42,7 +42,7 @@ async fn handle_ws_connection(socket: WebSocket) {
     });
 
     // Process incoming messages
-    let mut child_stdin: Option<tokio::process::ChildStdin> = None;
+    let mut stdin_tx_opt: Option<tokio::sync::mpsc::Sender<String>> = None;
     let mut child_kill: Option<tokio::sync::oneshot::Sender<()>> = None;
 
     while let Some(Ok(msg)) = receiver.next().await {
@@ -70,23 +70,24 @@ async fn handle_ws_connection(socket: WebSocket) {
                 if let Some(kill_tx) = child_kill.take() {
                     let _ = kill_tx.send(());
                 }
-                child_stdin = None;
 
                 let tx_clone = tx.clone();
                 let (kill_sender, kill_receiver) = tokio::sync::oneshot::channel::<()>();
                 child_kill = Some(kill_sender);
 
+                let (stdin_tx, stdin_rx) = tokio::sync::mpsc::channel::<String>(32);
+                stdin_tx_opt = Some(stdin_tx);
+
                 let is_test = is_test.unwrap_or(false);
 
                 // Spawn execution task
                 tokio::spawn(async move {
-                    run_interactive(code, is_test, tx_clone, kill_receiver).await;
+                    run_interactive(code, is_test, tx_clone, kill_receiver, stdin_rx).await;
                 });
             }
             WsClientMessage::Stdin { data } => {
-                if let Some(ref mut stdin) = child_stdin {
-                    let _ = stdin.write_all(data.as_bytes()).await;
-                    let _ = stdin.flush().await;
+                if let Some(tx) = &stdin_tx_opt {
+                    let _ = tx.send(data).await;
                 }
             }
             WsClientMessage::Kill => {
@@ -110,6 +111,7 @@ async fn run_interactive(
     is_test: bool,
     tx: tokio::sync::mpsc::Sender<WsServerMessage>,
     mut kill_rx: tokio::sync::oneshot::Receiver<()>,
+    mut stdin_rx: tokio::sync::mpsc::Receiver<String>,
 ) {
     let session_id = Uuid::new_v4().to_string();
     let work_dir = PathBuf::from(SANDBOX_DIR).join(&session_id);
@@ -184,8 +186,20 @@ async fn run_interactive(
         }
     };
 
+    let mut child_stdin = child.stdin.take();
     let stdout = child.stdout.take();
     let stderr = child.stderr.take();
+
+    // Stream stdin
+    let stdin_task = tokio::spawn(async move {
+        if let Some(ref mut stdin) = child_stdin {
+            use tokio::io::AsyncWriteExt;
+            while let Some(data) = stdin_rx.recv().await {
+                let _ = stdin.write_all(data.as_bytes()).await;
+                let _ = stdin.flush().await;
+            }
+        }
+    });
 
     // Stream stdout
     let tx_stdout = tx.clone();
@@ -243,6 +257,7 @@ async fn run_interactive(
     // Wait for output tasks to finish
     let _ = stdout_task.await;
     let _ = stderr_task.await;
+    stdin_task.abort();
 
     let elapsed = start.elapsed().as_millis() as u64;
     let _ = tx

@@ -129,6 +129,16 @@ const renderCurriculum = () => {
 
 // ---- Lesson Selection ----
 const selectLesson = (lesson: Lesson) => {
+    // Toggle Submit Button
+    const submitBtn = document.getElementById('submit-btn');
+    if (submitBtn) {
+        if (lesson.isExercise) {
+            submitBtn.classList.remove('hidden');
+        } else {
+            submitBtn.classList.add('hidden');
+        }
+    }
+
     // Mark previous lesson as read
     if (currentLessonIndex >= 0) {
         const prevLesson = flatLessons[currentLessonIndex];
@@ -205,6 +215,10 @@ const clearTerminal = () => {
     if (log) {
         log.innerHTML = `<span class="log-prompt">$</span> <span class="log-info">Chờ lệnh...</span>`;
     }
+    const stdinInput = document.getElementById('terminal-stdin') as HTMLInputElement | null;
+    if (stdinInput) {
+        stdinInput.value = '';
+    }
 };
 
 const appendTerminal = (html: string) => {
@@ -219,95 +233,139 @@ const appendTerminal = (html: string) => {
 // ---- Backend Connection Config ----
 const BACKEND_WS_URL = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/run';
 let activeWs: WebSocket | null = null;
+let isSubmitting = false;
 
-// ---- Run Button (Real Backend via WebSocket) ----
-const setupRunButton = () => {
-    const runBtn = document.getElementById('run-btn');
-    runBtn?.addEventListener('click', () => {
-        if (!editorInstance) return;
-        const code = editorInstance.getValue();
+// ---- Run & Submit Logic via WebSocket ----
+const startCodeExecution = (is_test: boolean) => {
+    if (!editorInstance) return;
+    const code = editorInstance.getValue();
 
-        // Close previous connection
-        if (activeWs) {
-            activeWs.close();
-            activeWs = null;
+    // Close previous connection
+    if (activeWs) {
+        activeWs.close();
+        activeWs = null;
+    }
+
+    clearTerminal();
+
+    // UI state
+    isSubmitting = is_test;
+    const runBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
+    const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+    if (runBtn) runBtn.disabled = true;
+    if (submitBtn) submitBtn.disabled = true;
+
+    if (is_test) {
+        appendTerminal(`<span class="log-prompt">$</span> Chấm điểm bài làm...`);
+    } else {
+        appendTerminal(`<span class="log-prompt">$</span> rustc main.rs && ./main`);
+    }
+
+    const ws = new WebSocket(BACKEND_WS_URL);
+    activeWs = ws;
+
+    ws.onopen = () => {
+        let codeToSend = code;
+
+        // Append testCode only if submitting an exercise
+        if (is_test && currentLessonIndex >= 0) {
+            const lesson = flatLessons[currentLessonIndex];
+            if (lesson.isExercise && lesson.testCode) {
+                codeToSend = code + '\n' + lesson.testCode;
+            }
         }
 
-        clearTerminal();
-        appendTerminal(`<span class="log-prompt">$</span> rustc main.rs && ./main`);
+        // Send compile/run command
+        ws.send(JSON.stringify({ type: 'run', code: codeToSend, is_test }));
+    };
 
-        const ws = new WebSocket(BACKEND_WS_URL);
-        activeWs = ws;
+    ws.onmessage = (event) => {
+        try {
+            const msg = JSON.parse(event.data);
+            switch (msg.type) {
+                case 'compiling':
+                    appendTerminal(`<span class="log-info">Compiling...</span>`);
+                    break;
+                case 'compile_error':
+                    appendTerminal(`<span class="log-error">${escapeHtml(msg.stderr)}</span>`);
+                    updateStats('—', '—');
+                    break;
+                case 'running':
+                    appendTerminal(`<span class="log-info">Running...</span>`);
+                    break;
+                case 'stdout':
+                    appendTerminal(`<span class="log-success">${escapeHtml(msg.data)}</span>`);
+                    break;
+                case 'stderr':
+                    appendTerminal(`<span class="log-warning">${escapeHtml(msg.data)}</span>`);
+                    break;
+                case 'exit':
+                    const exitClass = msg.code === 0 ? 'log-info' : 'log-error';
+                    appendTerminal(`<span class="${exitClass}">[Exited with code ${msg.code}] (${msg.execution_time_ms}ms)</span>`);
+                    updateStats('—', `${msg.execution_time_ms}ms`);
 
-        ws.onopen = () => {
-            let codeToSend = code;
-            let is_test = false;
-
-            if (currentLessonIndex >= 0) {
-                const lesson = flatLessons[currentLessonIndex];
-                if (lesson.isExercise && lesson.testCode) {
-                    codeToSend = code + '\n' + lesson.testCode;
-                    is_test = true;
-                }
-            }
-
-            // Send code to compile & run
-            ws.send(JSON.stringify({ type: 'run', code: codeToSend, is_test }));
-        };
-
-        ws.onmessage = (event) => {
-            try {
-                const msg = JSON.parse(event.data);
-                switch (msg.type) {
-                    case 'compiling':
-                        appendTerminal(`<span class="log-info">Compiling...</span>`);
-                        break;
-                    case 'compile_error':
-                        appendTerminal(`<span class="log-error">${escapeHtml(msg.stderr)}</span>`);
-                        updateStats('—', '—');
-                        break;
-                    case 'running':
-                        appendTerminal(`<span class="log-info">Running...</span>`);
-                        break;
-                    case 'stdout':
-                        appendTerminal(`<span class="log-success">${escapeHtml(msg.data)}</span>`);
-                        break;
-                    case 'stderr':
-                        appendTerminal(`<span class="log-warning">${escapeHtml(msg.data)}</span>`);
-                        break;
-                    case 'exit':
-                        const exitClass = msg.code === 0 ? 'log-info' : 'log-error';
-                        appendTerminal(`<span class="${exitClass}">[Exited with code ${msg.code}] (${msg.execution_time_ms}ms)</span>`);
-                        updateStats('—', `${msg.execution_time_ms}ms`);
-
-                        // Pass check for Exercises
-                        if (currentLessonIndex >= 0) {
-                            const lesson = flatLessons[currentLessonIndex];
-                            if (lesson.isExercise && msg.code === 0) {
-                                appendTerminal(`<span class="log-success">🎉 CHÚC MỪNG BẠN ĐÃ VƯỢT QUA BÀI TẬP!</span>`);
+                    // Display Exercise result when submitting
+                    if (isSubmitting && currentLessonIndex >= 0) {
+                        const lesson = flatLessons[currentLessonIndex];
+                        if (lesson.isExercise) {
+                            if (msg.code === 0) {
+                                appendTerminal(`<br><span class="log-success" style="font-weight:bold; font-size:1.1rem">🎉 CHÚC MỪNG BẠN ĐÃ VƯỢT QUA BÀI TẬP!</span>`);
+                                appendTerminal(`<span class="log-info">Bạn đã xuất sắc hoàn thành tất cả các Testcase. Tiếp tục phát huy nhé!</span>`);
                                 const activeEl = document.querySelector(`[data-lesson-id="${lesson.id}"]`);
                                 if (activeEl) {
                                     activeEl.classList.add('passed');
                                 }
+                            } else {
+                                appendTerminal(`<br><span class="log-error" style="font-weight:bold; font-size:1.1rem">❌ RẤT TIẾC, CHƯA ĐẠT YÊU CẦU.</span>`);
+                                appendTerminal(`<span class="log-warning">Hãy đọc kỹ lỗi bên trên và kiểm tra lại mã của mình. Cố lên!</span>`);
                             }
                         }
-                        break;
-                    case 'error':
-                        appendTerminal(`<span class="log-error">Error: ${escapeHtml(msg.message)}</span>`);
-                        break;
-                }
-            } catch {
-                // ignore parse errors
+                    }
+                    break;
+                case 'error':
+                    appendTerminal(`<span class="log-error">Error: ${escapeHtml(msg.message)}</span>`);
+                    break;
             }
-        };
+        } catch {
+            // ignore parse errors
+        }
+    };
 
-        ws.onerror = () => {
-            appendTerminal(`<span class="log-error">Lỗi kết nối Backend. Đảm bảo bạn có kết nối internet và server đang chạy.</span>`);
-        };
+    ws.onerror = () => {
+        appendTerminal(`<span class="log-error">Lỗi kết nối Backend. Đảm bảo bạn có kết nối internet và server đang chạy.</span>`);
+    };
 
-        ws.onclose = () => {
-            activeWs = null;
-        };
+    ws.onclose = () => {
+        activeWs = null;
+        if (runBtn) runBtn.disabled = false;
+        if (submitBtn) submitBtn.disabled = false;
+    };
+};
+
+const setupRunButton = () => {
+    const runBtn = document.getElementById('run-btn');
+    runBtn?.addEventListener('click', () => startCodeExecution(false));
+
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn?.addEventListener('click', () => startCodeExecution(true));
+};
+
+const setupStdinInput = () => {
+    const stdin = document.getElementById('terminal-stdin') as HTMLInputElement;
+    if (!stdin) return;
+    stdin.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const val = stdin.value;
+            if (activeWs && activeWs.readyState === WebSocket.OPEN && !isSubmitting) {
+                appendTerminal(`<span class="user-input">${escapeHtml(val)}</span>`);
+                activeWs.send(JSON.stringify({ type: 'stdin', data: val + '\n' }));
+                stdin.value = '';
+            } else if (!activeWs) {
+                appendTerminal(`<span class="log-warning">Terminal: Chưa có tiến trình nào đang chạy để nhận STDIN.</span>`);
+            } else if (isSubmitting) {
+                appendTerminal(`<span class="log-warning">Terminal: Đang trong quá trình tự động Chấm Điểm, không thể nhập liệu.</span>`);
+            }
+        }
     });
 };
 
@@ -674,6 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initEditor();
     renderCurriculum();
     setupRunButton();
+    setupStdinInput();
     setupClearButton();
     updateProgress();
     setupNavButtons();
