@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KaiRust - Dark Sci-Fi Learning Platform</title>
+  <title>KaiRust</title>
   <!-- Google Fonts: Crimson Pro (Serif/Heading) & Space Mono (Monospace/Data) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,7 +64,7 @@
     <div class="workspace">
 
       <!-- Left Sidebar (Curriculum Navigation) -->
-      <aside class="sidebar-curriculum">
+      <aside class="sidebar-curriculum" id="sidebar-curriculum">
         <div class="sidebar-header">
           <span class="material-symbols-outlined sidebar-icon">menu_book</span>
           <span class="sidebar-title">Nội dung khóa học</span>
@@ -77,8 +77,11 @@
         </div>
       </aside>
 
+      <!-- Resizer Virtual Sidebar -->
+      <div class="resizer vertical" id="resizer-sidebar"></div>
+
       <!-- Left Column: Instruction & Theory -->
-      <section class="instruction-panel">
+      <section class="instruction-panel" id="instruction-panel">
         <div class="panel-header">
           <h2 id="lesson-title" class="article-title">Chọn một bài học</h2>
           <div class="lesson-meta">
@@ -91,6 +94,19 @@
           </p>
           <p>Hãy chọn một bài học từ thanh bên trái để bắt đầu hành trình.</p>
         </div>
+
+        <!-- Navigation Footer -->
+        <div class="lesson-nav">
+          <button id="btn-prev" class="btn btn-secondary nav-btn" disabled>
+            <span class="material-symbols-outlined">arrow_back</span>
+            BÀI TRƯỚC
+          </button>
+          <button id="btn-next" class="btn btn-primary nav-btn" disabled>
+            BÀI TIẾP THEO
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </button>
+        </div>
+
         <!-- Technical Stats Footer in Left Column -->
         <div class="tech-stats">
           <div class="stat-item"><span class="stat-label">Memory:</span> <span class="stat-val highlight-blue">—</span>
@@ -100,11 +116,14 @@
         </div>
       </section>
 
+      <!-- Resizer Virtual Instruction -->
+      <div class="resizer vertical" id="resizer-instruction"></div>
+
       <!-- Right Column: Code Editor & Terminal Split -->
       <section class="editor-panel">
 
         <!-- Top Half: Monaco Editor -->
-        <div class="code-workspace">
+        <div class="code-workspace" id="code-workspace">
           <div class="panel-header editor-header">
             <span class="file-name">main.rs</span>
             <button id="run-btn" class="btn btn-primary run-btn">
@@ -116,10 +135,10 @@
         </div>
 
         <!-- Resizer -->
-        <div class="resizer horizontal"></div>
+        <div class="resizer horizontal" id="resizer-terminal"></div>
 
         <!-- Bottom Half: Terminal Output -->
-        <div class="terminal-workspace">
+        <div class="terminal-workspace" id="terminal-workspace">
           <div class="panel-header terminal-header">
             <span class="terminal-title">TERMINAL OUTPUT</span>
             <button id="clear-btn" class="btn-clear text-btn">Clear</button>

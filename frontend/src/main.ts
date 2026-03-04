@@ -6,6 +6,8 @@ import { courseData, type Lesson } from './courses';
 // =====================================================
 
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null;
+let flatLessons: Lesson[] = [];
+let currentLessonIndex = -1;
 
 // ---- Monaco Editor Setup ----
 const initEditor = () => {
@@ -63,6 +65,7 @@ const renderCurriculum = () => {
     if (!list) return;
 
     list.innerHTML = '';
+    flatLessons = [];
     courseData.forEach(chapter => {
         // Chapter header (accordion toggle)
         const chapterDiv = document.createElement('div');
@@ -86,6 +89,7 @@ const renderCurriculum = () => {
         }
 
         chapter.lessons.forEach(lesson => {
+            flatLessons.push(lesson);
             const lessonItem = document.createElement('div');
             lessonItem.className = 'lesson-item';
             lessonItem.dataset.lessonId = lesson.id;
@@ -124,6 +128,8 @@ const renderCurriculum = () => {
 
 // ---- Lesson Selection ----
 const selectLesson = (lesson: Lesson) => {
+    currentLessonIndex = flatLessons.findIndex(l => l.id === lesson.id);
+    updateNavButtons();
 
     // Update title
     const titleEl = document.getElementById('lesson-title');
@@ -281,6 +287,112 @@ const updateProgress = () => {
     if (progressFill) progressFill.style.width = '0%';
 };
 
+// ---- Navigation & Resizers ----
+const updateNavButtons = () => {
+    const prevBtn = document.getElementById('btn-prev') as HTMLButtonElement | null;
+    const nextBtn = document.getElementById('btn-next') as HTMLButtonElement | null;
+
+    if (prevBtn) {
+        prevBtn.disabled = currentLessonIndex <= 0;
+    }
+    if (nextBtn) {
+        nextBtn.disabled = currentLessonIndex === -1 || currentLessonIndex >= flatLessons.length - 1;
+    }
+};
+
+const setupNavButtons = () => {
+    const prevBtn = document.getElementById('btn-prev');
+    const nextBtn = document.getElementById('btn-next');
+
+    prevBtn?.addEventListener('click', () => {
+        if (currentLessonIndex > 0) {
+            selectLesson(flatLessons[currentLessonIndex - 1]);
+        }
+    });
+
+    nextBtn?.addEventListener('click', () => {
+        if (currentLessonIndex >= 0 && currentLessonIndex < flatLessons.length - 1) {
+            selectLesson(flatLessons[currentLessonIndex + 1]);
+        }
+    });
+};
+
+const setupResizers = () => {
+    const resizerSidebar = document.getElementById('resizer-sidebar');
+    const resizerInstruction = document.getElementById('resizer-instruction');
+    const resizerTerminal = document.getElementById('resizer-terminal');
+
+    const sidebar = document.getElementById('sidebar-curriculum');
+    const instruction = document.getElementById('instruction-panel');
+    const codeWorkspace = document.getElementById('code-workspace');
+    const terminalWorkspace = document.getElementById('terminal-workspace');
+
+    // Sidebar Resizer
+    if (resizerSidebar && sidebar) {
+        let isResizing = false;
+        resizerSidebar.addEventListener('mousedown', (e) => { e.preventDefault(); isResizing = true; resizerSidebar.classList.add('dragging'); });
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const newWidth = e.clientX;
+            sidebar.style.flex = `0 0 ${newWidth}px`;
+            if (editorInstance) editorInstance.layout();
+        });
+        document.addEventListener('mouseup', () => {
+            if (isResizing) {
+                isResizing = false;
+                resizerSidebar.classList.remove('dragging');
+                if (editorInstance) editorInstance.layout();
+            }
+        });
+    }
+
+    // Instruction Resizer
+    if (resizerInstruction && sidebar && instruction) {
+        let isResizing = false;
+        resizerInstruction.addEventListener('mousedown', (e) => { e.preventDefault(); isResizing = true; resizerInstruction.classList.add('dragging'); });
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const sidebarWidth = sidebar.getBoundingClientRect().width;
+            const resizerSidebarWidth = document.getElementById('resizer-sidebar')?.getBoundingClientRect().width || 0;
+            const newWidth = e.clientX - sidebarWidth - resizerSidebarWidth;
+            instruction.style.flex = `0 0 ${newWidth}px`;
+            if (editorInstance) editorInstance.layout();
+        });
+        document.addEventListener('mouseup', () => {
+            if (isResizing) {
+                isResizing = false;
+                resizerInstruction.classList.remove('dragging');
+                if (editorInstance) editorInstance.layout();
+            }
+        });
+    }
+
+    // Terminal Resizer
+    if (resizerTerminal && codeWorkspace && terminalWorkspace) {
+        let isResizing = false;
+        resizerTerminal.addEventListener('mousedown', (e) => { e.preventDefault(); isResizing = true; resizerTerminal.classList.add('dragging'); });
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const editorPanel = codeWorkspace.parentElement;
+            if (!editorPanel) return;
+            const panelRect = editorPanel.getBoundingClientRect();
+            const newHeight = e.clientY - panelRect.top;
+            const totalHeight = panelRect.height;
+            const codePercent = (newHeight / totalHeight) * 100;
+            codeWorkspace.style.flex = `1 1 ${codePercent}%`;
+            terminalWorkspace.style.flex = `1 1 ${100 - codePercent}%`;
+            if (editorInstance) editorInstance.layout();
+        });
+        document.addEventListener('mouseup', () => {
+            if (isResizing) {
+                isResizing = false;
+                resizerTerminal.classList.remove('dragging');
+                if (editorInstance) editorInstance.layout();
+            }
+        });
+    }
+};
+
 // ---- Init ----
 document.addEventListener('DOMContentLoaded', () => {
     initEditor();
@@ -288,4 +400,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setupRunButton();
     setupClearButton();
     updateProgress();
+    setupNavButtons();
+    setupResizers();
+
+    // Select the first lesson automatically if available
+    if (flatLessons.length > 0) {
+        selectLesson(flatLessons[0]);
+    }
 });

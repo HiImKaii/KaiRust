@@ -247,8 +247,9 @@ code {
 
 /* Sidebar Curriculum */
 .sidebar-curriculum {
-  width: 300px;
-  min-width: 260px;
+  flex: 0 0 300px; /* Initial width */
+  min-width: 200px;
+  max-width: 50vw;
   border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
@@ -457,8 +458,8 @@ code {
 
 /* Left Column - Instruction */
 .instruction-panel {
-  flex: 1;
-  max-width: 50%;
+  flex: 1 1 auto;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border-subtle);
@@ -583,6 +584,30 @@ code {
   filter: url('#neon-glow');
 }
 
+/* Lesson Navigation */
+.lesson-nav {
+  padding: 15px 20px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  background: var(--bg-surface);
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: none;
+  background: var(--bg-elevated);
+  border-color: var(--border-subtle);
+  color: var(--text-muted);
+}
+
 
 /* Right Column - Editor & Terminal */
 .editor-panel {
@@ -593,9 +618,10 @@ code {
 }
 
 .code-workspace {
-  flex: 2;
+  flex: 1 1 60%;
   display: flex;
   flex-direction: column;
+  min-height: 100px;
 }
 
 .file-name {
@@ -611,22 +637,37 @@ code {
 }
 
 .resizer {
-  height: 4px;
+  position: relative;
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.resizer.horizontal {
+  height: 6px;
   background: var(--bg-elevated);
   cursor: row-resize;
   border-top: 1px solid var(--border-subtle);
   border-bottom: 1px solid var(--border-subtle);
 }
 
-.resizer:hover {
+.resizer.vertical {
+  width: 6px;
+  background: var(--bg-elevated);
+  cursor: col-resize;
+  border-left: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+}
+
+.resizer:hover, .resizer.dragging {
   background: var(--color-purple);
 }
 
 .terminal-workspace {
-  flex: 1;
+  flex: 1 1 40%;
   display: flex;
   flex-direction: column;
   background: #050508;
+  min-height: 100px;
 }
 
 .terminal-title {
