@@ -8,6 +8,7 @@ import { courseData, type Lesson } from './courses';
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null;
 let flatLessons: Lesson[] = [];
 let currentLessonIndex = -1;
+let lessonStartTime = 0;
 
 // ---- Monaco Editor Setup ----
 const initEditor = () => {
@@ -149,6 +150,16 @@ const selectLesson = (lesson: Lesson) => {
     // Update content
     const contentEl = document.getElementById('lesson-content');
     if (contentEl) contentEl.innerHTML = lesson.content;
+
+    // Reset scrolling and timer
+    const scrollArea = document.getElementById('panel-scroll-area');
+    if (scrollArea) scrollArea.scrollTop = 0;
+    lessonStartTime = Date.now();
+
+    // Re-check scroll conditions immediately after rendering
+    setTimeout(() => {
+        checkUnlockNext();
+    }, 50);
 
     // Update editor
     if (editorInstance && lesson.defaultCode) {
@@ -296,13 +307,56 @@ const updateNavButtons = () => {
         prevBtn.disabled = currentLessonIndex <= 0;
     }
     if (nextBtn) {
-        nextBtn.disabled = currentLessonIndex === -1 || currentLessonIndex >= flatLessons.length - 1;
+        // Vô hiệu hóa tạm thời, nút này sẽ được bật nếu người dùng đã cuộn xuống hết bài
+        nextBtn.disabled = true;
+    }
+};
+
+const unlockNextLesson = () => {
+    const nextBtn = document.getElementById('btn-next') as HTMLButtonElement | null;
+    if (nextBtn && currentLessonIndex !== -1 && currentLessonIndex < flatLessons.length - 1) {
+        nextBtn.disabled = false;
+    }
+};
+
+const checkUnlockNext = () => {
+    if (currentLessonIndex === -1) return;
+
+    const scrollArea = document.getElementById('panel-scroll-area');
+    if (!scrollArea) return;
+
+    // Allow 10px buffer
+    const isAtBottom = scrollArea.scrollHeight - scrollArea.scrollTop - scrollArea.clientHeight <= 10;
+
+    if (isAtBottom) {
+        // --- LOGIC TIME LOCK: (Sắp tới khi có Server & Tài khoản) ---
+        // Yêu cầu thời gian học tối thiểu mỗi bài (ví dụ: 15 Giây)
+        /*
+        const reqTimeMs = 15000; 
+        const timeSpent = Date.now() - lessonStartTime;
+        const currentId = flatLessons[currentLessonIndex].id;
+        
+        if (timeSpent >= reqTimeMs) {
+            unlockNextLesson();
+        } else {
+            setTimeout(() => {
+                // Kiểm tra lại nếu người dùng chưa chuyển bài
+                if (currentLessonIndex !== -1 && flatLessons[currentLessonIndex].id === currentId) {
+                    unlockNextLesson();
+                }
+            }, reqTimeMs - timeSpent);
+        }
+        */
+
+        // Hiện tại: Chỉ yêu cầu cuộn hết mức là MỞ KHÓA LUÔN
+        unlockNextLesson();
     }
 };
 
 const setupNavButtons = () => {
     const prevBtn = document.getElementById('btn-prev');
     const nextBtn = document.getElementById('btn-next');
+    const scrollArea = document.getElementById('panel-scroll-area');
 
     prevBtn?.addEventListener('click', () => {
         if (currentLessonIndex > 0) {
@@ -315,6 +369,10 @@ const setupNavButtons = () => {
             selectLesson(flatLessons[currentLessonIndex + 1]);
         }
     });
+
+    if (scrollArea) {
+        scrollArea.addEventListener('scroll', checkUnlockNext);
+    }
 };
 
 const setupResizers = () => {

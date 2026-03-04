@@ -247,7 +247,8 @@ code {
 
 /* Sidebar Curriculum */
 .sidebar-curriculum {
-  flex: 0 0 300px; /* Initial width */
+  flex: 0 0 300px;
+  /* Initial width */
   min-width: 200px;
   max-width: 50vw;
   border-right: 1px solid var(--border-subtle);
@@ -586,11 +587,11 @@ code {
 
 /* Lesson Navigation */
 .lesson-nav {
-  padding: 15px 20px;
+  margin-top: 40px;
+  padding-top: 20px;
   border-top: 1px solid var(--border-subtle);
   display: flex;
   justify-content: space-between;
-  background: var(--bg-surface);
 }
 
 .nav-btn {
@@ -658,7 +659,8 @@ code {
   border-right: 1px solid var(--border-subtle);
 }
 
-.resizer:hover, .resizer.dragging {
+.resizer:hover,
+.resizer.dragging {
   background: var(--color-purple);
 }
 
