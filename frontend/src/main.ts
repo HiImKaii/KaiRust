@@ -559,7 +559,13 @@ const setupResizers = () => {
             const panelRect = editorPanel.getBoundingClientRect();
             const newHeight = e.clientY - panelRect.top;
             const totalHeight = panelRect.height;
-            const codePercent = (newHeight / totalHeight) * 100;
+
+            // Clamp: code min 100px, terminal min 40px (~1cm)
+            const minCodeH = 100;
+            const minTermH = 40;
+            const clampedCodeH = Math.max(minCodeH, Math.min(newHeight, totalHeight - minTermH));
+            const codePercent = (clampedCodeH / totalHeight) * 100;
+
             codeWorkspace.style.flex = `1 1 ${codePercent}%`;
             terminalWorkspace.style.flex = `1 1 ${100 - codePercent}%`;
             if (editorInstance) editorInstance.layout();
