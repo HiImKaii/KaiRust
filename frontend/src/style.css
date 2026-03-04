@@ -521,13 +521,15 @@ code {
 
 /* Left Column - Instruction */
 .instruction-panel {
-  flex: 1 1 auto;
+  flex: 1 1 50%;
   min-width: 300px;
+  max-width: 50%;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border-subtle);
   background: var(--bg-surface);
   position: relative;
+  overflow: hidden;
 }
 
 .panel-header {
@@ -744,11 +746,11 @@ code {
 
 /* Right Column - Editor & Terminal */
 .editor-panel {
-  flex: 1;
+  flex: 1 1 50%;
   display: flex;
   flex-direction: column;
   background: var(--bg-absolute);
-  min-width: 0;
+  min-width: 400px;
 }
 
 .code-workspace {
