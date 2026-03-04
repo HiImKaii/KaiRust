@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KaiRust - Dark Sci-Fi Learning Platform</title>
+  <!-- Google Fonts: Crimson Pro (Serif/Heading) & Space Mono (Monospace/Data) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <!-- Material Symbols (MUI Icons Alternative) -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+
+<body>
+  <!-- Glow Filter Definition -->
+  <svg style="display: none;">
+    <defs>
+      <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="4" result="blurred"></feGaussianBlur>
+        <feMerge>
+          <feMergeNode in="blurred"></feMergeNode>
+          <feMergeNode in="SourceGraphic"></feMergeNode>
+        </feMerge>
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- Layout Container -->
+  <div id="app" class="app-layout">
+
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="logo">
+        <h1>Kai<span>Rust</span></h1>
+      </div>
+      <div class="header-center">
+        <div class="course-info">Khóa học: Lập trình Rust từ cơ bản đến nâng cao</div>
+        <div class="progress-container">
+          <span id="progress-text" class="progress-text">0/3 Bài</span>
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="user-nodes">
+          <div class="neuron-node active" title="System Stable"></div>
+          <div class="neuron-node warning" title="Network Ping"></div>
+        </div>
+        <button class="btn btn-secondary">Settings</button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Split -->
+    <div class="workspace">
+
+      <!-- Left Sidebar (Curriculum Navigation) -->
+      <aside class="sidebar-curriculum">
+        <div class="sidebar-header">
+          <span class="material-symbols-outlined sidebar-icon">menu_book</span>
+          <span class="sidebar-title">Nội dung khóa học</span>
+        </div>
+        <div id="curriculum-list" class="curriculum-list">
+          <!-- Chapters and lessons rendered dynamically by JS -->
+        </div>
+        <div class="sidebar-bottom">
+          <button class="icon-btn glow-purple text-ai" title="Chat AI">AI</button>
+        </div>
+      </aside>
+
+      <!-- Left Column: Instruction & Theory -->
+      <section class="instruction-panel">
+        <div class="panel-header">
+          <h2 id="lesson-title" class="article-title">Chọn một bài học</h2>
+          <div class="lesson-meta">
+            <span id="lesson-type" class="lesson-badge">theory</span>
+            <span id="lesson-duration" class="lesson-duration"></span>
+          </div>
+        </div>
+        <div id="lesson-content" class="panel-content article-content">
+          <p>Chào mừng bạn đến với <strong>KaiRust</strong> — nền tảng học Rust tương tác theo phong cách Dark Sci-Fi.
+          </p>
+          <p>Hãy chọn một bài học từ thanh bên trái để bắt đầu hành trình.</p>
+        </div>
+        <!-- Technical Stats Footer in Left Column -->
+        <div class="tech-stats">
+          <div class="stat-item"><span class="stat-label">Memory:</span> <span class="stat-val highlight-blue">—</span>
+          </div>
+          <div class="stat-item"><span class="stat-label">Exec Time:</span> <span
+              class="stat-val highlight-pink">—</span></div>
+        </div>
+      </section>
+
+      <!-- Right Column: Code Editor & Terminal Split -->
+      <section class="editor-panel">
+
+        <!-- Top Half: Monaco Editor -->
+        <div class="code-workspace">
+          <div class="panel-header editor-header">
+            <span class="file-name">main.rs</span>
+            <button id="run-btn" class="btn btn-primary run-btn">
+              <span class="btn-text">RUN CODE</span><span class="btn-icon material-symbols-outlined"
+                style="font-size: 1.2rem; vertical-align: middle; margin-left: 4px;">play_arrow</span>
+            </button>
+          </div>
+          <div id="editor" class="monaco-container"></div>
+        </div>
+
+        <!-- Resizer -->
+        <div class="resizer horizontal"></div>
+
+        <!-- Bottom Half: Terminal Output -->
+        <div class="terminal-workspace">
+          <div class="panel-header terminal-header">
+            <span class="terminal-title">TERMINAL OUTPUT</span>
+            <button id="clear-btn" class="btn-clear text-btn">Clear</button>
+          </div>
+          <div class="terminal-content">
+            <pre id="terminal-log"
+              class="terminal-log"><span class="log-prompt">$</span> <span class="log-info">Chờ lệnh...</span></pre>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
