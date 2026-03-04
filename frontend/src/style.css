@@ -398,34 +398,56 @@ code {
   background: var(--bg-surface);
 }
 
-.lesson-item.active {
-  background: var(--bg-elevated);
-  border-left: 2px solid var(--color-teal);
+/* Mặc định: chưa đọc — xám giống git ignored */
+.lesson-name {
+  flex: 1;
+  color: #75756f;
+  font-size: 0.85rem;
+  transition: color 0.2s;
 }
 
 .lesson-icon {
   font-size: 1.1rem;
-  color: var(--text-muted);
-}
-
-.lesson-item.active .lesson-icon {
-  color: var(--color-teal);
-}
-
-.lesson-name {
-  flex: 1;
-  color: var(--text-main);
-  font-size: 0.85rem;
-}
-
-.lesson-item.active .lesson-name {
-  color: #fff;
+  color: #75756f;
+  transition: color 0.2s;
 }
 
 .lesson-time {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  color: var(--text-muted);
+  color: #75756f;
+  transition: color 0.2s;
+}
+
+/* Đang đọc — vàng */
+.lesson-item.active {
+  background: var(--bg-elevated);
+  border-left: 2px solid #ede72b;
+}
+
+.lesson-item.active .lesson-name {
+  color: #ede72b;
+}
+
+.lesson-item.active .lesson-icon {
+  color: #ede72b;
+}
+
+.lesson-item.active .lesson-time {
+  color: #ede72b;
+}
+
+/* Đã đọc xong — xanh lá */
+.lesson-item.read .lesson-name {
+  color: #21ed21;
+}
+
+.lesson-item.read .lesson-icon {
+  color: #21ed21;
+}
+
+.lesson-item.read .lesson-time {
+  color: #21ed21;
 }
 
 .lesson-placeholder {
@@ -561,23 +583,91 @@ code {
   border: 1px solid var(--border-subtle);
   position: relative;
   margin-bottom: 30px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.code-snippet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 4px 10px;
+  min-height: 28px;
 }
 
 .code-snippet pre {
-  padding: 20px;
+  padding: 16px 20px;
   margin: 0;
   color: var(--color-teal);
   overflow-x: auto;
 }
 
 .code-lang {
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: var(--border-subtle);
-  padding: 2px 8px;
   font-size: 0.75rem;
   color: var(--text-muted);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.code-run-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 1px solid var(--color-teal);
+  color: var(--color-teal);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.15s;
+  border-radius: 2px;
+}
+
+.code-run-btn:hover {
+  background: var(--color-teal);
+  color: var(--bg-absolute);
+}
+
+.code-run-btn .material-symbols-outlined {
+  font-size: 14px;
+}
+
+.code-output {
+  border-top: 1px solid var(--border-subtle);
+  background: #0d0d12;
+  padding: 10px 20px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-main);
+  white-space: pre-wrap;
+  display: none;
+}
+
+.code-output.visible {
+  display: block;
+}
+
+.code-output .output-label {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.code-output .output-success {
+  color: #21ed21;
+}
+
+.code-output .output-error {
+  color: var(--color-pink);
 }
 
 .task-heading {
@@ -662,10 +752,10 @@ code {
 }
 
 .code-workspace {
-  flex: 1 1 50%;
+  flex: 1 1 65%;
   display: flex;
   flex-direction: column;
-  min-height: 150px;
+  min-height: 100px;
   overflow: hidden;
 }
 
@@ -714,11 +804,11 @@ code {
 }
 
 .terminal-workspace {
-  flex: 1 1 50%;
+  flex: 1 1 35%;
   display: flex;
   flex-direction: column;
   background: #050508;
-  min-height: 150px;
+  min-height: 40px;
   overflow: hidden;
 }
 

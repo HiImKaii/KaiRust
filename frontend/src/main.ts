@@ -8,7 +8,7 @@ import { courseData, type Lesson } from './courses';
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null;
 let flatLessons: Lesson[] = [];
 let currentLessonIndex = -1;
-// let lessonStartTime = 0; // Commented out to fix TS build error (unused)
+const readLessons = new Set<string>();
 
 // ---- Monaco Editor Setup ----
 const initEditor = () => {
@@ -129,6 +129,14 @@ const renderCurriculum = () => {
 
 // ---- Lesson Selection ----
 const selectLesson = (lesson: Lesson) => {
+    // Mark previous lesson as read
+    if (currentLessonIndex >= 0) {
+        const prevLesson = flatLessons[currentLessonIndex];
+        readLessons.add(prevLesson.id);
+        const prevEl = document.querySelector(`[data-lesson-id="${prevLesson.id}"]`);
+        if (prevEl) prevEl.classList.add('read');
+    }
+
     currentLessonIndex = flatLessons.findIndex(l => l.id === lesson.id);
     updateNavButtons();
 
@@ -151,10 +159,9 @@ const selectLesson = (lesson: Lesson) => {
     const contentEl = document.getElementById('lesson-content');
     if (contentEl) contentEl.innerHTML = lesson.content;
 
-    // Reset scrolling and timer
+    // Reset scrolling
     const scrollArea = document.getElementById('panel-scroll-area');
     if (scrollArea) scrollArea.scrollTop = 0;
-    // lessonStartTime = Date.now();
 
     // Re-check scroll conditions immediately after rendering
     setTimeout(() => {
@@ -169,13 +176,27 @@ const selectLesson = (lesson: Lesson) => {
     // Clear terminal
     clearTerminal();
 
-    // Highlight active lesson in sidebar
+    // Highlight active lesson in sidebar (remove active, keep read)
     document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('active'));
     const activeEl = document.querySelector(`[data-lesson-id="${lesson.id}"]`);
-    if (activeEl) activeEl.classList.add('active');
+    if (activeEl) {
+        activeEl.classList.add('active');
+        activeEl.classList.remove('read'); // active overrides read visually
+    }
+
+    // Restore .read on all previously read lessons
+    readLessons.forEach(id => {
+        if (id !== lesson.id) {
+            const el = document.querySelector(`[data-lesson-id="${id}"]`);
+            if (el && !el.classList.contains('read')) el.classList.add('read');
+        }
+    });
 
     // Update progress
     updateProgress();
+
+    // Setup inline code runners for the new content
+    setupInlineCodeRunners();
 };
 
 // ---- Terminal ----
@@ -264,6 +285,108 @@ const setupRunButton = () => {
         ws.onclose = () => {
             activeWs = null;
         };
+    });
+};
+
+// ---- Inline Code Runners (inside lesson content) ----
+const setupInlineCodeRunners = () => {
+    const snippets = document.querySelectorAll('.code-snippet');
+    snippets.forEach(snippet => {
+        // Skip already processed
+        if (snippet.querySelector('.code-snippet-header')) return;
+
+        const langEl = snippet.querySelector('.code-lang');
+        const preEl = snippet.querySelector('pre');
+        if (!langEl || !preEl) return;
+
+        const langText = langEl.textContent || 'code';
+
+        // Remove old positioned lang label
+        langEl.remove();
+
+        // Create header bar
+        const header = document.createElement('div');
+        header.className = 'code-snippet-header';
+
+        // Lang label (left)
+        const newLang = document.createElement('span');
+        newLang.className = 'code-lang';
+        newLang.textContent = langText;
+        header.appendChild(newLang);
+
+        // Run button (right) — only for rust code
+        if (langText.toLowerCase() === 'rust') {
+            const runBtn = document.createElement('button');
+            runBtn.className = 'code-run-btn';
+            runBtn.innerHTML = `<span class="material-symbols-outlined">play_arrow</span> Run`;
+
+            // Create output area
+            const outputArea = document.createElement('div');
+            outputArea.className = 'code-output';
+            snippet.appendChild(outputArea);
+
+            runBtn.addEventListener('click', () => {
+                const codeEl = preEl.querySelector('code');
+                if (!codeEl) return;
+                const code = codeEl.textContent || '';
+
+                // Show loading
+                outputArea.classList.add('visible');
+                outputArea.innerHTML = `<span class="output-label">Output</span><span style="color:var(--text-muted)">Đang biên dịch...</span>`;
+                runBtn.disabled = true;
+
+                const ws = new WebSocket(BACKEND_WS_URL);
+                let output = '';
+
+                ws.onopen = () => {
+                    ws.send(JSON.stringify({ type: 'run', code }));
+                };
+
+                ws.onmessage = (event) => {
+                    try {
+                        const msg = JSON.parse(event.data);
+                        switch (msg.type) {
+                            case 'compile_error':
+                                output += msg.data;
+                                outputArea.innerHTML = `<span class="output-label">Compiler Error</span><span class="output-error">${escapeHtml(output)}</span>`;
+                                break;
+                            case 'stdout':
+                                output += msg.data;
+                                outputArea.innerHTML = `<span class="output-label">Output</span><span class="output-success">${escapeHtml(output)}</span>`;
+                                break;
+                            case 'stderr':
+                                output += msg.data;
+                                outputArea.innerHTML = `<span class="output-label">Stderr</span><span class="output-error">${escapeHtml(output)}</span>`;
+                                break;
+                            case 'exit':
+                                if (!output) {
+                                    outputArea.innerHTML = `<span class="output-label">Output</span><span style="color:var(--text-muted)">(Không có output)</span>`;
+                                }
+                                runBtn.disabled = false;
+                                break;
+                            case 'error':
+                                outputArea.innerHTML = `<span class="output-label">Error</span><span class="output-error">${escapeHtml(msg.message)}</span>`;
+                                runBtn.disabled = false;
+                                break;
+                        }
+                    } catch { /* ignore */ }
+                };
+
+                ws.onerror = () => {
+                    outputArea.innerHTML = `<span class="output-label">Error</span><span class="output-error">Lỗi kết nối. Server có thể chưa chạy.</span>`;
+                    runBtn.disabled = false;
+                };
+
+                ws.onclose = () => {
+                    runBtn.disabled = false;
+                };
+            });
+
+            header.appendChild(runBtn);
+        }
+
+        // Insert header before pre
+        snippet.insertBefore(header, preEl);
     });
 };
 
