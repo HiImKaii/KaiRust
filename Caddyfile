@@ -15,3 +15,14 @@
         reverse_proxy backend:3001
     }
 }
+
+# Internal HTTP listener for Cloudflare Tunnel (no TLS needed)
+:8080 {
+    # Static Frontend
+    reverse_proxy frontend:80
+    
+    # API / WebSockets to Backend
+    handle_path /ws* {
+        reverse_proxy backend:3001
+    }
+}

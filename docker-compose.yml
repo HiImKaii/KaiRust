@@ -47,6 +47,17 @@ services:
     depends_on:
       - frontend
 
+  # -------------------------
+  # CLOUDFLARE TUNNEL (Public Access)
+  # -------------------------
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: kairust_tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --url http://caddy:8080
+    depends_on:
+      - caddy
+
 volumes:
   caddy_data:
   caddy_config:
