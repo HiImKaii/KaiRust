@@ -4,32 +4,53 @@
 // =====================================================
 
 export interface Lesson {
-    id: string;
-    title: string;
-    duration: string;     // estimated reading/practice time
-    type: 'theory' | 'practice' | 'quiz';
-    content: string;      // HTML content for instruction panel
-    defaultCode?: string; // pre-filled code for Monaco editor
-    expectedOutput?: string;
+  id: string;
+  title: string;
+  duration: string;     // estimated reading/practice time
+  type: 'theory' | 'practice' | 'quiz';
+  content: string;      // HTML content for instruction panel
+  defaultCode?: string; // pre-filled code for Monaco editor
+  expectedOutput?: string;
 }
 
 export interface Chapter {
-    id: string;
-    title: string;
-    lessons: Lesson[];
+  id: string;
+  title: string;
+  lessons: Lesson[];
 }
 
+// Import chapter data
+import { ch02 } from './chapters/ch02';
+import { ch03 } from './chapters/ch03';
+import { ch04 } from './chapters/ch04';
+import { ch05 } from './chapters/ch05';
+import { ch06 } from './chapters/ch06';
+import { ch07 } from './chapters/ch07';
+import { ch08 } from './chapters/ch08';
+import { ch09 } from './chapters/ch09';
+import { ch10 } from './chapters/ch10';
+import { ch11 } from './chapters/ch11';
+import { ch12 } from './chapters/ch12';
+import { ch13 } from './chapters/ch13';
+import { ch14 } from './chapters/ch14';
+import { ch15 } from './chapters/ch15';
+import { ch16 } from './chapters/ch16';
+import { ch17 } from './chapters/ch17';
+import { ch18 } from './chapters/ch18';
+import { ch19 } from './chapters/ch19';
+import { ch20 } from './chapters/ch20';
+
 export const courseData: Chapter[] = [
-    {
-        id: 'ch01',
-        title: 'Chương 1: Bắt đầu với Rust',
-        lessons: [
-            {
-                id: 'ch01-01',
-                title: '1.1 Cài đặt Rust (Installation)',
-                duration: '10 phút',
-                type: 'theory',
-                content: `
+  {
+    id: 'ch01',
+    title: 'Chương 1: Bắt đầu với Rust',
+    lessons: [
+      {
+        id: 'ch01-01',
+        title: '1.1 Cài đặt Rust (Installation)',
+        duration: '10 phút',
+        type: 'theory',
+        content: `
 <p>Bước đầu tiên là cài đặt Rust. Chúng ta sẽ tải Rust thông qua <code>rustup</code>, một công cụ dòng lệnh để quản lý các phiên bản Rust và các công cụ liên quan.</p>
 
 <div class="cyber-alert info">
@@ -69,7 +90,7 @@ rustc x.y.z (abcabcabc yyyy-mm-dd)</code></pre>
   <li>Xem tài liệu offline: <code>rustup doc</code></li>
 </ul>
 `,
-                defaultCode: `// Hãy thử chạy lệnh này trong terminal của bạn:
+        defaultCode: `// Hãy thử chạy lệnh này trong terminal của bạn:
 // $ rustc --version
 // $ cargo --version
 
@@ -78,14 +99,14 @@ fn main() {
     println!("Phiên bản rustc: kiểm tra bằng lệnh rustc --version");
 }
 `,
-                expectedOutput: 'Rust đã được cài đặt thành công!\nPhiên bản rustc: kiểm tra bằng lệnh rustc --version'
-            },
-            {
-                id: 'ch01-02',
-                title: '1.2 Hello, World!',
-                duration: '15 phút',
-                type: 'practice',
-                content: `
+        expectedOutput: 'Rust đã được cài đặt thành công!\nPhiên bản rustc: kiểm tra bằng lệnh rustc --version'
+      },
+      {
+        id: 'ch01-02',
+        title: '1.2 Hello, World!',
+        duration: '15 phút',
+        type: 'practice',
+        content: `
 <p>Bây giờ bạn đã cài Rust, hãy viết chương trình đầu tiên. Theo truyền thống khi học ngôn ngữ mới, ta sẽ viết chương trình in ra dòng chữ <code>Hello, world!</code> trên màn hình.</p>
 
 <h3 class="task-heading">Tạo thư mục dự án</h3>
@@ -128,19 +149,19 @@ Hello, world!</code></pre>
   <li>Thử thay đổi nội dung chuỗi và chạy lại</li>
 </ul>
 `,
-                defaultCode: `fn main() {
+        defaultCode: `fn main() {
     // TODO: In ra "Hello, world!" bằng println! macro
     
 }
 `,
-                expectedOutput: 'Hello, world!'
-            },
-            {
-                id: 'ch01-03',
-                title: '1.3 Hello, Cargo!',
-                duration: '20 phút',
-                type: 'practice',
-                content: `
+        expectedOutput: 'Hello, world!'
+      },
+      {
+        id: 'ch01-03',
+        title: '1.3 Hello, Cargo!',
+        duration: '20 phút',
+        type: 'practice',
+        content: `
 <p><strong>Cargo</strong> là hệ thống build và quản lý package của Rust. Hầu hết lập trình viên Rust đều sử dụng Cargo vì nó xử lý nhiều tác vụ: biên dịch code, tải thư viện phụ thuộc, và build các thư viện đó.</p>
 
 <div class="cyber-alert info">
@@ -195,7 +216,7 @@ $ cargo build --release</code></pre>
   <li>Thử chạy <code>cargo run</code> hai lần liên tiếp — lần thứ hai có khác gì không?</li>
 </ul>
 `,
-                defaultCode: `// Đây là file src/main.rs được Cargo tạo tự động
+        defaultCode: `// Đây là file src/main.rs được Cargo tạo tự động
 // Khi bạn chạy "cargo new hello_cargo"
 
 fn main() {
@@ -205,103 +226,27 @@ fn main() {
     // println!("Tôi là ...");
 }
 `,
-                expectedOutput: 'Hello, Cargo!'
-            }
-        ]
-    },
-    {
-        id: 'ch02',
-        title: 'Chương 2: Lập trình trò chơi đoán số',
-        lessons: []
-    },
-    {
-        id: 'ch03',
-        title: 'Chương 3: Các khái niệm lập trình phổ biến',
-        lessons: []
-    },
-    {
-        id: 'ch04',
-        title: 'Chương 4: Hiểu về Ownership',
-        lessons: []
-    },
-    {
-        id: 'ch05',
-        title: 'Chương 5: Sử dụng Structs',
-        lessons: []
-    },
-    {
-        id: 'ch06',
-        title: 'Chương 6: Enums và Pattern Matching',
-        lessons: []
-    },
-    {
-        id: 'ch07',
-        title: 'Chương 7: Quản lý Packages, Crates, Modules',
-        lessons: []
-    },
-    {
-        id: 'ch08',
-        title: 'Chương 8: Collections phổ biến',
-        lessons: []
-    },
-    {
-        id: 'ch09',
-        title: 'Chương 9: Xử lý lỗi (Error Handling)',
-        lessons: []
-    },
-    {
-        id: 'ch10',
-        title: 'Chương 10: Generics, Traits, Lifetimes',
-        lessons: []
-    },
-    {
-        id: 'ch11',
-        title: 'Chương 11: Viết Automated Tests',
-        lessons: []
-    },
-    {
-        id: 'ch12',
-        title: 'Chương 12: Dự án I/O: grep CLI',
-        lessons: []
-    },
-    {
-        id: 'ch13',
-        title: 'Chương 13: Closures và Iterators',
-        lessons: []
-    },
-    {
-        id: 'ch14',
-        title: 'Chương 14: Cargo và Crates.io',
-        lessons: []
-    },
-    {
-        id: 'ch15',
-        title: 'Chương 15: Smart Pointers',
-        lessons: []
-    },
-    {
-        id: 'ch16',
-        title: 'Chương 16: Concurrency (Đa luồng)',
-        lessons: []
-    },
-    {
-        id: 'ch17',
-        title: 'Chương 17: Async và Await',
-        lessons: []
-    },
-    {
-        id: 'ch18',
-        title: 'Chương 18: OOP trong Rust',
-        lessons: []
-    },
-    {
-        id: 'ch19',
-        title: 'Chương 19: Patterns và Matching',
-        lessons: []
-    },
-    {
-        id: 'ch20',
-        title: 'Chương 20: Advanced Features',
-        lessons: []
-    }
+        expectedOutput: 'Hello, Cargo!'
+      }
+    ]
+  },
+  ch02,
+  ch03,
+  ch04,
+  ch05,
+  ch06,
+  ch07,
+  ch08,
+  ch09,
+  ch10,
+  ch11,
+  ch12,
+  ch13,
+  ch14,
+  ch15,
+  ch16,
+  ch17,
+  ch18,
+  ch19,
+  ch20
 ];

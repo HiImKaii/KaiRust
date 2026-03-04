@@ -6,7 +6,6 @@ import { courseData, type Lesson } from './courses';
 // =====================================================
 
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null;
-let currentLesson: Lesson | null = null;
 
 // ---- Monaco Editor Setup ----
 const initEditor = () => {
@@ -125,7 +124,6 @@ const renderCurriculum = () => {
 
 // ---- Lesson Selection ----
 const selectLesson = (lesson: Lesson) => {
-    currentLesson = lesson;
 
     // Update title
     const titleEl = document.getElementById('lesson-title');
