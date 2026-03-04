@@ -451,6 +451,38 @@ const setupResizers = () => {
     }
 };
 
+// ---- Cookie Banner Setup ----
+const setupCookieBanner = () => {
+    const banner = document.getElementById('cookie-banner');
+    const btnAccept = document.getElementById('btn-accept-cookie');
+    const btnReject = document.getElementById('btn-reject-cookie');
+
+    if (!banner || !btnAccept || !btnReject) return;
+
+    // Check if user already made a choice
+    const consent = localStorage.getItem('kairust_cookie_consent');
+    if (!consent) {
+        // Delay slight to allow CSS transition to feel like a pop-up after load
+        setTimeout(() => {
+            banner.classList.remove('hidden');
+        }, 500);
+    }
+
+    const hideBanner = () => {
+        banner.classList.add('hidden');
+    };
+
+    btnAccept.addEventListener('click', () => {
+        localStorage.setItem('kairust_cookie_consent', 'accepted');
+        hideBanner();
+    });
+
+    btnReject.addEventListener('click', () => {
+        localStorage.setItem('kairust_cookie_consent', 'rejected');
+        hideBanner();
+    });
+};
+
 // ---- Init ----
 document.addEventListener('DOMContentLoaded', () => {
     initEditor();
@@ -460,6 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateProgress();
     setupNavButtons();
     setupResizers();
+    setupCookieBanner();
 
     // Select the first lesson automatically if available
     if (flatLessons.length > 0) {
