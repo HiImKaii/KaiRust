@@ -3,10 +3,9 @@
 // Architecture: Modular (router → executor → sandbox)
 // =====================================================
 
-mod executor;
+mod handlers;
 mod models;
 mod router;
-mod ws;
 
 use tower_http::cors::{Any, CorsLayer};
 use tracing_subscriber;
