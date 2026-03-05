@@ -143,6 +143,7 @@ async fn run_interactive(
         cmd_compile.arg("--test");
     }
 
+    // Lệnh build + test 
     let compile_result = cmd_compile.output().await;
 
     match compile_result {
@@ -163,6 +164,9 @@ async fn run_interactive(
         }
         _ => {}
     }
+
+    // Lệnh rustc --test chỉ mới biên dịch thành ứng dụng kiểm thử độc lập có tên là main (chứa mọi Unit Tests). 
+    // Chúng ta vẫn phải chạy file main để tiến hành Unit Test.
 
     // Step 2: Run with streaming output
     let _ = tx.send(WsServerMessage::Running).await;

@@ -891,6 +891,17 @@ code {
   margin-left: 2px;
 }
 
+.terminal-input:disabled {
+  background: transparent;
+  color: #555566;
+  cursor: not-allowed;
+}
+
+.terminal-input.disabled-input::placeholder {
+  color: #c04b4b;
+  font-style: italic;
+}
+
 .user-input {
   color: var(--color-teal);
   font-weight: bold;
@@ -901,6 +912,10 @@ code {
   color: #ff4081 !important;
   border: 1px solid rgba(255, 64, 129, 0.4) !important;
   box-shadow: 0 0 10px rgba(255, 64, 129, 0.2);
+}
+
+.submit-btn.hidden {
+  display: none !important;
 }
 
 .submit-btn:hover {

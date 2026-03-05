@@ -130,3 +130,7 @@ Dưới đây là thứ tự công việc và tất cả các dòng lệnh đã 
     docker-compose logs -f
     ```
     *Giải thích:* Xác nhận 4 container (Tunnel, Caddy, Backend, Frontend) đã Up khỏe mạnh và đu theo dòng Stream thời gian thực bắt lỗi Console (stdout/stderr).
+## Tính năng giao diện Phân loại Khóa học
+Hệ thống tự động phát hiện bài học là **Lý thuyết** hay **Thực hành** để điều chỉnh giao diện:
+- **Lý thuyết**: Cho phép chạy mã tự do, STDIN được phép nhập input trực tiếp từ Terminal để tương tác với chương trình. Ẩn nút nộp bài.
+- **Thực hành**: Khóa chức năng nhập STDIN từ Terminal để yêu cầu sinh viên viết mã tự xử lý. Hiển thị nút "Nộp bài" để chạy đối chiếu toàn bộ các Testcase được soạn sẵn.

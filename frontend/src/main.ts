@@ -129,14 +129,21 @@ const renderCurriculum = () => {
 
 // ---- Lesson Selection ----
 const selectLesson = (lesson: Lesson) => {
-    // Toggle Submit Button
+    // Toggle Submit Button and Terminal Stdin
     const submitBtn = document.getElementById('submit-btn');
-    if (submitBtn) {
-        if (lesson.isExercise) {
-            submitBtn.classList.remove('hidden');
-        } else {
-            submitBtn.classList.add('hidden');
-        }
+    const stdinInput = document.getElementById('terminal-stdin') as HTMLInputElement | null;
+
+    if (lesson.type === 'practice') {
+        if (submitBtn) submitBtn.classList.remove('hidden');
+    } else {
+        if (submitBtn) submitBtn.classList.add('hidden');
+    }
+
+    // STDIN luôn được mở khóa để học viên chạy code thử
+    if (stdinInput) {
+        stdinInput.disabled = false;
+        stdinInput.placeholder = "Nhập chuẩn STDIN vào đây và bấm Enter...";
+        stdinInput.classList.remove('disabled-input');
     }
 
     // Mark previous lesson as read
@@ -270,7 +277,7 @@ const startCodeExecution = (is_test: boolean) => {
         // Append testCode only if submitting an exercise
         if (is_test && currentLessonIndex >= 0) {
             const lesson = flatLessons[currentLessonIndex];
-            if (lesson.isExercise && lesson.testCode) {
+            if (lesson.type === 'practice' && lesson.testCode) {
                 codeToSend = code + '\n' + lesson.testCode;
             }
         }
@@ -289,6 +296,7 @@ const startCodeExecution = (is_test: boolean) => {
                 case 'compile_error':
                     appendTerminal(`<span class="log-error">${escapeHtml(msg.stderr)}</span>`);
                     updateStats('—', '—');
+                    ws.close();
                     break;
                 case 'running':
                     appendTerminal(`<span class="log-info">Running...</span>`);
@@ -307,23 +315,25 @@ const startCodeExecution = (is_test: boolean) => {
                     // Display Exercise result when submitting
                     if (isSubmitting && currentLessonIndex >= 0) {
                         const lesson = flatLessons[currentLessonIndex];
-                        if (lesson.isExercise) {
+                        if (lesson.type === 'practice') {
                             if (msg.code === 0) {
-                                appendTerminal(`<br><span class="log-success" style="font-weight:bold; font-size:1.1rem">🎉 CHÚC MỪNG BẠN ĐÃ VƯỢT QUA BÀI TẬP!</span>`);
+                                appendTerminal(`<br><span class="log-success" style="font-weight:bold; font-size:1.1rem">CHÚC MỪNG BẠN ĐÃ VƯỢT QUA BÀI TẬP!</span>`);
                                 appendTerminal(`<span class="log-info">Bạn đã xuất sắc hoàn thành tất cả các Testcase. Tiếp tục phát huy nhé!</span>`);
                                 const activeEl = document.querySelector(`[data-lesson-id="${lesson.id}"]`);
                                 if (activeEl) {
                                     activeEl.classList.add('passed');
                                 }
                             } else {
-                                appendTerminal(`<br><span class="log-error" style="font-weight:bold; font-size:1.1rem">❌ RẤT TIẾC, CHƯA ĐẠT YÊU CẦU.</span>`);
+                                appendTerminal(`<br><span class="log-error" style="font-weight:bold; font-size:1.1rem">RẤT TIẾC, CHƯA ĐẠT YÊU CẦU.</span>`);
                                 appendTerminal(`<span class="log-warning">Hãy đọc kỹ lỗi bên trên và kiểm tra lại mã của mình. Cố lên!</span>`);
                             }
                         }
                     }
+                    ws.close();
                     break;
                 case 'error':
                     appendTerminal(`<span class="log-error">Error: ${escapeHtml(msg.message)}</span>`);
+                    ws.close();
                     break;
             }
         } catch {
@@ -337,8 +347,12 @@ const startCodeExecution = (is_test: boolean) => {
 
     ws.onclose = () => {
         activeWs = null;
-        if (runBtn) runBtn.disabled = false;
-        if (submitBtn) submitBtn.disabled = false;
+        setTimeout(() => {
+            const currentRunBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
+            const currentSubmitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+            if (currentRunBtn) currentRunBtn.disabled = false;
+            if (currentSubmitBtn) currentSubmitBtn.disabled = false;
+        }, 1000);
     };
 };
 
@@ -462,6 +476,7 @@ const setupInlineCodeRunners = () => {
                             case 'compile_error':
                                 output += msg.data;
                                 outputArea.innerHTML = `<span class="output-label">Compiler Error</span><span class="output-error">${escapeHtml(output)}</span>`;
+                                ws.close();
                                 break;
                             case 'stdout':
                                 output += msg.data;
@@ -475,11 +490,11 @@ const setupInlineCodeRunners = () => {
                                 if (!output) {
                                     outputArea.innerHTML = `<span class="output-label">Output</span><span style="color:var(--text-muted)">(Không có output)</span>`;
                                 }
-                                runBtn.disabled = false;
+                                ws.close();
                                 break;
                             case 'error':
                                 outputArea.innerHTML = `<span class="output-label">Error</span><span class="output-error">${escapeHtml(msg.message)}</span>`;
-                                runBtn.disabled = false;
+                                ws.close();
                                 break;
                         }
                     } catch { /* ignore */ }
@@ -487,11 +502,12 @@ const setupInlineCodeRunners = () => {
 
                 ws.onerror = () => {
                     outputArea.innerHTML = `<span class="output-label">Error</span><span class="output-error">Lỗi kết nối. Server có thể chưa chạy.</span>`;
-                    runBtn.disabled = false;
                 };
 
                 ws.onclose = () => {
-                    runBtn.disabled = false;
+                    setTimeout(() => {
+                        runBtn.disabled = false;
+                    }, 1000);
                 };
             });
 
