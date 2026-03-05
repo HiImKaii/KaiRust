@@ -443,16 +443,36 @@ code {
   color: #ede72b;
 }
 
-/* Đã đọc xong — xanh lá */
+/* Đã xem qua — màu xám sáng hơn mặc định để phân biệt với xanh lá (Đã hoàn thành) */
 .lesson-item.read .lesson-name {
-  color: #21ed21;
+  color: #a0a0b0;
 }
 
 .lesson-item.read .lesson-icon {
-  color: #21ed21;
+  color: #a0a0b0;
 }
 
 .lesson-item.read .lesson-time {
+  color: #a0a0b0;
+}
+
+/* Đã hoàn thành (Lý thuyết đọc đủ giờ hoặc Bài tập pass test) */
+.lesson-item.completed {
+  border-left: 2px solid #21ed21;
+  background: rgba(33, 237, 33, 0.05);
+}
+
+.lesson-item.completed .lesson-name {
+  color: #21ed21;
+  font-weight: 600;
+}
+
+.lesson-item.completed .lesson-icon {
+  color: #21ed21;
+  text-shadow: 0 0 8px rgba(33, 237, 33, 0.6);
+}
+
+.lesson-item.completed .lesson-time {
   color: #21ed21;
 }
 

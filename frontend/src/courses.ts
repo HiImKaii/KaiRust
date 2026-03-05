@@ -12,7 +12,6 @@ export interface Lesson {
   defaultCode?: string; // pre-filled code for Monaco editor
   expectedOutput?: string;
   isExercise?: boolean; // flag to mark as exercise
-  testCode?: string;    // hidden test code to append for validation
 }
 
 export interface Chapter {

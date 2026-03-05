@@ -1,5 +1,6 @@
 import * as monaco from 'monaco-editor';
 import { courseData, type Lesson } from './courses';
+import { ProgressManager } from './progress';
 
 // =====================================================
 // KaiRust - Main Application Logic
@@ -8,6 +9,7 @@ import { courseData, type Lesson } from './courses';
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null;
 let flatLessons: Lesson[] = [];
 let currentLessonIndex = -1;
+let lessonStartTime = 0;
 const readLessons = new Set<string>();
 
 // ---- Monaco Editor Setup ----
@@ -104,6 +106,10 @@ const renderCurriculum = () => {
         <span class="lesson-time">${lesson.duration}</span>
       `;
 
+            if (ProgressManager.isCompleted(lesson.id)) {
+                lessonItem.classList.add('completed');
+            }
+
             lessonItem.addEventListener('click', () => selectLesson(lesson));
             lessonList.appendChild(lessonItem);
         });
@@ -146,13 +152,16 @@ const selectLesson = (lesson: Lesson) => {
         stdinInput.classList.remove('disabled-input');
     }
 
-    // Mark previous lesson as read
+    // Mark previous lesson as read (just for session tracking)
     if (currentLessonIndex >= 0) {
         const prevLesson = flatLessons[currentLessonIndex];
         readLessons.add(prevLesson.id);
         const prevEl = document.querySelector(`[data-lesson-id="${prevLesson.id}"]`);
         if (prevEl) prevEl.classList.add('read');
     }
+
+    // Set new start time for the selected lesson
+    lessonStartTime = Date.now();
 
     currentLessonIndex = flatLessons.findIndex(l => l.id === lesson.id);
     updateNavButtons();
@@ -272,18 +281,18 @@ const startCodeExecution = (is_test: boolean) => {
     activeWs = ws;
 
     ws.onopen = () => {
-        let codeToSend = code;
+        let payload: any = { type: 'run', code: code, is_test };
 
-        // Append testCode only if submitting an exercise
+        // Gửi kèm lesson_id nếu đây là bài exercise
         if (is_test && currentLessonIndex >= 0) {
             const lesson = flatLessons[currentLessonIndex];
-            if (lesson.type === 'practice' && lesson.testCode) {
-                codeToSend = code + '\n' + lesson.testCode;
+            if (lesson.type === 'practice') {
+                payload.lesson_id = lesson.id;
             }
         }
 
         // Send compile/run command
-        ws.send(JSON.stringify({ type: 'run', code: codeToSend, is_test }));
+        ws.send(JSON.stringify(payload));
     };
 
     ws.onmessage = (event) => {
@@ -319,10 +328,13 @@ const startCodeExecution = (is_test: boolean) => {
                             if (msg.code === 0) {
                                 appendTerminal(`<br><span class="log-success" style="font-weight:bold; font-size:1.1rem">CHÚC MỪNG BẠN ĐÃ VƯỢT QUA BÀI TẬP!</span>`);
                                 appendTerminal(`<span class="log-info">Bạn đã xuất sắc hoàn thành tất cả các Testcase. Tiếp tục phát huy nhé!</span>`);
+                                ProgressManager.markCompleted(lesson.id);
                                 const activeEl = document.querySelector(`[data-lesson-id="${lesson.id}"]`);
                                 if (activeEl) {
                                     activeEl.classList.add('passed');
+                                    activeEl.classList.add('completed');
                                 }
+                                unlockNextLesson();
                             } else {
                                 appendTerminal(`<br><span class="log-error" style="font-weight:bold; font-size:1.1rem">RẤT TIẾC, CHƯA ĐẠT YÊU CẦU.</span>`);
                                 appendTerminal(`<span class="log-warning">Hãy đọc kỹ lỗi bên trên và kiểm tra lại mã của mình. Cố lên!</span>`);
@@ -573,37 +585,64 @@ const unlockNextLesson = () => {
     }
 };
 
+// Helpers: parse "15 phút" -> required time in ms
+const parseDurationMs = (durationStr: string): number => {
+    const match = durationStr.match(/(\d+)/);
+    if (match) {
+        const minutes = parseInt(match[1], 10);
+        return minutes * 60 * 1000;
+    }
+    return 0; // default 0 if can't parse
+};
+
 const checkUnlockNext = () => {
     if (currentLessonIndex === -1) return;
 
     const scrollArea = document.getElementById('panel-scroll-area');
     if (!scrollArea) return;
 
+    const currentLesson = flatLessons[currentLessonIndex];
+
+    // Nếu bài tập (practice), bắt buộc phải pass testcase mới qua bài.
+    // Việc mở khóa cho bài practice được handle ở ws.onmessage exit code 0
+    if (currentLesson.type === 'practice') {
+        if (ProgressManager.isCompleted(currentLesson.id)) {
+            unlockNextLesson();
+        }
+        return;
+    }
+
     // Allow 10px buffer
     const isAtBottom = scrollArea.scrollHeight - scrollArea.scrollTop - scrollArea.clientHeight <= 10;
 
     if (isAtBottom) {
-        // --- LOGIC TIME LOCK: (Sắp tới khi có Server & Tài khoản) ---
-        // Yêu cầu thời gian học tối thiểu mỗi bài (ví dụ: 15 Giây)
-        /*
-        const reqTimeMs = 15000; 
+        const reqTimeMs = parseDurationMs(currentLesson.duration) / 2;
         const timeSpent = Date.now() - lessonStartTime;
-        const currentId = flatLessons[currentLessonIndex].id;
-        
+
         if (timeSpent >= reqTimeMs) {
+            ProgressManager.markCompleted(currentLesson.id);
+            const activeEl = document.querySelector(`[data-lesson-id="${currentLesson.id}"]`);
+            if (activeEl) {
+                activeEl.classList.add('completed');
+            }
             unlockNextLesson();
         } else {
+            // Đặt lịch kiểm tra lại ngay khi thời gian đủ
             setTimeout(() => {
-                // Kiểm tra lại nếu người dùng chưa chuyển bài
-                if (currentLessonIndex !== -1 && flatLessons[currentLessonIndex].id === currentId) {
-                    unlockNextLesson();
+                // Kiểm tra lại nếu người dùng chưa chuyển bài và vẫn đang ở bottom
+                if (currentLessonIndex !== -1 && flatLessons[currentLessonIndex].id === currentLesson.id) {
+                    const latestIsAtBottom = scrollArea.scrollHeight - scrollArea.scrollTop - scrollArea.clientHeight <= 10;
+                    if (latestIsAtBottom) {
+                        ProgressManager.markCompleted(currentLesson.id);
+                        const activeEl = document.querySelector(`[data-lesson-id="${currentLesson.id}"]`);
+                        if (activeEl) {
+                            activeEl.classList.add('completed');
+                        }
+                        unlockNextLesson();
+                    }
                 }
             }, reqTimeMs - timeSpent);
         }
-        */
-
-        // Hiện tại: Chỉ yêu cầu cuộn hết mức là MỞ KHÓA LUÔN
-        unlockNextLesson();
     }
 };
 

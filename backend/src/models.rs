@@ -13,6 +13,8 @@ pub struct RunRequest {
     pub stdin: Option<String>,
     /// Optional flag to compile with --test. Defaults to false.
     pub is_test: Option<bool>,
+    /// Optional ID of the lesson to load test cases from backend/exercises/
+    pub lesson_id: Option<String>,
 }
 
 /// Response body for POST /api/run
@@ -35,6 +37,8 @@ pub enum WsClientMessage {
         code: String,
         /// Optional flag to compile with --test. Defaults to false.
         is_test: Option<bool>,
+        /// Optional ID of the lesson to load test cases from backend/exercises/
+        lesson_id: Option<String>,
     },
     /// Send stdin input to running process
     #[serde(rename = "stdin")]

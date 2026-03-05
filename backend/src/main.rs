@@ -6,6 +6,7 @@
 mod handlers;
 mod models;
 mod router;
+mod exercises;
 
 use tower_http::cors::{Any, CorsLayer};
 use tracing_subscriber;

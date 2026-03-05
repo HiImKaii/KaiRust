@@ -65,7 +65,7 @@ async fn handle_ws_connection(socket: WebSocket) {
         };
 
         match client_msg {
-            WsClientMessage::Run { code, is_test } => {
+            WsClientMessage::Run { code, is_test, lesson_id } => {
                 // Kill previous process if any
                 if let Some(kill_tx) = child_kill.take() {
                     let _ = kill_tx.send(());
@@ -78,11 +78,9 @@ async fn handle_ws_connection(socket: WebSocket) {
                 let (stdin_tx, stdin_rx) = tokio::sync::mpsc::channel::<String>(32);
                 stdin_tx_opt = Some(stdin_tx);
 
-                let is_test = is_test.unwrap_or(false);
-
                 // Spawn execution task
                 tokio::spawn(async move {
-                    run_interactive(code, is_test, tx_clone, kill_receiver, stdin_rx).await;
+                    run_interactive(code, is_test.unwrap_or(false), lesson_id, tx_clone, kill_receiver, stdin_rx).await;
                 });
             }
             WsClientMessage::Stdin { data } => {
@@ -107,8 +105,9 @@ async fn handle_ws_connection(socket: WebSocket) {
 
 /// Compile and run code interactively, streaming output via channel
 async fn run_interactive(
-    code: String,
+    mut code: String,
     is_test: bool,
+    lesson_id: Option<String>,
     tx: tokio::sync::mpsc::Sender<WsServerMessage>,
     mut kill_rx: tokio::sync::oneshot::Receiver<()>,
     mut stdin_rx: tokio::sync::mpsc::Receiver<String>,
@@ -125,6 +124,30 @@ async fn run_interactive(
             .await;
         return;
     }
+
+    // Nếu là bài kiểm tra và có lesson_id, tự động nối thêm test case từ backend
+    if is_test {
+        if let Some(lid) = lesson_id {
+            let exercise_name = lid.replace("-", "_");
+            // Backend đang chạy tại thư mục chứa file Cargo.toml, nên src/exercises/ nằm ngay phía dưới
+            let test_file_path = format!("src/exercises/{}.rs", exercise_name);
+            
+            match tokio::fs::read_to_string(&test_file_path).await {
+                Ok(test_code) => {
+                    code.push_str("\n");
+                    code.push_str(&test_code);
+                }
+                Err(e) => {
+                    let _ = tx.send(WsServerMessage::Error {
+                        message: format!("Lỗi: Bài tập '{}' không tồn tại test case trên hệ thống. Error: {}", exercise_name, e),
+                    }).await;
+                    let _ = tokio::fs::remove_dir_all(&work_dir).await;
+                    return;
+                }
+            }
+        }
+    }
+
     let _ = tokio::fs::write(work_dir.join("main.rs"), &code).await;
 
     let start = Instant::now();
