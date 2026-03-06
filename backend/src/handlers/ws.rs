@@ -10,7 +10,6 @@ use axum::{
 use futures::{SinkExt, StreamExt};
 use std::path::PathBuf;
 use std::time::Instant;
-use tokio::io::AsyncWriteExt;
 use tokio::process::Command;
 use uuid::Uuid;
 
@@ -129,8 +128,8 @@ async fn run_interactive(
     if is_test {
         if let Some(lid) = lesson_id {
             let exercise_name = lid.replace("-", "_");
-            // Backend đang chạy tại thư mục chứa file Cargo.toml, nên src/exercises/ nằm ngay phía dưới
-            let test_file_path = format!("src/exercises/{}.rs", exercise_name);
+            let chapter: String = exercise_name.chars().take(4).collect(); // "ch03"
+            let test_file_path = format!("src/exercises/{}/{}.rs", chapter, exercise_name);
             
             match tokio::fs::read_to_string(&test_file_path).await {
                 Ok(test_code) => {
