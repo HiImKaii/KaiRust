@@ -1,11 +1,11 @@
 import { Lesson } from '../../courses';
 
 export const ch01_01: Lesson = {
-    id: 'ch01-01',
-    title: '1.1 Cài đặt Rust',
-    duration: '10 phút',
-    type: 'theory',
-    content: `
+  id: 'ch01-01',
+  title: '1.1 Cài đặt Rust',
+  duration: '10 phút',
+  type: 'theory',
+  content: `
 <p>Bước đầu tiên là cài đặt Rust. Chúng ta sẽ tải Rust thông qua <code>rustup</code>, một công cụ dòng lệnh để quản lý các phiên bản Rust và các công cụ liên quan. Bạn sẽ cần kết nối internet để tải xuống.</p>
 
 <div class="cyber-alert info">
@@ -26,6 +26,7 @@ export const ch01_01: Lesson = {
 <div class="code-snippet">
   <span class="code-lang">bash</span>
   <pre><code>$ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh</code></pre>
+  <pre><code>$ source $HOME/.cargo/env</code></pre>
 </div>
 <p>Lệnh này sẽ tải xuống một đoạn script và bắt đầu cài đặt công cụ <code>rustup</code>, công cụ này sẽ cài đặt phiên bản ổn định mới nhất của Rust. Bạn có thể được nhắc nhập mật khẩu. Nếu cài đặt thành công, dòng sau sẽ xuất hiện:</p>
 <div class="code-snippet">
@@ -104,7 +105,7 @@ $ cargo add rand@0.8.5 trpl@0.2.0</code></pre>
 </div>
 <p>Lệnh này sẽ lưu bộ nhớ đệm (cache) việc tải xuống cho những packages nói trên, qua đó bạn sẽ không phải cần tải lại chúng vào thời điểm sau này nữa.nh công những lệnh vừa rồi, bạn không cần phải giữ lại thư mục <code>get-dependencies</code> nữa.</p>
 `,
-    defaultCode: `// Hãy thử chạy lệnh này trong terminal của bạn:
+  defaultCode: `// Hãy thử chạy lệnh này trong terminal của bạn:
 // $ rustc --version
 // $ cargo --version
 
@@ -113,5 +114,5 @@ fn main() {
     println!("Phiên bản rustc: kiểm tra bằng lệnh rustc --version");
 }
 `,
-    expectedOutput: 'Rust đã được cài đặt thành công!\nPhiên bản rustc: kiểm tra bằng lệnh rustc --version'
+  expectedOutput: 'Rust đã được cài đặt thành công!\nPhiên bản rustc: kiểm tra bằng lệnh rustc --version'
 };
