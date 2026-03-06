@@ -1,11 +1,11 @@
 import { Lesson } from '../../courses';
 
 export const ch03_01: Lesson = {
-      id: 'ch03-01',
-      title: '3.1 Biến và Tính bất biến (Variables and Mutability)',
-      duration: '25 phút',
-      type: 'practice',
-      content: `
+  id: 'ch03-01',
+  title: '3.1 Biến và Tính bất biến (Variables and Mutability)',
+  duration: '25 phút',
+  type: 'theory',
+  content: `
 <p>Chương này bao gồm các khái niệm xuất hiện trong hầu hết mọi ngôn ngữ lập trình và cách chúng hoạt động trong Rust. Nhiều ngôn ngữ lập trình có nhiều điểm chung ở cốt lõi. Không khái niệm nào được trình bày trong chương này là duy nhất đối với Rust, nhưng chúng ta sẽ thảo luận chúng trong ngữ cảnh của Rust và giải thích các quy ước xung quanh việc sử dụng các khái niệm này.</p>
 
 <p>Cụ thể, bạn sẽ tìm hiểu về biến (variables), các kiểu cơ bản (basic types), hàm (functions), chú thích (comments) và luồng điều khiển (control flow). Những nền tảng này sẽ có mặt trong mọi chương trình Rust, và việc học chúng sớm sẽ cho bạn một nền tảng cốt lõi vững chắc để bắt đầu.</p>
@@ -139,7 +139,7 @@ let spaces = spaces.len(); // kiểu usize — OK vì là shadowing!</code></pre
 spaces = spaces.len();  // LỖI! expected &amp;str, found usize</code></pre>
 </div>
 `,
-      defaultCode: `fn main() {
+  defaultCode: `fn main() {
     // === Immutable mặc định ===
     let x = 5;
     println!("x = {x}");
@@ -171,5 +171,5 @@ spaces = spaces.len();  // LỖI! expected &amp;str, found usize</code></pre>
     println!("Số khoảng trắng: {spaces}");
 }
 `,
-      expectedOutput: 'x = 5\nx sau shadow = 6\nx trong inner scope = 12\nx ngoài scope = 6\ny = 10\ny sau thay đổi = 20\nĐiểm tối đa: 100000\nSố khoảng trắng: 3'
-    };
+  expectedOutput: 'x = 5\nx sau shadow = 6\nx trong inner scope = 12\nx ngoài scope = 6\ny = 10\ny sau thay đổi = 20\nĐiểm tối đa: 100000\nSố khoảng trắng: 3'
+};

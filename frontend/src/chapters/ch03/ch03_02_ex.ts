@@ -1,12 +1,12 @@
 import { Lesson } from '../../courses';
 
 export const ch03_02_ex: Lesson = {
-      id: 'ch03-02-ex',
-      title: 'Bài tập 3.2: Kiểu dữ liệu (Data Types)',
-      duration: '10 phút',
-      type: 'practice',
-      isExercise: true,
-      content: `
+  id: 'ch03-02-ex',
+  title: 'Bài tập 3.2: Kiểu dữ liệu (Data Types)',
+  duration: '10 phút',
+  type: 'practice',
+  isExercise: true,
+  content: `
 <p>Hãy cùng kiểm tra kiến thức của bạn về Kiểu dữ liệu, Tuple và Array!</p>
 <h3 class="task-heading">Yêu cầu</h3>
 <ol class="task-list">
@@ -18,13 +18,8 @@ export const ch03_02_ex: Lesson = {
   Sau khi code xong, hãy nhấn <strong>Run</strong> để vượt qua bài kiểm tra!
 </div>
 `,
-      defaultCode: `fn main() {
-    // 1. Tạo tuple: my_tuple = (500, 6.4, 'Z')
-
-    // 2. Giải nén tuple thành (x, y, z)
-
-    // 3. Tạo array: my_array = [1, 2, 3, 4, 5]
+  defaultCode: `fn main() {
 
 }
 `
-    };
+};

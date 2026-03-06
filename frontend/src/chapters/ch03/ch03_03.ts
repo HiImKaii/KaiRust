@@ -1,11 +1,11 @@
 import { Lesson } from '../../courses';
 
 export const ch03_03: Lesson = {
-      id: 'ch03-03',
-      title: '3.3 Hàm (Functions)',
-      duration: '25 phút',
-      type: 'practice',
-      content: `
+  id: 'ch03-03',
+  title: '3.3 Hàm (Functions)',
+  duration: '25 phút',
+  type: 'theory',
+  content: `
 <p>Hàm (functions) có mặt ở khắp nơi trong code Rust. Bạn đã thấy một trong những hàm quan trọng nhất: hàm <code>main</code>, là điểm vào (entry point) của mọi chương trình. Bạn cũng đã thấy từ khóa <code>fn</code>, cho phép khai báo hàm mới.</p>
 
 <p>Code Rust sử dụng quy ước <strong>snake_case</strong> cho tên hàm và tên biến, trong đó tất cả các chữ cái đều viết thường và các từ được phân tách bằng dấu gạch dưới:</p>
@@ -93,7 +93,7 @@ fn main() {
 // plus_one(5) = 6</code></pre>
 </div>
 `,
-      defaultCode: `fn main() {
+  defaultCode: `fn main() {
     greet("Rust");
     let result = add(5, 3);
     println!("5 + 3 = {result}");
@@ -114,5 +114,5 @@ fn calculate_area(width: i32, height: i32) -> i32 {
     width * height
 }
 `,
-      expectedOutput: 'Xin chào, Rust!\n5 + 3 = 8\nDiện tích: 50'
-    };
+  expectedOutput: 'Xin chào, Rust!\n5 + 3 = 8\nDiện tích: 50'
+};

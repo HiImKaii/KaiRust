@@ -1,11 +1,11 @@
 import { Lesson } from '../../courses';
 
 export const ch03_05: Lesson = {
-      id: 'ch03-05',
-      title: '3.5 Luồng điều khiển (Control Flow)',
-      duration: '30 phút',
-      type: 'practice',
-      content: `
+  id: 'ch03-05',
+  title: '3.5 Luồng điều khiển (Control Flow)',
+  duration: '30 phút',
+  type: 'theory',
+  content: `
 <p>Khả năng chạy một đoạn code dựa trên điều kiện đúng (true) hay sai (false), và chạy đoạn code lặp đi lặp lại trong khi điều kiện đúng, là các khối xây dựng cơ bản trong hầu hết ngôn ngữ lập trình. Các cấu trúc phổ biến nhất cho phép bạn kiểm soát luồng thực thi (control flow) trong Rust là <strong>biểu thức if</strong> và <strong>các vòng lặp</strong>.</p>
 
 <h3 class="task-heading">Biểu thức if (if Expressions)</h3>
@@ -166,7 +166,7 @@ println!("The value of number is: {number}"); // 5</code></pre>
   <br>• Vòng lặp <code>for</code> là cách an toàn và quen thuộc nhất để duyệt collection vì Rust tự động xử lý chỉ mục, tránh lỗi <em>index out of bounds</em>.
 </div>
 `,
-      defaultCode: `fn main() {
+  defaultCode: `fn main() {
     // if expression
     let number = 7;
     if number % 2 == 0 {
@@ -205,5 +205,5 @@ println!("The value of number is: {number}"); // 5</code></pre>
     println!("  🚀 GO!");
 }
 `,
-      expectedOutput: '7 là số lẻ\nx = 5\nResult từ loop: 20\n3...\n2...\n1...\nĐếm ngược:\n  5...\n  4...\n  3...\n  2...\n  1...\n  🚀 GO!'
-    };
+  expectedOutput: '7 là số lẻ\nx = 5\nResult từ loop: 20\n3...\n2...\n1...\nĐếm ngược:\n  5...\n  4...\n  3...\n  2...\n  1...\n  🚀 GO!'
+};
