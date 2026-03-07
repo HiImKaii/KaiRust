@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chi tiết 6 Mẫu Giao Diện</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,600&family=Lexend:wght@300;400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Fraunces:ital,wght@0,100;0,700;1,100;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ease:cubic-bezier(.25,.46,.45,.94);
+  --spring:cubic-bezier(.34,1.56,.64,1);
+}
+html{scroll-behavior:smooth}
+body{background:#0a0a0a;font-family:'Lexend',sans-serif;color:#fff;overflow-x:hidden}
+
+/* ═══ GLOBAL NAV ═══ */
+.global-nav{
+  position:sticky;top:0;z-index:1000;
+  display:flex;flex-wrap:wrap;gap:4px;padding:10px 16px;
+  background:rgba(8,8,8,.98);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.gnb{
+  padding:7px 16px;border-radius:8px;border:none;cursor:pointer;
+  font-family:'Lexend',sans-serif;font-size:11px;font-weight:600;letter-spacing:.02em;
+  transition:all .2s;background:rgba(255,255,255,.07);color:rgba(255,255,255,.45);
+}
+.gnb.on{background:#fff;color:#000}
+.gnb:hover:not(.on){background:rgba(255,255,255,.14);color:#fff}
+.gnb-label{
+  margin-left:auto;display:flex;align-items:center;
+  font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.1em;
+}
+
+/* ═══ SECTION WRAPPER ═══ */
+.section-wrap{display:none}
+.section-wrap.on{display:block}
+
+/* ═══ DESCRIPTION CARD ═══ */
+.desc-card{
+  padding:48px 64px;
+  background:linear-gradient(135deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.desc-top{display:flex;gap:48px;align-items:flex-start;margin-bottom:36px}
+.desc-badge{
+  flex-shrink:0;width:56px;height:56px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+}
+.desc-main{flex:1}
+.desc-style-label{
+  font-size:10px;letter-spacing:.3em;text-transform:uppercase;font-weight:600;
+  color:rgba(255,255,255,.3);margin-bottom:8px;
+}
+.desc-title{
+  font-size:28px;font-weight:700;color:#fff;letter-spacing:-.02em;margin-bottom:12px;
+}
+.desc-summary{
+  font-size:15px;line-height:1.8;color:rgba(255,255,255,.55);font-weight:300;max-width:680px;
+}
+.desc-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+  padding-top:28px;border-top:1px solid rgba(255,255,255,.06);
+}
+.desc-item{}
+.desc-item-label{
+  font-size:9px;letter-spacing:.25em;text-transform:uppercase;font-weight:600;
+  color:rgba(255,255,255,.2);margin-bottom:8px;
+}
+.desc-item-val{font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;font-weight:300}
+.desc-item-val strong{color:#fff;font-weight:600;display:block;margin-bottom:2px}
+.desc-colors{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.color-dot{
+  width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.1);
+  flex-shrink:0;
+}
+.desc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.tag-chip{
+  padding:3px 10px;border-radius:100px;
+  font-size:10px;font-weight:600;
+  background:rgba(255,255,255,.06);color:rgba(255,255,255,.45);
+}
+.demo-label{
+  padding:12px 64px;
+  font-size:9px;letter-spacing:.25em;text-transform:uppercase;font-weight:600;
+  color:rgba(255,255,255,.2);background:rgba(0,0,0,.3);
+  border-bottom:1px solid rgba(255,255,255,.04);
+  display:flex;align-items:center;gap:12px;
+}
+.demo-label::before{content:'▶';font-size:8px;color:rgba(255,255,255,.2)}
+
+/* ═══════════════════════════════════════
+   1. MONO EDITORIAL
+═══════════════════════════════════════ */
+.me{
+  min-height:100vh;background:#0e0e0e;
+  font-family:'Crimson Pro',serif;color:#f0ece4;
+  position:relative;
+}
+.me-header{
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  padding:28px 80px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.me-issue{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.2);font-style:italic;font-family:'Lexend',sans-serif;font-weight:300}
+.me-logo{
+  text-align:center;
+  font-size:clamp(20px,2.5vw,32px);font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:#f0ece4;font-style:italic;
+}
+.me-meta{display:flex;justify-content:flex-end;align-items:center;gap:20px}
+.me-date{font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.2);font-style:italic;font-family:'Lexend',sans-serif;font-weight:300}
+.me-search{
+  width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,.2);
+  background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:rgba(255,255,255,.3);transition:all .25s;
+}
+.me-search:hover{border-color:rgba(255,255,255,.5);color:rgba(255,255,255,.7)}
+.me-ticker{
+  overflow:hidden;height:32px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  background:rgba(255,255,255,.02);
+  display:flex;align-items:center;
+  font-family:'Lexend',sans-serif;font-size:10px;letter-spacing:.15em;
+  color:rgba(255,255,255,.2);
+}
+.me-ticker-inner{
+  display:flex;gap:48px;white-space:nowrap;
+  animation:tickerScroll 30s linear infinite;
+  padding:0 40px;
+}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.me-ticker-item{display:flex;align-items:center;gap:12px}
+.me-ticker-sep{color:rgba(255,255,255,.1)}
+.me-body{
+  display:grid;grid-template-columns:1fr 1px 1.1fr;
+  min-height:calc(100vh - 105px);
+}
+.me-vdivide{background:rgba(255,255,255,.06)}
+.me-left{padding:72px 80px;display:flex;flex-direction:column;justify-content:space-between}
+.me-cat{
+  font-family:'Lexend',sans-serif;font-size:9px;letter-spacing:.35em;
+  text-transform:uppercase;color:rgba(255,255,255,.25);font-weight:600;
+}
+.me-center-content{padding:48px 0;flex:1;display:flex;flex-direction:column;justify-content:center}
+.me-issue-ghost{
+  font-size:160px;font-weight:300;font-style:italic;
+  color:rgba(255,255,255,.03);line-height:1;margin-bottom:-32px;
+  user-select:none;
+}
+.me-title{
+  font-size:clamp(44px,5vw,76px);font-weight:600;line-height:1.04;
+  color:#f0ece4;margin-bottom:24px;font-style:italic;
+}
+.me-subtitle{
+  font-size:18px;font-weight:300;color:rgba(255,255,255,.45);
+  line-height:1.7;max-width:420px;margin-bottom:36px;
+}
+.me-read{
+  display:inline-flex;align-items:center;gap:20px;
+  font-family:'Lexend',sans-serif;font-size:10px;letter-spacing:.28em;text-transform:uppercase;
+  color:rgba(255,255,255,.35);background:none;border:none;cursor:pointer;
+  border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:10px;
+  width:fit-content;transition:all .3s;
+}
+.me-read:hover{color:#f0ece4;border-color:rgba(255,255,255,.35);gap:28px}
+.me-foot{display:flex;gap:20px}
+.me-foot-item{font-family:'Lexend',sans-serif;font-size:10px;color:rgba(255,255,255,.18);letter-spacing:.1em}
+.me-right{padding:72px 80px;display:flex;flex-direction:column;gap:0}
+.me-articles{flex:1;display:flex;flex-direction:column}
+.me-article{
+  padding:24px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  display:grid;grid-template-columns:28px 1fr;gap:20px;
+  cursor:pointer;transition:all .2s;
+}
+.me-article:hover{padding-left:8px}
+.me-article:hover .me-art-title{color:#f0ece4}
+.me-article:first-child{padding-top:0}
+.me-art-num{
+  font-family:'Lexend',sans-serif;font-size:10px;color:rgba(255,255,255,.12);
+  letter-spacing:.15em;padding-top:4px;font-weight:300;
+}
+.me-art-cat{
+  font-family:'Lexend',sans-serif;font-size:9px;letter-spacing:.25em;
+  text-transform:uppercase;color:rgba(255,255,255,.22);margin-bottom:6px;font-weight:600;
+}
+.me-art-title{
+  font-size:17px;font-weight:600;font-style:italic;
+  color:rgba(255,255,255,.5);line-height:1.35;transition:color .25s;margin-bottom:6px;
+}
+.me-art-sub{font-size:13px;color:rgba(255,255,255,.2);line-height:1.6;font-weight:300}
+.me-art-meta{
+  display:flex;gap:12px;margin-top:8px;
+  font-family:'Lexend',sans-serif;font-size:10px;color:rgba(255,255,255,.15);font-weight:300;
+}
+.me-featured{
+  margin-top:auto;padding-top:24px;border-top:1px solid rgba(255,255,255,.05);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.me-feat-label{font-family:'Lexend',sans-serif;font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.15);font-weight:600}
+.me-feat-sub{font-size:13px;font-style:italic;color:rgba(255,255,255,.3);margin-top:4px}
+.me-feat-num{font-size:40px;font-weight:300;font-style:italic;color:rgba(255,255,255,.06)}
+
+/* ═══════════════════════════════════════
+   2. FINANCE DARK
+═══════════════════════════════════════ */
+.fd{
+  min-height:100vh;background:#030c1a;
+  font-family:'Lexend',sans-serif;color:#fff;
+  position:relative;overflow:hidden;
+}
+.fd-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,100,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,100,255,.025) 1px,transparent 1px);
+  background-size:64px 64px;
+}
+.fd-glow-tl{
+  position:absolute;top:-300px;left:-200px;width:800px;height:800px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,100,255,.06) 0%,transparent 65%);pointer-events:none;
+}
+.fd-glow-br{
+  position:absolute;bottom:-300px;right:-200px;width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,200,150,.04) 0%,transparent 65%);pointer-events:none;
+}
+.fd-header{
+  position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 64px;border-bottom:1px solid rgba(255,255,255,.05);
+}
+.fd-logo{font-size:18px;font-weight:700;letter-spacing:-.02em}
+.fd-logo-accent{color:#0064ff}
+.fd-logo-tag{
+  font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.2);
+  margin-left:10px;font-weight:300;vertical-align:super;
+}
+.fd-nav{display:flex;gap:28px;align-items:center}
+.fd-nav a{
+  font-size:12px;font-weight:300;color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s;
+}
+.fd-nav a:hover{color:#fff}
+.fd-nav-div{width:1px;height:16px;background:rgba(255,255,255,.08)}
+.fd-btn-login{
+  padding:8px 20px;border:1px solid rgba(255,255,255,.1);
+  background:transparent;color:rgba(255,255,255,.5);
+  font-family:'Lexend',sans-serif;font-size:12px;font-weight:400;
+  border-radius:6px;cursor:pointer;transition:all .2s;
+}
+.fd-btn-login:hover{border-color:rgba(255,255,255,.25);color:#fff}
+.fd-btn-open{
+  padding:8px 20px;background:#0064ff;color:#fff;border:none;
+  font-family:'Lexend',sans-serif;font-size:12px;font-weight:600;
+  border-radius:6px;cursor:pointer;transition:all .2s;
+}
+.fd-btn-open:hover{background:#0052cc;box-shadow:0 0 20px rgba(0,100,255,.4)}
+.fd-hero{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;
+  padding:80px 64px;align-items:start;
+}
+.fd-left{}
+.fd-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 14px;border-radius:6px;
+  background:rgba(0,100,255,.1);border:1px solid rgba(0,100,255,.2);
+  font-size:11px;font-weight:600;color:#4d94ff;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:28px;
+}
+.fd-eyebrow-dot{width:5px;height:5px;border-radius:50%;background:#4d94ff;box-shadow:0 0 6px #4d94ff;animation:fdpulse 2s ease-in-out infinite}
+@keyframes fdpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.fd-title{
+  font-size:clamp(40px,4.5vw,66px);font-weight:700;line-height:1.08;
+  letter-spacing:-.03em;color:#fff;margin-bottom:20px;
+}
+.fd-title-accent{color:#0064ff}
+.fd-desc{
+  font-size:15px;line-height:1.85;color:rgba(255,255,255,.38);
+  font-weight:300;max-width:460px;margin-bottom:40px;
+}
+.fd-trust{display:flex;gap:36px;margin-bottom:48px}
+.fd-trust-item{}
+.fd-trust-num{
+  font-size:28px;font-weight:700;color:#fff;letter-spacing:-.03em;line-height:1;
+}
+.fd-trust-num sup{font-size:14px;color:#0064ff;vertical-align:super}
+.fd-trust-label{font-size:11px;color:rgba(255,255,255,.28);margin-top:4px;font-weight:300}
+.fd-actions{display:flex;gap:12px}
+.fd-cta{
+  padding:14px 36px;background:#0064ff;color:#fff;border:none;
+  font-family:'Lexend',sans-serif;font-size:14px;font-weight:600;
+  border-radius:8px;cursor:pointer;transition:all .3s;
+  box-shadow:0 4px 24px rgba(0,100,255,.3);
+}
+.fd-cta:hover{background:#0052cc;transform:translateY(-2px);box-shadow:0 8px 36px rgba(0,100,255,.45)}
+.fd-cta-ghost{
+  padding:14px 28px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);
+  font-family:'Lexend',sans-serif;font-size:14px;font-weight:400;
+  border-radius:8px;cursor:pointer;transition:all .2s;
+}
+.fd-cta-ghost:hover{background:rgba(255,255,255,.08);color:#fff}
+.fd-right{}
+.fd-dashboard{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;overflow:hidden;
+}
+.fd-dash-header{
+  padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.05);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(255,255,255,.02);
+}
+.fd-dash-title{font-size:13px;font-weight:600;color:#fff}
+.fd-dash-badge{
+  font-size:11px;font-weight:700;color:#22c55e;
+  background:rgba(34,197,94,.1);padding:3px 10px;border-radius:6px;
+}
+.fd-chart-wrap{padding:20px 24px 8px}
+.fd-chart{
+  display:flex;align-items:flex-end;gap:6px;height:120px;
+}
+.fd-bar{
+  flex:1;border-radius:4px 4px 0 0;position:relative;
+  background:linear-gradient(to top,rgba(0,100,255,.25),rgba(0,100,255,.1));
+  border-top:1px solid rgba(0,100,255,.3);
+  transition:all .25s;cursor:default;min-height:12px;
+}
+.fd-bar:hover{background:linear-gradient(to top,rgba(0,100,255,.5),rgba(0,100,255,.25));border-color:#0064ff}
+.fd-bar.hi{background:linear-gradient(to top,rgba(0,100,255,.7),rgba(0,100,255,.35));border-color:#0064ff}
+.fd-chart-x{display:flex;gap:6px;padding:8px 0 16px}
+.fd-cx{flex:1;font-size:9px;color:rgba(255,255,255,.15);text-align:center;letter-spacing:.06em;font-weight:400}
+.fd-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.04)}
+.fd-kpi{background:#030c1a;padding:16px 20px}
+.fd-kpi-v{font-size:20px;font-weight:700;color:#fff;letter-spacing:-.02em}
+.fd-kpi-l{font-size:10px;color:rgba(255,255,255,.22);margin-top:3px;font-weight:300}
+.fd-kpi-c{font-size:11px;color:#22c55e;margin-top:3px;font-weight:600}
+.fd-kpi-c.red{color:#ef4444}
+.fd-assets{padding:16px 24px;border-top:1px solid rgba(255,255,255,.04)}
+.fd-asset-row{
+  display:flex;align-items:center;gap:12px;padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,.03);cursor:default;transition:all .2s;
+}
+.fd-asset-row:hover{padding-left:6px}
+.fd-asset-row:last-child{border-bottom:none}
+.fd-asset-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.fd-asset-name{font-size:12px;font-weight:600;color:rgba(255,255,255,.6);flex:1}
+.fd-asset-val{font-size:12px;font-weight:700;color:#fff}
+.fd-asset-chg{font-size:11px;font-weight:600;min-width:48px;text-align:right}
+.up{color:#22c55e}.dn{color:#ef4444}
+
+/* ═══════════════════════════════════════
+   3. AURORA GLASS
+═══════════════════════════════════════ */
+.ag{
+  min-height:100vh;background:#050511;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  position:relative;overflow:hidden;
+}
+.ag-aurora{position:absolute;inset:0;pointer-events:none}
+.ag-blob{position:absolute;border-radius:50%;filter:blur(90px);animation:agblob 9s ease-in-out infinite}
+.ag-blob1{width:650px;height:650px;background:#5b21b6;opacity:.28;top:-200px;left:-150px;animation-delay:0s}
+.ag-blob2{width:500px;height:500px;background:#0ea5e9;opacity:.22;top:40%;right:-180px;animation-delay:-3.5s}
+.ag-blob3{width:450px;height:450px;background:#10b981;opacity:.18;bottom:-100px;left:28%;animation-delay:-7s}
+.ag-blob4{width:300px;height:300px;background:#f59e0b;opacity:.12;top:20%;left:40%;animation-delay:-5s}
+@keyframes agblob{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(20px,-30px) scale(1.06)}50%{transform:translate(-15px,20px) scale(.95)}75%{transform:translate(25px,10px) scale(1.04)}}
+.ag-stars{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(circle 1px at 10% 15%,rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(circle 1px at 80% 25%,rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(circle 1px at 30% 70%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(circle 1px at 65% 55%,rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(circle 1px at 45% 35%,rgba(255,255,255,.3) 0%,transparent 100%),
+    radial-gradient(circle 1px at 90% 80%,rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(circle 1px at 20% 88%,rgba(255,255,255,.3) 0%,transparent 100%);
+}
+.ag-header{
+  position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 60px;
+  background:rgba(255,255,255,.04);backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.ag-logo{
+  font-size:20px;font-weight:800;letter-spacing:-.03em;
+}
+.ag-logo-grad{
+  background:linear-gradient(135deg,#a78bfa,#38bdf8,#34d399);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.ag-nav{display:flex;gap:4px}
+.ag-nav a{
+  padding:8px 16px;border-radius:100px;
+  font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;
+  transition:all .25s;font-weight:400;
+}
+.ag-nav a:hover{background:rgba(255,255,255,.08);color:#fff}
+.ag-cta{
+  padding:10px 24px;border-radius:100px;
+  background:rgba(255,255,255,.1);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.2);color:#fff;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .25s;
+}
+.ag-cta:hover{background:rgba(255,255,255,.18);box-shadow:0 0 24px rgba(167,139,250,.25)}
+.ag-hero{
+  position:relative;z-index:2;
+  padding:100px 60px 80px;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+}
+.ag-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 18px 6px 8px;border-radius:100px;
+  background:rgba(255,255,255,.06);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.1);
+  font-size:12px;color:rgba(255,255,255,.55);margin-bottom:40px;font-weight:400;
+}
+.ag-chip-inner{
+  display:flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:100px;
+  background:linear-gradient(135deg,rgba(167,139,250,.3),rgba(56,189,248,.3));
+  font-size:11px;font-weight:700;color:#fff;
+}
+.ag-chip-dot{width:5px;height:5px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;animation:agdot 2s ease-in-out infinite}
+@keyframes agdot{0%,100%{opacity:1}50%{opacity:.3}}
+.ag-title{
+  font-size:clamp(48px,7vw,96px);font-weight:800;line-height:1.02;
+  letter-spacing:-.04em;color:#fff;margin-bottom:24px;max-width:820px;
+}
+.ag-grad1{background:linear-gradient(135deg,#a78bfa,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ag-grad2{background:linear-gradient(135deg,#38bdf8,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ag-desc{
+  font-size:18px;line-height:1.75;color:rgba(255,255,255,.4);
+  max-width:560px;margin-bottom:52px;font-weight:300;
+}
+.ag-btns{display:flex;gap:14px;justify-content:center;margin-bottom:72px}
+.ag-btn-main{
+  padding:16px 44px;border-radius:100px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;
+  box-shadow:0 4px 40px rgba(124,58,237,.4);transition:all .3s;
+}
+.ag-btn-main:hover{transform:translateY(-3px);box-shadow:0 8px 60px rgba(124,58,237,.6)}
+.ag-btn-ghost{
+  padding:16px 44px;border-radius:100px;cursor:pointer;
+  background:rgba(255,255,255,.06);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.14);
+  color:rgba(255,255,255,.6);font-size:15px;font-weight:500;
+  font-family:'Plus Jakarta Sans',sans-serif;transition:all .3s;
+}
+.ag-btn-ghost:hover{background:rgba(255,255,255,.12);color:#fff}
+.ag-cards{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  max-width:880px;width:100%;
+}
+.ag-card{
+  background:rgba(255,255,255,.05);backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,.08);border-radius:20px;
+  padding:28px;text-align:left;transition:all .35s;cursor:pointer;
+  position:relative;overflow:hidden;
+}
+.ag-card::before{
+  content:'';position:absolute;inset:0;border-radius:20px;
+  background:linear-gradient(135deg,rgba(167,139,250,.1),transparent);
+  opacity:0;transition:opacity .35s;
+}
+.ag-card:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.16);transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.ag-card:hover::before{opacity:1}
+.ag-card-icon{
+  width:48px;height:48px;border-radius:14px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:16px;
+}
+.ag-card-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:-.01em}
+.ag-card-desc{font-size:13px;color:rgba(255,255,255,.38);line-height:1.65;font-weight:300}
+.ag-stats{
+  display:flex;gap:40px;justify-content:center;
+  padding-top:60px;border-top:1px solid rgba(255,255,255,.06);
+  margin-top:60px;max-width:880px;width:100%;
+}
+.ag-stat{text-align:center}
+.ag-stat-num{
+  font-size:36px;font-weight:800;letter-spacing:-.03em;
+  background:linear-gradient(135deg,#a78bfa,#38bdf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.ag-stat-label{font-size:12px;color:rgba(255,255,255,.3);margin-top:4px;font-weight:300}
+
+/* ═══════════════════════════════════════
+   4. DARK ACADEMIA
+═══════════════════════════════════════ */
+.da{
+  min-height:100vh;background:#140e07;
+  font-family:'Cormorant Garamond',serif;
+  color:#e8d5a8;position:relative;overflow:hidden;
+}
+.da-texture{
+  position:absolute;inset:0;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  mix-blend-mode:overlay;
+}
+.da-vignette{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.5) 100%);
+}
+.da-frame{position:absolute;inset:12px;border:1px solid rgba(180,140,60,.08);pointer-events:none}
+.da-corner{position:absolute;width:20px;height:20px}
+.da-c1{top:-1px;left:-1px;border-top:2px solid rgba(180,140,60,.3);border-left:2px solid rgba(180,140,60,.3)}
+.da-c2{top:-1px;right:-1px;border-top:2px solid rgba(180,140,60,.3);border-right:2px solid rgba(180,140,60,.3)}
+.da-c3{bottom:-1px;left:-1px;border-bottom:2px solid rgba(180,140,60,.3);border-left:2px solid rgba(180,140,60,.3)}
+.da-c4{bottom:-1px;right:-1px;border-bottom:2px solid rgba(180,140,60,.3);border-right:2px solid rgba(180,140,60,.3)}
+.da-header{
+  position:relative;z-index:2;
+  text-align:center;padding:44px 80px 28px;
+  border-bottom:1px solid rgba(180,140,60,.1);
+}
+.da-vol{
+  font-family:'Lexend',sans-serif;font-size:9px;letter-spacing:.5em;
+  text-transform:uppercase;color:rgba(180,140,60,.4);margin-bottom:14px;font-weight:300;
+}
+.da-logo{font-size:clamp(24px,3vw,40px);font-weight:600;color:#e8d5a8;letter-spacing:.04em}
+.da-logo em{font-style:italic;color:#b48c3c}
+.da-logo-sub{
+  font-family:'Lexend',sans-serif;font-size:10px;letter-spacing:.3em;
+  text-transform:uppercase;color:rgba(180,140,60,.35);margin-top:8px;font-weight:300;
+}
+.da-nav{
+  display:flex;justify-content:center;gap:36px;margin-top:20px;
+}
+.da-nav a{
+  font-family:'Lexend',sans-serif;font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:rgba(180,140,60,.4);text-decoration:none;
+  font-weight:400;transition:color .3s;
+}
+.da-nav a:hover{color:#b48c3c}
+.da-body{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:1fr 1px 1fr;
+  min-height:calc(100vh - 180px);
+}
+.da-vd{background:linear-gradient(to bottom,transparent,rgba(180,140,60,.15) 20%,rgba(180,140,60,.15) 80%,transparent)}
+.da-left{padding:64px 80px;display:flex;flex-direction:column;justify-content:center}
+.da-right{padding:64px 80px;display:flex;flex-direction:column;justify-content:center;gap:0}
+.da-kicker{
+  font-family:'Lexend',sans-serif;font-size:9px;letter-spacing:.35em;
+  text-transform:uppercase;color:rgba(180,140,60,.4);margin-bottom:20px;font-weight:300;
+}
+.da-title{
+  font-size:clamp(44px,5vw,72px);font-weight:600;line-height:1.08;
+  color:#e8d5a8;margin-bottom:28px;
+}
+.da-title em{font-style:italic;color:#b48c3c}
+.da-body-text{
+  font-size:16px;line-height:2;color:rgba(232,213,168,.4);
+  margin-bottom:36px;font-weight:300;
+}
+.da-ornament{
+  text-align:center;font-size:20px;color:rgba(180,140,60,.2);
+  letter-spacing:8px;margin:0 0 24px;
+}
+.da-btn{
+  display:inline-flex;align-items:center;gap:14px;
+  padding:13px 32px;
+  border:1px solid rgba(180,140,60,.25);
+  background:rgba(180,140,60,.05);color:rgba(180,140,60,.7);
+  font-family:'Cormorant Garamond',serif;font-size:14px;letter-spacing:.1em;
+  cursor:pointer;transition:all .3s;width:fit-content;
+}
+.da-btn:hover{background:rgba(180,140,60,.1);border-color:#b48c3c;color:#b48c3c}
+.da-quote{
+  padding:28px 0;
+  border-top:1px solid rgba(180,140,60,.08);
+  border-bottom:1px solid rgba(180,140,60,.08);
+  margin-bottom:32px;
+}
+.da-quote-text{
+  font-size:17px;line-height:1.9;font-style:italic;
+  color:rgba(232,213,168,.35);margin-bottom:12px;
+}
+.da-quote-cite{
+  font-family:'Lexend',sans-serif;font-size:9px;letter-spacing:.25em;
+  text-transform:uppercase;color:rgba(180,140,60,.3);font-weight:300;
+}
+.da-list{display:flex;flex-direction:column;gap:0}
+.da-list-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 0;border-bottom:1px solid rgba(180,140,60,.06);
+  cursor:default;transition:padding .25s;
+}
+.da-list-item:hover{padding-left:10px}
+.da-li-name{font-size:14px;color:rgba(232,213,168,.45);letter-spacing:.04em}
+.da-li-val{
+  font-family:'Lexend',sans-serif;font-size:10px;letter-spacing:.15em;
+  color:rgba(180,140,60,.4);font-weight:400;
+}
+
+/* ═══════════════════════════════════════
+   5. PASTEL POP
+═══════════════════════════════════════ */
+.pp{
+  min-height:100vh;background:#faf5ff;
+  font-family:'Plus Jakarta Sans',sans-serif;color:#18062e;
+}
+.pp-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 60px;background:#fff;
+  border-bottom:2px solid #f0e6ff;
+}
+.pp-logo{font-size:20px;font-weight:800;color:#18062e;letter-spacing:-.04em;display:flex;align-items:center;gap:6px}
+.pp-logo-blob{
+  width:26px;height:26px;border-radius:50% 30% 50% 30%;
+  background:linear-gradient(135deg,#c026d3,#7c3aed);
+  display:flex;align-items:center;justify-content:center;font-size:12px;
+  animation:ppblob 3s ease-in-out infinite;
+}
+@keyframes ppblob{0%,100%{border-radius:50% 30% 50% 30%}50%{border-radius:30% 50% 30% 50%}}
+.pp-nav{display:flex;gap:28px}
+.pp-nav a{
+  font-size:14px;font-weight:500;color:rgba(24,6,46,.35);
+  text-decoration:none;transition:color .2s;
+}
+.pp-nav a:hover{color:#7c3aed}
+.pp-cta{
+  padding:10px 24px;border-radius:12px;
+  background:linear-gradient(135deg,#c026d3,#7c3aed);
+  color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;
+  transition:all .3s;box-shadow:0 4px 16px rgba(124,58,237,.3);
+}
+.pp-cta:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,.45)}
+.pp-hero{
+  display:grid;grid-template-columns:1.1fr 1fr;gap:60px;
+  padding:80px 60px;align-items:center;
+}
+.pp-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#f5edff;color:#9333ea;
+  font-size:12px;font-weight:700;
+  padding:6px 14px 6px 8px;border-radius:100px;margin-bottom:28px;
+}
+.pp-pill-icon{
+  width:22px;height:22px;border-radius:50%;
+  background:linear-gradient(135deg,#c026d3,#7c3aed);
+  display:flex;align-items:center;justify-content:center;font-size:11px;
+}
+.pp-title{
+  font-size:clamp(44px,5.5vw,72px);font-weight:800;line-height:1.06;
+  letter-spacing:-.04em;color:#18062e;margin-bottom:20px;
+}
+.pp-grad{
+  background:linear-gradient(135deg,#c026d3,#7c3aed);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.pp-desc{
+  font-size:16px;line-height:1.8;color:rgba(24,6,46,.45);
+  margin-bottom:40px;max-width:440px;font-weight:400;
+}
+.pp-actions{display:flex;gap:14px;align-items:center;margin-bottom:52px}
+.pp-btn1{
+  padding:14px 36px;border-radius:14px;
+  background:linear-gradient(135deg,#c026d3,#7c3aed);
+  color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;
+  box-shadow:0 4px 20px rgba(124,58,237,.35);transition:all .3s;
+}
+.pp-btn1:hover{transform:translateY(-3px);box-shadow:0 8px 36px rgba(124,58,237,.5)}
+.pp-btn2{
+  padding:14px 32px;border-radius:14px;border:2px solid #e8d4ff;
+  background:#fff;color:#18062e;font-size:15px;font-weight:600;cursor:pointer;
+  transition:all .25s;
+}
+.pp-btn2:hover{border-color:#9333ea;color:#9333ea}
+.pp-social{display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(24,6,46,.35)}
+.pp-avatars{display:flex}
+.pp-av{
+  width:28px;height:28px;border-radius:50%;border:2px solid #fff;
+  background:linear-gradient(135deg,#c026d3,#7c3aed);
+  margin-left:-8px;font-size:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;
+}
+.pp-av:first-child{margin-left:0}
+.pp-right{display:flex;flex-direction:column;gap:12px}
+.pp-big-tile{
+  background:#fff;border-radius:24px;padding:28px;
+  border:2px solid rgba(147,51,234,.08);
+  box-shadow:0 8px 40px rgba(147,51,234,.06);
+}
+.pp-big-tile-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.pp-big-tile-title{font-size:15px;font-weight:700;color:#18062e}
+.pp-status{
+  font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;
+}
+.st-green{background:rgba(34,197,94,.1);color:#16a34a}
+.st-purple{background:rgba(147,51,234,.1);color:#7c3aed}
+.pp-progress-wrap{height:8px;background:rgba(147,51,234,.08);border-radius:100px;overflow:hidden;margin-bottom:8px}
+.pp-progress{height:100%;border-radius:100px;background:linear-gradient(90deg,#c026d3,#7c3aed)}
+.pp-p-meta{display:flex;justify-content:space-between;font-size:12px;color:rgba(24,6,46,.35)}
+.pp-small-tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pp-st{
+  padding:20px;border-radius:18px;border:2px solid rgba(0,0,0,.04);
+  transition:transform .25s;cursor:default;
+}
+.pp-st:hover{transform:translateY(-4px)}
+.pp-st-icon{font-size:24px;margin-bottom:10px}
+.pp-st-num{font-size:24px;font-weight:800;color:#18062e;letter-spacing:-.03em;line-height:1}
+.pp-st-label{font-size:11px;color:rgba(24,6,46,.4);margin-top:4px;font-weight:400}
+.pp-st1{background:linear-gradient(135deg,#fdf4ff,#f3e8ff)}
+.pp-st2{background:linear-gradient(135deg,#eff6ff,#dbeafe)}
+.pp-st3{background:linear-gradient(135deg,#f0fdf4,#dcfce7)}
+.pp-st4{background:linear-gradient(135deg,#fff7ed,#fed7aa)}
+
+/* ═══════════════════════════════════════
+   6. NEON FUTURIST
+═══════════════════════════════════════ */
+.nf{
+  min-height:100vh;background:#030509;
+  font-family:'Space Mono',monospace;color:#fff;
+  position:relative;overflow:hidden;
+}
+.nf-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,245,160,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,245,160,.03) 1px,transparent 1px);
+  background-size:48px 48px;
+  animation:nfgrid 25s linear infinite;
+}
+@keyframes nfgrid{to{background-position:0 48px}}
+.nf-scanlines{
+  position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 4px);
+}
+.nf-noise{
+  position:absolute;inset:0;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.015'/%3E%3C/svg%3E");
+  mix-blend-mode:screen;
+}
+.nf-header{
+  position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 56px;
+  background:rgba(3,5,9,.7);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(0,245,160,.1);
+}
+.nf-logo{
+  font-size:16px;font-weight:700;letter-spacing:.08em;
+  color:#00f5a0;text-shadow:0 0 20px rgba(0,245,160,.5);
+  display:flex;align-items:center;gap:10px;
+}
+.nf-logo-bracket{color:rgba(0,245,160,.35)}
+.nf-nav{display:flex;gap:36px}
+.nf-nav a{
+  font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:400;
+  color:rgba(0,245,160,.35);text-decoration:none;transition:all .25s;
+}
+.nf-nav a:hover{color:#00f5a0;text-shadow:0 0 12px rgba(0,245,160,.6)}
+.nf-status{
+  display:flex;align-items:center;gap:16px;
+  font-size:10px;letter-spacing:.15em;
+}
+.nf-online{color:#00f5a0;display:flex;align-items:center;gap:6px;font-weight:400}
+.nf-dot{
+  width:6px;height:6px;border-radius:50%;background:#00f5a0;
+  box-shadow:0 0 8px #00f5a0;animation:nfdot 1.5s step-end infinite;
+}
+@keyframes nfdot{0%,100%{opacity:1}50%{opacity:.15}}
+.nf-connect{
+  padding:7px 16px;border:1px solid rgba(0,245,160,.3);
+  background:rgba(0,245,160,.05);color:#00f5a0;
+  font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.15em;
+  cursor:pointer;transition:all .25s;border-radius:2px;
+}
+.nf-connect:hover{background:rgba(0,245,160,.1);box-shadow:0 0 16px rgba(0,245,160,.15)}
+.nf-hero{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  min-height:calc(100vh - 73px);
+}
+.nf-left{
+  padding:80px 56px;display:flex;flex-direction:column;justify-content:center;
+  border-right:1px solid rgba(0,245,160,.07);
+}
+.nf-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:10px;letter-spacing:.25em;text-transform:uppercase;font-weight:400;
+  color:#00f5a0;margin-bottom:32px;
+  border:1px solid rgba(0,245,160,.2);padding:6px 14px;
+  background:rgba(0,245,160,.04);border-radius:2px;
+  width:fit-content;
+}
+.nf-tag-arrow{color:rgba(0,245,160,.4)}
+.nf-title{
+  font-size:clamp(40px,5vw,68px);font-weight:700;line-height:1.08;
+  color:#fff;margin-bottom:28px;letter-spacing:-.02em;
+}
+.nf-title .g{color:#00f5a0;text-shadow:0 0 40px rgba(0,245,160,.35)}
+.nf-title .b{color:#7b61ff;text-shadow:0 0 40px rgba(123,97,255,.35)}
+.nf-desc{
+  font-family:'Lexend',sans-serif;font-size:14px;line-height:1.85;
+  color:rgba(255,255,255,.32);margin-bottom:48px;font-weight:300;max-width:420px;
+}
+.nf-metrics{display:flex;gap:40px;margin-bottom:48px}
+.nf-metric{}
+.nf-m-num{
+  font-size:28px;font-weight:700;color:#00f5a0;
+  text-shadow:0 0 20px rgba(0,245,160,.3);line-height:1;
+}
+.nf-m-label{
+  font-family:'Lexend',sans-serif;font-size:10px;
+  color:rgba(255,255,255,.2);margin-top:4px;font-weight:300;letter-spacing:.05em;
+}
+.nf-btns{display:flex;gap:14px}
+.nf-btn-main{
+  padding:13px 36px;background:transparent;
+  border:2px solid #00f5a0;color:#00f5a0;
+  font-family:'Space Mono',monospace;font-size:12px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+  transition:all .25s;position:relative;overflow:hidden;
+  box-shadow:0 0 24px rgba(0,245,160,.1),inset 0 0 24px rgba(0,245,160,.04);
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+}
+.nf-btn-main::before{
+  content:'';position:absolute;inset:0;
+  background:#00f5a0;transform:translateX(-101%);transition:transform .3s var(--ease);
+}
+.nf-btn-main:hover::before{transform:translateX(0)}
+.nf-btn-main:hover{color:#030509}
+.nf-btn-main span{position:relative;z-index:1}
+.nf-btn-sec{
+  padding:13px 28px;background:transparent;
+  border:1px solid rgba(123,97,255,.35);color:rgba(123,97,255,.7);
+  font-family:'Space Mono',monospace;font-size:12px;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .25s;
+}
+.nf-btn-sec:hover{border-color:#7b61ff;color:#7b61ff;box-shadow:0 0 20px rgba(123,97,255,.15)}
+.nf-right{
+  padding:60px 56px;display:flex;flex-direction:column;justify-content:center;gap:16px;
+  background:rgba(0,0,0,.2);
+}
+.nf-term{
+  background:rgba(0,245,160,.02);
+  border:1px solid rgba(0,245,160,.12);
+  border-radius:4px;overflow:hidden;
+  box-shadow:0 0 40px rgba(0,245,160,.04);
+}
+.nf-term-bar{
+  display:flex;align-items:center;gap:6px;padding:10px 14px;
+  background:rgba(0,245,160,.05);border-bottom:1px solid rgba(0,245,160,.08);
+  justify-content:space-between;
+}
+.nf-term-dots{display:flex;gap:5px}
+.nf-td{width:9px;height:9px;border-radius:50%}
+.nf-term-title{font-size:10px;color:rgba(0,245,160,.3);letter-spacing:.1em}
+.nf-term-body{padding:20px;font-size:12px;line-height:2.1}
+.c-g{color:#00f5a0}.c-b{color:#7b61ff}.c-y{color:#ffd60a}
+.c-c{color:#00e8ff}.c-w{color:rgba(255,255,255,.75)}.c-dim{color:rgba(255,255,255,.2)}
+.nf-cur{display:inline-block;width:7px;height:14px;background:#00f5a0;vertical-align:bottom;animation:nfdot 1s step-end infinite}
+.nf-panels{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nf-panel{
+  padding:14px 16px;
+  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);
+  border-radius:3px;
+}
+.nf-p-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:6px;font-family:'Lexend',sans-serif;font-weight:300}
+.nf-p-val{font-size:18px;font-weight:700}
+.nf-p-val.green{color:#00f5a0;text-shadow:0 0 12px rgba(0,245,160,.3)}
+.nf-p-val.purple{color:#7b61ff;text-shadow:0 0 12px rgba(123,97,255,.3)}
+.nf-p-sub{font-family:'Lexend',sans-serif;font-size:10px;color:rgba(255,255,255,.18);margin-top:3px;font-weight:300}
+</style>
+</head>
+<body>
+
+<!-- GLOBAL NAV -->
+<nav class="global-nav">
+  <button class="gnb on" onclick="show('me',this)">① Mono Editorial</button>
+  <button class="gnb" onclick="show('fd',this)">② Finance Dark</button>
+  <button class="gnb" onclick="show('ag',this)">③ Aurora Glass</button>
+  <button class="gnb" onclick="show('da',this)">④ Dark Academia</button>
+  <button class="gnb" onclick="show('pp',this)">⑤ Pastel Pop</button>
+  <button class="gnb" onclick="show('nf',this)">⑥ Neon Futurist</button>
+  <span class="gnb-label">Mô tả chi tiết + Demo · 6 mẫu</span>
+</nav>
+
+
+<!-- ═══════════════════════════════════════
+     ① MONO EDITORIAL
+═══════════════════════════════════════ -->
+<div id="sec-me" class="section-wrap on">
+  <div class="desc-card">
+    <div class="desc-top">
+      <div class="desc-badge" style="background:rgba(240,236,228,.06)">📰</div>
+      <div class="desc-main">
+        <div class="desc-style-label">Phong cách số 01</div>
+        <div class="desc-title">Monochrome Editorial</div>
+        <div class="desc-summary">Lấy cảm hứng từ tạp chí in ấn cao cấp — nơi typography là thứ vũ khí duy nhất. Toàn bộ giao diện xây trên nền đen sâu, không dùng màu sắc nổi bật, mọi thứ đều được tinh chỉnh bằng tương phản sáng/tối và cỡ chữ. Cảm giác sang trọng đến từ sự kiềm chế, không phải từ sự phô trương.</div>
+      </div>
+    </div>
+    <div class="desc-grid">
+      <div class="desc-item">
+        <div class="desc-item-label">Màu sắc chủ đạo</div>
+        <div class="desc-colors">
+          <div class="color-dot" style="background:#0e0e0e" title="#0e0e0e"></div>
+          <div class="color-dot" style="background:#f0ece4" title="#f0ece4"></div>
+          <div class="color-dot" style="background:#888580" title="#888580"></div>
+          <div class="color-dot" style="background:#2a2a2a" title="#2a2a2a"></div>
+        </div>
+        <div class="desc-item-val" style="margin-top:8px">Đen sâu · Kem ngà · Xám trung tính · Không accent</div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Font chữ</div>
+        <div class="desc-item-val">
+          <strong>Crimson Pro (Display)</strong>Serif có chân, thanh lịch kiểu báo in
+          <strong style="margin-top:6px">Lexend (Body)</strong>Sans-serif đọc nhanh, hiện đại
+        </div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Phù hợp với</div>
+        <div class="desc-tags">
+          <span class="tag-chip">Tạp chí</span>
+          <span class="tag-chip">Báo điện tử</span>
+          <span class="tag-chip">Blog cao cấp</span>
+          <span class="tag-chip">Podcast</span>
+          <span class="tag-chip">Newsletter</span>
+          <span class="tag-chip">Portfolio văn</span>
+        </div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Đặc trưng nổi bật</div>
+        <div class="desc-item-val">
+          Layout chia cột đối xứng · Ticker tin tức · Số thứ tự bài viết ghost cỡ lớn · Divider dọc tinh tế · Micro-animation hover trên tiêu đề bài
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="demo-label">Bản demo tương tác bên dưới</div>
+
+  <div class="me">
+    <div class="me-header">
+      <div class="me-issue">Số 84 · Tháng 3, 2026</div>
+      <div class="me-logo">Vantage</div>
+      <div class="me-meta">
+        <div class="me-date">07.03.2026</div>
+        <button class="me-search">⌕</button>
+      </div>
+    </div>
+    <div class="me-ticker">
+      <div class="me-ticker-inner">
+        <span class="me-ticker-item">📍 Hà Nội <span class="me-ticker-sep">·</span> 28°C</span>
+        <span class="me-ticker-item">⚡ GDP quý I tăng 7.2%</span>
+        <span class="me-ticker-item">🎬 Điện ảnh Việt lọt top 10 toàn cầu</span>
+        <span class="me-ticker-item">🤖 AI Startup Việt định giá 1 tỷ USD</span>
+        <span class="me-ticker-item">🏆 Đội tuyển giành vé dự World Cup</span>
+        <span class="me-ticker-item">📍 Hà Nội <span class="me-ticker-sep">·</span> 28°C</span>
+        <span class="me-ticker-item">⚡ GDP quý I tăng 7.2%</span>
+        <span class="me-ticker-item">🎬 Điện ảnh Việt lọt top 10 toàn cầu</span>
+        <span class="me-ticker-item">🤖 AI Startup Việt định giá 1 tỷ USD</span>
+        <span class="me-ticker-item">🏆 Đội tuyển giành vé dự World Cup</span>
+      </div>
+    </div>
+    <section class="me-body">
+      <div class="me-left">
+        <div class="me-cat">Chuyên đề · Tương lai & Con người</div>
+        <div class="me-center-content">
+          <div class="me-issue-ghost">84</div>
+          <h1 class="me-title">Khi máy móc<br>học cách<br><em>cảm nhận</em></h1>
+          <p class="me-subtitle">Không còn là khoa học viễn tưởng — AI đang bắt đầu hiểu được sắc thái cảm xúc con người. Điều đó thay đổi mọi thứ chúng ta biết về giao tiếp.</p>
+          <button class="me-read">Đọc bài viết đầy đủ →</button>
+        </div>
+        <div class="me-foot">
+          <span class="me-foot-item">12 phút đọc</span>
+          <span class="me-foot-item">·</span>
+          <span class="me-foot-item">Nguyễn Minh Tú</span>
+          <span class="me-foot-item">·</span>
+          <span class="me-foot-item">Chuyên mục AI</span>
+        </div>
+      </div>
+      <div class="me-vdivide"></div>
+      <div class="me-right">
+        <div class="me-articles">
+          <div class="me-article">
+            <div class="me-art-num">01</div>
+            <div>
+              <div class="me-art-cat">Thiết Kế</div>
+              <div class="me-art-title">Thẩm mỹ trong thời đại thuật toán — ai còn định nghĩa được cái đẹp?</div>
+              <div class="me-art-sub">Khi AI có thể tạo ra vẻ đẹp không phân biệt được, nghệ sĩ còn lại vai trò gì trong hệ sinh thái sáng tạo?</div>
+              <div class="me-art-meta"><span>8 phút</span><span>·</span><span>Trần Thảo Vy</span></div>
+            </div>
+          </div>
+          <div class="me-article">
+            <div class="me-art-num">02</div>
+            <div>
+              <div class="me-art-cat">Kinh Tế</div>
+              <div class="me-art-title">Nền kinh tế chú ý và những gì chúng ta đánh mất mãi mãi</div>
+              <div class="me-art-sub">Phân tích chi phí vô hình của việc luôn kết nối trong thời đại mạng xã hội toàn diện.</div>
+              <div class="me-art-meta"><span>11 phút</span><span>·</span><span>Lê Đức Thịnh</span></div>
+            </div>
+          </div>
+          <div class="me-article">
+            <div class="me-art-num">03</div>
+            <div>
+              <div class="me-art-cat">Văn Hóa</div>
+              <div class="me-art-title">Thế hệ không biên giới — bản sắc trong thế giới phẳng</div>
+              <div class="me-art-sub">Khi địa lý không còn là rào cản, cộng đồng hình thành như thế nào?</div>
+              <div class="me-art-meta"><span>7 phút</span><span>·</span><span>Phạm Hoa</span></div>
+            </div>
+          </div>
+          <div class="me-article">
+            <div class="me-art-num">04</div>
+            <div>
+              <div class="me-art-cat">Khoa Học</div>
+              <div class="me-art-title">Giấc ngủ và sự sáng tạo — khoa học đằng sau những ý tưởng lớn</div>
+              <div class="me-art-sub">Não bộ làm gì trong 8 giờ chúng ta ngủ và tại sao điều đó quan trọng với đổi mới.</div>
+              <div class="me-art-meta"><span>9 phút</span><span>·</span><span>Hoàng Nam</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="me-featured">
+          <div>
+            <div class="me-feat-label">Số tiếp theo</div>
+            <div class="me-feat-sub">Chủ đề: Con người & Không gian số</div>
+          </div>
+          <div class="me-feat-num">85</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ② FINANCE DARK
+═══════════════════════════════════════ -->
+<div id="sec-fd" class="section-wrap">
+  <div class="desc-card">
+    <div class="desc-top">
+      <div class="desc-badge" style="background:rgba(0,100,255,.12)">📈</div>
+      <div class="desc-main">
+        <div class="desc-style-label">Phong cách số 02</div>
+        <div class="desc-title">Finance Dark</div>
+        <div class="desc-summary">Giao diện tối chuyên nghiệp dành cho nền tảng tài chính — xây dựng trên nền xanh navy sâu, accent xanh dương điện, với lưới nền mờ tạo chiều sâu kỹ thuật. Truyền tải sự uy tín, độ tin cậy và chuyên nghiệp cao. Dashboard số liệu tích hợp trực tiếp vào trang chủ giúp người dùng tin tưởng ngay từ lần đầu.</div>
+      </div>
+    </div>
+    <div class="desc-grid">
+      <div class="desc-item">
+        <div class="desc-item-label">Màu sắc chủ đạo</div>
+        <div class="desc-colors">
+          <div class="color-dot" style="background:#030c1a"></div>
+          <div class="color-dot" style="background:#0064ff"></div>
+          <div class="color-dot" style="background:#22c55e"></div>
+          <div class="color-dot" style="background:#ef4444"></div>
+          <div class="color-dot" style="background:#1a2a40"></div>
+        </div>
+        <div class="desc-item-val" style="margin-top:8px">Navy sâu · Xanh điện · Xanh lá tăng · Đỏ giảm</div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Font chữ</div>
+        <div class="desc-item-val">
+          <strong>Lexend (Toàn bộ)</strong>Thiết kế để đọc số liệu nhanh — chân rõ, đều, không mơ hồ dữ liệu
+        </div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Phù hợp với</div>
+        <div class="desc-tags">
+          <span class="tag-chip">Fintech</span>
+          <span class="tag-chip">Ngân hàng số</span>
+          <span class="tag-chip">Đầu tư chứng khoán</span>
+          <span class="tag-chip">Quản lý tài sản</span>
+          <span class="tag-chip">Crypto</span>
+          <span class="tag-chip">B2B Finance</span>
+        </div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Đặc trưng nổi bật</div>
+        <div class="desc-item-val">
+          Lưới nền kỹ thuật · Glow xanh động · Dashboard bar chart tích hợp · KPI card 2×2 · Danh sách tài sản với màu tăng/giảm · Trust stats row
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="demo-label">Bản demo tương tác bên dưới</div>
+
+  <div class="fd">
+    <div class="fd-grid"></div><div class="fd-glow-tl"></div><div class="fd-glow-br"></div>
+    <header class="fd-header">
+      <div class="fd-logo">Apex<span class="fd-logo-accent">Capital</span><span class="fd-logo-tag">PRO</span></div>
+      <nav class="fd-nav">
+        <a href="#">Thị trường</a><a href="#">Sản phẩm</a>
+        <div class="fd-nav-div"></div>
+        <a href="#">Nghiên cứu</a><a href="#">Về chúng tôi</a>
+      </nav>
+      <div style="display:flex;gap:10px">
+        <button class="fd-btn-login">Đăng nhập</button>
+        <button class="fd-btn-open">Mở tài khoản</button>
+      </div>
+    </header>
+    <section class="fd-hero">
+      <div class="fd-left">
+        <div class="fd-eyebrow"><span class="fd-eyebrow-dot"></span>Nền tảng đầu tư hàng đầu Việt Nam</div>
+        <h1 class="fd-title">Đầu tư <span class="fd-title-accent">thông minh</span><br>hơn mỗi ngày</h1>
+        <p class="fd-desc">Truy cập hàng nghìn thị trường toàn cầu, phân tích AI thời gian thực và danh mục đầu tư được cá nhân hóa — tất cả trong một nền tảng duy nhất, bảo mật tuyệt đối.</p>
+        <div class="fd-trust">
+          <div class="fd-trust-item"><div class="fd-trust-num">$4.2<sup>T</sup></div><div class="fd-trust-label">Tổng tài sản quản lý</div></div>
+          <div class="fd-trust-item"><div class="fd-trust-num">2.8<sup>M</sup></div><div class="fd-trust-label">Nhà đầu tư tin tưởng</div></div>
+          <div class="fd-trust-item"><div class="fd-trust-num">99<sup>%</sup></div><div class="fd-trust-label">Uptime hệ thống</div></div>
+        </div>
+        <div class="fd-actions">
+          <button class="fd-cta">Bắt đầu đầu tư</button>
+          <button class="fd-cta-ghost">Xem demo →</button>
+        </div>
+      </div>
+      <div class="fd-right">
+        <div class="fd-dashboard">
+          <div class="fd-dash-header">
+            <div class="fd-dash-title">Hiệu suất danh mục · 8 tháng gần nhất</div>
+            <div class="fd-dash-badge">↑ +23.4% YTD</div>
+          </div>
+          <div class="fd-chart-wrap">
+            <div class="fd-chart">
+              <div class="fd-bar" style="height:38%"></div><div class="fd-bar" style="height:52%"></div>
+              <div class="fd-bar" style="height:46%"></div><div class="fd-bar" style="height:63%"></div>
+              <div class="fd-bar" style="height:57%"></div><div class="fd-bar" style="height:70%"></div>
+              <div class="fd-bar" style="height:65%"></div><div class="fd-bar hi" style="height:84%"></div>
+            </div>
+            <div class="fd-chart-x">
+              <div class="fd-cx">T8</div><div class="fd-cx">T9</div><div class="fd-cx">T10</div><div class="fd-cx">T11</div>
+              <div class="fd-cx">T12</div><div class="fd-cx">T1</div><div class="fd-cx">T2</div><div class="fd-cx">T3</div>
+            </div>
+          </div>
+          <div class="fd-kpi-grid">
+            <div class="fd-kpi"><div class="fd-kpi-v">$128,450</div><div class="fd-kpi-l">Giá trị danh mục</div><div class="fd-kpi-c">↑ +$2,840 hôm nay</div></div>
+            <div class="fd-kpi"><div class="fd-kpi-v">23.4%</div><div class="fd-kpi-l">Lợi nhuận từ đầu năm</div><div class="fd-kpi-c">↑ Vượt chỉ số 8.2%</div></div>
+            <div class="fd-kpi"><div class="fd-kpi-v">0.82</div><div class="fd-kpi-l">Hệ số Sharpe</div><div class="fd-kpi-c">↑ Tốt hơn 94% quỹ</div></div>
+            <div class="fd-kpi"><div class="fd-kpi-v">-12.1%</div><div class="fd-kpi-l">Max Drawdown</div><div class="fd-kpi-c red">↓ Rủi ro thấp</div></div>
+          </div>
+          <div class="fd-assets">
+            <div class="fd-asset-row"><div class="fd-asset-dot" style="background:#0064ff"></div><div class="fd-asset-name">VN-Index ETF</div><div class="fd-asset-val">$42,100</div><div class="fd-asset-chg up">↑ +2.4%</div></div>
+            <div class="fd-asset-row"><div class="fd-asset-dot" style="background:#22c55e"></div><div class="fd-asset-name">Vàng SJC</div><div class="fd-asset-val">$28,900</div><div class="fd-asset-chg up">↑ +0.8%</div></div>
+            <div class="fd-asset-row"><div class="fd-asset-dot" style="background:#f59e0b"></div><div class="fd-asset-name">USD/VND</div><div class="fd-asset-val">$18,600</div><div class="fd-asset-chg dn">↓ -0.3%</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ③ AURORA GLASS
+═══════════════════════════════════════ -->
+<div id="sec-ag" class="section-wrap">
+  <div class="desc-card">
+    <div class="desc-top">
+      <div class="desc-badge" style="background:rgba(124,58,237,.15)">🌌</div>
+      <div class="desc-main">
+        <div class="desc-style-label">Phong cách số 03</div>
+        <div class="desc-title">Aurora Glass</div>
+        <div class="desc-summary">Glassmorphism nâng cấp — các blob màu sắc (tím, xanh dương, ngọc lam) tạo thành nền aurora động, mọi thành phần đều có backdrop-filter: blur, tạo chiều sâu đa lớp. Cảm giác như nhìn qua kính tô màu trong không gian. Kết hợp ánh sáng mềm và hiệu ứng chuyển động tinh tế để tạo trải nghiệm huyền ảo, hiện đại.</div>
+      </div>
+    </div>
+    <div class="desc-grid">
+      <div class="desc-item">
+        <div class="desc-item-label">Màu sắc chủ đạo</div>
+        <div class="desc-colors">
+          <div class="color-dot" style="background:#050511"></div>
+          <div class="color-dot" style="background:#5b21b6"></div>
+          <div class="color-dot" style="background:#0ea5e9"></div>
+          <div class="color-dot" style="background:#10b981"></div>
+          <div class="color-dot" style="background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2)"></div>
+        </div>
+        <div class="desc-item-val" style="margin-top:8px">Đen vũ trụ · Tím · Xanh dương · Ngọc · Kính mờ</div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Font chữ</div>
+        <div class="desc-item-val">
+          <strong>Plus Jakarta Sans (Toàn bộ)</strong>Sans-serif hình học, rounded, hiện đại — phù hợp với tính chất "mềm" của glass
+        </div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Phù hợp với</div>
+        <div class="desc-tags">
+          <span class="tag-chip">AI Platform</span>
+          <span class="tag-chip">SaaS cao cấp</span>
+          <span class="tag-chip">Creative Tools</span>
+          <span class="tag-chip">Web3 / NFT</span>
+          <span class="tag-chip">Startup tech</span>
+          <span class="tag-chip">Landing page</span>
+        </div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Đặc trưng nổi bật</div>
+        <div class="desc-item-val">
+          4 blob aurora động · Glassmorphism card (backdrop blur) · Chip thông báo có dot pulse · Gradient text 3 màu · Card hover nâng lên · Stats bar ở cuối
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="demo-label">Bản demo tương tác bên dưới</div>
+
+  <div class="ag">
+    <div class="ag-aurora">
+      <div class="ag-blob ag-blob1"></div><div class="ag-blob ag-blob2"></div>
+      <div class="ag-blob ag-blob3"></div><div class="ag-blob ag-blob4"></div>
+    </div>
+    <div class="ag-stars"></div>
+    <header class="ag-header">
+      <div class="ag-logo"><span class="ag-logo-grad">AuraLab</span></div>
+      <nav class="ag-nav">
+        <a href="#">Giải pháp</a><a href="#">Tính năng</a><a href="#">Giá cả</a><a href="#">Blog</a>
+      </nav>
+      <button class="ag-cta">Bắt đầu ngay</button>
+    </header>
+    <section class="ag-hero">
+      <div class="ag-chip">
+        <span class="ag-chip-inner"><span class="ag-chip-dot"></span>Beta công khai</span>
+        Nền tảng AI thế hệ mới đã ra mắt
+      </div>
+      <h1 class="ag-title">Nền tảng AI<br><span class="ag-grad1">thông minh</span> cho<br><span class="ag-grad2">mọi doanh nghiệp</span></h1>
+      <p class="ag-desc">Kết hợp trí tuệ nhân tạo, dữ liệu thời gian thực và giao diện trực quan để đưa doanh nghiệp bạn lên tầm cao mới — không cần kỹ năng kỹ thuật.</p>
+      <div class="ag-btns">
+        <button class="ag-btn-main">Dùng thử miễn phí</button>
+        <button class="ag-btn-ghost">Xem demo →</button>
+      </div>
+      <div class="ag-cards">
+        <div class="ag-card"><div class="ag-card-icon">⚡</div><div class="ag-card-title">Tốc độ vượt trội</div><div class="ag-card-desc">Phản hồi dưới 50ms với cơ sở hạ tầng edge computing phân tán toàn cầu.</div></div>
+        <div class="ag-card"><div class="ag-card-icon">🔒</div><div class="ag-card-title">Bảo mật tuyệt đối</div><div class="ag-card-desc">Mã hóa zero-knowledge — dữ liệu của bạn chỉ thuộc về bạn, không ai có thể truy cập.</div></div>
+        <div class="ag-card"><div class="ag-card-icon">🧠</div><div class="ag-card-title">AI tự học</div><div class="ag-card-desc">Hệ thống học từ hành vi người dùng và tự tối ưu quy trình theo thời gian thực.</div></div>
+      </div>
+      <div class="ag-stats">
+        <div class="ag-stat"><div class="ag-stat-num">50K+</div><div class="ag-stat-label">Người dùng hoạt động</div></div>
+        <div class="ag-stat"><div class="ag-stat-num">99.9%</div><div class="ag-stat-label">Uptime đảm bảo</div></div>
+        <div class="ag-stat"><div class="ag-stat-num">120+</div><div class="ag-stat-label">Quốc gia phủ sóng</div></div>
+        <div class="ag-stat"><div class="ag-stat-num">4.9★</div><div class="ag-stat-label">Đánh giá trung bình</div></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ④ DARK ACADEMIA
+═══════════════════════════════════════ -->
+<div id="sec-da" class="section-wrap">
+  <div class="desc-card">
+    <div class="desc-top">
+      <div class="desc-badge" style="background:rgba(180,140,60,.1)">📚</div>
+      <div class="desc-main">
+        <div class="desc-style-label">Phong cách số 04</div>
+        <div class="desc-title">Dark Academia</div>
+        <div class="desc-summary">Lấy cảm hứng từ thư viện cổ điển châu Âu, phòng đọc Oxford và trang giấy vàng ố. Nền nâu đen sâu, accent vàng đồng cổ điển, typography serif cao quý. Texture nhiễu mô phỏng giấy cũ, viền khung trang trí ở góc, chia cột đối xứng kiểu sách in. Giao diện tạo cảm giác như đang mở một quyển sách quý hiếm.</div>
+      </div>
+    </div>
+    <div class="desc-grid">
+      <div class="desc-item">
+        <div class="desc-item-label">Màu sắc chủ đạo</div>
+        <div class="desc-colors">
+          <div class="color-dot" style="background:#140e07"></div>
+          <div class="color-dot" style="background:#e8d5a8"></div>
+          <div class="color-dot" style="background:#b48c3c"></div>
+          <div class="color-dot" style="background:#2a1e10"></div>
+          <div class="color-dot" style="background:#8b5e2a"></div>
+        </div>
+        <div class="desc-item-val" style="margin-top:8px">Nâu đen · Kem cổ điển · Vàng đồng · Nâu đất · Amber</div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Font chữ</div>
+        <div class="desc-item-val">
+          <strong>Cormorant Garamond (Display)</strong>Serif cổ điển cao quý, in nghiêng đẹp, đọc như sách cổ
+          <strong style="margin-top:6px">Lexend (Caption)</strong>Label nhỏ, navigation, meta
+        </div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Phù hợp với</div>
+        <div class="desc-tags">
+          <span class="tag-chip">Nhà sách</span>
+          <span class="tag-chip">Viện nghiên cứu</span>
+          <span class="tag-chip">Bảo tàng</span>
+          <span class="tag-chip">Giáo dục cao cấp</span>
+          <span class="tag-chip">Publisher</span>
+          <span class="tag-chip">Nghệ thuật cổ điển</span>
+        </div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Đặc trưng nổi bật</div>
+        <div class="desc-item-val">
+          Texture giấy cũ · Vignette tối viền · Khung trang trí 4 góc · Divider dọc gradient · Quote block · Danh sách hover indent · Ornament trang trí
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="demo-label">Bản demo tương tác bên dưới</div>
+
+  <div class="da">
+    <div class="da-texture"></div><div class="da-vignette"></div>
+    <div class="da-frame"><div class="da-corner da-c1"></div><div class="da-corner da-c2"></div><div class="da-corner da-c3"></div><div class="da-corner da-c4"></div></div>
+    <header class="da-header">
+      <div class="da-vol">Thư viện số · Est. 1954</div>
+      <div class="da-logo">The <em>Arcana</em> Press</div>
+      <div class="da-logo-sub">Lưu giữ tri thức — Truyền cảm hứng</div>
+      <nav class="da-nav"><a href="#">Tuyển tập</a><a href="#">Tác giả</a><a href="#">Triển lãm</a><a href="#">Lưu trữ</a><a href="#">Liên hệ</a></nav>
+    </header>
+    <section class="da-body">
+      <div class="da-left">
+        <div class="da-kicker">Tác phẩm nổi bật · Mùa xuân 2025</div>
+        <h1 class="da-title">Những trang sách<br><em>thắp sáng</em><br>tâm hồn</h1>
+        <p class="da-body-text">Chúng tôi tin rằng mỗi quyển sách là một cánh cửa — không dẫn đến nơi khác, mà dẫn vào sâu hơn trong chính bản thân chúng ta. Kho lưu trữ này là di sản của thế hệ trước, và là quà tặng cho thế hệ sau.</p>
+        <div class="da-ornament">✦ ✦ ✦</div>
+        <button class="da-btn">Khám phá tuyển tập →</button>
+      </div>
+      <div class="da-vd"></div>
+      <div class="da-right">
+        <div class="da-quote">
+          <div class="da-quote-text">"Sách là chiếc gương lớn nhất — nhìn vào đó, ta thấy cả những phần của chính mình mà bình thường ta không dám nhìn thẳng vào mắt."</div>
+          <div class="da-quote-cite">— Nguyễn Minh Châu, Nhà văn</div>
+        </div>
+        <div class="da-list">
+          <div class="da-list-item"><span class="da-li-name">Thơ & Tản văn</span><span class="da-li-val">128 tác phẩm</span></div>
+          <div class="da-list-item"><span class="da-li-name">Tiểu thuyết lịch sử</span><span class="da-li-val">84 tập</span></div>
+          <div class="da-list-item"><span class="da-li-name">Nghiên cứu & Khảo luận</span><span class="da-li-val">56 công trình</span></div>
+          <div class="da-list-item"><span class="da-li-name">Biên khảo & Hồi ký</span><span class="da-li-val">32 quyển</span></div>
+          <div class="da-list-item"><span class="da-li-name">Triết học Đông - Tây</span><span class="da-li-val">40 luận thư</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ⑤ PASTEL POP
+═══════════════════════════════════════ -->
+<div id="sec-pp" class="section-wrap">
+  <div class="desc-card">
+    <div class="desc-top">
+      <div class="desc-badge" style="background:rgba(168,85,247,.12)">✨</div>
+      <div class="desc-main">
+        <div class="desc-style-label">Phong cách số 05</div>
+        <div class="desc-title">Pastel Pop</div>
+        <div class="desc-summary">Tươi sáng, trẻ trung, đầy năng lượng — gradient tím/hồng nhẹ trên nền trắng tinh. Các góc bo tròn lớn, spacing rộng, icon lớn tạo cảm giác thân thiện và an toàn. Visual card dashboard nhỏ gọn bên phải giúp người dùng thấy giá trị ngay lập tức. Hoàn toàn đối lập với cảm giác lạnh lẽo của B2B, mang đến sự vui vẻ và dễ dùng.</div>
+      </div>
+    </div>
+    <div class="desc-grid">
+      <div class="desc-item">
+        <div class="desc-item-label">Màu sắc chủ đạo</div>
+        <div class="desc-colors">
+          <div class="color-dot" style="background:#faf5ff"></div>
+          <div class="color-dot" style="background:#c026d3"></div>
+          <div class="color-dot" style="background:#7c3aed"></div>
+          <div class="color-dot" style="background:#e8d4ff"></div>
+          <div class="color-dot" style="background:#18062e"></div>
+        </div>
+        <div class="desc-item-val" style="margin-top:8px">Tím nhạt · Fuchsia · Violet · Lavender · Đen tím</div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Font chữ</div>
+        <div class="desc-item-val">
+          <strong>Plus Jakarta Sans (Toàn bộ)</strong>Rounded, thân thiện, đọc nhanh — cân bằng giữa vui tươi và chuyên nghiệp
+        </div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Phù hợp với</div>
+        <div class="desc-tags">
+          <span class="tag-chip">App sáng tạo</span>
+          <span class="tag-chip">Edtech</span>
+          <span class="tag-chip">Wellness / Health</span>
+          <span class="tag-chip">Productivity SaaS</span>
+          <span class="tag-chip">Community app</span>
+          <span class="tag-chip">Giới trẻ</span>
+        </div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Đặc trưng nổi bật</div>
+        <div class="desc-item-val">
+          Logo blob động · Pill badge gradient · Progress bar tím · Mini tile dashboard 2×2 với màu pastel riêng · Social proof (avatar stack) · Gradient CTA button
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="demo-label">Bản demo tương tác bên dưới</div>
+
+  <div class="pp">
+    <header class="pp-header">
+      <div class="pp-logo"><div class="pp-logo-blob">✦</div>Bloom</div>
+      <nav class="pp-nav"><a href="#">Tính năng</a><a href="#">Giá cả</a><a href="#">Cộng đồng</a><a href="#">Blog</a></nav>
+      <button class="pp-cta">Thử miễn phí</button>
+    </header>
+    <section class="pp-hero">
+      <div>
+        <div class="pp-pill"><div class="pp-pill-icon">✨</div>Phiên bản 2.0 vừa ra mắt!</div>
+        <h1 class="pp-title">Sáng tạo<br>không có<br><span class="pp-grad">giới hạn</span></h1>
+        <p class="pp-desc">Công cụ thiết kế AI đầu tiên hiểu được cảm xúc của bạn — tạo ra bảng màu, bố cục và phong cách độc đáo chỉ trong vài giây, không cần kinh nghiệm thiết kế.</p>
+        <div class="pp-actions">
+          <button class="pp-btn1">Bắt đầu ngay ✨</button>
+          <button class="pp-btn2">Xem mẫu thiết kế</button>
+        </div>
+        <div class="pp-social">
+          <div class="pp-avatars">
+            <div class="pp-av">A</div><div class="pp-av">B</div><div class="pp-av">C</div><div class="pp-av">+</div>
+          </div>
+          <span>Hơn <strong>128,000</strong> người dùng đang sáng tạo mỗi ngày</span>
+        </div>
+      </div>
+      <div class="pp-right">
+        <div class="pp-big-tile">
+          <div class="pp-big-tile-top">
+            <div class="pp-big-tile-title">Dự án đang hoạt động</div>
+            <div class="pp-status st-green">● Đang chạy</div>
+          </div>
+          <div class="pp-progress-wrap"><div class="pp-progress" style="width:72%"></div></div>
+          <div class="pp-p-meta"><span>2,847 / 3,950 dự án</span><span style="font-weight:700;color:#7c3aed">72%</span></div>
+        </div>
+        <div class="pp-big-tile">
+          <div class="pp-big-tile-top">
+            <div class="pp-big-tile-title">Cộng đồng tháng này</div>
+            <div class="pp-status st-purple">↑ +18%</div>
+          </div>
+          <div class="pp-progress-wrap"><div class="pp-progress" style="width:58%;background:linear-gradient(90deg,#7c3aed,#a855f7)"></div></div>
+          <div class="pp-p-meta"><span>58,240 / 100K mục tiêu</span><span style="font-weight:700;color:#7c3aed">58%</span></div>
+        </div>
+        <div class="pp-small-tiles">
+          <div class="pp-st pp-st1"><div class="pp-st-icon">🎨</div><div class="pp-st-num">2.8K</div><div class="pp-st-label">Template mới</div></div>
+          <div class="pp-st pp-st2"><div class="pp-st-icon">👥</div><div class="pp-st-num">128K</div><div class="pp-st-label">Thành viên</div></div>
+          <div class="pp-st pp-st3"><div class="pp-st-icon">⭐</div><div class="pp-st-num">4.9</div><div class="pp-st-label">Đánh giá</div></div>
+          <div class="pp-st pp-st4"><div class="pp-st-icon">🚀</div><div class="pp-st-num">99%</div><div class="pp-st-label">Hài lòng</div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ⑥ NEON FUTURIST
+═══════════════════════════════════════ -->
+<div id="sec-nf" class="section-wrap">
+  <div class="desc-card">
+    <div class="desc-top">
+      <div class="desc-badge" style="background:rgba(0,245,160,.08)">⚡</div>
+      <div class="desc-main">
+        <div class="desc-style-label">Phong cách số 06</div>
+        <div class="desc-title">Neon Futurist</div>
+        <div class="desc-summary">Lấy cảm hứng từ terminal máy tính, màn hình retro và thẩm mỹ hacker/cyberpunk xanh lá. Nền tối gần đen, lưới pixel mờ chuyển động từ từ, hiệu ứng scanline tạo chiều sâu. Màu xanh #00f5a0 là accent duy nhất — rực sáng, có glow. Terminal code block thực tế tạo uy tín kỹ thuật. Cảm giác như đang dùng phần mềm của tương lai.</div>
+      </div>
+    </div>
+    <div class="desc-grid">
+      <div class="desc-item">
+        <div class="desc-item-label">Màu sắc chủ đạo</div>
+        <div class="desc-colors">
+          <div class="color-dot" style="background:#030509"></div>
+          <div class="color-dot" style="background:#00f5a0"></div>
+          <div class="color-dot" style="background:#7b61ff"></div>
+          <div class="color-dot" style="background:#00e8ff"></div>
+          <div class="color-dot" style="background:#ffd60a"></div>
+        </div>
+        <div class="desc-item-val" style="margin-top:8px">Đen tuyền · Xanh neon · Tím điện · Cyan · Vàng terminal</div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Font chữ</div>
+        <div class="desc-item-val">
+          <strong>Space Mono (Display)</strong>Monospace — gợi cảm giác code, terminal và lập trình
+          <strong style="margin-top:6px">Lexend (Body)</strong>Label, mô tả, text nhỏ cần đọc nhanh
+        </div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Phù hợp với</div>
+        <div class="desc-tags">
+          <span class="tag-chip">Developer Tools</span>
+          <span class="tag-chip">Cybersecurity</span>
+          <span class="tag-chip">Cloud Platform</span>
+          <span class="tag-chip">AI / MLOps</span>
+          <span class="tag-chip">Gaming / Esports</span>
+          <span class="tag-chip">Hacker community</span>
+        </div>
+      </div>
+      <div class="desc-item">
+        <div class="desc-item-label">Đặc trưng nổi bật</div>
+        <div class="desc-item-val">
+          Lưới pixel cuộn · Scanlines · Terminal code block thực tế · Cursor nhấp nháy · Neon glow button · Clip-path góc cắt · Metric panel 2×2 phát sáng
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="demo-label">Bản demo tương tác bên dưới</div>
+
+  <div class="nf">
+    <div class="nf-grid"></div><div class="nf-scanlines"></div><div class="nf-noise"></div>
+    <header class="nf-header">
+      <div class="nf-logo"><span class="nf-logo-bracket">[</span>NEXUS_SYS<span class="nf-logo-bracket">]</span></div>
+      <nav class="nf-nav"><a href="#">SẢN PHẨM</a><a href="#">GIẢI PHÁP</a><a href="#">TÀI LIỆU</a><a href="#">GIÁ CẢ</a></nav>
+      <div class="nf-status">
+        <div class="nf-online"><span class="nf-dot"></span>HỆ THỐNG ONLINE</div>
+        <button class="nf-connect">KẾT NỐI →</button>
+      </div>
+    </header>
+    <section class="nf-hero">
+      <div class="nf-left">
+        <div class="nf-tag"><span class="nf-tag-arrow">▶</span> VER 3.0 ĐÃ TRIỂN KHAI</div>
+        <h1 class="nf-title">Tương lai<br><span class="nf-g g">công nghệ</span><br>bắt đầu<br><span class="nf-b b">từ đây</span></h1>
+        <p class="nf-desc">Hệ thống AI tiên tiến được thiết kế để tối ưu hóa từng quy trình vận hành — tốc độ, bảo mật và hiệu suất trong một nền tảng duy nhất.</p>
+        <div class="nf-metrics">
+          <div class="nf-metric"><div class="nf-m-num">99.9%</div><div class="nf-m-label">Uptime đảm bảo</div></div>
+          <div class="nf-metric"><div class="nf-m-num">50ms</div><div class="nf-m-label">Phản hồi tối đa</div></div>
+          <div class="nf-metric"><div class="nf-m-num">256-bit</div><div class="nf-m-label">AES Encryption</div></div>
+        </div>
+        <div class="nf-btns">
+          <button class="nf-btn-main"><span>BẮT ĐẦU MIỄN PHÍ</span></button>
+          <button class="nf-btn-sec">XEM DEMO</button>
+        </div>
+      </div>
+      <div class="nf-right">
+        <div class="nf-term">
+          <div class="nf-term-bar">
+            <div class="nf-term-dots">
+              <div class="nf-td" style="background:#ff5f57"></div>
+              <div class="nf-td" style="background:#febc2e"></div>
+              <div class="nf-td" style="background:#28c840"></div>
+            </div>
+            <div class="nf-term-title">nexus_terminal — bash</div>
+            <div></div>
+          </div>
+          <div class="nf-term-body">
+            <div><span class="c-dim">// Khởi tạo hệ thống NEXUS v3.0</span></div>
+            <div><span class="c-g">nexus</span><span class="c-dim">@</span><span class="c-b">core-01</span><span class="c-dim"> ~ $ </span><span class="c-w">nexus init --mode=production --cluster=vn</span></div>
+            <div><span class="c-y">◆ </span><span class="c-w">Đang kết nối cluster VN-01...</span></div>
+            <div><span class="c-g">✓ </span><span class="c-w">Kết nối thành công</span><span class="c-dim"> [latency: 12ms]</span></div>
+            <div><span class="c-g">✓ </span><span class="c-w">AI Engine v3.0 đã sẵn sàng</span></div>
+            <div><span class="c-g">✓ </span><span class="c-w">Bảo mật AES-256 kích hoạt</span></div>
+            <div><span class="c-g">✓ </span><span class="c-w">Load balancer: 48 nodes online</span></div>
+            <div><span class="c-g">nexus</span><span class="c-dim">@</span><span class="c-b">core-01</span><span class="c-dim"> ~ $ </span><span class="c-w">nexus start --all-services --watch</span></div>
+            <div><span class="c-c">► </span><span class="c-w">Tất cả dịch vụ đang hoạt động</span> <span class="nf-cur"></span></div>
+          </div>
+        </div>
+        <div class="nf-panels">
+          <div class="nf-panel"><div class="nf-p-label">Requests / giây</div><div class="nf-p-val green">48,204</div><div class="nf-p-sub">↑ Peak hôm nay</div></div>
+          <div class="nf-panel"><div class="nf-p-label">Nodes hoạt động</div><div class="nf-p-val purple">48 / 48</div><div class="nf-p-sub">100% online</div></div>
+          <div class="nf-panel"><div class="nf-p-label">CPU Usage</div><div class="nf-p-val green">23.4%</div><div class="nf-p-sub">Optimal range</div></div>
+          <div class="nf-panel"><div class="nf-p-label">Memory</div><div class="nf-p-val purple">8.2 / 32 GB</div><div class="nf-p-sub">25.6% used</div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.section-wrap').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.gnb').forEach(b => b.classList.remove('on'));
+  document.getElementById('sec-' + id).classList.add('on');
+  btn.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>

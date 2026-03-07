@@ -17,27 +17,32 @@ const initEditor = () => {
     const container = document.getElementById('editor');
     if (!container) return;
 
-    // Define a custom Dark Sci-Fi theme
-    monaco.editor.defineTheme('neuro-dark', {
-        base: 'vs-dark',
+    // Define a custom Modern Light theme
+    monaco.editor.defineTheme('modern-light', {
+        base: 'vs',
         inherit: true,
         rules: [
-            { token: '', background: '0a0a0f' },
-            { token: 'keyword', foreground: 'c87af0', fontStyle: 'italic' },
-            { token: 'number', foreground: '7abfe8' },
-            { token: 'string', foreground: 'e8d07a' },
-            { token: 'comment', foreground: '808090', fontStyle: 'italic' },
-            { token: 'type', foreground: '7af0d0' },
-            { token: 'function', foreground: 'f07ab8' },
+            { token: '', foreground: '1c1917' },
+            { token: 'keyword', foreground: 'a855f7', fontStyle: 'bold' },
+            { token: 'number', foreground: '3b82f6' },
+            { token: 'string', foreground: '14b8a6' },
+            { token: 'comment', foreground: 'a8a29e', fontStyle: 'italic' },
+            { token: 'type', foreground: 'ec4899' },
+            { token: 'function', foreground: 'a855f7' },
+            { token: 'variable', foreground: '1c1917' },
+            { token: 'constant', foreground: 'f59e0b' },
         ],
         colors: {
-            'editor.background': '#0a0a0f',
-            'editor.foreground': '#d0d0df',
-            'editor.lineHighlightBackground': '#121216',
-            'editorCursor.foreground': '#7af0d0',
-            'editor.selectionBackground': '#2a2a35',
-            'editorLineNumber.foreground': '#404050',
-            'editorLineNumber.activeForeground': '#c87af0'
+            'editor.background': '#ffffff',
+            'editor.foreground': '#1c1917',
+            'editor.lineHighlightBackground': '#fafaf9',
+            'editorCursor.foreground': '#a855f7',
+            'editor.selectionBackground': '#e0e7ff',
+            'editorLineNumber.foreground': '#a8a29e',
+            'editorLineNumber.activeForeground': '#a855f7',
+            'editor.inactiveSelectionBackground': '#f5f5f4',
+            'editorIndentGuide.background': '#e5e5e5',
+            'editorIndentGuide.activeBackground': '#d4d4d4',
         }
     });
 
@@ -52,10 +57,10 @@ fn main() {
     editorInstance = monaco.editor.create(container, {
         value: defaultCode,
         language: 'rust',
-        theme: 'neuro-dark',
+        theme: 'modern-light',
         automaticLayout: true,
         minimap: { enabled: false },
-        fontFamily: "'Space Mono', monospace",
+        fontFamily: "'DM Sans', monospace",
         fontSize: 14,
         lineHeight: 24,
         padding: { top: 16 }
