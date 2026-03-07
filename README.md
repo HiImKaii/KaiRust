@@ -34,7 +34,7 @@ Dưới đây là thứ tự công việc và tất cả các dòng lệnh đã 
 
 ### Giai đoạn 1: Chuẩn bị tại máy cá nhân
 
-**1. Cơ chế Web Socket tự động (Thông tin cập nhật)**
+**1. Cơ chế Web Socket tự động**
 *   *Thao tác:* Ở góc độ hệ thống hiện tại, file `main.ts` cấu hình Frontend đã được thiết kế để tự động nhận dạng giao thức động `(window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/run'`. Thay vì phải chỉnh tay một URL như `kairust.duckdns.org` lúc triển khai, mã nguồn giờ đã linh hoạt hoàn toàn giữa Local và Production.
 *   *Quản lý phiên bản:* Việc này giúp bạn không cần phát sinh một commit thừa chỉ để đổi địa chỉ IP trên máy chủ. Mọi định hướng lưu lượng sẽ được Caddy phân luồng và đẩy vào Backend.
 
