@@ -1,12 +1,13 @@
 // =====================================================
-// Database Module — SQLite with sqlx
+// Database Module — SQLite with rusqlite
 // =====================================================
 
-use sqlx::sqlite::{SqlitePool, SqlitePoolOptions};
+use rusqlite::{Connection, Result as SqliteResult};
 use std::path::PathBuf;
 use std::sync::Arc;
+use tokio::sync::RwLock;
 
-pub type DbPool = Arc<SqlitePool>;
+pub type DbPool = Arc<RwLock<Connection>>;
 
 /// Initialize database and run migrations
 pub async fn init_database() -> Result<DbPool, Box<dyn std::error::Error + Send + Sync>> {
@@ -18,88 +19,58 @@ pub async fn init_database() -> Result<DbPool, Box<dyn std::error::Error + Send 
         std::fs::create_dir_all(parent)?;
     }
 
-    let database_url = format!("sqlite:{}", db_path.display());
+    tracing::info!("Initializing database at: {:?}", db_path);
 
-    tracing::info!("Initializing database at: {}", database_url);
-
-    // Create connection pool
-    let pool = SqlitePoolOptions::new()
-        .max_connections(5)
-        .connect(&database_url)
-        .await?;
+    // Open connection with rusqlite (synchronous)
+    let conn = Connection::open(&db_path)?;
 
     // Run migrations
-    run_migrations(&pool).await?;
+    run_migrations(&conn)?;
 
     tracing::info!("Database initialized successfully");
 
-    Ok(Arc::new(pool))
+    Ok(Arc::new(RwLock::new(conn)))
 }
 
 /// Get database file path
 fn get_db_path() -> PathBuf {
-    // Use /data directory in container or local path
-    if let Ok(data_dir) = std::env::var("DATA_DIR") {
-        return PathBuf::from(data_dir).join("kairust.db");
-    }
-
-    // Try to use a data directory in common locations
-    let possible_paths = vec![
-        PathBuf::from("/data/kairust.db"),
-        PathBuf::from("./data/kairust.db"),
-        PathBuf::from("./kairust.db"),
-    ];
-
-    for path in &possible_paths {
-        if let Some(parent) = path.parent() {
-            if std::fs::create_dir_all(parent).is_ok() {
-                return path.clone();
-            }
-        }
-    }
-
-    // Fallback to current directory
-    PathBuf::from("kairust.db")
+    // Get absolute path to current directory
+    let current_dir = std::env::current_dir()
+        .unwrap_or_else(|_| PathBuf::from("."));
+    current_dir.join("data").join("kairust.db")
 }
 
 /// Run database migrations
-async fn run_migrations(pool: &SqlitePool) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+fn run_migrations(conn: &Connection) -> SqliteResult<()> {
     // Create users table
-    sqlx::query(
-        r#"
-        CREATE TABLE IF NOT EXISTS users (
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL UNIQUE,
             email TEXT NOT NULL UNIQUE,
             password_hash TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-        "#,
-    )
-    .execute(pool)
-    .await?;
+        )",
+        [],
+    )?;
 
-    // Create user_sessions table for tracking login sessions
-    sqlx::query(
-        r#"
-        CREATE TABLE IF NOT EXISTS user_sessions (
+    // Create user_sessions table
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS user_sessions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
             token TEXT NOT NULL UNIQUE,
             expires_at DATETIME NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-        )
-        "#,
-    )
-    .execute(pool)
-    .await?;
+        )",
+        [],
+    )?;
 
-    // Create user_progress table for tracking lesson progress
-    sqlx::query(
-        r#"
-        CREATE TABLE IF NOT EXISTS user_progress (
+    // Create user_progress table
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS user_progress (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
             lesson_id TEXT NOT NULL,
@@ -107,11 +78,9 @@ async fn run_migrations(pool: &SqlitePool) -> Result<(), Box<dyn std::error::Err
             time_spent_seconds INTEGER DEFAULT 0,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
             UNIQUE(user_id, lesson_id)
-        )
-        "#,
-    )
-    .execute(pool)
-    .await?;
+        )",
+        [],
+    )?;
 
     tracing::info!("Database migrations completed");
 

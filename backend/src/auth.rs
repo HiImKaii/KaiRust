@@ -12,8 +12,8 @@ use axum::{
     Router,
 };
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
+use rusqlite::params;
 use serde::{Deserialize, Serialize};
-use sqlx::Row;
 
 // ============== JWT Claims ==============
 #[derive(Debug, Serialize, Deserialize)]
@@ -142,33 +142,32 @@ pub async fn register(
     };
 
     // Insert user into database
-    let result = sqlx::query(
-        "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
-    )
-    .bind(&payload.username)
-    .bind(&payload.email)
-    .bind(&password_hash)
-    .execute(&*state.db)
-    .await;
+    let db = state.db.read().await;
+    let result = db.execute(
+        "INSERT INTO users (username, email, password_hash) VALUES (?1, ?2, ?3)",
+        params![&payload.username, &payload.email, &password_hash],
+    );
 
     match result {
         Ok(_) => {
             tracing::info!("User registered: {}", payload.email);
 
             // Get the inserted user
-            let user = sqlx::query("SELECT id, username, email FROM users WHERE email = ?")
-                .bind(&payload.email)
-                .fetch_one(&*state.db)
-                .await
-                .ok()
-                .map(|row| UserInfo {
-                    id: row.get("id"),
-                    username: row.get("username"),
-                    email: row.get("email"),
-                });
+            let mut stmt = db.prepare("SELECT id, username, email FROM users WHERE email = ?1")?;
+            let user = stmt.query_row(params![&payload.email], |row| {
+                Ok(UserInfo {
+                    id: row.get(0)?,
+                    username: row.get(1)?,
+                    email: row.get(2)?,
+                })
+            }).ok();
+
+            let user_clone = user.clone();
+            drop(stmt);
+            drop(db);
 
             // Generate JWT token
-            let token = generate_token(&state.jwt_secret, user.as_ref());
+            let token = generate_token(&state.jwt_secret, user_clone.as_ref());
 
             (
                 StatusCode::CREATED,
@@ -208,14 +207,9 @@ pub async fn login(
     Json(payload): Json<LoginRequest>,
 ) -> Response {
     // Find user by email
-    let user_row = match sqlx::query(
-        "SELECT id, username, email, password_hash FROM users WHERE email = ?",
-    )
-    .bind(&payload.email)
-    .fetch_one(&*state.db)
-    .await
-    {
-        Ok(row) => row,
+    let db = state.db.read().await;
+    let mut stmt = match db.prepare("SELECT id, username, email, password_hash FROM users WHERE email = ?1") {
+        Ok(s) => s,
         Err(_) => {
             return (
                 StatusCode::UNAUTHORIZED,
@@ -230,10 +224,66 @@ pub async fn login(
         }
     };
 
-    let user_id: i64 = user_row.get("id");
-    let username: String = user_row.get("username");
-    let email: String = user_row.get("email");
-    let stored_hash: String = user_row.get("password_hash");
+    let user_result: Result<UserInfo, _> = stmt.query_row(params![&payload.email], |row| {
+        Ok(UserInfo {
+            id: row.get(0)?,
+            username: row.get(1)?,
+            email: row.get(2)?,
+        })
+    });
+
+    let user: UserInfo = match user_result {
+        Ok(u) => u,
+        Err(_) => {
+            return (
+                StatusCode::UNAUTHORIZED,
+                Json(AuthResponse {
+                    success: false,
+                    message: "Invalid email or password".to_string(),
+                    token: None,
+                    user: None,
+                }),
+            )
+            .into_response();
+        }
+    };
+
+    // Get password hash
+    let mut stmt2 = match db.prepare("SELECT password_hash FROM users WHERE id = ?1") {
+        Ok(s) => s,
+        Err(_) => {
+            return (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(AuthResponse {
+                    success: false,
+                    message: "Database error".to_string(),
+                    token: None,
+                    user: None,
+                }),
+            )
+            .into_response();
+        }
+    };
+
+    let stored_hash: String = match stmt2.query_row(params![user.id], |row| row.get(0)) {
+        Ok(h) => h,
+        Err(_) => {
+            return (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(AuthResponse {
+                    success: false,
+                    message: "Database error".to_string(),
+                    token: None,
+                    user: None,
+                }),
+            )
+            .into_response();
+        }
+    };
+
+    drop(stmt);
+    drop(stmt2);
+    drop(db);
 
     // Verify password
     let argon2 = Argon2::default();
@@ -269,16 +319,16 @@ pub async fn login(
         .into_response();
     }
 
-    tracing::info!("User logged in: {}", email);
+    tracing::info!("User logged in: {}", payload.email);
 
-    let user = UserInfo {
-        id: user_id,
-        username,
-        email: email.clone(),
+    let user_for_token = UserInfo {
+        id: user.id,
+        username: user.username.clone(),
+        email: user.email.clone(),
     };
 
     // Generate JWT token
-    let token = generate_token(&state.jwt_secret, Some(&user));
+    let token = generate_token(&state.jwt_secret, Some(&user_for_token));
 
     (
         StatusCode::OK,
@@ -286,28 +336,28 @@ pub async fn login(
             success: true,
             message: "Login successful".to_string(),
             token,
-            user: Some(user),
+            user: Some(UserInfo {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+            }),
         }),
     )
     .into_response()
 }
 
-/// Forgot password - send password to email
+/// Forgot password - reset password
 pub async fn forgot_password(
     State(state): State<AuthState>,
     Json(payload): Json<ForgotPasswordRequest>,
 ) -> Response {
+    let db = state.db.read().await;
+
     // Find user by email
-    let user_row = match sqlx::query(
-        "SELECT id, username, email FROM users WHERE email = ?",
-    )
-    .bind(&payload.email)
-    .fetch_one(&*state.db)
-    .await
-    {
-        Ok(row) => row,
+    let mut stmt = match db.prepare("SELECT id, username FROM users WHERE email = ?1") {
+        Ok(s) => s,
         Err(_) => {
-            // Don't reveal if email exists or not
+            // Don't reveal if email exists
             return (
                 StatusCode::OK,
                 Json(AuthResponse {
@@ -321,8 +371,28 @@ pub async fn forgot_password(
         }
     };
 
-    let user_id: i64 = user_row.get("id");
-    let username: String = user_row.get("username");
+    let user_result: Result<(i64, String), _> = stmt.query_row(params![&payload.email], |row| {
+        Ok((row.get(0)?, row.get(1)?))
+    });
+
+    let (user_id, username) = match user_result {
+        Ok(r) => r,
+        Err(_) => {
+            // Don't reveal if email exists
+            return (
+                StatusCode::OK,
+                Json(AuthResponse {
+                    success: true,
+                    message: "If the email exists, the password will be sent".to_string(),
+                    token: None,
+                    user: None,
+                }),
+            )
+            .into_response();
+        }
+    };
+
+    drop(stmt);
 
     // Generate a new random password
     let new_password = generate_random_password();
@@ -347,11 +417,10 @@ pub async fn forgot_password(
     };
 
     // Update password in database
-    let result = sqlx::query("UPDATE users SET password_hash = ? WHERE id = ?")
-        .bind(&password_hash)
-        .bind(user_id)
-        .execute(&*state.db)
-        .await;
+    let result = db.execute(
+        "UPDATE users SET password_hash = ?1 WHERE id = ?2",
+        params![&password_hash, user_id],
+    );
 
     if result.is_err() {
         return (
@@ -366,16 +435,8 @@ pub async fn forgot_password(
         .into_response();
     }
 
-    // TODO: Send email with password (requires email service)
-    // For now, just log the password (in production, send via email service)
-    tracing::info!(
-        "Password reset for user {}: New password = {}",
-        username,
-        new_password
-    );
-
-    // In production, you would send the password via email service here
-    // For now, we return success and log it
+    // Log the password (in production, send via email)
+    tracing::info!("Password reset for user {}: New password = {}", username, new_password);
 
     (
         StatusCode::OK,
@@ -449,13 +510,10 @@ pub async fn get_current_user(
 
     // Get user from database
     let user_id: i64 = claims.sub.parse().unwrap_or(0);
+    let db = state.db.read().await;
 
-    let user_row = match sqlx::query("SELECT id, username, email FROM users WHERE id = ?")
-        .bind(user_id)
-        .fetch_one(&*state.db)
-        .await
-    {
-        Ok(row) => row,
+    let mut stmt = match db.prepare("SELECT id, username, email FROM users WHERE id = ?1") {
+        Ok(s) => s,
         Err(_) => {
             return (
                 StatusCode::NOT_FOUND,
@@ -470,10 +528,26 @@ pub async fn get_current_user(
         }
     };
 
-    let user = UserInfo {
-        id: user_row.get("id"),
-        username: user_row.get("username"),
-        email: user_row.get("email"),
+    let user = match stmt.query_row(params![user_id], |row| {
+        Ok(UserInfo {
+            id: row.get(0)?,
+            username: row.get(1)?,
+            email: row.get(2)?,
+        })
+    }) {
+        Ok(u) => u,
+        Err(_) => {
+            return (
+                StatusCode::NOT_FOUND,
+                Json(AuthResponse {
+                    success: false,
+                    message: "User not found".to_string(),
+                    token: None,
+                    user: None,
+                }),
+            )
+            .into_response();
+        }
     };
 
     (
