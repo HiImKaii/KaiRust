@@ -17,6 +17,35 @@ const initEditor = () => {
     const container = document.getElementById('editor');
     if (!container) return;
 
+    // Define NEON FUTURIST Dark theme (for dark mode)
+    monaco.editor.defineTheme('neuro-dark', {
+        base: 'vs-dark',
+        inherit: true,
+        rules: [
+            { token: '', foreground: 'e8e8e8' },
+            { token: 'keyword', foreground: '00f5a0', fontStyle: 'bold' },
+            { token: 'number', foreground: '7b61ff' },
+            { token: 'string', foreground: 'ffd60a' },
+            { token: 'comment', foreground: '606060', fontStyle: 'italic' },
+            { token: 'type', foreground: 'ffd60a' },
+            { token: 'function', foreground: '00f5a0' },
+            { token: 'variable', foreground: 'e8e8e8' },
+            { token: 'constant', foreground: '7b61ff' },
+        ],
+        colors: {
+            'editor.background': '#0a0a0f',
+            'editor.foreground': '#e8e8e8',
+            'editor.lineHighlightBackground': '#12121a',
+            'editorCursor.foreground': '#00f5a0',
+            'editor.selectionBackground': 'rgba(0, 245, 160, 0.2)',
+            'editorLineNumber.foreground': '#606060',
+            'editorLineNumber.activeForeground': '#00f5a0',
+            'editor.inactiveSelectionBackground': '#0f0f14',
+            'editorIndentGuide.background': '#1a1a24',
+            'editorIndentGuide.activeBackground': '#2a2a34',
+        }
+    });
+
     // Define a custom Modern Light theme
     monaco.editor.defineTheme('modern-light', {
         base: 'vs',
@@ -801,6 +830,47 @@ const loadLayoutSettings = () => {
     }
 };
 
+// ---- Theme Toggle Setup ----
+const setupThemeToggle = () => {
+    const themeToggle = document.getElementById('theme-toggle');
+    if (!themeToggle) return;
+
+    // Load saved theme preference
+    const savedTheme = localStorage.getItem('kairust-theme') || 'light';
+    if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        updateThemeIcons(true);
+    }
+
+    themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('kairust-theme', 'light');
+            updateThemeIcons(false);
+            if (editorInstance) {
+                monaco.editor.setTheme('modern-light');
+            }
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('kairust-theme', 'dark');
+            updateThemeIcons(true);
+            if (editorInstance) {
+                monaco.editor.setTheme('neuro-dark');
+            }
+        }
+    });
+};
+
+const updateThemeIcons = (isDark: boolean) => {
+    const lightIcon = document.querySelector('.theme-toggle .light-icon') as HTMLElement;
+    const darkIcon = document.querySelector('.theme-toggle .dark-icon') as HTMLElement;
+    if (lightIcon && darkIcon) {
+        lightIcon.style.display = isDark ? 'none' : 'inline';
+        darkIcon.style.display = isDark ? 'inline' : 'none';
+    }
+};
+
 const setupResizers = () => {
     const resizerSidebar = document.getElementById('resizer-sidebar');
     const resizerInstruction = document.getElementById('resizer-instruction');
@@ -1334,6 +1404,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupClearButton();
     updateProgress();
     setupNavButtons();
+    setupThemeToggle();
     setupResizers();
     setupCookieBanner();
     setupAuthModal();

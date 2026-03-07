@@ -49,6 +49,34 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Dark Mode - NEON FUTURIST Style (Option 6) */
+[data-theme="dark"] {
+  --bg-absolute: #0a0a0f;
+  --bg-cream: #12121a;
+  --bg-soft: #0f0f14;
+  --bg-surface: #16161e;
+
+  --color-purple: #00f5a0;
+  --color-purple-light: #7b61ff;
+  --color-blue: #7b61ff;
+  --color-blue-light: #9d85ff;
+  --color-teal: #00f5a0;
+  --color-pink: #ffd60a;
+  --color-amber: #ffd60a;
+
+  --text-primary: #e8e8e8;
+  --text-secondary: #a0a0a0;
+  --text-muted: #606060;
+
+  --border-subtle: rgba(0, 245, 160, 0.08);
+  --border-light: rgba(0, 245, 160, 0.12);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
 /* Base Setups (Modern Light - soft shadows, rounded corners) */
 * {
   box-sizing: border-box;
@@ -66,6 +94,7 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 a {
@@ -314,6 +343,36 @@ code {
 #settings-btn:hover {
   background: #8b6914;
   border-color: #8b6914;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-soft);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s var(--ease);
+}
+
+.theme-toggle .theme-icon {
+  font-size: 1.4rem;
+  color: var(--text-secondary);
+  transition: color 0.25s, transform 0.3s var(--ease);
+}
+
+.theme-toggle:hover {
+  background: var(--color-purple);
+  border-color: var(--color-purple);
+}
+
+.theme-toggle:hover .theme-icon {
+  color: white;
+  transform: rotate(15deg);
 }
 
 .run-btn .btn-text {
