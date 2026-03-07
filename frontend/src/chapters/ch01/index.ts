@@ -89,36 +89,36 @@ export const ch01: Chapter = {
               <td>Performance</td>
               <td>Cao</td>
               <td>Cao</td>
-              <td>Trung binh</td>
-              <td>Trung binh</td>
+              <td>Trung bình</td>
+              <td>Trung bình</td>
             </tr>
             <tr>
               <td>Concurrency</td>
-              <td>An toan</td>
-              <td>Phuc tap</td>
-              <td>De</td>
-              <td>Phuc tap</td>
+              <td>An toàn</td>
+              <td>Phức tạp</td>
+              <td>Dễ</td>
+              <td>Phức tạp</td>
             </tr>
             <tr>
               <td>Learning Curve</td>
               <td>Cao</td>
               <td>Cao</td>
-              <td>De</td>
-              <td>Trung binh</td>
+              <td>Dễ</td>
+              <td>Trung bình</td>
             </tr>
             <tr>
               <td>Binary Size</td>
-              <td>Nho</td>
-              <td>Nho</td>
-              <td>Lon</td>
-              <td>Rat lon</td>
+              <td>Nhỏ</td>
+              <td>Nhỏ</td>
+              <td>Lớn</td>
+              <td>Rất lớn</td>
             </tr>
           </tbody>
         </table>
       </section>
 
       <section class="intro-usecases">
-        <h3>Ung dung thuc te cua Rust</h3>
+        <h3>Ứng dụng thực tế của Rust</h3>
         <div class="usecases-list">
           <div class="usecase-item">
             <span class="company">Firefox</span>
@@ -148,7 +148,7 @@ export const ch01: Chapter = {
       </section>
 
       <section class="intro-learn">
-        <h3>Trong chuong nay, ban se hoc:</h3>
+        <h3>Trong chương này, bạn sẽ học:</h3>
         <div class="learn-items">
           <div class="learn-item">
             <span class="number">01</span>
@@ -182,7 +182,7 @@ export const ch01: Chapter = {
       </section>
 
       <section class="intro-cta">
-        <p class="cta-text">Hay bat dau hanh trinh kham pha Rust ngay bay gio!</p>
+        <p class="cta-text">Hãy bắt đầu hành trình khám phá Rust ngay bây giờ!</p>
       </section>
     </div>
   `,

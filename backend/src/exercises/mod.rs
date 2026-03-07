@@ -2,6 +2,9 @@ pub mod ch01;
 pub mod ch02;
 pub mod ch03;
 pub mod ch04;
+pub mod ch06;
+pub mod ch07;
+pub mod ch08;
 
 /// Tra cứu test code cho bài tập theo lesson_id.
 /// Dùng include_str!() để embed nội dung file lúc compile —
@@ -33,6 +36,30 @@ pub fn get_test_code(lesson_id: &str) -> Option<&'static str> {
         "ch03_05_ex6"   => Some(include_str!("ch03/ch03_05_ex6.rs")),
         "ch03_05_ex7"   => Some(include_str!("ch03/ch03_05_ex7.rs")),
         "ch03_05_ex8"   => Some(include_str!("ch03/ch03_05_ex8.rs")),
+        // ch06
+        "ch06_01_ex"    => Some(include_str!("ch06/ch06_01_ex.rs")),
+        "ch06_02_ex"    => Some(include_str!("ch06/ch06_02_ex.rs")),
+        "ch06_03_ex"    => Some(include_str!("ch06/ch06_03_ex.rs")),
+        "ch06_04_ex"    => Some(include_str!("ch06/ch06_04_ex.rs")),
+        "ch06_05_ex"    => Some(include_str!("ch06/ch06_05_ex.rs")),
+        "ch06_06_ex"    => Some(include_str!("ch06/ch06_06_ex.rs")),
+        "ch06_07_ex"    => Some(include_str!("ch06/ch06_07_ex.rs")),
+        "ch06_08_ex"    => Some(include_str!("ch06/ch06_08_ex.rs")),
+        "ch06_09_ex"    => Some(include_str!("ch06/ch06_09_ex.rs")),
+        "ch06_10_ex"    => Some(include_str!("ch06/ch06_10_ex.rs")),
+        // ch07
+        "ch07_01_ex"    => Some(include_str!("ch07/ch07_01_ex.rs")),
+        "ch07_02_ex"    => Some(include_str!("ch07/ch07_02_ex.rs")),
+        "ch07_03_ex"    => Some(include_str!("ch07/ch07_03_ex.rs")),
+        "ch07_04_ex"    => Some(include_str!("ch07/ch07_04_ex.rs")),
+        "ch07_05_ex"    => Some(include_str!("ch07/ch07_05_ex.rs")),
+        // ch08
+        "ch08_01_ex"    => Some(include_str!("ch08/ch08_01_ex.rs")),
+        "ch08_02_ex"    => Some(include_str!("ch08/ch08_02_ex.rs")),
+        "ch08_03_ex"    => Some(include_str!("ch08/ch08_03_ex.rs")),
+        "ch08_04_ex"    => Some(include_str!("ch08/ch08_04_ex.rs")),
+        "ch08_05_ex"    => Some(include_str!("ch08/ch08_05_ex.rs")),
+        "ch08_06_ex"    => Some(include_str!("ch08/ch08_06_ex.rs")),
         _ => None,
     }
 }

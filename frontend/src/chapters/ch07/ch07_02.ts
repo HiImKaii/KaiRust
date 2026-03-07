@@ -2,15 +2,15 @@ import { Lesson } from '../../courses';
 
 export const ch07_02: Lesson = {
       id: 'ch07-02',
-      title: '7.2 Định nghĩa Modules & Điều khiển Phạm vi (Scope/Privacy)',
+      title: '7.2 Định nghĩa Modules & Kiểm soát Visibility',
       duration: '40 phút',
       type: 'practice',
       content: `
-<p>Bây giờ chúng mình sẽ bàn bạc kĩ về <strong>Modules</strong> và các thành phần thuộc hệ thống modules khác — đáng phải kể đến nhất là các path mà bạn phải xài liên tục để reference tới các thẻ item; từ khóa <code>use</code> thần thánh giúp mình đem cả path vô scope rút gọn; và chốt hạ là bộ tứ keyword <code>pub</code> giúp đồ chơi của bạn trở thành dạng Lộ Thiên (public) được cho phép các bên ngoài dùng!!</p>
-<p>Các Modules chắp cánh cho việc tổ chức source code trong từng khía cạnh của cái Crate thành các Group (khối nhóm) để quản lý readability (dễ đọc) và reuse (dễ xài lại). Không chỉ vậy Module con kiểm soát cái gọi la <strong>privacy</strong> của những dòng code đó. Tức là những logic mã nào thì người đời được đụng vô, còn cái nào là Private giấu kĩ vào trong (để dấu mấy chi tiết rườm rà ko bảo mật ko cho can thiệp linh tinh).</p>
+<p>Modules cho phép tổ chức code trong crate thành các nhóm để dễ quản lý và tái sử dụng. Module còn kiểm soát <strong>privacy</strong> - xác định code nào được public, code nào là private.</p>
 
-<h3 class="task-heading">Khai báo Modules để sắp xếp sảnh hệ thống</h3>
-<p>Ráng tượng tưởng chúng mình đang code lib phục vụ cái Nhà Hàng (restaurant). Nhà hàng có một sảnh đón khách lớn (front of house): host đón gác, xếp ghế, bồi bàn. Bếp đằng sau (back of house) thì nấu, sửa bill.</p>
+<h3 class="task-heading">Khai báo Modules</h3>
+<p>Modules được khai báo bằng từ khóa <code>mod</code> theo sau là tên module:</p>
+
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>mod front_of_house {
@@ -26,14 +26,15 @@ export const ch07_02: Lesson = {
     }
 }</code></pre>
 </div>
-<p>Tương tự như OOP, modules được định nghĩa vô cùng nhanh nhờ bằng chặng keyword <code>mod</code> theo sau bởi cái Tên của module!. Sau đó nhét thân hàm nằm gọn gàng bên trong hai cái Cặp ngoặc nhọn <code>{}</code> là hoàn tất cấu trúc lồng tree.</p>
 
-<h3 class="task-heading">Hệ thống Paths cho Modules trong Tree Navigation</h3>
-<p>Việc định vị đường đi tới các Functions trong ruột module thì Rust sử dụng một chuỗi khái niệm gọi là <strong>path</strong> y đúc lúc bạn lướt cây Folder trong máy móc tính. Hệ Cây Paths chia thành 2 phe:</p>
-<ul class="task-list">
-  <li><strong>Absolute path (Đường dẫn Tuyệt Đối):</strong> Bắt đầu một mạch từ tận <code>crate</code> root, khởi đầu bằng Keyword thần thánh tên <code>crate</code>.</li>
-  <li><strong>Relative path (Đường dẫn Tương Đối):</strong> Xuất phát ngay lúc tại địa điểm module vắng mặt, xài thông qua <code>self</code>, <code>super</code> hoặc ngay tên thư viện của module ở bên.</li>
+<h3 class="task-heading">Paths để truy cập Modules</h3>
+<p>Có 2 cách để truy cập items trong module:</p>
+
+<ul>
+  <li><strong>Absolute path:</strong> Bắt đầu từ crate root (dùng <code>crate::</code>)</li>
+  <li><strong>Relative path:</strong> Bắt đầu từ module hiện tại</li>
 </ul>
+
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>mod front_of_house {
@@ -41,23 +42,51 @@ export const ch07_02: Lesson = {
         pub fn add_to_waitlist() {}
     }
 }
+
 pub fn eat_at_restaurant() {
-    // Gọi theo Absolute path 
+    // Absolute path
     crate::front_of_house::hosting::add_to_waitlist();
-    // Gọi theo Relative path
+    // Relative path
     front_of_house::hosting::add_to_waitlist();
 }</code></pre>
 </div>
 
-<h3 class="task-heading">Bật Công Tắc bằng pub keyword</h3>
-<p>Code Rust làm cực kì Găt về Privacy: MỌI ITEM LÀ PRIVATE MỘT CÁCH MẶC ĐỊNH BẤT DI BẤT DỊCH (bao gồm function, method, struct, enum, module...). Tức là các items ở modules dạng Cấp Cha không thể nào thò tay mò đụng trọt các items bên rỗng Module con của nó (Trừ phi đồ dùng <code>pub</code>!!!).</p>
+<h3 class="task-heading">Từ khóa pub để Public</h3>
+<p>Trong Rust, <strong>mọi item đều là PRIVATE mặc định</strong>. Để cho phép truy cập từ bên ngoài, dùng <code>pub</code>:</p>
+
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>mod my_module {
+    // Private function (mặc định)
+    fn private_function() {}
+
+    // Public function
+    pub fn public_function() {}
+
+    // Public const
+    pub const MAX_SIZE: u32 = 100;
+
+    // Public struct (nhưng fields vẫn private)
+    pub struct Config {
+        pub name: String,   // public field
+        age: u32,           // private field
+    }
+
+    // Public enum (tất cả variants đều public)
+    pub enum Status {
+        Active,
+        Inactive,
+    }
+}</code></pre>
+</div>
 
 <div class="cyber-alert info">
-  <strong>Mẹo hệ thống:</strong> Đừng hiểu nhầm nhầm! Module Cấp Con lại vương miện quyền năng NHÌN THẤY MỌI THỨ của Module cha (cho dù private). Do Rust nói rằng con cái thì nên biết mọi chi tiết dơ bẩn của cha chú mình mà giấu kín trước public xã hội.
+  <strong>Lưu ý quan trọng:</strong> Module con có thể truy cập mọi thứ trong module cha (kể cả private). Điều này cho phép code trong module con biết các chi tiết bên trong của module cha.
 </div>
-  
-<h3 class="task-heading">Bắt rớt xuống Module Cha bằng super</h3>
-<p>Rust tạo ra Relative Path theo cách xài <code>super</code> để lấy từ cha trở đi. Điều này giống trò <code>..</code> syntax lúc bạn lướt Path hệ điều hành filesystem để đi ra sau 1 cấp.</p>
+
+<h3 class="task-heading">Từ khóa super để truy cập module cha</h3>
+<p><code>super</code> cho phép truy cập items từ module cha:</p>
+
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>fn deliver_order() {}
@@ -65,9 +94,46 @@ pub fn eat_at_restaurant() {
 mod back_of_house {
     fn fix_incorrect_order() {
         cook_order();
-        super::deliver_order(); // Lấy hàm deliver_order ở cha Crate!!!
+        super::deliver_order(); // Gọi hàm từ module cha
     }
     fn cook_order() {}
+}</code></pre>
+</div>
+
+<h3 class="task-heading">Từ khóa self</h3>
+<p><code>self</code> tham chiếu đến module hiện tại:</p>
+
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>mod my_module {
+    pub fn function1() {}
+    pub fn function2() {
+        self::function1(); // Gọi hàm trong cùng module
+    }
+}</code></pre>
+</div>
+
+<h3 class="task-heading">Struct với pub trong Enum</h3>
+<p>Khi struct có <code>pub</code>, các variant enum cũng cần <code>pub</code> để truy cập:</p>
+
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>mod example {
+    pub enum Message {
+        Quit,
+        Move { x: i32, y: i32 },
+    }
+
+    pub fn process(msg: Message) {
+        match msg {
+            Message::Quit => println!("Quit"),
+            Message::Move { x, y } => println!("Move to {}, {}", x, y),
+        }
+    }
+}
+
+fn main() {
+    example::process(example::Message::Move { x: 10, y: 20 });
 }</code></pre>
 </div>
 `,
@@ -102,4 +168,4 @@ fn main() {
 }
 `,
       expectedOutput: '5 + 3 = 8\n4 × 7 = 28\n2^10 = 1024'
-    };
+};

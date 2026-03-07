@@ -13,11 +13,29 @@ export const ch02_01_ex: Lesson = {
   <li>Trong hàm <code>main()</code>, hãy tạo một biến <strong>khả biến (mutable)</strong> tên là <code>guess</code>.</li>
   <li>Gán cho nó một đối tượng <code>String</code> mới và rỗng bằng cách gọi <code>String::new()</code>.</li>
 </ol>
+<h3 class="task-heading">Ví dụ Test Cases</h3>
+<div class="test-case">
+  <h4>Test Case 1</h4>
+  <p><strong>Mô tả:</strong> Kiểm tra biến guess có kiểu String và khả biến</p>
+  <pre><code>// Code đúng
+let mut guess = String::new();</code></pre>
+</div>
 `,
       defaultCode: `fn main() {
     // TODO: Tạo một biến \`guess\` khả biến (mutable) và gán cho nó một String mới
     // let mut guess = ...
-    
+
+    // Kiểm tra: thử gán giá trị vào guess
+    guess = String::from("test");
+    println!("Biến guess: {}", guess);
 }
-`
+`,
+      expectedOutput: 'Biến guess: test',
+      testCases: [
+        {
+          input: '',
+          expectedOutput: 'Biến guess: test',
+          description: 'Biến guess phải khả biến và có kiểu String'
+        }
+      ]
     };

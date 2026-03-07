@@ -6,19 +6,19 @@ export const ch06_03: Lesson = {
             duration: '15 phút',
             type: 'practice',
             content: `
-<p>Cú pháp kiểm soát <code>if let</code> là chiếc phao cứu sinh ngắn gọn nhất để giúp mấy ông lười code có thể xài <code>match</code> mà chỉ muốn match ra MỘT TRƯỜNG HỢP DUY NHẤT và bắt lại Data của cái duy nhất đó (bỏ qua mặc kệ các Variant còn dư).</p>
+<p>Cú pháp <code>if let</code> là cách viết gọn để xử lý khi bạn chỉ quan tâm đến MỘT TRƯỜNG HỢP DUY NHẤT và muốn bỏ qua các Variant còn lại thay vì phải viết đầy đủ match expression.</p>
 
-<h3 class="task-heading">Vì sao ra đời if let</h3>
+<h3 class="task-heading">Vì sao cần if let?</h3>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>let config_max = Some(3u8);
 match config_max {
     Some(max) => println!("The maximum is configured to be {max}"),
-    _ => (), // NẾU CHỈ CẦN XÀI DÒNG TRÊN, THẾ NHÉT DÒNG NÀY ĐỂ PASS COMPILER QUÁ TỐN KÉM CHỖ VÀ LÀM RỐI
+    _ => (), // Nếu chỉ cần xử lý Some, vẫn phải thêm _ => () để thỏa mãn exhaustiveness
 }</code></pre>
 </div>
 
-<p>Đúng thế! Ta đã phải khai <code>_ =&gt; ()</code> để vui lòng cái gã Compiler. Nếu chúng ta dùng <strong><code>if let</code></strong> cấu trúc sẽ được tối ưu!</p>
+<p>Như bạn thấy, ta phải khai báo <code>_ =&gt; ()</code> để thỏa mãn yêu cầu exhaustiveness của compiler. Với <strong><code>if let</code></strong>, code sẽ gọn hơn!</p>
 
 <div class="code-snippet">
   <span class="code-lang">rust</span>
@@ -28,24 +28,70 @@ if let Some(max) = config_max {
 }</code></pre>
 </div>
 
-<p>Cú pháp của <code>if let</code> cần một cái Pattern ở đầu, sau đó là dấu phẩy <code>=</code> và Expression ở đuôi . Cú pháp hoạt động y chang như một cái <code>match</code> có expression được tuôn từ nhánh đầu, nhưng nó chỉ chạy nếu nhánh đó khớp. Còn lại nó sẽ bỏ đi bỏ qua các phiền toái Exhaustive Checking (kiểm tra ngặt nghèo các variant còn dư từ compiler).</p>
+<p>Cú pháp <code>if let</code> gồm: pattern ở đầu, sau đó là dấu <code>=</code> và expression ở cuối. Nó hoạt động tương tự như <code>match</code>, nhưng chỉ chạy nếu pattern khớp, và bỏ qua yêu cầu exhaustiveness checking của compiler.</p>
 
 <h3 class="task-heading">if let với else</h3>
-<p>Nếu bạn muốn bắt nhánh phụ rớt khi không lọt vào nhánh lớn chính, ta hoàn toàn có thể append vào bằng block <code>else</code> thần thánh.</p>
+<p>Nếu bạn muốn xử lý trường hợp không khớp pattern, có thể thêm <code>else</code> block.</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>let coin = Coin::Quarter(UsState::Alabama);
 let mut count = 0;
-if let Coin::Quarter(state) = coin { // Match trúng thì xử lý state ở đây (do coin là Quarter)
-    println!("Dữ liệu state lấy ra ở trong quarter: {:?}!", state);
-} else { // Không vô thì nhảy xuống đếm cho biến counter!
+if let Coin::Quarter(state) = coin { // Nếu khớp, xử lý state
+    println!("State trong quarter: {:?}!", state);
+} else { // Không khớp thì tăng count
     count += 1;
 }</code></pre>
 </div>
 
 <div class="cyber-alert info">
-  <strong>Khi nào dùng if let?</strong> Khi logic chương trình của bạn cô đọng mà chả cần xử lý quá nhiều logic rườm rà. Bạn trade an toàn exhaustive control check của <code>match</code> để lấy sự súc tích code cho <code>if let</code>.
+  <strong>Khi nào dùng if let?</strong> Dùng khi logic chương trình đơn giản và chỉ cần xử lý một trường hợp cụ thể. Bạn đánh đổi tính an toàn của exhaustiveness check trong <code>match</code> để lấy sự ngắn gọn của <code>if let</code>.
 </div>
+
+<h3 class="task-heading">So sánh: match vs if let</h3>
+<p>Khi nào nên dùng match, khi nào nên dùng if let?</p>
+
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>// Dùng match khi:
+// - Cần xử lý NHIỀU trường hợp
+// - Cần exhaustiveness check (đảm bảo xử lý hết)
+// - Cần trả về giá trị
+
+let msg = Message::Write(String::from("hello"));
+let text = match msg {
+    Message::Write(s) => s,
+    Message::Quit => String::from("quit"),
+    Message::Move { x, y } => format!("move to ({}, {})", x, y),
+    Message::ChangeColor(_, _, _) => String::from("color"),
+};
+
+// Dùng if let khi:
+// - Chỉ quan tâm MỘT trường hợp cụ thể
+// - Code ngắn gọn quan trọng hơn exhaustiveness
+// - Xử lý Optional values
+
+if let Some(value) = get_optional_value() {
+    println!("Got: {}", value);
+}</code></pre>
+</div>
+
+<h3 class="task-heading">while let: Vòng lặp với Option</h3>
+<p><code>while let</code> tiếp tục lặp miễn là pattern khớp:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>let mut stack = vec![Some(1), Some(2), None, Some(3)];
+
+while let Some(value) = stack.pop() {
+    println!("Got: {}", value);
+}</code></pre>
+</div>
+
+<h3 class="task-heading">Tổng kết</h3>
+<ul>
+  <li><strong>match:</strong> Xử lý nhiều case, bắt buộc exhaustiveness, trả về giá trị</li>
+  <li><strong>if let:</strong> Xử lý một case, ngắn gọn, không bắt buộc exhaustiveness</li>
+  <li><strong>while let:</strong> Lặp khi còn khớp pattern</li>
+</ul>
 `,
             defaultCode: `fn main() {
     // if let với Option

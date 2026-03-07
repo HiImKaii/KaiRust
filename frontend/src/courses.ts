@@ -3,6 +3,12 @@
 // Structure: Chapter > Lessons
 // =====================================================
 
+export interface TestCase {
+  input: string;
+  expectedOutput: string;
+  description?: string;
+}
+
 export interface Lesson {
   id: string;
   title: string;
@@ -12,6 +18,7 @@ export interface Lesson {
   defaultCode?: string; // pre-filled code for Monaco editor
   expectedOutput?: string;
   isExercise?: boolean; // flag to mark as exercise
+  testCases?: TestCase[]; // test cases for practice problems (LeetCode/HackerRank style)
 }
 
 export interface Chapter {
