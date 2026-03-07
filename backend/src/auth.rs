@@ -74,6 +74,7 @@ impl JwtSecret {
 // ============== Auth State ==============
 #[derive(Clone)]
 pub struct AuthState {
+    #[allow(dead_code)]
     pub db: DbPool,
     pub jwt_secret: JwtSecret,
 }
@@ -211,7 +212,7 @@ pub async fn register(
             )
             .into_response()
         }
-        Err(e) => {
+        Err(_) => {
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(AuthResponse {
@@ -336,7 +337,7 @@ pub async fn login(
 
 /// Forgot password - reset password
 pub async fn forgot_password(
-    State(state): State<AuthState>,
+    State(_state): State<AuthState>,
     Json(payload): Json<ForgotPasswordRequest>,
 ) -> Response {
     let email = payload.email.clone();

@@ -127,18 +127,14 @@ async fn run_interactive(
     // Nếu là bài kiểm tra và có lesson_id, tự động nối thêm test case từ backend
     if is_test {
         if let Some(lid) = lesson_id {
-            let exercise_name = lid.replace("-", "_");
-            let chapter: String = exercise_name.chars().take(4).collect(); // "ch03"
-            let test_file_path = format!("src/exercises/{}/{}.rs", chapter, exercise_name);
-            
-            match tokio::fs::read_to_string(&test_file_path).await {
-                Ok(test_code) => {
+            match crate::exercises::get_test_code(&lid) {
+                Some(test_code) => {
                     code.push_str("\n");
-                    code.push_str(&test_code);
+                    code.push_str(test_code);
                 }
-                Err(e) => {
+                None => {
                     let _ = tx.send(WsServerMessage::Error {
-                        message: format!("Lỗi: Bài tập '{}' không tồn tại test case trên hệ thống. Error: {}", exercise_name, e),
+                        message: format!("Lỗi: Bài tập '{}' không tồn tại test case trên hệ thống.", lid),
                     }).await;
                     let _ = tokio::fs::remove_dir_all(&work_dir).await;
                     return;
