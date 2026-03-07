@@ -1,17 +1,18 @@
 // =====================================================
-// Database Module — SQLite with rusqlite
+// Database Module — SQLite with rusqlite (bundled)
+// DbPool = Arc<PathBuf> → Send + Sync, safe for async Axum
+// Each handler opens its own connection inside spawn_blocking
 // =====================================================
 
 use rusqlite::{Connection, Result as SqliteResult};
 use std::path::PathBuf;
 use std::sync::Arc;
-use tokio::sync::RwLock;
 
-pub type DbPool = Arc<RwLock<Connection>>;
+// Arc<PathBuf> is Send + Sync — no RefCell involved
+pub type DbPool = Arc<PathBuf>;
 
-/// Initialize database and run migrations
+/// Initialize database, run migrations, return the db path wrapped in Arc
 pub async fn init_database() -> Result<DbPool, Box<dyn std::error::Error + Send + Sync>> {
-    // Get database path
     let db_path = get_db_path();
 
     // Ensure parent directory exists
@@ -21,15 +22,17 @@ pub async fn init_database() -> Result<DbPool, Box<dyn std::error::Error + Send 
 
     tracing::info!("Initializing database at: {:?}", db_path);
 
-    // Open connection with rusqlite (synchronous)
-    let conn = Connection::open(&db_path)?;
-
-    // Run migrations
-    run_migrations(&conn)?;
+    // Run migrations in a blocking thread (rusqlite is synchronous)
+    let path_clone = db_path.clone();
+    tokio::task::spawn_blocking(move || {
+        let conn = Connection::open(&path_clone)?;
+        run_migrations(&conn)
+    })
+    .await??;
 
     tracing::info!("Database initialized successfully");
 
-    Ok(Arc::new(RwLock::new(conn)))
+    Ok(Arc::new(db_path))
 }
 
 /// Get database file path

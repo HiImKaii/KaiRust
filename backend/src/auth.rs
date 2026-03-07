@@ -81,10 +81,10 @@ pub struct AuthState {
 // ============== Routes ==============
 pub fn create_auth_router(state: AuthState) -> Router {
     Router::new()
-        .route("/register", post(register))
-        .route("/login", post(login))
-        .route("/forgot-password", post(forgot_password))
-        .route("/me", get(get_current_user))
+        .route("/api/auth/register", post(register))
+        .route("/api/auth/login", post(login))
+        .route("/api/auth/forgot-password", post(forgot_password))
+        .route("/api/auth/me", get(get_current_user))
         .with_state(state)
 }
 
@@ -141,33 +141,46 @@ pub async fn register(
         }
     };
 
-    // Insert user into database
-    let db = state.db.read().await;
-    let result = db.execute(
-        "INSERT INTO users (username, email, password_hash) VALUES (?1, ?2, ?3)",
-        params![&payload.username, &payload.email, &password_hash],
-    );
+    // Clone values for the blocking task
+    let username = payload.username.clone();
+    let email = payload.email.clone();
+    let password_hash_clone = password_hash.clone();
+    let jwt_secret_for_token = state.jwt_secret.clone();
+    let email_for_log = email.clone(); // Clone for logging after spawn
+
+    // Insert user into database using blocking
+    let result = tokio::task::spawn_blocking(move || {
+        use rusqlite::Connection;
+        let current_dir = std::env::current_dir()
+            .unwrap_or_else(|_| std::path::PathBuf::from("."));
+        let db_path = current_dir.join("data").join("kairust.db");
+        let conn = Connection::open(&db_path).map_err(|e| e.to_string())?;
+
+        conn.execute(
+            "INSERT INTO users (username, email, password_hash) VALUES (?1, ?2, ?3)",
+            params![&username, &email, &password_hash_clone],
+        ).map_err(|e| e.to_string())?;
+
+        // Get the inserted user
+        let mut stmt = conn.prepare("SELECT id, username, email FROM users WHERE email = ?1")
+            .map_err(|e| e.to_string())?;
+        let user = stmt.query_row(params![&email], |row| {
+            Ok(UserInfo {
+                id: row.get(0)?,
+                username: row.get(1)?,
+                email: row.get(2)?,
+            })
+        }).map_err(|e| e.to_string())?;
+
+        Ok::<_, String>(user)
+    }).await;
 
     match result {
-        Ok(_) => {
-            tracing::info!("User registered: {}", payload.email);
-
-            // Get the inserted user
-            let mut stmt = db.prepare("SELECT id, username, email FROM users WHERE email = ?1")?;
-            let user = stmt.query_row(params![&payload.email], |row| {
-                Ok(UserInfo {
-                    id: row.get(0)?,
-                    username: row.get(1)?,
-                    email: row.get(2)?,
-                })
-            }).ok();
-
-            let user_clone = user.clone();
-            drop(stmt);
-            drop(db);
+        Ok(Ok(user)) => {
+            tracing::info!("User registered: {}", email_for_log);
 
             // Generate JWT token
-            let token = generate_token(&state.jwt_secret, user_clone.as_ref());
+            let token = generate_token(&jwt_secret_for_token, Some(&user));
 
             (
                 StatusCode::CREATED,
@@ -175,16 +188,16 @@ pub async fn register(
                     success: true,
                     message: "Registration successful".to_string(),
                     token,
-                    user,
+                    user: Some(user),
                 }),
             )
             .into_response()
         }
-        Err(e) => {
-            let message = if e.to_string().contains("UNIQUE constraint failed") {
+        Ok(Err(e)) => {
+            let message = if e.contains("UNIQUE constraint failed") || e.contains("already exists") {
                 "Username or email already exists".to_string()
             } else {
-                "Registration failed".to_string()
+                format!("Registration failed: {}", e)
             };
 
             (
@@ -192,6 +205,18 @@ pub async fn register(
                 Json(AuthResponse {
                     success: false,
                     message,
+                    token: None,
+                    user: None,
+                }),
+            )
+            .into_response()
+        }
+        Err(e) => {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(AuthResponse {
+                    success: false,
+                    message: "Server error".to_string(),
                     token: None,
                     user: None,
                 }),
@@ -206,11 +231,35 @@ pub async fn login(
     State(state): State<AuthState>,
     Json(payload): Json<LoginRequest>,
 ) -> Response {
-    // Find user by email
-    let db = state.db.read().await;
-    let mut stmt = match db.prepare("SELECT id, username, email, password_hash FROM users WHERE email = ?1") {
-        Ok(s) => s,
-        Err(_) => {
+    let email = payload.email.clone();
+    let password = payload.password.clone();
+    let jwt_secret_for_token = state.jwt_secret.clone();
+
+    // Find user by email using blocking
+    let result = tokio::task::spawn_blocking(move || {
+        use rusqlite::Connection;
+        let current_dir = std::env::current_dir()
+            .unwrap_or_else(|_| std::path::PathBuf::from("."));
+        let db_path = current_dir.join("data").join("kairust.db");
+        let conn = Connection::open(&db_path).map_err(|e| e.to_string())?;
+
+        let mut stmt = conn.prepare("SELECT id, username, email, password_hash FROM users WHERE email = ?1")
+            .map_err(|e| e.to_string())?;
+        let user = stmt.query_row(params![&email], |row| {
+            Ok((
+                row.get::<_, i64>(0)?,
+                row.get::<_, String>(1)?,
+                row.get::<_, String>(2)?,
+                row.get::<_, String>(3)?,
+            ))
+        }).map_err(|e| e.to_string())?;
+
+        Ok::<_, String>(user)
+    }).await;
+
+    let (user_id, username, email, stored_hash) = match result {
+        Ok(Ok(r)) => r,
+        _ => {
             return (
                 StatusCode::UNAUTHORIZED,
                 Json(AuthResponse {
@@ -223,67 +272,6 @@ pub async fn login(
             .into_response();
         }
     };
-
-    let user_result: Result<UserInfo, _> = stmt.query_row(params![&payload.email], |row| {
-        Ok(UserInfo {
-            id: row.get(0)?,
-            username: row.get(1)?,
-            email: row.get(2)?,
-        })
-    });
-
-    let user: UserInfo = match user_result {
-        Ok(u) => u,
-        Err(_) => {
-            return (
-                StatusCode::UNAUTHORIZED,
-                Json(AuthResponse {
-                    success: false,
-                    message: "Invalid email or password".to_string(),
-                    token: None,
-                    user: None,
-                }),
-            )
-            .into_response();
-        }
-    };
-
-    // Get password hash
-    let mut stmt2 = match db.prepare("SELECT password_hash FROM users WHERE id = ?1") {
-        Ok(s) => s,
-        Err(_) => {
-            return (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                Json(AuthResponse {
-                    success: false,
-                    message: "Database error".to_string(),
-                    token: None,
-                    user: None,
-                }),
-            )
-            .into_response();
-        }
-    };
-
-    let stored_hash: String = match stmt2.query_row(params![user.id], |row| row.get(0)) {
-        Ok(h) => h,
-        Err(_) => {
-            return (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                Json(AuthResponse {
-                    success: false,
-                    message: "Database error".to_string(),
-                    token: None,
-                    user: None,
-                }),
-            )
-            .into_response();
-        }
-    };
-
-    drop(stmt);
-    drop(stmt2);
-    drop(db);
 
     // Verify password
     let argon2 = Argon2::default();
@@ -304,7 +292,7 @@ pub async fn login(
     };
 
     if argon2
-        .verify_password(payload.password.as_bytes(), &parsed_hash)
+        .verify_password(password.as_bytes(), &parsed_hash)
         .is_err()
     {
         return (
@@ -319,16 +307,16 @@ pub async fn login(
         .into_response();
     }
 
-    tracing::info!("User logged in: {}", payload.email);
+    tracing::info!("User logged in: {}", email);
 
-    let user_for_token = UserInfo {
-        id: user.id,
-        username: user.username.clone(),
-        email: user.email.clone(),
+    let user = UserInfo {
+        id: user_id,
+        username: username.clone(),
+        email: email.clone(),
     };
 
     // Generate JWT token
-    let token = generate_token(&state.jwt_secret, Some(&user_for_token));
+    let token = generate_token(&jwt_secret_for_token, Some(&user));
 
     (
         StatusCode::OK,
@@ -337,9 +325,9 @@ pub async fn login(
             message: "Login successful".to_string(),
             token,
             user: Some(UserInfo {
-                id: user.id,
-                username: user.username,
-                email: user.email,
+                id: user_id,
+                username,
+                email,
             }),
         }),
     )
@@ -351,14 +339,61 @@ pub async fn forgot_password(
     State(state): State<AuthState>,
     Json(payload): Json<ForgotPasswordRequest>,
 ) -> Response {
-    let db = state.db.read().await;
+    let email = payload.email.clone();
 
-    // Find user by email
-    let mut stmt = match db.prepare("SELECT id, username FROM users WHERE email = ?1") {
-        Ok(s) => s,
-        Err(_) => {
+    // Find user and reset password using blocking
+    let result = tokio::task::spawn_blocking(move || {
+        use rusqlite::Connection;
+        let current_dir = std::env::current_dir()
+            .unwrap_or_else(|_| std::path::PathBuf::from("."));
+        let db_path = current_dir.join("data").join("kairust.db");
+        let conn = Connection::open(&db_path).map_err(|e| e.to_string())?;
+
+        // Find user
+        let mut stmt = conn.prepare("SELECT id, username FROM users WHERE email = ?1")
+            .map_err(|e| e.to_string())?;
+        let (user_id, username): (i64, String) = stmt.query_row(params![&email], |row| {
+            Ok((row.get(0)?, row.get(1)?))
+        }).map_err(|e| e.to_string())?;
+
+        // Generate new password
+        let new_password = generate_random_password();
+
+        // Hash password
+        let salt = SaltString::generate(&mut rand::thread_rng());
+        let argon2 = Argon2::default();
+        let password_hash = argon2.hash_password(new_password.as_bytes(), &salt)
+            .map_err(|e| e.to_string())?
+            .to_string();
+
+        // Update password
+        conn.execute(
+            "UPDATE users SET password_hash = ?1 WHERE id = ?2",
+            params![&password_hash, user_id],
+        ).map_err(|e| e.to_string())?;
+
+        Ok::<_, String>((username, new_password))
+    }).await;
+
+    match result {
+        Ok(Ok((username, new_password))) => {
+            // Log the password (in production, send via email)
+            tracing::info!("Password reset for user {}: New password = {}", username, new_password);
+
+            (
+                StatusCode::OK,
+                Json(AuthResponse {
+                    success: true,
+                    message: "Password has been reset. Check your email for the new password.".to_string(),
+                    token: None,
+                    user: None,
+                }),
+            )
+            .into_response()
+        }
+        _ => {
             // Don't reveal if email exists
-            return (
+            (
                 StatusCode::OK,
                 Json(AuthResponse {
                     success: true,
@@ -367,87 +402,9 @@ pub async fn forgot_password(
                     user: None,
                 }),
             )
-            .into_response();
+            .into_response()
         }
-    };
-
-    let user_result: Result<(i64, String), _> = stmt.query_row(params![&payload.email], |row| {
-        Ok((row.get(0)?, row.get(1)?))
-    });
-
-    let (user_id, username) = match user_result {
-        Ok(r) => r,
-        Err(_) => {
-            // Don't reveal if email exists
-            return (
-                StatusCode::OK,
-                Json(AuthResponse {
-                    success: true,
-                    message: "If the email exists, the password will be sent".to_string(),
-                    token: None,
-                    user: None,
-                }),
-            )
-            .into_response();
-        }
-    };
-
-    drop(stmt);
-
-    // Generate a new random password
-    let new_password = generate_random_password();
-
-    // Hash the new password
-    let salt = SaltString::generate(&mut rand::thread_rng());
-    let argon2 = Argon2::default();
-    let password_hash = match argon2.hash_password(new_password.as_bytes(), &salt) {
-        Ok(hash) => hash.to_string(),
-        Err(_) => {
-            return (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                Json(AuthResponse {
-                    success: false,
-                    message: "Failed to generate password".to_string(),
-                    token: None,
-                    user: None,
-                }),
-            )
-            .into_response();
-        }
-    };
-
-    // Update password in database
-    let result = db.execute(
-        "UPDATE users SET password_hash = ?1 WHERE id = ?2",
-        params![&password_hash, user_id],
-    );
-
-    if result.is_err() {
-        return (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            Json(AuthResponse {
-                success: false,
-                message: "Failed to reset password".to_string(),
-                token: None,
-                user: None,
-            }),
-        )
-        .into_response();
     }
-
-    // Log the password (in production, send via email)
-    tracing::info!("Password reset for user {}: New password = {}", username, new_password);
-
-    (
-        StatusCode::OK,
-        Json(AuthResponse {
-            success: true,
-            message: "Password has been reset. Check your email for the new password.".to_string(),
-            token: None,
-            user: None,
-        }),
-    )
-    .into_response()
 }
 
 /// Get current user info from token
@@ -510,33 +467,30 @@ pub async fn get_current_user(
 
     // Get user from database
     let user_id: i64 = claims.sub.parse().unwrap_or(0);
-    let db = state.db.read().await;
 
-    let mut stmt = match db.prepare("SELECT id, username, email FROM users WHERE id = ?1") {
-        Ok(s) => s,
-        Err(_) => {
-            return (
-                StatusCode::NOT_FOUND,
-                Json(AuthResponse {
-                    success: false,
-                    message: "User not found".to_string(),
-                    token: None,
-                    user: None,
-                }),
-            )
-            .into_response();
-        }
-    };
+    let result = tokio::task::spawn_blocking(move || {
+        use rusqlite::Connection;
+        let current_dir = std::env::current_dir()
+            .unwrap_or_else(|_| std::path::PathBuf::from("."));
+        let db_path = current_dir.join("data").join("kairust.db");
+        let conn = Connection::open(&db_path).map_err(|e| e.to_string())?;
 
-    let user = match stmt.query_row(params![user_id], |row| {
-        Ok(UserInfo {
-            id: row.get(0)?,
-            username: row.get(1)?,
-            email: row.get(2)?,
-        })
-    }) {
-        Ok(u) => u,
-        Err(_) => {
+        let mut stmt = conn.prepare("SELECT id, username, email FROM users WHERE id = ?1")
+            .map_err(|e| e.to_string())?;
+        let user = stmt.query_row(params![user_id], |row| {
+            Ok(UserInfo {
+                id: row.get(0)?,
+                username: row.get(1)?,
+                email: row.get(2)?,
+            })
+        }).map_err(|e| e.to_string())?;
+
+        Ok::<_, String>(user)
+    }).await;
+
+    let user = match result {
+        Ok(Ok(u)) => u,
+        _ => {
             return (
                 StatusCode::NOT_FOUND,
                 Json(AuthResponse {
