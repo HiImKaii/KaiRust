@@ -32,7 +32,7 @@ graph TD
 
 Dưới đây là thứ tự công việc và tất cả các dòng lệnh đã được thực thi từ Local lên Server:
 
-### Giai đoạn 1: Chuẩn bị tại máy cá nhân (Fedora Local)
+### Giai đoạn 1: Chuẩn bị tại máy cá nhân
 
 **1. Cơ chế Web Socket tự động (Thông tin cập nhật)**
 *   *Thao tác:* Ở góc độ hệ thống hiện tại, file `main.ts` cấu hình Frontend đã được thiết kế để tự động nhận dạng giao thức động `(window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/run'`. Thay vì phải chỉnh tay một URL như `kairust.duckdns.org` lúc triển khai, mã nguồn giờ đã linh hoạt hoàn toàn giữa Local và Production.
