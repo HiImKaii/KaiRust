@@ -185,6 +185,30 @@
     </div>
   </div>
 
+  <!-- Resume Learning Popup -->
+  <div id="resume-popup" class="modal-overlay hidden">
+    <div class="modal-content resume-popup">
+      <div class="modal-header">
+        <h2>Chào mừng trở lại!</h2>
+        <button class="modal-close" id="resume-popup-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="resume-icon">
+          <span class="material-symbols-outlined">school</span>
+        </div>
+        <p class="resume-text">
+          Chúng tôi nhận thấy bạn đang học <strong id="resume-chapter-name">Chương 1</strong> -
+          bài <strong id="resume-lesson-name">Bài 1</strong>.
+        </p>
+        <p class="resume-question">Bạn có muốn tiếp tục học từ điểm dừng không?</p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-start-fresh" class="btn btn-secondary">Bắt đầu lại</button>
+        <button id="btn-continue-learning" class="btn btn-primary glow-purple">Tiếp tục học</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Auth Modal -->
   <div id="auth-modal" class="modal-overlay hidden">
     <div class="modal-content auth-modal">

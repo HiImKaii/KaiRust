@@ -1477,3 +1477,79 @@ code {
   color: var(--color-teal);
   margin: 0;
 }
+
+/* =====================================================
+   Resume Learning Popup
+   ===================================================== */
+.resume-popup {
+  text-align: center;
+}
+
+.resume-popup .modal-header {
+  justify-content: center;
+  position: relative;
+}
+
+.resume-popup .modal-header h2 {
+  font-size: 1.75rem;
+}
+
+.resume-popup .modal-close {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.resume-popup .modal-body {
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+.resume-icon {
+  margin-bottom: 1rem;
+}
+
+.resume-icon .material-symbols-outlined {
+  font-size: 4rem;
+  color: var(--neon-purple);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(200, 122, 240, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(200, 122, 240, 0.8));
+  }
+}
+
+.resume-text {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.resume-text strong {
+  color: var(--neon-cyan);
+}
+
+.resume-question {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.resume-popup .modal-footer {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.resume-popup .modal-footer .btn {
+  flex: 1;
+  max-width: 160px;
+}

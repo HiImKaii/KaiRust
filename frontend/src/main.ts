@@ -270,6 +270,14 @@ const selectLesson = (lesson: Lesson) => {
     // Update progress
     updateProgress();
 
+    // Save learning state to localStorage
+    const currentChapter = courseData.find(ch =>
+        ch.lessons.some(l => l.id === lesson.id)
+    );
+    if (currentChapter) {
+        ProgressManager.saveLearningState(lesson.id, currentChapter.id);
+    }
+
     // Setup inline code runners for the new content
     setupInlineCodeRunners();
 };
@@ -823,11 +831,133 @@ const setupCookieBanner = () => {
     btnAccept.addEventListener('click', () => {
         localStorage.setItem('kairust_cookie_consent', 'accepted');
         hideBanner();
+        // Check and show resume popup after accepting cookies
+        checkAndShowResumePopup();
     });
 
     btnReject.addEventListener('click', () => {
         localStorage.setItem('kairust_cookie_consent', 'rejected');
         hideBanner();
+    });
+};
+
+// ---- Resume Learning Popup Helper ----
+const checkAndShowResumePopup = () => {
+    const popup = document.getElementById('resume-popup');
+    if (!popup) return;
+
+    // Get saved learning state
+    const savedState = ProgressManager.getLearningState();
+
+    // Check if user has visited before and has a saved lesson
+    if (savedState.hasVisited && savedState.currentLessonId) {
+        // Find the saved lesson and chapter
+        const savedLesson = flatLessons.find(l => l.id === savedState.currentLessonId);
+        const savedChapter = savedLesson
+            ? courseData.find(ch => ch.lessons.some(l => l.id === savedLesson.id))
+            : null;
+
+        if (savedLesson && savedChapter) {
+            // Update popup content
+            const chapterNameEl = document.getElementById('resume-chapter-name');
+            const lessonNameEl = document.getElementById('resume-lesson-name');
+
+            if (chapterNameEl) {
+                chapterNameEl.textContent = savedChapter.title;
+            }
+            if (lessonNameEl) {
+                lessonNameEl.textContent = savedLesson.title;
+            }
+
+            // Show popup
+            popup.classList.remove('hidden');
+        }
+    }
+};
+
+// ---- Resume Learning Popup Setup ----
+const setupResumePopup = () => {
+    const popup = document.getElementById('resume-popup');
+    const closeBtn = document.getElementById('resume-popup-close');
+    const btnContinue = document.getElementById('btn-continue-learning');
+    const btnStartFresh = document.getElementById('btn-start-fresh');
+
+    if (!popup || !closeBtn || !btnContinue || !btnStartFresh) return;
+
+    // Only show resume popup if user has accepted cookies
+    const cookieConsent = localStorage.getItem('kairust_cookie_consent');
+    if (cookieConsent !== 'accepted') {
+        return; // Skip showing resume popup if cookies not accepted
+    }
+
+    // Get saved learning state
+    const savedState = ProgressManager.getLearningState();
+
+    // Check if user has visited before and has a saved lesson
+    if (savedState.hasVisited && savedState.currentLessonId) {
+        // Find the saved lesson and chapter
+        const savedLesson = flatLessons.find(l => l.id === savedState.currentLessonId);
+        const savedChapter = savedLesson
+            ? courseData.find(ch => ch.lessons.some(l => l.id === savedLesson.id))
+            : null;
+
+        if (savedLesson && savedChapter) {
+            // Update popup content
+            const chapterNameEl = document.getElementById('resume-chapter-name');
+            const lessonNameEl = document.getElementById('resume-lesson-name');
+
+            if (chapterNameEl) {
+                chapterNameEl.textContent = savedChapter.title;
+            }
+            if (lessonNameEl) {
+                lessonNameEl.textContent = savedLesson.title;
+            }
+
+            // Show popup after a short delay
+            setTimeout(() => {
+                popup.classList.remove('hidden');
+            }, 800);
+        }
+    }
+
+    // Close button handler
+    closeBtn.addEventListener('click', () => {
+        popup.classList.add('hidden');
+    });
+
+    // Continue learning button
+    btnContinue.addEventListener('click', () => {
+        popup.classList.add('hidden');
+
+        // Find and select the saved lesson
+        const savedState = ProgressManager.getLearningState();
+        const savedLesson = flatLessons.find(l => l.id === savedState.currentLessonId);
+
+        if (savedLesson) {
+            // First expand the chapter in sidebar
+            const chapterElement = document.querySelector(`[data-chapter-id="${savedState.currentChapterId}"]`);
+            if (chapterElement) {
+                const chapterHeader = chapterElement.querySelector('.chapter-header');
+                const lessonList = chapterElement.querySelector('.lesson-list');
+                if (chapterHeader) chapterHeader.classList.add('open');
+                if (lessonList) lessonList.classList.add('open');
+            }
+
+            // Then select the lesson
+            selectLesson(savedLesson);
+        }
+    });
+
+    // Start fresh button
+    btnStartFresh.addEventListener('click', () => {
+        // Clear saved learning state
+        ProgressManager.clearLearningState();
+        popup.classList.add('hidden');
+
+        // Show chapter 1 introduction by default
+        if (courseData.length > 0) {
+            showChapterIntroduction(courseData[0]);
+        }
     });
 };
 
@@ -1114,6 +1244,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupResizers();
     setupCookieBanner();
     setupAuthModal();
+    setupResumePopup();
 
     // Select the first lesson automatically if available
     if (flatLessons.length > 0) {
