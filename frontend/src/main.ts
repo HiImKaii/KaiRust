@@ -25,7 +25,7 @@ const initEditor = () => {
             { token: '', foreground: '1c1917' },
             { token: 'keyword', foreground: 'a855f7', fontStyle: 'bold' },
             { token: 'number', foreground: '3b82f6' },
-            { token: 'string', foreground: '14b8a6' },
+            { token: 'string', foreground: '27e627' },
             { token: 'comment', foreground: 'a8a29e', fontStyle: 'italic' },
             { token: 'type', foreground: 'ec4899' },
             { token: 'function', foreground: 'a855f7' },
@@ -36,10 +36,10 @@ const initEditor = () => {
             'editor.background': '#ffffff',
             'editor.foreground': '#1c1917',
             'editor.lineHighlightBackground': '#fafaf9',
-            'editorCursor.foreground': '#a855f7',
+            'editorCursor.foreground': '#a67c52',
             'editor.selectionBackground': '#e0e7ff',
             'editorLineNumber.foreground': '#a8a29e',
-            'editorLineNumber.activeForeground': '#a855f7',
+            'editorLineNumber.activeForeground': '#a67c52',
             'editor.inactiveSelectionBackground': '#f5f5f4',
             'editorIndentGuide.background': '#e5e5e5',
             'editorIndentGuide.activeBackground': '#d4d4d4',
@@ -730,15 +730,86 @@ const setupNavButtons = () => {
     }
 };
 
+// ---- Layout Settings - Save/Load from localStorage ----
+const LAYOUT_STORAGE_KEY = 'kairust_layout_settings';
+
+interface LayoutSettings {
+    sidebarWidth: number;
+    instructionWidth: number;
+    editorColumnWidth: number;
+    terminalHeight: number;
+}
+
+const saveLayoutSettings = () => {
+    const sidebar = document.getElementById('sidebar-curriculum');
+    const instruction = document.getElementById('instruction-panel');
+    const editorColumn = document.getElementById('editor-column');
+    const terminalPanel = document.getElementById('terminal-panel');
+
+    const settings: LayoutSettings = {
+        sidebarWidth: sidebar?.getBoundingClientRect().width || 240,
+        instructionWidth: instruction?.getBoundingClientRect().width || 400,
+        editorColumnWidth: editorColumn?.getBoundingClientRect().width || 200,
+        terminalHeight: terminalPanel?.getBoundingClientRect().height || 100,
+    };
+
+    localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(settings));
+};
+
+const loadLayoutSettings = () => {
+    const settingsJson = localStorage.getItem(LAYOUT_STORAGE_KEY);
+    if (!settingsJson) return;
+
+    try {
+        const settings: LayoutSettings = JSON.parse(settingsJson);
+
+        const sidebar = document.getElementById('sidebar-curriculum');
+        const instruction = document.getElementById('instruction-panel');
+        const editorColumn = document.getElementById('editor-column');
+        const terminalPanel = document.getElementById('terminal-panel');
+
+        // Only apply reasonable values (min 180px for sidebar)
+        if (sidebar && settings.sidebarWidth >= 180) {
+            sidebar.style.width = `${settings.sidebarWidth}px`;
+            sidebar.style.flex = '0 0 auto';
+        }
+
+        // Apply instruction width if saved
+        if (instruction && settings.instructionWidth >= 250) {
+            instruction.style.width = `${settings.instructionWidth}px`;
+            instruction.style.flex = '0 0 auto';
+        }
+
+        // Editor column tự tính dựa trên window width
+        if (editorColumn && settings.editorColumnWidth >= 100) {
+            editorColumn.style.width = `${settings.editorColumnWidth}px`;
+            editorColumn.style.flex = '0 0 auto';
+        }
+
+        // Terminal height
+        if (terminalPanel && settings.terminalHeight >= 80) {
+            terminalPanel.style.height = `${settings.terminalHeight}px`;
+            terminalPanel.style.flex = '0 0 auto';
+        }
+
+        // Apply CSS variables
+        if (settings.sidebarWidth >= 180) {
+            document.documentElement.style.setProperty('--sidebar-width', `${settings.sidebarWidth}px`);
+        }
+    } catch (e) {
+        console.error('Failed to load layout settings:', e);
+    }
+};
+
 const setupResizers = () => {
     const resizerSidebar = document.getElementById('resizer-sidebar');
     const resizerInstruction = document.getElementById('resizer-instruction');
-    const resizerTerminal = document.getElementById('resizer-terminal');
+    const resizerEditorTerminal = document.getElementById('resizer-editor-terminal');
 
     const sidebar = document.getElementById('sidebar-curriculum');
     const instruction = document.getElementById('instruction-panel');
     const codeWorkspace = document.getElementById('code-workspace');
-    const terminalWorkspace = document.getElementById('terminal-workspace');
+    const terminalPanel = document.getElementById('terminal-panel');
 
     // Sidebar Resizer
     if (resizerSidebar && sidebar) {
@@ -754,58 +825,75 @@ const setupResizers = () => {
             if (isResizing) {
                 isResizing = false;
                 resizerSidebar.classList.remove('dragging');
+                saveLayoutSettings();
                 if (editorInstance) editorInstance.layout();
             }
         });
     }
 
-    // Instruction Resizer
+    // Instruction Resizer - chỉ resize cột instruction
     if (resizerInstruction && sidebar && instruction) {
         let isResizing = false;
         resizerInstruction.addEventListener('mousedown', (e) => { e.preventDefault(); isResizing = true; resizerInstruction.classList.add('dragging'); });
         document.addEventListener('mousemove', (e) => {
             if (!isResizing) return;
-            const sidebarWidth = sidebar.getBoundingClientRect().width;
-            const resizerSidebarWidth = document.getElementById('resizer-sidebar')?.getBoundingClientRect().width || 0;
-            const newWidth = e.clientX - sidebarWidth - resizerSidebarWidth;
-            instruction.style.flex = `0 0 ${newWidth}px`;
+            const sidebarRect = sidebar.getBoundingClientRect();
+            const editorColumn = document.getElementById('editor-column');
+
+            // Tính width mới cho instruction
+            let newWidth = e.clientX - sidebarRect.width;
+            newWidth = Math.max(250, Math.min(newWidth, window.innerWidth - 300));
+
+            instruction.style.width = `${newWidth}px`;
+            instruction.style.flex = '0 0 none';
+
+            // Editor column sẽ tự động fill phần còn lại
+            if (editorColumn) {
+                editorColumn.style.flex = '1';
+                editorColumn.style.minWidth = '100px';
+            }
+
             if (editorInstance) editorInstance.layout();
         });
         document.addEventListener('mouseup', () => {
             if (isResizing) {
                 isResizing = false;
                 resizerInstruction.classList.remove('dragging');
+                saveLayoutSettings();
                 if (editorInstance) editorInstance.layout();
             }
         });
     }
 
-    // Terminal Resizer
-    if (resizerTerminal && codeWorkspace && terminalWorkspace) {
+    // Editor-Terminal Resizer (stacked vertically)
+    if (resizerEditorTerminal && codeWorkspace && terminalPanel) {
         let isResizing = false;
-        resizerTerminal.addEventListener('mousedown', (e) => { e.preventDefault(); isResizing = true; resizerTerminal.classList.add('dragging'); });
+        resizerEditorTerminal.addEventListener('mousedown', (e) => { e.preventDefault(); isResizing = true; resizerEditorTerminal.classList.add('dragging'); });
         document.addEventListener('mousemove', (e) => {
             if (!isResizing) return;
-            const editorPanel = codeWorkspace.parentElement;
-            if (!editorPanel) return;
-            const panelRect = editorPanel.getBoundingClientRect();
-            const newHeight = e.clientY - panelRect.top;
-            const totalHeight = panelRect.height;
+            const codeColumn = document.getElementById('editor-column');
+            if (!codeColumn) return;
+            const columnRect = codeColumn.getBoundingClientRect();
+            const newHeight = e.clientY - columnRect.top;
+            const totalHeight = columnRect.height;
 
-            // Clamp: code min 100px, terminal min 35px
-            const minCodeH = 100;
-            const minTermH = 35;
+            // Min heights: code 150px, terminal 80px
+            const minCodeH = 150;
+            const minTermH = 80;
             const clampedCodeH = Math.max(minCodeH, Math.min(newHeight, totalHeight - minTermH));
-            const codePercent = (clampedCodeH / totalHeight) * 100;
 
-            codeWorkspace.style.flex = `1 1 ${codePercent}%`;
-            terminalWorkspace.style.flex = `1 1 ${100 - codePercent}%`;
+            codeWorkspace.style.flex = `0 0 ${clampedCodeH}px`;
+            codeWorkspace.style.height = `${clampedCodeH}px`;
+            terminalPanel.style.flex = `0 0 auto`;
+            terminalPanel.style.height = `${totalHeight - clampedCodeH}px`;
+
             if (editorInstance) editorInstance.layout();
         });
         document.addEventListener('mouseup', () => {
             if (isResizing) {
                 isResizing = false;
-                resizerTerminal.classList.remove('dragging');
+                resizerEditorTerminal.classList.remove('dragging');
+                saveLayoutSettings();
                 if (editorInstance) editorInstance.layout();
             }
         });
@@ -1256,15 +1344,11 @@ document.addEventListener('DOMContentLoaded', () => {
         selectLesson(flatLessons[0]);
     }
 
-    // Force terminal visible after everything is initialized
-    // Monaco editor layout can push terminal out of view
+    // Load saved layout settings from localStorage
+    loadLayoutSettings();
+
+    // Monaco editor layout after everything is initialized
     setTimeout(() => {
-        const codeWs = document.getElementById('code-workspace');
-        const termWs = document.getElementById('terminal-workspace');
-        if (codeWs && termWs) {
-            codeWs.style.flex = '1 1 auto';
-            termWs.style.flex = '0 0 35px';
-        }
         if (editorInstance) editorInstance.layout();
     }, 100);
 });

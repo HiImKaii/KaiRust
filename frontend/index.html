@@ -123,43 +123,45 @@
       <!-- Resizer Virtual Instruction -->
       <div class="resizer vertical" id="resizer-instruction"></div>
 
-      <!-- Right Column: Code Editor & Terminal Split -->
+      <!-- Right Column: Code Editor & Terminal - Side by Side -->
       <section class="editor-panel">
 
-        <!-- Top Half: Monaco Editor -->
-        <div class="code-workspace" id="code-workspace">
-          <div class="panel-header editor-header">
-            <span class="file-name">main.rs</span>
-            <div class="btn-group-right" style="display: flex; gap: 8px;">
-              <button id="submit-btn" class="btn btn-primary submit-btn hidden" title="Chấm điểm Bài tập">
-                <span class="btn-text">NỘP BÀI</span><span class="btn-icon material-symbols-outlined"
-                  style="font-size: 1.2rem; vertical-align: middle; margin-left: 4px;">upload_file</span>
-              </button>
-              <button id="run-btn" class="btn btn-primary run-btn">
-                <span class="btn-text">RUN CODE</span><span class="btn-icon material-symbols-outlined"
-                  style="font-size: 1.2rem; vertical-align: middle; margin-left: 4px;">play_arrow</span>
-              </button>
+        <!-- Column 3: Code Editor + Terminal (stacked vertically) -->
+        <div class="code-column" id="editor-column">
+          <div class="code-workspace" id="code-workspace">
+            <div class="panel-header editor-header">
+              <span class="file-name">main.rs</span>
+              <div class="btn-group-right" style="display: flex; gap: 8px;">
+                <button id="submit-btn" class="btn btn-primary submit-btn hidden" title="Chấm điểm Bài tập">
+                  <span class="btn-text">NỘP BÀI</span><span class="btn-icon material-symbols-outlined"
+                    style="font-size: 1.2rem; vertical-align: middle; margin-left: 4px;">upload_file</span>
+                </button>
+                <button id="run-btn" class="btn btn-primary run-btn">
+                  <span class="btn-text">RUN CODE</span><span class="btn-icon material-symbols-outlined"
+                    style="font-size: 1.2rem; vertical-align: middle; margin-left: 4px;">play_arrow</span>
+                </button>
+              </div>
             </div>
+            <div id="editor" class="monaco-container"></div>
           </div>
-          <div id="editor" class="monaco-container"></div>
-        </div>
 
-        <!-- Resizer -->
-        <div class="resizer horizontal" id="resizer-terminal"></div>
+          <!-- Resizer between Editor and Terminal -->
+          <div class="resizer horizontal" id="resizer-editor-terminal"></div>
 
-        <!-- Bottom Half: Terminal Output -->
-        <div class="terminal-workspace" id="terminal-workspace">
-          <div class="panel-header terminal-header">
-            <span class="terminal-title">TERMINAL OUTPUT</span>
-            <button id="clear-btn" class="btn-clear text-btn">Clear</button>
-          </div>
-          <div class="terminal-content">
-            <pre id="terminal-log"
-              class="terminal-log"><span class="log-prompt">$</span> <span class="log-info">Chờ lệnh...</span></pre>
-            <div class="terminal-input-wrapper">
-              <span class="log-prompt">></span>
-              <input type="text" id="terminal-stdin" class="terminal-input" autocomplete="off" spellcheck="false"
-                placeholder="Nhập chuẩn STDIN vào đây và bấm Enter...">
+          <!-- Terminal -->
+          <div class="terminal-panel" id="terminal-panel">
+            <div class="panel-header terminal-header">
+              <span class="terminal-title">TERMINAL</span>
+              <button id="clear-btn" class="btn-clear text-btn">Clear</button>
+            </div>
+            <div class="terminal-content">
+              <pre id="terminal-log"
+                class="terminal-log"><span class="log-prompt">$</span> <span class="log-info">Chờ lệnh...</span></pre>
+              <div class="terminal-input-wrapper">
+                <span class="log-prompt">></span>
+                <input type="text" id="terminal-stdin" class="terminal-input" autocomplete="off" spellcheck="false"
+                  placeholder="STDIN...">
+              </div>
             </div>
           </div>
         </div>
