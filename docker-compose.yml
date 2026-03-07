@@ -10,7 +10,9 @@ services:
     restart: unless-stopped
     environment:
       - RUST_LOG=info
-    # We remove "ports: 3001:3001" because Caddy will proxy traffic internally
+      - DATA_DIR=/data
+    volumes:
+      - backend_data:/data
 
   # -------------------------
   # FRONTEND SERVICE (VITE/NGINX)
@@ -61,3 +63,4 @@ services:
 volumes:
   caddy_data:
   caddy_config:
+  backend_data:

@@ -14,6 +14,7 @@ pub struct RunRequest {
     /// Optional flag to compile with --test. Defaults to false.
     pub is_test: Option<bool>,
     /// Optional ID of the lesson to load test cases from backend/exercises/
+    #[allow(dead_code)]
     pub lesson_id: Option<String>,
 }
 

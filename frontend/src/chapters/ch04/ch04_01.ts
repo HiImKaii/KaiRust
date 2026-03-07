@@ -1,119 +1,143 @@
 import { Lesson } from '../../courses';
 
 export const ch04_01: Lesson = {
-      id: 'ch04-01',
-      title: '4.1 Ownership là gì?',
-      duration: '45 phút',
-      type: 'theory',
-      content: `
-<p><strong>Ownership</strong> (Quyền sở hữu) là tính năng độc đáo nhất của Rust và có ý nghĩa sâu sắc đối với phần còn lại của ngôn ngữ này. Nó cho phép Rust đảm bảo an toàn bộ nhớ (memory safety) mà không cần đến garbage collector (trình thu gom rác), vì vậy việc hiểu cách ownership hoạt động là cực kỳ quan trọng.</p>
+  id: 'ch04-01',
+  title: '4.1 Ownership là gì?',
+  duration: '45 phút',
+  type: 'theory',
+  content: `
+<h3 class="task-heading">Ownership Là Gì? (What Is Ownership?)</h3>
+<p><em>Ownership</em> (Quyền sở hữu) là một tập hợp các quy tắc chi phối cách một chương trình Rust quản lý bộ nhớ. Tất cả các chương trình đều phải quản lý cách chúng sử dụng bộ nhớ của máy tính trong khi chạy. Một số ngôn ngữ có tính năng thu gom rác (garbage collection) liên tục tìm kiếm bộ nhớ không còn được sử dụng khi chương trình chạy; ở các ngôn ngữ khác, lập trình viên phải tự cấp phát và giải phóng bộ nhớ một cách tường minh. Rust sử dụng một cách tiếp cận thứ ba: Bộ nhớ được quản lý thông qua một hệ thống ownership với một bộ quy tắc mà trình biên dịch (compiler) kiểm tra. Nếu bất kỳ quy tắc nào bị vi phạm, chương trình sẽ không thể biên dịch. Không có tính năng nào của ownership sẽ làm chậm chương trình của bạn trong khi nó đang chạy.</p>
+<p>Vì ownership là một khái niệm mới đối với nhiều lập trình viên, nó đòi hỏi một chút thời gian để làm quen. Tin tốt là khi bạn càng có kinh nghiệm với Rust và các quy tắc của hệ thống ownership, bạn sẽ càng thấy dễ dàng hơn trong việc phát triển các đoạn code vừa an toàn vừa hiệu quả một cách tự nhiên. Hãy kiên trì nhé!</p>
+<p>Khi bạn hiểu về ownership, bạn sẽ có một nền tảng vững chắc để hiểu các tính năng làm nên sự độc đáo của Rust. Trong chương này, bạn sẽ học về ownership thông qua một số ví dụ tập trung vào một cấu trúc dữ liệu rất phổ biến: chuỗi (strings).</p>
 
-<p>Một số ngôn ngữ có garbage collector chạy liên tục để tìm và giải phóng bộ nhớ không còn được sử dụng khi chương trình chạy; trong các ngôn ngữ khác, lập trình viên phải tự cấp phát và giải phóng bộ nhớ một cách rõ ràng. Rust sử dụng một cách tiếp cận thứ ba: bộ nhớ được quản lý thông qua một hệ thống ownership với một tập hợp các quy tắc mà trình biên dịch (compiler) kiểm tra. Nếu bất kỳ quy tắc nào bị vi phạm, chương trình sẽ không được biên dịch (compile). Không có tính năng nào của ownership làm chậm chương trình của bạn khi nó đang chạy.</p>
+<div class="cyber-alert info">
+  <strong>Stack và Heap</strong><br>
+  Nhiều ngôn ngữ lập trình không yêu cầu bạn phải suy nghĩ về stack và heap quá thường xuyên. Nhưng trong một ngôn ngữ lập trình hệ thống như Rust, việc một giá trị nằm trên stack (ngăn xếp) hay heap (đống bộ nhớ) ảnh hưởng đến cách ngôn ngữ hoạt động và lý do tại sao bạn phải đưa ra những quyết định nhất định.
+  <br><br>
+  Cả stack và heap đều là những phần của bộ nhớ có sẵn cho code của bạn sử dụng tại runtime, nhưng chúng được tổ chức theo những cách khác nhau. Stack lưu trữ các giá trị theo thứ tự nó nhận được và loại bỏ theo thứ tự ngược lại (LIFO - Last In, First Out). Mọi dữ liệu lưu trên stack phải có <strong>kích thước cố định và được biết trước</strong>. Dữ liệu có kích thước không xác định tại thời điểm biên dịch hoặc có kích thước có thể thay đổi phải được lưu trữ trên heap.
+  <br><br>
+  Heap thì ít quy củ hơn: Khi bạn đưa dữ liệu lên heap, bạn yêu cầu một lượng không gian nhất định. Bộ cấp phát bộ nhớ (memory allocator) tìm một khoảng trống đủ lớn trong heap, đánh dấu nó đang được sử dụng và trả về một <em>pointer</em> (con trỏ), là địa chỉ của vị trí đó. Việc đẩy dữ liệu vào stack nhanh hơn cấp phát trên heap. Truy cập dữ liệu trong heap cũng chậm hơn so với stack vì bạn phải đi theo con trỏ.
+</div>
 
-<h3 class="task-heading">Các quy tắc Ownership (Ownership Rules)</h3>
-<p>Hãy ghi nhớ những quy tắc này khi chúng ta tìm hiểu qua các ví dụ minh họa:</p>
+<h3 class="task-heading">Các Quy Tắc Ownership (Ownership Rules)</h3>
+<p>Đầu tiên, hãy xem qua các quy tắc của ownership. Hãy ghi nhớ những quy tắc này khi chúng ta làm việc qua các ví dụ minh họa:</p>
 <ul class="task-list">
   <li>Mỗi giá trị trong Rust có một <strong>owner</strong> (chủ sở hữu).</li>
   <li>Tại một thời điểm chỉ có thể có <strong>duy nhất một owner</strong>.</li>
-  <li>Khi owner ra khỏi <strong>scope</strong> (phạm vi), giá trị sẽ bị <strong>drop</strong> (bị hủy và giải phóng bộ nhớ).</li>
+  <li>Khi owner đi ra khỏi <strong>scope</strong> (phạm vi), giá trị sẽ bị <strong>drop</strong> (bị huỷ/giải phóng).</li>
 </ul>
 
-<h3 class="task-heading">Stack và Heap</h3>
-<p>Trong nhiều ngôn ngữ lập trình, bạn không cần phải suy nghĩ thường xuyên về stack (ngăn xếp) và heap (đống). Nhưng trong một ngôn ngữ lập trình hệ thống (systems programming language) như Rust, việc một giá trị nằm trên stack hay heap ảnh hưởng đến cách ngôn ngữ cư xử và tại sao bạn phải đưa ra những quyết định nhất định.</p>
-
-<p>Cả stack và heap đều là những vùng bộ nhớ mà đoạn code của bạn có thể sử dụng tại thời điểm chạy (runtime), nhưng chúng được cấu trúc theo những cách khác nhau:</p>
-<ul class="task-list">
-  <li><strong>Stack</strong> lưu trữ các giá trị theo thứ tự mà nó nhận được và loại bỏ các giá trị theo thứ tự ngược lại (LIFO - Last In, First Out). Tất cả dữ liệu được lưu trữ trên stack phải có kích thước cố định và được biết trước.</li>
-  <li><strong>Heap</strong> ít được tổ chức hơn: khi bạn đưa dữ liệu lên heap, bạn yêu cầu một lượng không gian nhất định. Bộ cấp phát (allocator) tìm một vùng trống đủ lớn trong heap, đánh dấu nó đang được sử dụng và trả về một con trỏ (pointer), đó là địa chỉ của vị trí đó. Quá trình này được gọi là <i>allocating on the heap</i>.</li>
-</ul>
-
-<p>Đẩy dữ liệu vào stack nhanh hơn cấp phát trên heap vì bộ cấp phát không bao giờ phải tìm kiếm nơi lưu trữ dữ liệu mới; dữ liệu đó luôn nằm ở vị trí trên cùng của stack. Tương tự, việc truy cập dữ liệu trong heap chậm hơn so với việc truy cập dữ liệu trên stack vì bạn phải đi theo một con trỏ để tới đó.</p>
-
-<h3 class="task-heading">Phạm vi của Biến (Variable Scope)</h3>
-<p>Một scope là phạm vi trong chương trình mà một item là hợp lệ (valid).</p>
+<h4>Phạm Vi Biến (Variable Scope)</h4>
+<p>Một scope (phạm vi) là khoảng mã trong chương trình mà một mục (item) là hợp lệ.</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
-  <pre><code>{                      // s chưa hợp lệ ở đây, nó chưa được khai báo
-    let s = "hello";   // s bắt đầu hợp lệ từ điểm này trở đi
+  <pre><code>{                      // s không hợp lệ ở đây, vì nó chưa được khai báo
+    let s = "hello";   // s hợp lệ từ điểm này trở đi
 
-    // thực hiện các thao tác với s
-}                      // scope hiện tại kết thúc, và s không còn hợp lệ</code></pre>
+    // làm gì đó với s
+}                      // scope này lúc này đã kết thúc, và s không còn hợp lệ nữa</code></pre>
 </div>
+<p>Có hai mốc thời gian quan trọng: Khi <code>s</code> đi vào scope, nó hợp lệ. Nó vẫn hợp lệ cho đến khi đi ra khỏi scope.</p>
 
-<h3 class="task-heading">Kiểu String và Cấp phát Bộ nhớ</h3>
-<p>Các kiểu dữ liệu mà chúng ta đã thấy trước đây (như integer) đều có kích thước đã biết, có thể được lưu trữ nhanh chóng và dễ dàng trên stack, và pop khỏi stack khi variable name ra khỏi scope. Nhưng để minh họa quy tắc ownership, chúng ta cần một kiểu dữ liệu phức tạp hơn được phân bổ trên heap, ví dụ như <code>String</code>.</p>
-
-<p>Kiểu string literal (ví dụ <code>let s = "hello";</code>) là bất biến và kích thước của nó phải được biết tại thời điểm biên dịch. Không phải mọi chuỗi giá trị đều như vậy, ví dụ như nội dung mà người dùng nhập vào. Đối với những trường hợp này, Rust có kiểu <code>String</code> thứ hai, được phân bổ trên heap và có thể mở rộng kích thước tại runtime.</p>
-
+<h3 class="task-heading">Kiểu Dữ Liệu String</h3>
+<p>Để minh họa các quy tắc về ownership, chúng ta cần một kiểu dữ liệu phức tạp hơn những kiểu ta đã đề cập ở Chương 3. Các kiểu trước đó đều có kích thước đã biết, có thể lưu trữ trên stack, và có thể sao chép nhanh chóng, đơn giản. Chúng ta muốn xem xét dữ liệu được lưu trữ trên heap và khám phá cách Rust biết khi nào cần làm sạch dữ liệu đó, và kiểu <code>String</code> là một ví dụ tuyệt vời.</p>
+<p>Chúng ta đã thấy các chuỗi ký tự dạng chữ (string literals) <code>"hello"</code> ở nơi giá trị chuỗi được gõ cứng (hardcoded) vào chương trình. String literal rất tiện lợi, nhưng không thể thoả mãn mọi tình huống dùng chuỗi, vì nó <em>bất biến</em> (immutable) và chỉ dành cho dạng văn bản đã biết trước khi biên dịch. Nếu ta muốn lưu lại nhập liệu của người dùng thì sao? Rust hỗ trợ kiểu <code>String</code> thứ hai, quản lý dữ liệu trên heap, vì vậy nó có thể lưu trữ lượng văn bản chưa biết trước.</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>let mut s = String::from("hello");
-s.push_str(", world!"); // push_str() thêm một literal vào một String
-println!("{s}"); // This will print \`hello, world!\`</code></pre>
+s.push_str(", world!"); // push_str() thêm string literal vào một String
+println!("{s}"); // In ra \`hello, world!\`</code></pre>
 </div>
 
-<p>Trong Rust, bộ nhớ tự động được trả lại một khi biến sở hữu nó ra khỏi scope. Trình biên dịch Rust tự động gọi một hàm đặc biệt tên là <code>drop</code> tại ký tự ngoặc nhọn đóng <code>}</code>.</p>
+<h4>Bộ Nhớ và Cấp Phát (Memory and Allocation)</h4>
+<p>Trong trường hợp của <code>String</code>, để hỗ trợ một đoạn văn bản có thể thay đổi và mở rộng, chúng ta cần cấp phát một lượng bộ nhớ trên heap (chưa biết ở thời điểm compile) để chứa nội dung. Điều này có nghĩa là:</p>
+<ul class="task-list">
+  <li>Bộ nhớ phải được yêu cầu từ bộ cấp phát bộ nhớ tại runtime. (Ta làm điều này qua <code>String::from</code>)</li>
+  <li>Chúng ta cần một mốc để <strong>trả lại</strong> bộ nhớ này cho bộ cấp phát khi chúng ta dùng xong <code>String</code>.</li>
+</ul>
+<p>Trong hầu hết các ngôn ngữ không có GC (Garbage Collector), chúng ta phải tự code thủ công lệnh gọi hàm giải phóng (như <code>free</code>). Rust đi theo một con đường khác: Bộ nhớ tự động được trả lại khi biến sở hữu nó đi ra khỏi scope. Tại dấu ngoặc nhọn đóng, Rust tự động gọi một hàm đặc biệt mang tên <code>drop</code> để đưa cho tác giả của String thực thi code trả lại bộ nhớ vào đó.</p>
 
-<h3 class="task-heading">Các cách tương tác giữa các Variable và Data: Move</h3>
-<p>Nhiều biến có thể tương tác với cùng một dữ liệu theo những cách khác nhau trong Rust. Hãy xem một ví dụ bằng cách dùng kiểu integer:</p>
+<h3 class="task-heading">Sự Tương Tác Của Biến Với Dữ Liệu: Move</h3>
+<p>Nhiều biến có thể tương tác với cùng một dữ liệu theo những cách khác nhau trong Rust. Hãy xem một ví dụ bằng số nguyên:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>let x = 5;
 let y = x;</code></pre>
 </div>
-<p>Đoạn code trên ràng buộc giá trị <code>5</code> vào <code>x</code>; sau đó tạo một bản sao của giá trị trong <code>x</code> và ràng buộc nó vào <code>y</code>. Chúng ta hiện có hai biến, <code>x</code> và <code>y</code>, và cả hai đều bằng <code>5</code>. Vì integers là những giá trị đơn giản có kích thước đã biết, cố định, cả hai giá trị <code>5</code> đều được đẩy vào stack.</p>
+<p>Đoạn code trên "Gắn giá trị 5 cho <code>x</code>; sau đó tạo một bản sao của <code>x</code> và gắn vào <code>y</code>". Bây giờ ta có <code>x</code> và <code>y</code> đều bằng 5, được đẩy lên stack do kiểu số nguyên có kích thước nhỏ cố định.</p>
 
-<p>Bây giờ hãy xem xét phiên bản dùng <code>String</code>:</p>
+<p>Giờ hãy xem phiên bản dùng <code>String</code>:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>let s1 = String::from("hello");
 let s2 = s1;</code></pre>
 </div>
-<p>Nó trông rất giống với đoạn code trước đó, và chúng ta có thể cho rằng cách hoạt động sẽ giống nhau: sao chép giá trị của <code>s1</code> và trỏ <code>s2</code> vào đó. Việc này đúng một phần. <code>String</code> được tạo thành từ ba phần (nằm trên stack): một con trỏ trỏ đến khối nhớ chứa dữ liệu string trên heap, chiều dài (length), và dung lượng (capacity).</p>
-<p>Khi ta gán <code>s1</code> cho <code>s2</code>, chỉ có phần metadata trên stack được sao chép (con trỏ, chiều dài, dung lượng). Rust không sao chép dữ liệu thật sự trên heap. Nếu cả <code>s1</code> và <code>s2</code> cùng trỏ đến cùng một vị trí heap, thì khi cả hai ra khỏi scope, cả hai sẽ cố gắng giải phóng cùng một khối nhớ, dẫn đến lỗi <strong>double free</strong> gây nguy hiểm cho an ninh.</p>
-<p>Để đảm bảo an toàn bộ nhớ, sau dòng <code>let s2 = s1;</code>, Rust xem như <code>s1</code> không còn hợp lệ nữa. Nghĩa là ownership đã được <strong>move</strong> (di chuyển) từ <code>s1</code> sang <code>s2</code>.</p>
+<p>Nó trông rất giống, nhưng cách hoạt động lại khác. <code>String</code> được tạo thành từ 3 phần nằm trên stack: một con trỏ (pointer) trỏ tới bộ nhớ heap chứa nội dung, phần chiều dài (length) và phần dung lượng (capacity). Dữ liệu văn bản "hello" thực sự nằm trên heap.</p>
+<p>Khi ta gán <code>s1</code> cho <code>s2</code>, dữ liệu của <code>String</code> được sao chép. Nghĩa là chúng ta sao chép pointer, length và capacity trên stack. Chúng ta <strong>không</strong> sao chép dữ liệu trên heap mà con trỏ đang trỏ tới. Nếu Rust copy cả dữ liệu trên heap, khi chuỗi rất dài độ trễ phép gán sẽ rất kinh khủng!</p>
+<p>Tuy nhiên, vì có 2 con trỏ cùng chỉ vào một khối heap, nếu cả <code>s1</code> và <code>s2</code> đi ra ngoài scope và cố gắng gọi hàm <code>drop</code> giải phóng vùng nhớ, nó sẽ tạo ra kẹt bộ nhớ tên là <em>lỗi giải phóng kép (double free error)</em> gây hỏng bộ nhớ và nguy cơ bảo mật. Để giải quyết, sau khi lệnh <code>let s2 = s1;</code> chạy, Rust xem như <code>s1</code> <strong>không còn hợp lệ (invalidated)</strong>. Nhờ vậy, đi ra khỏi scope <code>s1</code> không cần giải phóng bộ nhớ gì cả.</p>
 
-<div class="cyber-alert info">
-  <strong>Lưu ý:</strong> Khái niệm này có vẻ giống <i>shallow copy</i> (sao chép nông), nhưng vì Rust vô hiệu hóa biến đầu tiên, vì vậy nó được gọi là <strong>move</strong>.
-</div>
+<p>Việc sao chép con trỏ, length và capacity mà không sao chép dữ liệu có vẻ giống "shallow copy" (sao chép nông), nhưng vì Rust vô hiệu hóa luôn biến đầu tiên, quá trình này gọi là <strong>Move (Di chuyển)</strong>. Ta nói <code>s1</code> đã bị di chuyển vào <code>s2</code>.</p>
 
-<h3 class="task-heading">Clone (Sao chép sâu)</h3>
-<p>Nếu chúng ta <em>thực sự</em> muốn sao chép sâu cả dữ liệu heap của <code>String</code> chứ không chỉ phần metadata trên stack, chúng ta có thể gọi một method thông dụng tên là <code>clone</code>:</p>
+<h4>Sự Tương Tác Của Biến Với Dữ Liệu: Clone</h4>
+<p>Nếu chúngtrong ta <em>thực sự</em> muốn sao chép sâu (deep copy) dữ liệu trên heap của <code>String</code>, ta có thể dùng phương thức mang tên <code>clone</code>:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>let s1 = String::from("hello");
 let s2 = s1.clone();
-println!("s1 = {s1}, s2 = {s2}"); // Cả hai đều hợp lệ</code></pre>
+println!("s1 = {s1}, s2 = {s2}");</code></pre>
 </div>
+<p>Phương thức này sẽ tốn tài nguyên runtime nếu đoạn text dài thòng lòng, nhưng là cách để bạn nói rõ "Tôi thực sự muốn một vùng nhớ heap độc lập mới".</p>
 
-<h3 class="task-heading">Copy: Dữ liệu trên Stack</h3>
-<p>Với các kiểu dữ liệu chỉ lưu trên stack (ví dụ: integer, boolean, float, char), kích thước của chúng được biết trước lúc biên dịch và lưu trữ trên stack nhanh gọn. Do đó, việc sao chép vùng nhớ này luôn nhanh chóng, nên không có lý do gì để ngăn chặn <code>x</code> không còn giá trị sau dòng lệnh <code>let y = x;</code>.</p>
-<p>Rust có một trait đặc biệt gọi là <code>Copy</code> được áp đặt cho những type tương tự như integers. Nếu một type hỗ trợ trait <code>Copy</code>, những variables đã gán xong cho biến khác vẫn có thể tiếp tục sử dụng được.</p>
+<h4>Dữ Liệu Chỉ Trên Stack: trait Copy</h4>
+<p>Quay lại với ví dụ <code>let x = 5; let y = x;</code>. Giá trị số nguyên có kích thước đã biết lúc compile, nó nằm hoàn toàn trên stack, nên copy dữ liệu trên stack cũng nhanh y chang chép pointer con trỏ vậy. Chẳng có lý do tại sao Rust phải vô hiệu lực biến <code>x</code> sau khi gán. Do đó, các kiểu dữ liệu trên stack của Rust được gắn một <em>Trait</em> có tên <code>Copy</code>. Các kiểu biến vô biến như số tham chiếu (như các kiểu số nguyên, boolean, ký tự char, hay tuple chứa chúng) như mang dòng máu bất biến, nó sẽ tự động được copy mà biến cũ vẫn giữ nguyên tính hợp lệ.</p>
 
-<h3 class="task-heading">Ownership và Functions</h3>
-<p>Cơ chế truyền tham số cho function tương tự với những gì xảy ra khi chúng ta gán value cho những biến khác, hoặc là move hoặc là copy.</p>
+<h3 class="task-heading">Ownership và Hàm (Functions)</h3>
+<p>Cơ chế truyền một giá trị cho đối số của hàm tương tự với việc gán một giá trị vào một biến. Truyền biến vào hàm sẽ kéo theo hành động copy hoặc move, y chang như phép gán.</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>fn main() {
-    let s = String::from("hello");  // s trong scope
-    takes_ownership(s);             // s bị move vào hàm
-    // println!("{s}");             // Gọi dòng này sẽ lỗi! s không còn hợp lệ nữa!
+    let s = String::from("hello");  // s đi vào scope
+    takes_ownership(s);             // s's value HOÀN TOÀN di chuyển vào (move) hàm...
+                                    // ... thế nên s KHÔNG CÒN hợp lệ ở dòng sau nữa.
+                                    
+    let x = 5;                      // x đi vào scope
+    makes_copy(x);                  // Bởi vì i32 có trait Copy, giá trị x được copy,
+                                    // thế nên x vẫn rất hợp lệ và xài thoải mái ở dưới.
+} 
 
-    let x = 5;                      // x trong scope
-    makes_copy(x);                  // x copy vào hàm
-    println!("{x}");                // Vẫn dùng x bình thường
+fn takes_ownership(some_string: String) { // some_string đi vào scope
+    println!("{some_string}");
+} // ở đây, some_string đi ra khỏi scope và hàm \`drop\` được gọi.
+  // Bộ nhớ heap phía sau được giải phóng.
+
+fn makes_copy(some_integer: i32) { // some_integer đi vào scope
+    println!("{some_integer}");
+} // ở đây, some_integer đi ra khỏi scope. Không có chuyện gì xảy ra cả.</code></pre>
+</div>
+
+<h3 class="task-heading">Giá Trị Trả Về và Scope (Return Values and Scope)</h3>
+<p>Trả về một giá trị từ hàm cũng tuân thủ việc trao đổi (transfer) ownership và move một biến bình thường ra khỏi scope nó đang nằm.</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>fn main() {
+    let s1 = gives_ownership();         // gives_ownership return và move kết quả vào s1
+    let s2 = String::from("hello");     // s2 đi vào scope
+    let s3 = takes_and_gives_back(s2);  // s2 bị di chuyển vào hàm, hàm sau đó di chuyển giá trị trả về vào s3
+} // s3 drop. s2 từng bị di chuyển nên ko có gì xảy ra. s1 drop.
+
+fn gives_ownership() -> String {
+    let some_string = String::from("yours");
+    some_string                         // trả ra và move thẳng ra hàm bên ngoài gọi nó
 }
 
-fn takes_ownership(some_string: String) { // some_string nhận ownership
-    println!("{some_string}");
-} // some_string drop, bộ nhớ heap được giải phóng
-
-fn makes_copy(some_integer: i32) { // some_integer là Copy
-    println!("{some_integer}");
-} // some_integer đi ra ngoài scope, không có gì lớn lao xảy ra</code></pre>
+fn takes_and_gives_back(a_string: String) -> String {
+    a_string                            // a_string được move trả hẳn ra ngoài
+}</code></pre>
 </div>
+<p>Mỗi lần đưa giá trị vào hàm rồi lại phải bắt hàm nhả ra để lấy lại ownership thật mệt mỏi! Nếu muốn hàm dùng giá trị mà không lấy ownership thì sao? Rust cho phép lấy kết quả bằng tham chiếu mà không chuyển ownership: tính năng đó gọi là References. Ta sẽ học ở bài sau.</p>
 `,
-      defaultCode: `fn main() {
+  defaultCode: `fn main() {
     // 1. Move
     let s1 = String::from("hello world");
     let s2 = s1; // s1 đã bị move vào s2
@@ -148,5 +172,5 @@ fn makes_copy(some_i32: i32) {
     println!("hàm makes_copy nhận: {some_i32}");
 }
 `,
-      expectedOutput: 's2 = hello world\ns3 = hello again, s4 = hello again\nx = 5, y = 5\nhàm takes_ownership nhận: Rustacean\nhàm makes_copy nhận: 42\nnum sau khi gọi hàm = 42'
-    };
+  expectedOutput: 's2 = hello world\ns3 = hello again, s4 = hello again\nx = 5, y = 5\nhàm takes_ownership nhận: Rustacean\nhàm makes_copy nhận: 42\nnum sau khi gọi hàm = 42'
+};

@@ -22,7 +22,10 @@ const MAX_OUTPUT_BYTES: usize = 1024 * 64; // 64KB
 
 // ---- REST API Handler ----
 
-pub async fn handle_run(Json(req): Json<RunRequest>) -> Json<RunResponse> {
+pub async fn handle_run(
+    axum::extract::State(_state): axum::extract::State<()>,
+    Json(req): Json<RunRequest>,
+) -> Json<RunResponse> {
     let is_test = req.is_test.unwrap_or(false);
     let result = compile_and_run(&req.code, req.stdin.as_deref(), is_test).await;
     Json(result)

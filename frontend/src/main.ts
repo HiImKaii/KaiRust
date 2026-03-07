@@ -783,6 +783,277 @@ const setupCookieBanner = () => {
 };
 
 // ---- Init ----
+// =====================================================
+// Auth Module
+// =====================================================
+
+interface UserInfo {
+    id: number;
+    username: string;
+    email: string;
+}
+
+interface AuthResponse {
+    success: boolean;
+    message: string;
+    token?: string;
+    user?: UserInfo;
+}
+
+let currentUser: UserInfo | null = null;
+
+const API_BASE = '/api/auth';
+
+async function apiCall<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const response = await fetch(`${API_BASE}${endpoint}`, {
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers,
+        },
+    });
+
+    // Try to parse JSON response
+    const data = await response.json().catch(() => ({ success: false, message: 'Lỗi phản hồi từ server' }));
+
+    // If response is not OK, throw error with message
+    if (!response.ok) {
+        throw new Error(data.message || `Lỗi ${response.status}: ${response.statusText}`);
+    }
+
+    return data;
+}
+
+function showAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+}
+
+function hideAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function showForm(formId: string) {
+    const forms = ['login-form', 'register-form', 'forgot-password-form'];
+    forms.forEach(id => {
+        const form = document.getElementById(id);
+        if (form) {
+            form.classList.toggle('hidden', id !== formId);
+        }
+    });
+
+    const titles: Record<string, string> = {
+        'login-form': 'Đăng nhập',
+        'register-form': 'Đăng ký',
+        'forgot-password-form': 'Quên mật khẩu'
+    };
+    const titleEl = document.getElementById('auth-modal-title');
+    if (titleEl) {
+        titleEl.textContent = titles[formId] || 'Đăng nhập';
+    }
+}
+
+function updateAuthUI() {
+    const settingsBtn = document.getElementById('settings-btn');
+    if (!settingsBtn) return;
+
+    if (currentUser) {
+        // User is logged in - show user info
+        settingsBtn.innerHTML = `
+            <div class="user-info">
+                <div class="user-avatar">${currentUser.username.charAt(0).toUpperCase()}</div>
+                <span class="user-name">${currentUser.username}</span>
+            </div>
+        `;
+    } else {
+        settingsBtn.textContent = 'Đăng nhập';
+    }
+}
+
+function saveAuth(token: string, user: UserInfo) {
+    localStorage.setItem('kairust_token', token);
+    localStorage.setItem('kairust_user', JSON.stringify(user));
+    currentUser = user;
+    updateAuthUI();
+    hideAuthModal();
+}
+
+function clearAuth() {
+    localStorage.removeItem('kairust_token');
+    localStorage.removeItem('kairust_user');
+    currentUser = null;
+    updateAuthUI();
+}
+
+function loadAuth() {
+    const token = localStorage.getItem('kairust_token');
+    const userStr = localStorage.getItem('kairust_user');
+    if (token && userStr) {
+        try {
+            currentUser = JSON.parse(userStr);
+            updateAuthUI();
+        } catch {
+            clearAuth();
+        }
+    }
+}
+
+function setupAuthModal() {
+    const settingsBtn = document.getElementById('settings-btn');
+    const modalClose = document.getElementById('auth-modal-close');
+    const modal = document.getElementById('auth-modal');
+
+    // Open modal on settings button click
+    settingsBtn?.addEventListener('click', () => {
+        if (currentUser) {
+            // If logged in, could show user menu or logout option
+            if (confirm('Bạn có muốn đăng xuất?')) {
+                clearAuth();
+            }
+        } else {
+            showForm('login-form');
+            showAuthModal();
+        }
+    });
+
+    // Close modal
+    modalClose?.addEventListener('click', hideAuthModal);
+    modal?.addEventListener('click', (e) => {
+        if (e.target === modal) hideAuthModal();
+    });
+
+    // Form switching
+    document.getElementById('show-register')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        showForm('register-form');
+    });
+    document.getElementById('show-login')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        showForm('login-form');
+    });
+    document.getElementById('show-forgot-password')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        showForm('forgot-password-form');
+    });
+    document.getElementById('show-login-from-forgot')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        showForm('login-form');
+    });
+
+    // Login form
+    document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = (document.getElementById('login-email') as HTMLInputElement).value;
+        const password = (document.getElementById('login-password') as HTMLInputElement).value;
+        const submitBtn = (e.target as HTMLFormElement).querySelector('button[type="submit"]') as HTMLButtonElement;
+
+        // Disable button and show loading
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang đăng nhập...';
+
+        try {
+            const response = await apiCall<AuthResponse>('/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+
+            if (response.success && response.token && response.user) {
+                saveAuth(response.token, response.user);
+            } else {
+                alert(response.message || 'Đăng nhập thất bại');
+            }
+        } catch (err: unknown) {
+            const errorMessage = err instanceof Error ? err.message : 'Lỗi kết nối';
+            alert(errorMessage);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        }
+    });
+
+    // Register form
+    document.getElementById('register-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = (document.getElementById('register-username') as HTMLInputElement).value;
+        const email = (document.getElementById('register-email') as HTMLInputElement).value;
+        const password = (document.getElementById('register-password') as HTMLInputElement).value;
+        const confirmPassword = (document.getElementById('register-confirm-password') as HTMLInputElement).value;
+        const submitBtn = (e.target as HTMLFormElement).querySelector('button[type="submit"]') as HTMLButtonElement;
+
+        if (password !== confirmPassword) {
+            alert('Mật khẩu không khớp');
+            return;
+        }
+
+        // Disable button and show loading
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang đăng ký...';
+
+        try {
+            const response = await apiCall<AuthResponse>('/register', {
+                method: 'POST',
+                body: JSON.stringify({ username, email, password })
+            });
+
+            if (response.success && response.token && response.user) {
+                saveAuth(response.token, response.user);
+            } else {
+                alert(response.message || 'Đăng ký thất bại');
+            }
+        } catch (err: unknown) {
+            const errorMessage = err instanceof Error ? err.message : 'Lỗi kết nối';
+            alert(errorMessage);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        }
+    });
+
+    // Forgot password form
+    document.getElementById('forgot-password-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = (document.getElementById('forgot-email') as HTMLInputElement).value;
+        const submitBtn = (e.target as HTMLFormElement).querySelector('button[type="submit"]') as HTMLButtonElement;
+
+        // Disable button and show loading
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang gửi...';
+
+        try {
+            const response = await apiCall<AuthResponse>('/forgot-password', {
+                method: 'POST',
+                body: JSON.stringify({ email })
+            });
+
+            alert(response.message);
+            if (response.success) {
+                showForm('login-form');
+            }
+        } catch (err: unknown) {
+            const errorMessage = err instanceof Error ? err.message : 'Lỗi kết nối';
+            alert(errorMessage);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        }
+    });
+
+    // Load existing auth
+    loadAuth();
+}
+
+// =====================================================
+// Main Init
+// =====================================================
+
 document.addEventListener('DOMContentLoaded', () => {
     initEditor();
     renderCurriculum();
@@ -793,6 +1064,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupNavButtons();
     setupResizers();
     setupCookieBanner();
+    setupAuthModal();
 
     // Select the first lesson automatically if available
     if (flatLessons.length > 0) {

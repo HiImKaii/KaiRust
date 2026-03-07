@@ -6,15 +6,16 @@ export const ch03_05: Lesson = {
   duration: '30 phút',
   type: 'theory',
   content: `
-<p>Khả năng chạy một đoạn code dựa trên điều kiện đúng (true) hay sai (false), và chạy đoạn code lặp đi lặp lại trong khi điều kiện đúng, là các khối xây dựng cơ bản trong hầu hết ngôn ngữ lập trình. Các cấu trúc phổ biến nhất cho phép bạn kiểm soát luồng thực thi (control flow) trong Rust là <strong>biểu thức if</strong> và <strong>các vòng lặp</strong>.</p>
+<h3 class="task-heading">Luồng Điều Khiển (Control Flow)</h3>
+<p>Khả năng chạy một đoạn code dựa trên điều kiện đúng (true) và khả năng chạy một đoạn code lặp đi lặp lại trong khi điều kiện đúng là những khối xây dựng cơ bản trong hầu hết các ngôn ngữ lập trình. Các cấu trúc phổ biến nhất cho phép bạn kiểm soát luồng thực thi trong Rust là <strong>biểu thức if</strong> và <strong>các vòng lặp</strong>.</p>
 
 <h3 class="task-heading">Biểu thức if (if Expressions)</h3>
-<p>Biểu thức <code>if</code> cho phép bạn phân nhánh code dựa trên điều kiện. Bạn cung cấp một điều kiện và nói: "Nếu điều kiện này được đáp ứng, hãy chạy block code này. Nếu không, đừng chạy block code này."</p>
+<p>Một biểu thức <code>if</code> cho phép bạn phân nhánh mã tùy thuộc vào các điều kiện. Bạn đưa ra một điều kiện và sau đó chỉ định: "Nếu điều kiện này được đáp ứng, hãy chạy khối mã này. Nếu điều kiện không được đáp ứng, không chạy khối mã này."</p>
 
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>fn main() {
-    let number = 7;
+    let number = 3;
 
     if number < 5 {
         println!("condition was true");
@@ -24,11 +25,14 @@ export const ch03_05: Lesson = {
 }</code></pre>
 </div>
 
+<p>Tất cả các biểu thức <code>if</code> bắt đầu bằng từ khóa <code>if</code>, tiếp theo là một điều kiện. Khối mã thực thi nằm ngay sau điều kiện trong dấu ngoặc nhọn. Tùy chọn, ta có thể kết hợp với biểu thức <code>else</code> để tạo một khối mã thay thế khi điều kiện đánh giá là <code>false</code>.</p>
+
 <div class="cyber-alert info">
-  <strong>Quan trọng:</strong> Điều kiện trong Rust <strong>bắt buộc phải là <code>bool</code></strong>. Rust không tự động chuyển đổi kiểu non-Boolean sang Boolean. Nếu bạn viết <code>if number { ... }</code>, sẽ bị lỗi biên dịch. Bạn phải viết rõ ràng: <code>if number != 0 { ... }</code>.
+  <strong>Quan trọng:</strong> Điều kiện trong Rust <strong>bắt buộc phải là kiểu <code>bool</code></strong>. Nếu điều kiện không phải là <code>bool</code> (ví dụ như một số nguyên bình thường), chúng ta sẽ gặp lỗi ngay lúc biên dịch. Trái ngược với các ngôn ngữ như Ruby hay JavaScript, Rust sẽ không bao giờ tự động cố chuyển đổi các kiểu non-Boolean sang Boolean. Bạn luôn phải cung cấp rõ ràng một Boolean. Ví dụ <code>if number != 0</code> thay vì <code>if number</code>.
 </div>
 
 <h4>Xử lý Nhiều Điều kiện với else if</h4>
+<p>Bạn có thể sử dụng nhiều điều kiện bằng cách kết hợp <code>if</code> và <code>else</code> trong một biểu thức <code>else if</code>:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>fn main() {
@@ -43,31 +47,43 @@ export const ch03_05: Lesson = {
     } else {
         println!("number is not divisible by 4, 3, or 2");
     }
-}
-// Output: number is divisible by 3</code></pre>
+}</code></pre>
 </div>
+<p>Khi thực thi, chương trình sẽ kiểm tra từng biểu thức <code>if</code> theo thứ tự và chỉ thực hiện phần thân mã cho nhánh <strong>đầu tiên</strong> có kết quả đánh giá điều kiện là true. Kể cả khi 6 chia hết cho 2 (điều kiện thứ ba là đúng), Rust sẽ không hiển thị chuỗi của nhánh 3 vì cấu trúc rẽ nhánh đã dừng lại ngay ở nhánh 2. Sử dụng quá nhiều chuỗi <code>else if</code> có thể làm mã rườm rà, lộn xộn, nên Rust cung cấp một cấu trúc rẽ nhánh cực mạnh khác tên là <code>match</code> (chúng ta sẽ được cung cấp ở Chương 6).</p>
 
-<h4>Sử dụng if trong lệnh let</h4>
-<p>Vì <code>if</code> là expression, chúng ta có thể sử dụng nó bên phải của lệnh <code>let</code> để gán kết quả vào biến:</p>
+<h4>Sử dụng if trong câu lệnh let</h4>
+<p>Bởi vì <code>if</code> là một expression (biểu thức trả về giá trị), chúng ta có thể sử dụng biểu thức này ở bên phải của lệnh khai báo <code>let</code> để gán kết quả đầu ra cho một biến.</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
-  <pre><code>let condition = true;
-let number = if condition { 5 } else { 6 };
-println!("The value of number is: {number}"); // 5</code></pre>
+  <pre><code>fn main() {
+    let condition = true;
+    let number = if condition { 5 } else { 6 };
+    println!("The value of number is: {number}"); // 5
+}</code></pre>
 </div>
 
 <div class="cyber-alert info">
-  <strong>Lưu ý:</strong> Khi dùng <code>if</code> trong <code>let</code>, cả hai nhánh <strong>phải trả về cùng kiểu dữ liệu</strong>. Nếu không, trình biên dịch sẽ báo lỗi <code>if and else have incompatible types</code>.
+  <strong>Lưu ý:</strong> Khi dùng <code>if</code> trong <code>let</code>, giá trị được trả về từ cả nhánh <code>if</code> và nhánh <code>else</code> <strong>bắt buộc phải có cùng kiểu dữ liệu</strong>. Nếu các kiểu khác nhau (ví dụ: một bên trả về số nguyên <code>5</code>, bên kia trả về chuỗi văn bản <code>"six"</code>), trình biên dịch sẽ báo lỗi <code>if and else have incompatible types</code>. Rust cần biết chắc chắn kiểu của biến tại thời điểm compile để đảm bảo tính an toàn xuyên suốt chương trình.
 </div>
 
 <h3 class="task-heading">Lặp lại với Vòng lặp (Repetition with Loops)</h3>
-<p>Rust có ba loại vòng lặp: <code>loop</code>, <code>while</code>, và <code>for</code>.</p>
+<p>Sẽ thường rất hữu ích khi thực hiện một khối mã nhiều lần. Rust có 3 loại vòng lặp: <code>loop</code>, <code>while</code>, và <code>for</code>.</p>
 
-<h4>Vòng lặp loop</h4>
-<p><code>loop</code> thực thi một block code lặp đi lặp lại mãi mãi hoặc cho đến khi bạn nói rõ ràng nó phải dừng bằng <code>break</code>. Bạn cũng có thể dùng <code>continue</code> để bỏ qua code còn lại trong lần lặp hiện tại và bắt đầu lần lặp tiếp theo.</p>
+<h4>Lặp mã với vòng lặp loop</h4>
+<p>Từ khóa <code>loop</code> yêu cầu Rust thực hiện một khối mã vô hạn lần, hoặc cho đến khi bạn bắt nó phải dừng lại dựa trên điều kiện lập trình một cách rõ ràng.</p>
 
-<h4>Trả về Giá trị từ loop</h4>
-<p>Một trong những cách dùng hay nhất của <code>loop</code> là thử lại một thao tác có thể thất bại, ví dụ kiểm tra xem thread đã hoàn thành công việc chưa. Bạn có thể trả về giá trị từ vòng lặp bằng cách đặt giá trị sau biểu thức <code>break</code>:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>fn main() {
+    loop {
+        println!("again!");
+    }
+}</code></pre>
+</div>
+<p>May mắn là Rust có hỗ trợ cách thoát một vòng lặp bằng code. Bạn dùng từ khóa <code>break</code> bên trong vòng lặp để thông báo chương trình dừng lệnh tiếp tục thực thi đoạn vòng lặp. Bạn cũng có thể dùng từ khoá <code>continue</code> để bỏ qua đoạn code còn lại của vòng lặp hiện hành và bắt đầu bước lặp mới kế tiếp.</p>
+
+<h4>Trả về giá trị từ loop</h4>
+<p>Một trong những ứng dụng chủ chốt của <code>loop</code> là để thử lại một hành động có thể tốn thời gian như kiểm tra tải xem một luồng (thread) đã thực hiện xong job chưa. Bạn có thể cần truyền kết quả khỏi vòng lặp để mã bên ngoài dùng. Bạn có thể đặt giá trị trả về ngay đằng sau biểu thức <code>break</code>:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>fn main() {
@@ -76,17 +92,15 @@ println!("The value of number is: {number}"); // 5</code></pre>
     let result = loop {
         counter += 1;
         if counter == 10 {
-            break counter * 2;  // result = 20
+            break counter * 2;
         }
     };
-
-    println!("The result is {result}");
-}
-// Output: The result is 20</code></pre>
+    println!("The result is {result}"); // In ra 20
+}</code></pre>
 </div>
 
-<h4>Nhãn vòng lặp (Loop Labels)</h4>
-<p>Nếu bạn có vòng lặp bên trong vòng lặp, <code>break</code> và <code>continue</code> mặc định áp dụng cho vòng lặp trong cùng. Bạn có thể sử dụng <em>loop label</em> (nhãn vòng lặp) bắt đầu bằng dấu nháy đơn để chỉ định muốn <code>break</code> hoặc <code>continue</code> vòng lặp nào:</p>
+<h4>Phân biệt vòng lặp lồng bằng Nhãn (Loop Labels)</h4>
+<p>Nếu bạn có nhiều vòng lặp lồng nhau, mặc định từ khóa <code>break</code> và <code>continue</code> sẽ tác động đến vòng lặp sâu nhất (gần nó nhất). Tuy nhiên, nếu bạn muốn chỉ định chính xác vòng lặp để <code>break</code> hoặc <code>continue</code> ở cấp cao hơn, bạn có thể thiết lập một <em>Nhãn Vòng Lặp</em> (loop label). Nhãn vòng lặp trong Rust bắt buộc bắt đầu bằng một dấu nháy đơn <code>'</code>:</p>
 
 <div class="code-snippet">
   <span class="code-lang">rust</span>
@@ -99,26 +113,21 @@ println!("The value of number is: {number}"); // 5</code></pre>
         loop {
             println!("remaining = {remaining}");
             if remaining == 9 {
-                break;  // thoát vòng lặp trong
+                break; // chỉ thoát vòng lặp trong (loop ẩn danh nằm trong)
             }
             if count == 2 {
-                break 'counting_up;  // thoát vòng lặp ngoài
+                break 'counting_up; // thoát toàn bộ đến 'counting_up
             }
             remaining -= 1;
         }
-
         count += 1;
     }
     println!("End count = {count}");
 }</code></pre>
 </div>
 
-<div class="cyber-alert info">
-  <strong>Lưu ý thuật ngữ:</strong> <em>Loop label</em> (nhãn vòng lặp) bắt đầu bằng dấu nháy đơn <code>'</code> (ví dụ <code>'counting_up</code>) giúp bạn kiểm soát chính xác vòng lặp nào bị <code>break</code> hoặc <code>continue</code> khi có vòng lặp lồng nhau (nested loops).
-</div>
-
-<h4>Vòng lặp while (Conditional Loops)</h4>
-<p>Thường hữu ích khi đánh giá điều kiện trong vòng lặp. Thay vì dùng <code>loop</code> + <code>if</code> + <code>break</code>, Rust cung cấp <code>while</code> ngắn gọn hơn:</p>
+<h4>Vòng lặp điều kiện: while</h4>
+<p>Thường thì chương trình sẽ cần thực thi lặp lại chừng nào một điều kiện vẫn đang đúng (true). Bạn có thể tự triển khai chức năng này bằng cách kết hợp <code>loop</code>, <code>if</code>, <code>else</code>, và <code>break</code>. Tuy vậy cấu trúc này phổ biến đến mức Rust tích hợp sẵn một cấu trúc ngôn ngữ cho nó, gọi là vòng lặp <code>while</code>.</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>fn main() {
@@ -128,14 +137,13 @@ println!("The value of number is: {number}"); // 5</code></pre>
         println!("{number}!");
         number -= 1;
     }
-
     println!("LIFTOFF!!!");
-}
-// Output: 3! 2! 1! LIFTOFF!!!</code></pre>
+}</code></pre>
 </div>
 
-<h4>Vòng lặp for (Looping Through a Collection)</h4>
-<p>Bạn có thể dùng <code>while</code> để lặp qua mảng, nhưng cách an toàn và ngắn gọn nhất là dùng vòng lặp <code>for</code>:</p>
+<h4>Duyệt Collection: Vòng lặp for</h4>
+<p>Bạn có thể dùng <code>while</code> để duyệt qua các phần tử của một tập hợp (collection) như mảng. Nhưng cách tiếp cận đó dễ sinh ra lỗi. Chẳng hạn, giả sử mảng a có 4 phần tử nhưng ta lỡ viết điều kiện là <code>index < 5</code>, chương trình sẽ hoảng loạn (panic) khi vòng lặp cố gọi <code>a[4]</code>. Cách này cũng chậm hơn vì trình biên dịch phải chèn thêm mã kiểm tra giới hạn (bounds check) ở mỗi vòng lặp.</p>
+<p>Duyệt gọn gàng an toàn hơn chính là dùng <code>for</code>:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>fn main() {
@@ -147,23 +155,16 @@ println!("The value of number is: {number}"); // 5</code></pre>
 }</code></pre>
 </div>
 
-<p><code>for</code> cũng thường được dùng với <code>Range</code> (một kiểu do thư viện chuẩn cung cấp). Kết hợp <code>.rev()</code> để đảo ngược:</p>
+<p>Sự an toàn và súc tích của vòng lặp <code>for</code> khiến nó trở thành cấu trúc vòng lặp được sử dụng phổ biến nhất trong Rust. Ngay cả trong tình huống bạn muốn chạy một đoạn code một số lần nhất định, như ví dụ đếm ngược dùng vòng lặp <code>while</code> ở trên, đa số các lập trình viên Rust (Rustaceans) sẽ dùng vòng lặp <code>for</code> kết hợp với <code>Range</code> (do thư viện chuẩn cung cấp) và phương thức <code>.rev()</code> để đảo ngược dải số đó:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>fn main() {
-    for number in (1..4).rev() {
+    // 1..4 là tập số {1, 2, 3}. Rev nghịch đảo tập số.
+    for number in (1..4).rev() { 
         println!("{number}!");
     }
     println!("LIFTOFF!!!");
-}
-// Output: 3! 2! 1! LIFTOFF!!!</code></pre>
-</div>
-
-<div class="cyber-alert info">
-  <strong>Lưu ý thuật ngữ:</strong>
-  <br>• <em>Range</em> <code>(1..4)</code> tạo dãy số 1, 2, 3 (không bao gồm 4). Dùng <code>(1..=4)</code> nếu muốn bao gồm cả 4.
-  <br>• <code>.rev()</code> đảo ngược thứ tự lặp.
-  <br>• Vòng lặp <code>for</code> là cách an toàn và quen thuộc nhất để duyệt collection vì Rust tự động xử lý chỉ mục, tránh lỗi <em>index out of bounds</em>.
+}</code></pre>
 </div>
 `,
   defaultCode: `fn main() {
