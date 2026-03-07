@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import { courseData, type Lesson } from './courses';
+import { courseData, type Lesson, type Chapter } from './courses';
 import { ProgressManager } from './progress';
 
 // =====================================================
@@ -125,12 +125,61 @@ const renderCurriculum = () => {
         chapterHeader.addEventListener('click', () => {
             chapterHeader.classList.toggle('open');
             lessonList.classList.toggle('open');
+            // Show chapter introduction when opened
+            if (chapterHeader.classList.contains('open')) {
+                showChapterIntroduction(chapter);
+            }
         });
 
         chapterDiv.appendChild(chapterHeader);
         chapterDiv.appendChild(lessonList);
         list.appendChild(chapterDiv);
     });
+};
+
+// ---- Chapter Introduction Display ----
+const showChapterIntroduction = (chapter: Chapter) => {
+    const titleEl = document.getElementById('lesson-title');
+    if (titleEl) titleEl.textContent = chapter.title;
+
+    // Clear badge and duration for chapter intro
+    const typeEl = document.getElementById('lesson-type');
+    if (typeEl) {
+        typeEl.textContent = 'intro';
+        typeEl.className = 'lesson-badge badge-intro';
+    }
+
+    const durEl = document.getElementById('lesson-duration');
+    if (durEl) durEl.textContent = '';
+
+    // Hide submit button for chapter intro
+    const submitBtn = document.getElementById('submit-btn');
+    if (submitBtn) submitBtn.classList.add('hidden');
+
+    // Show chapter introduction content
+    const contentEl = document.getElementById('lesson-content');
+    if (contentEl) {
+        contentEl.innerHTML = chapter.introduction;
+    }
+
+    // Reset scrolling
+    const scrollArea = document.getElementById('panel-scroll-area');
+    if (scrollArea) scrollArea.scrollTop = 0;
+
+    // Clear editor
+    if (editorInstance) {
+        editorInstance.setValue('// Chọn một bài học để bắt đầu.\n');
+    }
+
+    // Clear terminal
+    clearTerminal();
+
+    // Clear active lesson highlight
+    document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('active'));
+
+    // Reset current lesson index
+    currentLessonIndex = -1;
+    updateNavButtons();
 };
 
 // ---- Lesson Selection ----

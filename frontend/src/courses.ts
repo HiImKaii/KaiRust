@@ -17,6 +17,7 @@ export interface Lesson {
 export interface Chapter {
   id: string;
   title: string;
+  introduction: string;  // HTML content for chapter introduction
   lessons: Lesson[];
 }
 
