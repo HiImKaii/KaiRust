@@ -28,7 +28,7 @@ graph TD
 
 ---
 
-## 2. EXPLAIN CHI TIẾT TỪNG BƯỚC VÀ DÒNG LỆNH ĐÃ CHẠY
+## 2. EXPLAIN CHI TIẾT TỪNG BƯỚC
 
 Dưới đây là thứ tự công việc và tất cả các dòng lệnh đã được thực thi từ Local lên Server:
 
