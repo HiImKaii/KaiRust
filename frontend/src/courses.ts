@@ -12,8 +12,8 @@ export function generateCPContent(lesson: Lesson): string {
   // Time and Memory limits
   if (lesson.timeLimit || lesson.memoryLimit) {
     html += `<div class="cp-limits">`;
-    if (lesson.timeLimit) html += `<span>⏱️ Time: ${lesson.timeLimit}</span>`;
-    if (lesson.memoryLimit) html += `<span>💾 Memory: ${lesson.memoryLimit}</span>`;
+    if (lesson.timeLimit) html += `<span>Time: ${lesson.timeLimit}</span>`;
+    if (lesson.memoryLimit) html += `<span>Memory: ${lesson.memoryLimit}</span>`;
     html += `</div>`;
   }
 

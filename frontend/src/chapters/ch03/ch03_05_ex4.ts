@@ -6,21 +6,39 @@ export const ch03_05_ex4: Lesson = {
     duration: '10 phút',
     type: 'practice',
     isExercise: true,
+
+    // Competitive Programming Format
+    problemTitle: 'Đếm ngược với While',
+    timeLimit: '1s',
+    memoryLimit: '256MB',
+    problemDescription: 'Đếm ngược từ 5 về 1, sau đó in "Khai hỏa!"',
+    inputFormat: 'Không có input',
+    outputFormat: 'In các số từ 5 đến 1, sau đó in "Khai hỏa!"',
+    constraints: [
+        { field: 'Bắt đầu', condition: '5' },
+        { field: 'Kết thúc', condition: '1, sau đó in "Khai hỏa!"' }
+    ],
+    examples: [
+        {
+            input: '(không có)',
+            output: '5\n4\n3\n2\n1\nKhai hỏa!'
+        }
+    ],
+
     content: `
-<p>Dùng <code>if</code>, <code>else</code>, <code>loop</code>, <code>break</code> thật rắc rối? Vòng lặp <code>while</code> sẽ làm cho mã gọn gàng và dễ đọc hơn khi chúng ta biết cần phải đánh giá một điều kiện nào đó để dừng!</p>
-<h3 class="task-heading">Yêu cầu</h3>
-<ol class="task-list">
-  <li>Trong <code>main</code>, bắt đầu đếm ngược với số nguyên bằng <code>5</code>. Lưu giá trị này ở một biến mutable: <code>let mut number = 5;</code>.</li>
-  <li>Sử dụng vòng lặp <code>while</code>, điều kiện là <strong>number khác 0</strong> (<code>number != 0</code>).</li>
-  <li>Mỗi lần lặp, in ra số hiện tại <code>number</code>. Sau đó giảm <code>number</code> đi <code>1</code>.</li>
-  <li>Bên ngoài vòng lặp (sau khi lặp xong), in ra màn hình thông điệp <code>"Khai hỏa!"</code> (Bắn tên lửa 🚀 nha!).</li>
-</ol>
 <div class="cyber-alert info">
   <strong>Lưu ý:</strong> Hãy nhớ thay đổi biến number bên trong, nếu không bạn sẽ có một vòng lặp mãi mãi!
 </div>
 `,
     defaultCode: `fn main() {
-    
+    let mut number = 5;
+
+    while number != 0 {
+        println!("{}", number);
+        number -= 1;
+    }
+
+    println!("Khai hỏa!");
 }
 `
 };

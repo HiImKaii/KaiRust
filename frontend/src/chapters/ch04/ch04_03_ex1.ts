@@ -5,34 +5,52 @@ export const ch04_03_ex1: Lesson = {
     title: 'Bài tập: Sử dụng String Slice',
     duration: '10 phút',
     type: 'practice',
-    content: `
-<p>Bạn đã biết về \`first_word\`, hàm tìm từ đầu tiên của một chuỗi dựa trên khoảng trắng. Lần này, nhiệm vụ là tìm từ thứ 2.</p>
+    isExercise: true,
 
-<h3 class="task-heading">Yêu cầu:</h3>
-<p>Viết hàm <code>second_word</code> nhận vào một \`&String\` và trả về một slice \`&str\` tương ứng với từ thứ 2. Giả định chuỗi luôn có ít nhất 2 từ cách nhau bởi khoảng trắng đơn (bắt đầu bằng một từ, sau đó là khoảng trắng, sau đó là từ tiếp theo).</p>
+    // Competitive Programming Format
+    problemTitle: 'String Slice - Từ thứ hai',
+    timeLimit: '1s',
+    memoryLimit: '256MB',
+    problemDescription: 'Viết hàm second_word trả về slice của từ thứ hai.',
+    inputFormat: 'Cho sẵn "Rust Tutorial on Slices"',
+    outputFormat: 'In: Tutorial',
+    constraints: [
+        { field: 'Input', condition: 'Luôn có ít nhất 2 từ' }
+    ],
+    examples: [
+        {
+            input: 'Rust Tutorial on Slices',
+            output: 'Tutorial'
+        }
+    ],
+
+    content: `
+<p>Tìm từ thứ hai trong chuỗi bằng slice.</p>
 `,
-  defaultCode: `fn main() {
+    defaultCode: `fn main() {
     let my_string = String::from("Rust Tutorial on Slices");
     let word2 = second_word(&my_string);
-    println!("Từ thứ hai là: {}", word2);
+    println!("{}", word2);
 }
 
 fn second_word(s: &String) -> &str {
     let bytes = s.as_bytes();
     let mut first_space = 0;
+    let mut second_space = 0;
 
-    // Tìm vị trí của khoảng trắng đầu tiên
     for (i, &item) in bytes.iter().enumerate() {
         if item == b' ' {
-            first_space = i;
-            break;
+            if first_space == 0 {
+                first_space = i;
+            } else {
+                second_space = i;
+                break;
+            }
         }
     }
 
-    // Viết tiếp vòng lặp ở đây để tìm khoảng trắng thứ hai! (Nếu còn từ 2)
-    // Sau đó trả về slice tương ứng!
-    
+    &s[first_space + 1..second_space]
 }
 `,
-  expectedOutput: 'Từ thứ hai là: Tutorial'
+    expectedOutput: 'Tutorial'
 };
