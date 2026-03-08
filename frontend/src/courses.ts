@@ -3,10 +3,82 @@
 // Structure: Chapter > Lessons
 // =====================================================
 
+// Helper function to generate competitive programming content
+export function generateCPContent(lesson: Lesson): string {
+  if (!lesson.problemTitle) return lesson.content;
+
+  let html = `<h2>${lesson.problemTitle}</h2>`;
+
+  // Time and Memory limits
+  if (lesson.timeLimit || lesson.memoryLimit) {
+    html += `<div class="cp-limits">`;
+    if (lesson.timeLimit) html += `<span>⏱️ Time: ${lesson.timeLimit}</span>`;
+    if (lesson.memoryLimit) html += `<span>💾 Memory: ${lesson.memoryLimit}</span>`;
+    html += `</div>`;
+  }
+
+  // Problem Description
+  if (lesson.problemDescription) {
+    html += `<h3>Đề bài</h3><p>${lesson.problemDescription}</p>`;
+  }
+
+  // Input Format
+  if (lesson.inputFormat) {
+    html += `<h3>Input</h3><p>${lesson.inputFormat}</p>`;
+  }
+
+  // Output Format
+  if (lesson.outputFormat) {
+    html += `<h3>Output</h3><p>${lesson.outputFormat}</p>`;
+  }
+
+  // Constraints
+  if (lesson.constraints && lesson.constraints.length > 0) {
+    html += `<h3>Constraints</h3><ul>`;
+    for (const c of lesson.constraints) {
+      html += `<li><strong>${c.field}:</strong> ${c.condition}</li>`;
+    }
+    html += `</ul>`;
+  }
+
+  // Examples
+  if (lesson.examples && lesson.examples.length > 0) {
+    html += `<h3>Ví dụ</h3>`;
+    for (let i = 0; i < lesson.examples.length; i++) {
+      const ex = lesson.examples[i];
+      html += `<div class="cp-example">`;
+      html += `<div><strong>Input ${i + 1}:</strong><pre>${ex.input}</pre></div>`;
+      html += `<div><strong>Output ${i + 1}:</strong><pre>${ex.output}</pre></div>`;
+      if (ex.explanation) {
+        html += `<div><strong>Giải thích:</strong> ${ex.explanation}</div>`;
+      }
+      html += `</div>`;
+    }
+  }
+
+  // Original content
+  if (lesson.content) {
+    html += lesson.content;
+  }
+
+  return html;
+}
+
 export interface TestCase {
   input: string;
   expectedOutput: string;
   description?: string;
+}
+
+export interface Example {
+  input: string;
+  output: string;
+  explanation?: string;
+}
+
+export interface Constraint {
+  field: string;
+  condition: string;
 }
 
 export interface Lesson {
@@ -19,6 +91,16 @@ export interface Lesson {
   expectedOutput?: string;
   isExercise?: boolean; // flag to mark as exercise
   testCases?: TestCase[]; // test cases for practice problems (LeetCode/HackerRank style)
+
+  // Competitive Programming Format
+  problemTitle?: string; // Tên bài toán (ví dụ: "Tổng hai số lớn nhất")
+  timeLimit?: string; // Time limit (ví dụ: "1s")
+  memoryLimit?: string; // Memory limit (ví dụ: "256MB")
+  problemDescription?: string; // Mô tả bài toán chi tiết
+  inputFormat?: string; // Định dạng input
+  outputFormat?: string; // Định dạng output
+  constraints?: Constraint[]; // Các ràng buộc
+  examples?: Example[]; // Các ví dụ
 }
 
 export interface Chapter {

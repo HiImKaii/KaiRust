@@ -1,5 +1,5 @@
 import * as monaco from 'monaco-editor';
-import { courseData, type Lesson, type Chapter } from './courses';
+import { courseData, type Lesson, type Chapter, generateCPContent } from './courses';
 import { ProgressManager } from './progress';
 
 // =====================================================
@@ -264,9 +264,9 @@ const selectLesson = (lesson: Lesson, restoreScrollPosition: number | null = nul
     const durEl = document.getElementById('lesson-duration');
     if (durEl) durEl.textContent = lesson.duration;
 
-    // Update content
+    // Update content (use CP format if available)
     const contentEl = document.getElementById('lesson-content');
-    if (contentEl) contentEl.innerHTML = lesson.content;
+    if (contentEl) contentEl.innerHTML = generateCPContent(lesson);
 
     // Handle scroll position (restore if specified, otherwise reset to top)
     const scrollArea = document.getElementById('panel-scroll-area');

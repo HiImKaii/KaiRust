@@ -734,6 +734,41 @@ code {
   background: rgba(59, 130, 246, 0.05);
 }
 
+/* Competitive Programming Styles */
+.cp-limits {
+  display: flex;
+  gap: 20px;
+  padding: 12px 16px;
+  background: var(--bg-soft);
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.cp-limits span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cp-example {
+  background: var(--bg-soft);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.cp-example pre {
+  background: var(--bg-dark);
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  margin: 8px 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+}
+
 .code-snippet {
   background: var(--bg-soft);
   border: 1px solid var(--border-subtle);

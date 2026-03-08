@@ -6,15 +6,26 @@ export const ch03_02_ex3: Lesson = {
     duration: '10 phút',
     type: 'practice',
     isExercise: true,
+
+    // Competitive Programming Format
+    problemTitle: 'Truy cập phần tử mảng',
+    timeLimit: '1s',
+    memoryLimit: '256MB',
+    problemDescription: 'Tính tổng số ngày của tháng đầu tiên và tháng cuối cùng trong năm.',
+    inputFormat: 'Không có input (đã cho sẵn mảng)',
+    outputFormat: 'In ra tổng số ngày',
+    constraints: [
+        { field: 'months[0]', condition: '31 (Tháng 1)' },
+        { field: 'months[11]', condition: '31 (Tháng 12)' }
+    ],
+    examples: [
+        {
+            input: '(không có)',
+            output: '62'
+        }
+    ],
+
     content: `
-<p>Mảng trong Rust có kích thước cố định. Bạn có biết phần tử đầu tiên luôn bắt đầu bằng chỉ số 0 không?</p>
-<h3 class="task-heading">Yêu cầu</h3>
-<ol class="task-list">
-  <li>Trong hàm <code>main</code>, tôi đã cho sẵn một mảng <code>months</code> chứa số ngày của các tháng trong năm dương lịch.</li>
-  <li>Hãy lấy giá trị số ngày của <strong>tháng đầu tiên</strong> (Tháng 1) lưu vào biến <code>first_month_days</code>.</li>
-  <li>Lấy giá trị số ngày của <strong>tháng cuối cùng</strong> (Tháng 12) lưu vào biến <code>last_month_days</code>.</li>
-  <li>Cộng hai giá trị lại bằng một biến <code>total</code> và in <code>total</code> ra màn hình.</li>
-</ol>
 <div class="cyber-alert info">
   <strong>Chỉ mục (Index):</strong> Dùng cặp ngoặc vuông <code>[]</code> để truy cập. Ví dụ: <code>my_array[0]</code>. Lưu ý: mảng có 12 phần tử thì phần tử cuối cùng sẽ ở vị trí nào?
 </div>
@@ -22,6 +33,16 @@ export const ch03_02_ex3: Lesson = {
     defaultCode: `fn main() {
     let months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
+    // Lấy số ngày tháng đầu tiên (index 0)
+    let first_month_days = months[0];
+
+    // Lấy số ngày tháng cuối cùng (index 11)
+    let last_month_days = months[11];
+
+    // Tính tổng
+    let total = first_month_days + last_month_days;
+
+    println!("{}", total);
 }
 `
 };

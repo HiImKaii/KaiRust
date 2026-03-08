@@ -6,20 +6,35 @@ export const ch03_01_ex: Lesson = {
   duration: '10 phút',
   type: 'practice',
   isExercise: true,
+
+  // Competitive Programming Format
+  problemTitle: 'Biến và Tính bất biến',
+  timeLimit: '1s',
+  memoryLimit: '256MB',
+  problemDescription: 'Viết chương trình tạo biến bất biến x = 5 và biến khả biến y = 10, sau đó thay đổi y thành 20.',
+  inputFormat: 'Không có input',
+  outputFormat: 'In ra x và y theo định dạng: x, y',
+  constraints: [
+    { field: 'x', condition: 'bất biến (immutable), giá trị = 5' },
+    { field: 'y', condition: 'khả biến (mutable), giá trị ban đầu = 10, sau đó = 20' }
+  ],
+  examples: [
+    {
+      input: '(không có)',
+      output: '5, 20'
+    }
+  ],
+
   content: `
-<p>Hãy cùng kiểm tra kiến thức của bạn về Biến và Tính bất biến!</p>
-<h3 class="task-heading">Yêu cầu</h3>
-<ol class="task-list">
-  <li>Trong hàm <code>main()</code>, hãy tạo một biến <strong>bất biến</strong> tên là <code>x</code> và gán cho nó giá trị <code>5</code>.</li>
-  <li>Sau đó, tạo một biến <strong>khả biến (mutable)</strong> tên là <code>y</code> và gán cho nó giá trị <code>10</code>.</li>
-  <li>Cuối cùng, hãy thay đổi giá trị của <code>y</code> thành <code>20</code>.</li>
-</ol>
 <div class="cyber-alert info">
   <strong>Gợi ý:</strong> Sử dụng từ khóa <code>mut</code> cho biến có thể thay đổi giá trị. Sau khi hoàn thành, hãy nhấn <strong>Run</strong> để hệ thống chấm điểm!
 </div>
 `,
   defaultCode: `fn main() {
-
+    // TODO: Tạo biến x = 5 (bất biến)
+    // TODO: Tạo biến y = 10 (khả biến)
+    // TODO: Thay đổi y = 20
+    // TODO: In ra: println!("{}, {}", x, y);
 }
 `
 };
