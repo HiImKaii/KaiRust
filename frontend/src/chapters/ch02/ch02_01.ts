@@ -15,7 +15,7 @@ export const ch02_01: Lesson = {
 <div class="code-snippet">
   <span class="code-lang">bash</span>
   <pre><code>$ cargo new guessing_game
-$ cd guessing_game</code></pre>
+  $ cd guessing_game</code></pre>
 </div>
 <p>Lệnh đầu tiên, <code>cargo new</code>, nhận tên của dự án (<code>guessing_game</code>) làm đối số đầu tiên. Lệnh thứ hai chuyển sang thư mục của dự án mới.</p>
 

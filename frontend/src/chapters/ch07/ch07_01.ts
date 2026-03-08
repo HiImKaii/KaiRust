@@ -39,10 +39,10 @@ export const ch07_01: Lesson = {
   <span class="code-lang">bash</span>
   <pre><code>$ cargo new my-project
      Created binary (application) \`my-project\` package
-$ ls my-project
+  $ ls my-project
 Cargo.toml
 src
-$ ls my-project/src
+  $ ls my-project/src
 main.rs</code></pre>
 </div>
 

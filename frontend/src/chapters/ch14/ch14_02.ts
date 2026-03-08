@@ -46,7 +46,7 @@ add_one = { path = "../add_one" }</code></pre>
 <div class="code-snippet">
   <span class="code-lang">bash</span>
   <pre><code>$ cargo build           # Build tất cả
-$ cargo run -p adder    # Chạy package cụ thể
+  $ cargo run -p adder    # Chạy package cụ thể
 $ cargo test -p add_one # Test package cụ thể</code></pre>
 </div>
 `,

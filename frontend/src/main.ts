@@ -217,7 +217,7 @@ const showChapterIntroduction = (chapter: Chapter) => {
 };
 
 // ---- Lesson Selection ----
-const selectLesson = (lesson: Lesson) => {
+const selectLesson = (lesson: Lesson, restoreScrollPosition: number | null = null) => {
     // Toggle Submit Button and Terminal Stdin
     const submitBtn = document.getElementById('submit-btn');
     const stdinInput = document.getElementById('terminal-stdin') as HTMLInputElement | null;
@@ -268,9 +268,19 @@ const selectLesson = (lesson: Lesson) => {
     const contentEl = document.getElementById('lesson-content');
     if (contentEl) contentEl.innerHTML = lesson.content;
 
-    // Reset scrolling
+    // Handle scroll position (restore if specified, otherwise reset to top)
     const scrollArea = document.getElementById('panel-scroll-area');
-    if (scrollArea) scrollArea.scrollTop = 0;
+    if (scrollArea) {
+        if (restoreScrollPosition !== null && restoreScrollPosition > 0) {
+            // Restore scroll position after a short delay to ensure content is rendered
+            setTimeout(() => {
+                scrollArea.scrollTop = restoreScrollPosition;
+            }, 100);
+        } else {
+            // Default: reset to top
+            scrollArea.scrollTop = 0;
+        }
+    }
 
     // Re-check scroll conditions immediately after rendering
     setTimeout(() => {
@@ -304,12 +314,13 @@ const selectLesson = (lesson: Lesson) => {
     // Update progress
     updateProgress();
 
-    // Save learning state to localStorage
+    // Save learning state to localStorage (with current scroll position)
+    const currentScrollPosition = scrollArea ? scrollArea.scrollTop : 0;
     const currentChapter = courseData.find(ch =>
         ch.lessons.some(l => l.id === lesson.id)
     );
     if (currentChapter) {
-        ProgressManager.saveLearningState(lesson.id, currentChapter.id);
+        ProgressManager.saveLearningState(lesson.id, currentChapter.id, currentScrollPosition);
     }
 
     // Setup inline code runners for the new content
@@ -1039,18 +1050,20 @@ const checkAndShowResumePopup = () => {
 };
 
 // ---- Resume Learning Popup Setup ----
-const setupResumePopup = () => {
+const setupResumePopup = (): boolean => {
     const popup = document.getElementById('resume-popup');
     const closeBtn = document.getElementById('resume-popup-close');
     const btnContinue = document.getElementById('btn-continue-learning');
     const btnStartFresh = document.getElementById('btn-start-fresh');
 
-    if (!popup || !closeBtn || !btnContinue || !btnStartFresh) return;
+    if (!popup || !closeBtn || !btnContinue || !btnStartFresh) return false;
+
+    let shouldResume = false;
 
     // Only show resume popup if user has accepted cookies
     const cookieConsent = localStorage.getItem('kairust_cookie_consent');
     if (cookieConsent !== 'accepted') {
-        return; // Skip showing resume popup if cookies not accepted
+        return false; // Skip showing resume popup if cookies not accepted
     }
 
     // Get saved learning state
@@ -1080,6 +1093,9 @@ const setupResumePopup = () => {
             setTimeout(() => {
                 popup.classList.remove('hidden');
             }, 800);
+
+            // Mark that popup is shown
+            shouldResume = true;
         }
     }
 
@@ -1106,8 +1122,8 @@ const setupResumePopup = () => {
                 if (lessonList) lessonList.classList.add('open');
             }
 
-            // Then select the lesson
-            selectLesson(savedLesson);
+            // Then select the lesson with restored scroll position
+            selectLesson(savedLesson, savedState.scrollPosition);
         }
     });
 
@@ -1122,6 +1138,8 @@ const setupResumePopup = () => {
             showChapterIntroduction(courseData[0]);
         }
     });
+
+    return shouldResume;
 };
 
 // ---- Init ----
@@ -1408,10 +1426,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setupResizers();
     setupCookieBanner();
     setupAuthModal();
-    setupResumePopup();
 
-    // Select the first lesson automatically if available
-    if (flatLessons.length > 0) {
+    // Setup resume popup and check if we should resume
+    const shouldResume = setupResumePopup();
+
+    // Only select first lesson if NOT resuming from saved state
+    if (!shouldResume && flatLessons.length > 0) {
         selectLesson(flatLessons[0]);
     }
 

@@ -100,8 +100,8 @@ export const ch01_01: Lesson = {
   <div class="code-snippet">
   <span class="code-lang">bash</span>
   <pre><code>$ cargo new get-dependencies
-$ cd get-dependencies
-$ cargo add rand@0.8.5 trpl@0.2.0</code></pre>
+  $ cd get-dependencies
+  $ cargo add rand@0.8.5 trpl@0.2.0</code></pre>
 </div>
 <p>Lệnh này sẽ lưu bộ nhớ đệm (cache) việc tải xuống cho những packages nói trên, qua đó bạn sẽ không phải cần tải lại chúng vào thời điểm sau này nữa.nh công những lệnh vừa rồi, bạn không cần phải giữ lại thư mục <code>get-dependencies</code> nữa.</p>
 `,

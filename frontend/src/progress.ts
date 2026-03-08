@@ -13,6 +13,7 @@ export interface LearningState {
     currentChapterId: string | null;
     lastVisit: number; // timestamp
     hasVisited: boolean; // đánh dấu đã từng truy cập
+    scrollPosition: number; // vị trí scroll của content
 }
 
 export class ProgressManager {
@@ -66,19 +67,21 @@ export class ProgressManager {
             currentLessonId: null,
             currentChapterId: null,
             lastVisit: 0,
-            hasVisited: false
+            hasVisited: false,
+            scrollPosition: 0
         };
     }
 
     /**
      * Lưu trạng thái học tập hiện tại
      */
-    static saveLearningState(lessonId: string, chapterId: string): void {
+    static saveLearningState(lessonId: string, chapterId: string, scrollPosition: number = 0): void {
         const state: LearningState = {
             currentLessonId: lessonId,
             currentChapterId: chapterId,
             lastVisit: Date.now(),
-            hasVisited: true
+            hasVisited: true,
+            scrollPosition: scrollPosition
         };
         localStorage.setItem(CURRENT_STATE_KEY, JSON.stringify(state));
     }

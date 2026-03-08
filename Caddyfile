@@ -14,7 +14,9 @@
     }
 
     # Static Frontend (catch-all)
-    reverse_proxy frontend:80
+    handle {
+        reverse_proxy frontend:80
+    }
 }
 
 # Internal HTTP listener for Cloudflare Tunnel (no TLS needed)
@@ -30,5 +32,7 @@
     }
 
     # Static Frontend (catch-all)
-    reverse_proxy frontend:80
+    handle {
+        reverse_proxy frontend:80
+    }
 }

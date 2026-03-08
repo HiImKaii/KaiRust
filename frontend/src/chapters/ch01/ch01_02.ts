@@ -19,17 +19,17 @@ export const ch01_02: Lesson = {
 <div class="code-snippet">
   <span class="code-lang">bash</span>
   <pre><code>$ mkdir ~/projects
-$ cd ~/projects
-$ mkdir hello_world
-$ cd hello_world</code></pre>
+  $ cd ~/projects
+  $ mkdir hello_world
+  $ cd hello_world</code></pre>
 </div>
 <p>Đối với Windows CMD, nhập:</p>
 <div class="code-snippet">
   <span class="code-lang">cmd</span>
   <pre><code>&gt; mkdir "%USERPROFILE%\\projects"
-&gt; cd /d "%USERPROFILE%\\projects"
-&gt; mkdir hello_world
-&gt; cd hello_world</code></pre>
+  &gt; cd /d "%USERPROFILE%\\projects"
+  &gt; mkdir hello_world
+  &gt; cd hello_world</code></pre>
 </div>
 
 <h3 class="task-heading">Cơ bản về Chương trình Rust</h3>
@@ -47,15 +47,21 @@ $ cd hello_world</code></pre>
 <div class="code-snippet">
   <span class="code-lang">bash</span>
   <pre><code>$ rustc main.rs
-$ ./main
-Hello, world!</code></pre>
+  $ ./main</code></pre>
+</div>
+<div class="code-snippet output">
+  <span class="code-lang">output</span>
+  <pre><code>Hello, world!</code></pre>
 </div>
 <p>Trên Windows, nhập lệnh <code>.\\main</code> thay vì <code>./main</code>:</p>
 <div class="code-snippet">
   <span class="code-lang">cmd</span>
   <pre><code>&gt; rustc main.rs
-&gt; .\\main
-Hello, world!</code></pre>
+  &gt; .\\main</code></pre>
+</div>
+<div class="code-snippet output">
+  <span class="code-lang">output</span>
+  <pre><code>Hello, world!</code></pre>
 </div>
 <p>Bất kể hệ điều hành của bạn là gì, chuỗi <code>Hello, world!</code> sẽ được in ra terminal. Nếu bạn không thấy output này, hãy tham khảo ChatGPT nhận trợ giúp.</p>
 <p>Nếu <code>Hello, world!</code> đã được in ra, xin chúc mừng! Bạn đã chính thức viết một chương trình Rust. Chúc mừng, bạn đã trở thành một lập trình viên Rust thực thụ — chào mừng bạn!</p>
@@ -68,7 +74,7 @@ Hello, world!</code></pre>
 
 }</code></pre>
 </div>
-<p>Các dòng này định nghĩa một function (hàm) có tên là <code>main</code>. Hàm <code>main</code> rất đặc biệt: Nó luôn là đoạn code đầu tiên chạy trong mọi chương trình Rust. Ở đây, dòng đầu tiên khai báo một hàm tên là <code>main</code> không có tham số nào và không trả về điều gì. Nếu nó có các tham số, chúng sẽ nằm bên trong cặp ngoặc đơn <code>()</code>.</p>
+<p>Các dòng này định nghĩa một hàm có tên là <code>main</code>. Hàm <code>main</code> rất đặc biệt: Nó luôn là đoạn code đầu tiên chạy trong mọi chương trình Rust. Ở đây, dòng đầu tiên khai báo một hàm tên là <code>main</code> không có tham số nào và không trả về điều gì. Nếu nó có các tham số, chúng sẽ nằm bên trong cặp ngoặc đơn <code>()</code>.</p>
 <p>Nội dung của "thân hàm" được bao bọc trong <code>{}</code>. Rust yêu cầu dấu ngoặc móc xung quanh mọi phần "thân" của hàm. Sẽ là phong cách lập trình tốt nếu bạn đặt dấu ngoặc móc mở trên cùng một dòng với khai báo hàm, chỉ cách nhau một khoảng trắng.</p>
 
 <div class="cyber-alert info">
@@ -81,10 +87,45 @@ Hello, world!</code></pre>
   <pre><code>    println!("Hello, world!");</code></pre>
 </div>
 <p>Dòng này thực hiện toàn bộ công việc trong chương trình nhỏ này: Nó in chữ lên màn hình máy tính. Có ba chi tiết quan trọng mà bạn cần lưu ý ở đây.</p>
-<p>Thứ nhất, <code>println!</code> gọi một <em>Rust macro</em>. Nếu như nó đã từng gọi một function thay thế, nó đã phải được cung cấp là <code>println</code> (không có dấu <code>!</code>). Các Rust macro là một cách để viết code mà dùng vào việc phát sinh code để tự mở rộng cho cấu trúc của hệ lệnh. Chúng ta sẽ nói thêm về nó ở Chapter 20. Bây giờ, bạn chỉ cần biết một điều rằng dùng cái dấu <code>!</code> tức là ám chỉ ta đang chạy kích hoạt một marco chứ không phải một function chuẩn và cái loại macro sẽ không tuân thủ các quy định như mấy functions cho lắm.</p>
+<p>Thứ nhất, <code>println!</code> gọi một <em>Rust macro</em>. Để phân biệt macro với function thông thường, Rust sử dụng dấu <code>!</code> ở cuối tên. Nếu đây là một function, nó sẽ được viết là <code>println</code> (không có dấu <code>!</code>).</p>
 
 <div class="cyber-alert info">
-  <strong>Lưu ý thuật ngữ:</strong> <em>macro</em> là một đoạn mã tự động sinh được sử dụng để giảm bớt sự lặp lại, thường kết thúc bằng dấu chấm than <code>!</code> trong Rust.
+  <strong>Macro là gì?</strong><br>
+  Macro là một đoạn mã đặc biệt cho phép bạn <em>viết code để sinh ra code khác</em>. Thay vì chỉ thực hiện một hành động cố định, macro sẽ được "mở rộng" thành nhiều dòng mã khác nhau trong quá trình biên dịch. Điều này giúp giảm sự lặp lại và tăng tính linh hoạt của ngôn ngữ.
+</div>
+
+<h4 class="task-heading">Tại sao cần macro?</h4>
+<p>Hãy tưởng tượng bạn muốn in ra nhiều dòng văn bản khác nhau. Nếu không có macro, bạn phải viết nhiều dòng lệnh gọi hàm khác nhau. Nhưng với macro <code>println!</code>, bạn chỉ cần truyền vào chuỗi cần in, và macro này sẽ tự động sinh ra mã máy tương ứng để thực hiện việc in ấn đó.</p>
+
+<h4 class="task-heading">Sự khác biệt giữa Macro và Function</h4>
+<ul>
+  <li><strong>Macro</strong>: Được xử lý trong quá trình biên dịch (compile-time), có thể sinh ra nhiều dòng code khác nhau tùy thuộc vào tham số đầu vào.</li>
+  <li><strong>Function</strong>: Được xử lý trong quá trình chạy chương trình (runtime), thực hiện một tập hợp các lệnh cố định.</li>
+</ul>
+<p>Trong phạm vi bài học này, bạn chỉ cần nhớ: dấu <code>!</code> sau tên có nghĩa là đang sử dụng một macro, không phải một function thông thường. Chúng ta sẽ tìm hiểu sâu hơn về macro ở Chương 20.</p>
+
+<h4 class="task-heading">Ví dụ: Macro vs Function</h4>
+<p>Hãy tự chạy đoạn code dưới đây để thấy sự khác biệt. <code>println!</code> là macro nên có thể nhận số lượng tham số linh hoạt và hiểu cú pháp format <code>{}</code>, trong khi một function thông thường chỉ thực hiện đúng một hành động cố định đã được định nghĩa sẵn.</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>// Đây là một function thông thường — chỉ làm được MỘT việc cố định
+fn greet() {
+    println!("Xin chào từ function!");
+}
+
+fn main() {
+    // Macro println! có thể nhận linh hoạt: 0, 1, hoặc nhiều tham số
+    println!("Không có tham số nào");
+    println!("Có một tham số: {}", 42);
+    println!("Nhiều tham số: {} + {} = {}", 1, 2, 1 + 2);
+    println!("Định dạng số thực: {:.2}", 3.14159);
+
+    // Function chỉ làm đúng việc đã định nghĩa, không thể thay đổi
+    greet();
+
+    // Thử bỏ dấu ! đi sẽ bị lỗi biên dịch:
+    // println("Hello"); // LỖI: println không phải là function!
+}</code></pre>
 </div>
 
 <p>Thứ hai, bạn thấy chuỗi <code>"Hello, world!"</code>. Chúng ta truyền dữ liệu chuỗi (string) sử dụng cách giống như việc chúng ta truyền tham số cho lệnh <code>println!</code>, và đó là dòng chính sẽ thực hiện lệnh của chương trình này.</p>

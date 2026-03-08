@@ -16,7 +16,7 @@ export const ch02: Chapter = {
     <p>Trong chương này, chúng ta sẽ cùng xây dựng một trò chơi đoán số kinh điển - một dự án thực hành giúp bạn nắm vững các khái niệm cơ bản của Rust.</p>
     <p>Trò chơi này sẽ yêu cầu người chơi đoán một số ngẫu nhiên từ 1 đến 100, với phản hồi cho biết số đoán lớn hơn hay nhỏ hơn số bí mật.</p>
     <h3>Bạn sẽ học được gì?</h3>
-    <ul>
+    <ul class="task-list">
       <li><strong>Biến và kiểu dữ liệu:</strong> Cách khai báo và sử dụng biến trong Rust</li>
       <li><strong>Hàm và tham số:</strong> Cách tạo và gọi hàm</li>
       <li><strong>Điều kiện và vòng lặp:</strong> Sử dụng if/else và loop/while/for</li>

@@ -23,7 +23,7 @@ export const ch01_03: Lesson = {
 <div class="code-snippet">
   <span class="code-lang">bash</span>
   <pre><code>$ cargo new hello_cargo
-$ cd hello_cargo</code></pre>
+  $ cd hello_cargo</code></pre>
 </div>
 <p>Lệnh đầu tiên tạo ra một thư mục và dự án mới tên là <code>hello_cargo</code>. Chúng ta đặt tên dự án là <code>hello_cargo</code>, và Cargo sẽ tạo các tệp của nó trong một thư mục cùng tên.</p>
 <p>Hãy vào thư mục <code>hello_cargo</code> và liệt kê các tệp. Bạn sẽ thấy Cargo đã tạo ra cho chúng ta hai tệp và một thư mục: tệp <code>Cargo.toml</code> và thư mục <code>src</code> chứa tệp <code>main.rs</code> bên trong.</p>
@@ -38,11 +38,11 @@ $ cd hello_cargo</code></pre>
 <div class="code-snippet">
   <span class="code-lang">toml</span>
   <pre><code>[package]
-name = "hello_cargo"
-version = "0.1.0"
-edition = "2021"
+  name = "hello_cargo"
+  version = "0.1.0"
+  edition = "2021"
 
-[dependencies]</code></pre>
+  [dependencies]</code></pre>
 </div>
 <p>Tệp này sử dụng định dạng <strong>TOML</strong> (Tom’s Obvious, Minimal Language), đây là định dạng cấu hình mặc định của Cargo.</p>
 <p>Dòng đầu tiên, <code>[package]</code>, là tiêu đề phần cho biết các câu lệnh tiếp theo dùng để cấu hình một gói ứng dụng (package). Khi chúng ta thêm nhiều thông tin hơn cho tệp này, chúng ta sẽ thêm các phần khác.</p>
@@ -65,7 +65,7 @@ edition = "2021"
 <div class="code-snippet">
   <span class="code-lang">bash</span>
   <pre><code>$ cargo build
-   Compiling hello_cargo v0.1.0 (file:///projects/hello_cargo)
+    Compiling hello_cargo v0.1.0 (file:///projects/hello_cargo)
     Finished dev [unoptimized + debuginfo] target(s) in 2.85s</code></pre>
 </div>
 <p>Lệnh này tạo ra một tệp thực thi trong <code>target/debug/hello_cargo</code> (hoặc <code>target\\debug\\hello_cargo.exe</code> trên Windows) thay vì ở ngay thư mục hiện tại. Vì mặc định là bản build debug, Cargo đặt tệp nhị phân vào thư mục tên là <code>debug</code>. Bạn có thể chạy tệp thực thi bằng lệnh:</p>
@@ -95,12 +95,12 @@ Hello, world!</code></pre>
 <p>Tại sao bạn lại không muốn có tệp thực thi? Thường thì <code>cargo check</code> nhanh hơn <code>cargo build</code> rất nhiều vì nó bỏ qua bước tạo tệp nhị phân. Nếu bạn liên tục kiểm tra công việc của mình khi đang viết mã, <code>cargo check</code> sẽ giúp quá trình phản hồi nhanh hơn!</p>
 
 <p>Tóm tắt những gì chúng ta đã học về Cargo:</p>
-<ul>
-    <li>Chúng ta có thể tạo dự án bằng <code>cargo new</code>.</li>
-    <li>Chúng ta có thể build dự án bằng <code>cargo build</code>.</li>
-    <li>Chúng ta có thể build và chạy trong một bước bằng <code>cargo run</code>.</li>
-    <li>Chúng ta có thể kiểm tra lỗi biên dịch mà không tạo file nhị phân bằng <code>cargo check</code>.</li>
-    <li>Thay vì lưu kết quả build ở cùng thư mục với mã nguồn, Cargo lưu nó trong thư mục <code>target/debug</code>.</li>
+<ul class="task-list">
+      <li>Chúng ta có thể tạo dự án bằng <code>cargo new</code>.</li>
+      <li>Chúng ta có thể build dự án bằng <code>cargo build</code>.</li>
+      <li>Chúng ta có thể build và chạy trong một bước bằng <code>cargo run</code>.</li>
+      <li>Chúng ta có thể kiểm tra lỗi biên dịch mà không tạo file nhị phân bằng <code>cargo check</code>.</li>
+      <li>Thay vì lưu kết quả build ở cùng thư mục với mã nguồn, Cargo lưu nó trong thư mục <code>target/debug</code>.</li>
 </ul>
 
 <h3 class="task-heading">Build cho bản Phát hành (Release Build)</h3>
@@ -111,7 +111,7 @@ Hello, world!</code></pre>
 
 <h3 class="task-heading">Tổng kết Chương 1</h3>
 <p>Bạn đã có một khởi đầu tuyệt vời trong hành trình chinh phục Rust! Trong chương này, bạn đã học cách:</p>
-<ul>
+<ul class="task-list">
     <li>Cài đặt phiên bản Rust ổn định mới nhất bằng <code>rustup</code>.</li>
     <li>Cập nhật lên phiên bản Rust mới hơn.</li>
     <li>Mở tài liệu hướng dẫn được cài đặt cục bộ.</li>
