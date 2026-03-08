@@ -27,7 +27,20 @@ pub async fn handle_run(
     Json(req): Json<RunRequest>,
 ) -> Json<RunResponse> {
     let is_test = req.is_test.unwrap_or(false);
-    let result = compile_and_run(&req.code, req.stdin.as_deref(), is_test).await;
+
+    // Nếu là bài kiểm tra và có lesson_id, tự động nối thêm test case
+    let mut code = req.code.clone();
+    if is_test {
+        if let Some(ref lesson_id) = req.lesson_id {
+            if let Some(test_code) = crate::exercises::get_test_code(lesson_id) {
+                // IMPORTANT: Thêm newline để tránh user code và test code bị dính liền
+                code.push_str("\n\n");
+                code.push_str(test_code);
+            }
+        }
+    }
+
+    let result = compile_and_run(&code, req.stdin.as_deref(), is_test).await;
     Json(result)
 }
 
@@ -104,15 +117,13 @@ async fn setup_workspace(work_dir: &PathBuf, code: &str) -> Result<(), String> {
 }
 
 async fn compile(work_dir: &PathBuf, is_test: bool) -> Result<(), String> {
-    let source = work_dir.join("main.rs");
-    let output = work_dir.join("main");
-
     let mut cmd = Command::new("rustc");
-    cmd.arg(&source)
+    cmd.arg("main.rs")
        .arg("-o")
-       .arg(&output)
+       .arg("main")
        .arg("--edition")
-       .arg("2021");
+       .arg("2021")
+       .current_dir(work_dir);  // IMPORTANT: Set working directory!
 
     if is_test {
         cmd.arg("--test");

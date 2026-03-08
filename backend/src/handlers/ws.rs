@@ -126,13 +126,17 @@ async fn run_interactive(
 
     // Nếu là bài kiểm tra và có lesson_id, tự động nối thêm test case từ backend
     if is_test {
-        if let Some(lid) = lesson_id {
-            match crate::exercises::get_test_code(&lid) {
+        eprintln!("[DEBUG] is_test=true, lesson_id={:?}", lesson_id);
+        if let Some(ref lid) = lesson_id {
+            eprintln!("[DEBUG] Looking for test code: {}", lid);
+            match crate::exercises::get_test_code(lid) {
                 Some(test_code) => {
+                    eprintln!("[DEBUG] Found test code, appending...");
                     code.push_str("\n");
                     code.push_str(test_code);
                 }
                 None => {
+                    eprintln!("[DEBUG] No test code found for: {}", lid);
                     let _ = tx.send(WsServerMessage::Error {
                         message: format!("Lỗi: Bài tập '{}' không tồn tại test case trên hệ thống.", lid),
                     }).await;
@@ -140,6 +144,8 @@ async fn run_interactive(
                     return;
                 }
             }
+        } else {
+            eprintln!("[DEBUG] No lesson_id provided");
         }
     }
 

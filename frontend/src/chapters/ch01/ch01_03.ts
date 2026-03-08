@@ -65,6 +65,7 @@ export const ch01_03: Lesson = {
 <div class="code-snippet">
   <span class="code-lang">bash</span>
   <pre><code>$ cargo build
+    // Bạn sẽ nhận được một số thứ trông tương tự như sau:
     Compiling hello_cargo v0.1.0 (file:///projects/hello_cargo)
     Finished dev [unoptimized + debuginfo] target(s) in 2.85s</code></pre>
 </div>
