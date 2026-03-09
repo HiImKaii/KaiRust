@@ -14,8 +14,16 @@ use crate::models::{RunRequest, RunResponse};
 /// Sandbox directory for temporary code files
 const SANDBOX_DIR: &str = "/tmp/kairust_sandbox";
 
-/// Maximum execution time in seconds
-const TIMEOUT_SECS: u64 = 10;
+/// Get timeout in seconds based on exercise limits
+fn get_timeout_secs(lesson_id: &Option<String>) -> u64 {
+    match lesson_id {
+        Some(id) => {
+            let limits = crate::exercises::get_exercise_limits(id);
+            limits.time_limit_secs.ceil() as u64
+        }
+        None => 10, // Default timeout
+    }
+}
 
 /// Maximum output size in bytes (prevent memory bomb)
 const MAX_OUTPUT_BYTES: usize = 1024 * 64; // 64KB
@@ -27,12 +35,13 @@ pub async fn handle_run(
     Json(req): Json<RunRequest>,
 ) -> Json<RunResponse> {
     let is_test = req.is_test.unwrap_or(false);
+    let lesson_id = req.lesson_id.clone();
 
     // Nếu là bài kiểm tra và có lesson_id, tự động nối thêm test case
     let mut code = req.code.clone();
     if is_test {
-        if let Some(ref lesson_id) = req.lesson_id {
-            if let Some(test_code) = crate::exercises::get_test_code(lesson_id) {
+        if let Some(ref lid) = lesson_id {
+            if let Some(test_code) = crate::exercises::get_test_code(lid) {
                 // IMPORTANT: Thêm newline để tránh user code và test code bị dính liền
                 code.push_str("\n\n");
                 code.push_str(test_code);
@@ -40,16 +49,19 @@ pub async fn handle_run(
         }
     }
 
-    let result = compile_and_run(&code, req.stdin.as_deref(), is_test).await;
+    let result = compile_and_run(&code, req.stdin.as_deref(), is_test, lesson_id).await;
     Json(result)
 }
 
 // ---- Core Logic (reused by both REST and WebSocket) ----
 
 /// Compile and run Rust code, returns structured result
-pub async fn compile_and_run(code: &str, stdin_input: Option<&str>, is_test: bool) -> RunResponse {
+pub async fn compile_and_run(code: &str, stdin_input: Option<&str>, is_test: bool, lesson_id: Option<String>) -> RunResponse {
     let session_id = Uuid::new_v4().to_string();
     let work_dir = PathBuf::from(SANDBOX_DIR).join(&session_id);
+
+    // Lấy timeout từ giới hạn bài tập
+    let timeout_secs = get_timeout_secs(&lesson_id);
 
     // Setup workspace
     if let Err(e) = setup_workspace(&work_dir, code).await {
@@ -65,7 +77,7 @@ pub async fn compile_and_run(code: &str, stdin_input: Option<&str>, is_test: boo
     let start = Instant::now();
 
     // Step 1: Compile
-    let compile_result = compile(&work_dir, is_test).await;
+    let compile_result = compile(&work_dir, timeout_secs).await;
     match compile_result {
         Err(stderr) => {
             cleanup(&work_dir).await;
@@ -81,7 +93,7 @@ pub async fn compile_and_run(code: &str, stdin_input: Option<&str>, is_test: boo
     }
 
     // Step 2: Run
-    let run_result = run_binary(&work_dir, stdin_input, is_test).await;
+    let run_result = run_binary(&work_dir, stdin_input, is_test, timeout_secs).await;
     let elapsed = start.elapsed().as_millis() as u64;
 
     // Cleanup
@@ -142,7 +154,7 @@ rand = "0.8"
     Ok(())
 }
 
-async fn compile(work_dir: &PathBuf, _is_test: bool) -> Result<(), String> {
+async fn compile(work_dir: &PathBuf, timeout_secs: u64) -> Result<(), String> {
     // Luôn dùng cargo build - đơn giản và hiệu quả
     let mut cmd = Command::new("cargo");
     cmd.arg("build");
@@ -150,7 +162,7 @@ async fn compile(work_dir: &PathBuf, _is_test: bool) -> Result<(), String> {
        .current_dir(work_dir);
 
     let result = tokio::time::timeout(
-        std::time::Duration::from_secs(TIMEOUT_SECS),
+        std::time::Duration::from_secs(timeout_secs),
         cmd.output(),
     )
     .await;
@@ -173,6 +185,7 @@ async fn run_binary(
     work_dir: &PathBuf,
     stdin_input: Option<&str>,
     _is_test: bool,
+    timeout_secs: u64,
 ) -> Result<(String, String, u64), String> {
     // Chạy binary trực tiếp
     let binary_path = work_dir.join("target").join("release").join("user_code");
@@ -181,7 +194,7 @@ async fn run_binary(
     cmd.current_dir(work_dir);
 
     let result = tokio::time::timeout(
-        std::time::Duration::from_secs(TIMEOUT_SECS),
+        std::time::Duration::from_secs(timeout_secs),
         async {
             let mut child = cmd.spawn().map_err(|e| format!("Lỗi chạy binary: {}", e))?;
 

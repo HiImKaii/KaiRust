@@ -8,8 +8,8 @@ export const ch05_10_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Multiple impl Blocks cho Rectangle',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: `Hãy định nghĩa một struct Rectangle với width và height kiểu u32. Sử dụng NHIỀU impl blocks (ít nhất 2 blocks) để định nghĩa các methods. Impl block thứ nhất chứa method area(&self) -> u32. Impl block thứ hai chứa method can_hold(&self, other: &Rectangle) -> bool. Tạo rect1(30, 50) và rect2(10, 40), tính diện tích rect1 và kiểm tra rect1 có thể chứa rect2 không.`,
     inputFormat: 'Không có input từ người dùng',
     outputFormat: 'Dòng 1: "Area of rect1: 1500"\nDòng 2: "Can rect1 hold rect2? true"',
@@ -21,7 +21,7 @@ export const ch05_10_ex: Lesson = {
     ],
     examples: [
         {
-            input: '(không có)',
+            input: '',
             output: 'Area of rect1: 1500\nCan rect1 hold rect2? true',
             explanation: 'rect1 có diện tích 30*50=1500, và rect1(30,50) có thể chứa rect2(10,40)'
         }
@@ -54,17 +54,17 @@ export const ch05_10_ex: Lesson = {
 // Trả về true nếu self.width > other.width VÀ self.height > other.height
 
 fn main() {
-    // Tạo rect1 với width = 30, height = 50
+    // TODO: Tạo rect1 với width = 30, height = 50
     // TODO: let rect1 = Rectangle { ... };
 
-    // Tạo rect2 với width = 10, height = 40
+    // TODO: Tạo rect2 với width = 10, height = 40
     // TODO: let rect2 = Rectangle { ... };
 
-    // Tính và in diện tích rect1
+    // TODO: Tính và in diện tích rect1
     // Format: "Area of rect1: {}"
     // TODO: println!("Area of rect1: {}", ...);
 
-    // Kiểm tra rect1 có thể chứa rect2 không
+    // TODO: Kiểm tra rect1 có thể chứa rect2 không
     // Format: "Can rect1 hold rect2? {}"
     // TODO: println!("Can rect1 hold rect2? {}", ...);
 }

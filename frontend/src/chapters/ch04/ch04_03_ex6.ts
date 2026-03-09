@@ -9,8 +9,8 @@ export const ch04_03_ex6: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'CSV Parser Mini',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Parse CSV row và in ra định dạng: ID: ... | Tên: ... | Tuổi: ...',
     inputFormat: 'Cho sẵn "101,Nguyen Van A,25"',
     outputFormat: 'In: ID: 101 | Tên: Nguyen Van A | Tuổi: 25',

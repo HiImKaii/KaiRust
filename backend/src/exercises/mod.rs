@@ -7,6 +7,107 @@ pub mod ch06;
 pub mod ch07;
 pub mod ch08;
 
+/// Giới hạn của bài tập
+#[derive(Debug, Clone, Copy)]
+pub struct ExerciseLimits {
+    /// Time limit in seconds
+    pub time_limit_secs: f64,
+    /// Memory limit in MB
+    pub memory_limit_mb: u32,
+}
+
+impl Default for ExerciseLimits {
+    fn default() -> Self {
+        // Default limits if not specified
+        Self {
+            time_limit_secs: 10.0,
+            memory_limit_mb: 256,
+        }
+    }
+}
+
+/// Tra cứu giới hạn time/memory cho bài tập
+pub fn get_exercise_limits(lesson_id: &str) -> ExerciseLimits {
+    let name = lesson_id.replace('-', "_");
+    match name.as_str() {
+        // ch02
+        "ch02_01_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch02_02_ex" => ExerciseLimits { time_limit_secs: 0.5, memory_limit_mb: 256 },
+        "ch02_03_ex" => ExerciseLimits { time_limit_secs: 0.5, memory_limit_mb: 256 },
+        "ch02_04_ex" => ExerciseLimits { time_limit_secs: 0.5, memory_limit_mb: 256 },
+        "ch02_05_ex" => ExerciseLimits { time_limit_secs: 0.5, memory_limit_mb: 256 },
+        "ch02_06_ex" => ExerciseLimits { time_limit_secs: 0.5, memory_limit_mb: 256 },
+        "ch02_07_ex" => ExerciseLimits { time_limit_secs: 0.5, memory_limit_mb: 256 },
+        // ch03
+        "ch03_01_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_01_ex2" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_01_ex3" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_02_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_02_ex2" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_02_ex3" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_03_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_03_ex2" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_05_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_05_ex2" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_05_ex3" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_05_ex4" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_05_ex5" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_05_ex6" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_05_ex7" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch03_05_ex8" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        // ch04 - Using 1s for simplicity
+        "ch04_01_ex1" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch04_01_ex2" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch04_01_ex3" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch04_02_ex1" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch04_02_ex2" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch04_02_ex3" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch04_03_ex1" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch04_03_ex2" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch04_03_ex3" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch04_03_ex4" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch04_03_ex5" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch04_03_ex6" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        // ch05
+        "ch05_01_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch05_02_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch05_03_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch05_04_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch05_05_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch05_06_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch05_07_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch05_08_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch05_09_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch05_10_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        // ch06
+        "ch06_01_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch06_02_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch06_03_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch06_04_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch06_05_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch06_06_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch06_07_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch06_08_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch06_09_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch06_10_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        // ch07
+        "ch07_01_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch07_02_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch07_03_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch07_04_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch07_05_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        // ch08
+        "ch08_01_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch08_02_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch08_03_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch08_04_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch08_05_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch08_06_ex" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        // Default
+        _ => ExerciseLimits::default(),
+    }
+}
+
 /// Tra cứu test code cho bài tập theo lesson_id.
 /// Dùng include_str!() để embed nội dung file lúc compile —
 /// tránh lỗi "không tìm thấy file" khi chạy trên server/Docker

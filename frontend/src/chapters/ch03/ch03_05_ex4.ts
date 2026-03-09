@@ -9,8 +9,8 @@ export const ch03_05_ex4: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Đếm ngược với While',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Đếm ngược từ 5 về 1, sau đó in "Khai hỏa!"',
     inputFormat: 'Không có input',
     outputFormat: 'In các số từ 5 đến 1, sau đó in "Khai hỏa!"',
@@ -20,7 +20,7 @@ export const ch03_05_ex4: Lesson = {
     ],
     examples: [
         {
-            input: '(không có)',
+            input: '',
             output: '5\n4\n3\n2\n1\nKhai hỏa!'
         }
     ],

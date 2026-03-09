@@ -9,8 +9,8 @@ export const ch03_05_ex3: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Loop trả về giá trị',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Dùng vòng lặp loop để đếm từ 0 đến 10, sau đó trả về counter * 2.',
     inputFormat: 'Không có input',
     outputFormat: 'In ra kết quả',
@@ -20,7 +20,7 @@ export const ch03_05_ex3: Lesson = {
     ],
     examples: [
         {
-            input: '(không có)',
+            input: '',
             output: '20'
         }
     ],

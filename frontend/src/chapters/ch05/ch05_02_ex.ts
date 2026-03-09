@@ -8,8 +8,8 @@ export const ch05_02_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Debug với Derive Macros',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: `Cho trước thông tin sản phẩm bao gồm tên, giá và số lượng. Hãy định nghĩa một Struct Product với các field tương ứng. Sử dụng #[derive(Debug, Clone, PartialEq)] để struct có thể in ra màn hình (debug), clone và so sánh bằng nhau. Tạo hai sản phẩm, so sánh chúng bằng toán tử == và in kết quả.`,
     inputFormat: 'Không có input từ người dùng',
     outputFormat: 'Dòng 1: In product1 với định dạng Debug {:?}\nDòng 2: Kết quả so sánh product1 == product2 (true/false)',
@@ -20,7 +20,7 @@ export const ch05_02_ex: Lesson = {
     ],
     examples: [
         {
-            input: '(không có)',
+            input: '',
             output: 'Product { name: "Laptop", price: 999.99, quantity: 5 }\nfalse',
             explanation: 'product1 có name là "Laptop", sau khi clone và sửa name thành "Phone", hai sản phẩm khác nhau nên so sánh bằng false'
         }
@@ -53,7 +53,7 @@ export const ch05_02_ex: Lesson = {
 // Thêm #[derive(Debug, Clone, PartialEq)] phía trên
 
 fn main() {
-    // Tạo product1 với:
+    // TODO: Tạo product1 với:
     // name: "Laptop"
     // price: 999.99
     // quantity: 5
@@ -65,7 +65,7 @@ fn main() {
     // Sửa tên product2 thành "Phone"
     // TODO: product2.name = String::from("Phone");
 
-    // In product1 theo định dạng Debug
+    // TODO: In product1 theo định dạng Debug
     // TODO: println!("{:?}", product1);
 
     // So sánh product1 == product2 và in kết quả

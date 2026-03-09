@@ -8,8 +8,8 @@ export const ch05_06_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Tính diện tích hình chữ nhật',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: `Hãy định nghĩa một struct Rectangle với hai field: width (chiều rộng) và height (chiều cao), cả hai đều có kiểu u32. Sau đó viết một hàm area nhận vào tham chiếu bất biến của Rectangle (&Rectangle) và trả về diện tích (u32). Tạo một instance rect1 với width = 30, height = 50. Tính và in diện tích. Cuối cùng, in rect1 sử dụng định dạng Debug.`,
     inputFormat: 'Không có input từ người dùng',
     outputFormat: 'Dòng 1: "The area of the rectangle is 1500 square pixels."\nDòng 2: "rect1 is Rectangle { width: 30, height: 50 }"',
@@ -19,7 +19,7 @@ export const ch05_06_ex: Lesson = {
     ],
     examples: [
         {
-            input: '(không có)',
+            input: '',
             output: 'The area of the rectangle is 1500 square pixels.\nrect1 is Rectangle { width: 30, height: 50 }',
             explanation: 'Tính diện tích = 30 * 50 = 1500 và in thông tin Rectangle'
         }
@@ -53,14 +53,14 @@ export const ch05_06_ex: Lesson = {
 // Diện tích = width * height
 
 fn main() {
-    // Tạo rect1 với width = 30, height = 50
+    // TODO: Tạo rect1 với width = 30, height = 50
     // TODO: let rect1 = Rectangle { ... };
 
-    // Tính và in diện tích
+    // TODO: Tính và in diện tích
     // Format: "The area of the rectangle is {} square pixels."
     // TODO: println!("The area of the rectangle is {} square pixels.", ...);
 
-    // In rect1 sử dụng định dạng Debug
+    // TODO: In rect1 sử dụng định dạng Debug
     // Format: "rect1 is {:?}"
     // TODO: println!("rect1 is {:?}", rect1);
 }

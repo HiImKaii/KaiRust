@@ -8,8 +8,8 @@ export const ch05_08_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Method can_hold() cho Rectangle',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: `Hãy định nghĩa một struct Rectangle với width và height kiểu u32. Trong impl Rectangle, định nghĩa method area(&self) trả về diện tích và method can_hold(&self, other: &Rectangle) trả về bool. Method can_hold trả về true nếu hình chữ nhật hiện tại (self) có thể chứa được hình chữ nhật khác (other), tức là cả width và height của self đều lớn hơn width và height của other. Tạo rect1(30, 50) và rect2(10, 40), kiểm tra xem rect1 có thể chứa rect2 không.`,
     inputFormat: 'Không có input từ người dùng',
     outputFormat: 'In ra: "Can rect1 hold rect2? true"',
@@ -20,7 +20,7 @@ export const ch05_08_ex: Lesson = {
     ],
     examples: [
         {
-            input: '(không có)',
+            input: '',
             output: 'Can rect1 hold rect2? true',
             explanation: 'rect1(30,50) có width=30>10 và height=50>40, nên có thể chứa rect2(10,40)'
         }
@@ -52,13 +52,13 @@ export const ch05_08_ex: Lesson = {
 //    Trả về true nếu self.width > other.width VÀ self.height > other.height
 
 fn main() {
-    // Tạo rect1 với width = 30, height = 50
+    // TODO: Tạo rect1 với width = 30, height = 50
     // TODO: let rect1 = Rectangle { ... };
 
-    // Tạo rect2 với width = 10, height = 40
+    // TODO: Tạo rect2 với width = 10, height = 40
     // TODO: let rect2 = Rectangle { ... };
 
-    // Kiểm tra rect1 có thể chứa rect2 không
+    // TODO: Kiểm tra rect1 có thể chứa rect2 không
     // Format: "Can rect1 hold rect2? {}"
     // TODO: println!("Can rect1 hold rect2? {}", ...);
 }

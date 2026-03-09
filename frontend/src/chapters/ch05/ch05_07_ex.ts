@@ -8,8 +8,8 @@ export const ch05_07_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Method area() cho Rectangle',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: `Hãy định nghĩa một struct Rectangle với width và height kiểu u32. Sau đó định nghĩa một impl block cho Rectangle với method area(&self) trả về diện tích (width * height). Tạo rect1 với width = 30, height = 50 và gọi method area() để tính diện tích.`,
     inputFormat: 'Không có input từ người dùng',
     outputFormat: 'In ra: "The area of the rectangle is 1500 square pixels."',
@@ -19,7 +19,7 @@ export const ch05_07_ex: Lesson = {
     ],
     examples: [
         {
-            input: '(không có)',
+            input: '',
             output: 'The area of the rectangle is 1500 square pixels.',
             explanation: 'Diện tích = 30 * 50 = 1500'
         }
@@ -49,7 +49,7 @@ export const ch05_07_ex: Lesson = {
 // Diện tích = self.width * self.height
 
 fn main() {
-    // Tạo rect1 với width = 30, height = 50
+    // TODO: Tạo rect1 với width = 30, height = 50
     // TODO: let rect1 = Rectangle { ... };
 
     // Gọi method area() và in kết quả

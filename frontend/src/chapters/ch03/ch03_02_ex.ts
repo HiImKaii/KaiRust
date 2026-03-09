@@ -8,18 +8,34 @@ export const ch03_02_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Tuple và Array',
-    timeLimit: '1s',
     memoryLimit: '256MB',
-    problemDescription: `Viết chương trình tạo một Tuple chứa ba giá trị: i32 = 500, f64 = 6.4, char = 'Z'. Sau đó destructure tuple để lấy các giá trị. Tiếp theo, tạo một Array chứa các số [1, 2, 3, 4, 5]. In các giá trị theo định dạng.`,
-    inputFormat: 'Không có input từ người dùng',
-    outputFormat: 'Dòng 1: "500 6.4 Z"\nDòng 2: "[1, 2, 3, 4, 5]"',
+    timeLimit: '1s',
+    problemDescription: `Viết chương trình thực hiện các yêu cầu sau:
+1. Tạo một Tuple chứa ba giá trị: số nguyên 500, số thực 6.4, ký tự 'Z'
+2. Destructure (phân rã) Tuple để lấy ra các giá trị riêng biệt
+3. Tạo một Array chứa 5 số nguyên: [1, 2, 3, 4, 5]
+
+In ra:
+- Dòng 1: Giá trị của 3 phần tử từ Tuple, cách nhau bằng khoảng trắng
+- Dòng 2: Toàn bộ Array dưới dạng Debug format`,
+    // Định dạng input
+    inputFormat: 'Không có input',
+
+    // Định dạng output
+    outputFormat: `Dòng 1: 500 6.4 Z
+Dòng 2: [1, 2, 3, 4, 5]`,
+
+    // Các ràng buộc
     constraints: [
-        { field: 'Tuple', condition: '(i32, f64, char) = (500, 6.4, Z)' },
-        { field: 'Array', condition: '[i32; 5] = [1, 2, 3, 4, 5]' }
+        { field: 'Tuple', condition: 'Chứa (i32, f64, char) = (500, 6.4, Z)' },
+        { field: 'Array', condition: 'Mảng số nguyên [i32; 5] = [1, 2, 3, 4, 5]' },
+        { field: 'Output dòng 1', condition: 'In 3 giá trị từ Tuple, cách nhau bằng khoảng trắng' },
+        { field: 'Output dòng 2', condition: 'In Array dưới dạng Debug format {:?}' }
     ],
+
     examples: [
         {
-            input: '(không có)',
+            input: '',
             output: '500 6.4 Z\n[1, 2, 3, 4, 5]',
             explanation: 'Destructure tuple và in array'
         }

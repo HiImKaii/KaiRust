@@ -9,8 +9,8 @@ export const ch03_05_ex2: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'If expression as value',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Sử dụng if-else như biểu thức để gán giá trị cho biến. Nếu condition = true thì gán 5, else gán 6.',
     inputFormat: 'condition = true',
     outputFormat: 'In ra giá trị number',

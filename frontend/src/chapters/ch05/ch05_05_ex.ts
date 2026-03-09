@@ -8,8 +8,8 @@ export const ch05_05_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Unit-Like Structs - AlwaysEqual',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: `Hãy định nghĩa một Unit-Like Struct tên là AlwaysEqual. Đây là loại struct không có bất kỳ field nào, chỉ có một tên và kết thúc bằng dấu chấm phẩy (;). Sau đó tạo một instance của nó và in thông báo thành công.`,
     inputFormat: 'Không có input từ người dùng',
     outputFormat: 'In ra: "AlwaysEqual instance created successfully!"',
@@ -18,7 +18,7 @@ export const ch05_05_ex: Lesson = {
     ],
     examples: [
         {
-            input: '(không có)',
+            input: '',
             output: 'AlwaysEqual instance created successfully!',
             explanation: 'Tạo một instance của Unit-Like Struct AlwaysEqual'
         }
@@ -47,7 +47,7 @@ fn main() {
     // TODO: Tạo một instance của AlwaysEqual
     // let subject = AlwaysEqual;
 
-    // In thông báo thành công
+    // TODO: In thông báo thành công
     println!("AlwaysEqual instance created successfully!");
 }
 `,

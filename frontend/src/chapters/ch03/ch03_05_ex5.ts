@@ -9,8 +9,8 @@ export const ch03_05_ex5: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Máy tính Mini',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Viết hàm calculate(a, b, op) trả về tuple (has_error, result). Hỗ trợ +, -, *, /. Xử lý lỗi chia cho 0 và toán tử không hợp lệ.',
     inputFormat: 'Gọi hàm với các test case',
     outputFormat: 'In kết quả và trạng thái lỗi',

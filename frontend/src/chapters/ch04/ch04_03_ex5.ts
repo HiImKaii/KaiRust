@@ -9,8 +9,8 @@ export const ch04_03_ex5: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Đếm từ dài',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Đếm số từ có độ dài >= n trong câu.',
     inputFormat: 'Cho sẵn "Rust is blazingly fast and memory efficient", n=4',
     outputFormat: 'In số từ: 5',

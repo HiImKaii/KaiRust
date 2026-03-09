@@ -9,8 +9,8 @@ export const ch04_02_ex3: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Tránh xung đột tham chiếu',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Sửa lỗi borrowing: không thể vừa immutable borrow vừa mutable borrow cùng lúc.',
     inputFormat: 'Cho sẵn String "Rust"',
     outputFormat: 'In kết quả',

@@ -9,19 +9,38 @@ export const ch03_02_ex2: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Phép toán số học',
-    timeLimit: '1s',
     memoryLimit: '256MB',
-    problemDescription: 'Tính phép chia lấy nguyên và phép modulo của 43 cho 5.',
+    timeLimit: '1s',
+    problemDescription: `Tính toán với hai số nguyên:
+- Số a = 43
+- Số b = 5
+
+Tính và in ra:
+1. Phép chia lấy nguyên (quotient) của a cho b
+2. Phép lấy phần dư (remainder/modulo) của a cho b
+
+Hai kết quả cách nhau bằng một khoảng trắng.`,
+
+    // Định dạng input
     inputFormat: 'Không có input',
-    outputFormat: 'In quotient và remainder cách nhau bởi dấu cách',
+
+    // Định dạng output
+    outputFormat: 'In ra một dòng: "8 3" (trong đó 8 là thương, 3 là phần dư)',
+
+    // Các ràng buộc
     constraints: [
-        { field: 'a', condition: '43' },
-        { field: 'b', condition: '5' }
+        { field: 'Số a', condition: 'Giá trị = 43' },
+        { field: 'Số b', condition: 'Giá trị = 5' },
+        { field: 'Quotient', condition: 'Phép chia lấy nguyên (a / b)' },
+        { field: 'Remainder', condition: 'Phép lấy phần dư (a % b)' }
     ],
+
+    // Ví dụ
     examples: [
         {
-            input: '(không có)',
-            output: '8 3'
+            input: '',
+            output: '8 3',
+            explanation: '43 / 5 = 8 (thương), 43 % 5 = 3 (dư)'
         }
     ],
 

@@ -8,8 +8,8 @@ export const ch02_03_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Sinh số ngẫu nhiên',
-    timeLimit: '500ms',
     memoryLimit: '256MB',
+    timeLimit: '500ms',
     problemDescription: `Viết chương trình sinh một số ngẫu nhiên từ 1 đến 100 và in ra màn hình.`,
     inputFormat: 'Không có input',
     outputFormat: 'In ra số ngẫu nhiên (1-100)',

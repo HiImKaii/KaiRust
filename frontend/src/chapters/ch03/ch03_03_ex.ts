@@ -9,8 +9,8 @@ export const ch03_03_ex: Lesson = {
 
   // Competitive Programming Format
   problemTitle: 'Tính thể tích hình hộp',
-  timeLimit: '1s',
   memoryLimit: '256MB',
+  timeLimit: '1s',
   problemDescription: 'Viết hàm calculate_volume nhận 3 tham số length, width, height (i32) và trả về thể tích hình hộp.',
   inputFormat: 'Không có input (gọi hàm với tham số 2, 3, 4)',
   outputFormat: 'In ra thể tích',

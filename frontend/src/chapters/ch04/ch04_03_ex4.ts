@@ -9,8 +9,8 @@ export const ch04_03_ex4: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Tokenizer - Đếm Từ',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Đếm số tokens trong chuỗi code.',
     inputFormat: 'Cho sẵn "   let  x =    100   ;  "',
     outputFormat: 'In số tokens: 5',

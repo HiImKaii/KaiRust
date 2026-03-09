@@ -8,8 +8,8 @@ export const ch02_02_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Đọc input từ người dùng',
-    timeLimit: '500ms',
     memoryLimit: '256MB',
+    timeLimit: '500ms',
     problemDescription: `Viết chương trình cho phép người dùng nhập vào một chuỗi, sau đó in chuỗi đó ra màn hình.`,
     inputFormat: 'Một dòng văn bản bất kỳ',
     outputFormat: 'In ra chuỗi vừa nhập',

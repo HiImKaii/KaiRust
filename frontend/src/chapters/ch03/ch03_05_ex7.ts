@@ -9,8 +9,8 @@ export const ch03_05_ex7: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Mã hóa Caesar Cipher',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Mã hóa Caesar với shift = 3 cho các chữ cái thường a-z.',
     inputFormat: 'Cho sẵn: "hello world!", shift = 3',
     outputFormat: 'In ra chuỗi đã mã hóa',

@@ -8,8 +8,8 @@ export const ch05_04_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Tuple Structs - Color và Point',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: `Hãy định nghĩa hai Tuple Structs: Color (màu sắc) với 3 thành phần R, G, B và Point (điểm) với 3 tọa độ x, y, z. Tạo một màu đen Color(0, 0, 0) và một điểm gốc Point(0, 0, 0). Sau đó truy cập các thành phần bằng index (".0", ".1", ".2") và destructure Point thành các biến x, y, z riêng biệt.`,
     inputFormat: 'Không có input từ người dùng',
     outputFormat: 'Dòng 1: "Black color: R=0, G=0, B=0"\nDòng 2: "Origin point: x=0, y=0, z=0"\nDòng 3: "Destructured point: x=0, y=0, z=0"',
@@ -19,7 +19,7 @@ export const ch05_04_ex: Lesson = {
     ],
     examples: [
         {
-            input: '(không có)',
+            input: '',
             output: 'Black color: R=0, G=0, B=0\nOrigin point: x=0, y=0, z=0\nDestructured point: x=0, y=0, z=0',
             explanation: 'Tạo Color và Point, truy cập bằng index và destructure'
         }
@@ -47,24 +47,24 @@ export const ch05_04_ex: Lesson = {
 // TODO: Định nghĩa Tuple Struct Point với 3 tham số i32
 
 fn main() {
-    // Tạo Color đen: Color(0, 0, 0)
+    // TODO: Tạo Color đen: Color(0, 0, 0)
     // TODO: let black = Color(...);
 
-    // Tạo Point gốc tọa độ: Point(0, 0, 0)
+    // TODO: Tạo Point gốc tọa độ: Point(0, 0, 0)
     // TODO: let origin = Point(...);
 
-    // In thông tin color sử dụng index .0, .1, .2
+    // TODO: In thông tin color sử dụng index .0, .1, .2
     // Format: "Black color: R={}, G={}, B={}"
     // TODO: println!("Black color: R={}, G={}, B={}", ..., ..., ...);
 
-    // In thông tin point sử dụng index
+    // TODO: In thông tin point sử dụng index
     // Format: "Origin point: x={}, y={}, z={}"
     // TODO: println!("Origin point: x={}, y={}, z={}", ..., ..., ...);
 
     // Destructure Point thành các biến x, y, z
     // TODO: let Point(x, y, z) = origin;
 
-    // In thông tin đã destructure
+    // TODO: In thông tin đã destructure
     // Format: "Destructured point: x={}, y={}, z={}"
     // TODO: println!("Destructured point: x={}, y={}, z={}", x, y, z);
 }

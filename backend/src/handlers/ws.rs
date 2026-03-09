@@ -16,7 +16,17 @@ use uuid::Uuid;
 use crate::models::{WsClientMessage, WsServerMessage};
 
 const SANDBOX_DIR: &str = "/tmp/kairust_sandbox";
-const TIMEOUT_SECS: u64 = 10;
+
+/// Get timeout in seconds based on exercise limits
+fn get_timeout_secs(lesson_id: &Option<String>) -> u64 {
+    match lesson_id {
+        Some(id) => {
+            let limits = crate::exercises::get_exercise_limits(id);
+            limits.time_limit_secs.ceil() as u64
+        }
+        None => 10, // Default timeout
+    }
+}
 
 /// Upgrade HTTP request to WebSocket
 pub async fn handle_ws_upgrade(ws: WebSocketUpgrade) -> impl IntoResponse {
@@ -114,6 +124,9 @@ async fn run_interactive(
 ) {
     let session_id = Uuid::new_v4().to_string();
     let work_dir = PathBuf::from(SANDBOX_DIR).join(&session_id);
+
+    // Lấy timeout từ giới hạn bài tập
+    let timeout_secs = get_timeout_secs(&lesson_id);
 
     // Setup workspace
     if let Err(e) = tokio::fs::create_dir_all(&work_dir).await {
@@ -288,10 +301,10 @@ rand = "0.8"
                 Err(_) => -1,
             }
         }
-        _ = tokio::time::sleep(std::time::Duration::from_secs(TIMEOUT_SECS)) => {
+        _ = tokio::time::sleep(std::time::Duration::from_secs(timeout_secs)) => {
             let _ = child.kill().await;
             let _ = tx.send(WsServerMessage::Error {
-                message: "Chương trình chạy quá thời gian (timeout 10s)".to_string(),
+                message: format!("Chương trình chạy quá thời gian (timeout {}s)", timeout_secs),
             }).await;
             -1
         }

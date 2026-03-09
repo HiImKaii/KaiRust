@@ -9,8 +9,8 @@ export const ch03_05_ex6: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Phân tích thừa số nguyên tố',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Phân tích một số nguyên thành tích các thừa số nguyên tố.',
     inputFormat: 'Gọi hàm với số n = 12 và n = 315',
     outputFormat: 'In các thừa số nguyên tố theo định dạng: 2 * 2 * 3',

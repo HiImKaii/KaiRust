@@ -9,8 +9,8 @@ export const ch04_03_ex2: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Array Slice',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Tính tổng 5 phần tử giữa mảng [1..10] (từ index 2 đến 6).',
     inputFormat: 'Cho sẵn mảng [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]',
     outputFormat: 'In tổng: 25',

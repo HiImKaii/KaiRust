@@ -8,8 +8,8 @@ export const ch02_06_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Nhập xuất dữ liệu cơ bản',
-    timeLimit: '500ms',
     memoryLimit: '256MB',
+    timeLimit: '500ms',
     problemDescription: `Viết chương trình cho phép nhập vào số tuổi của bạn Duy và sau đó in ra giá trị vừa nhập.`,
     inputFormat: 'Một số nguyên là số tuổi',
     outputFormat: 'In ra: "Tuoi cua Duy la {age}"',

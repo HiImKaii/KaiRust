@@ -9,8 +9,8 @@ export const ch04_02_ex1: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Tham chiếu Bất biến',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Viết hàm nhận &String và trả về độ dài.',
     inputFormat: 'Cho sẵn chuỗi "Tôi yêu Rust"',
     outputFormat: 'In độ dài chuỗi',

@@ -8,8 +8,8 @@ export const ch05_03_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Tính chu vi hình tròn',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: `Cho trước bán kính của một hình tròn. Hãy tính chu vi của hình tròn đó. Sử dụng công thức: chu_vi = 2 * PI * bán_kính. Lấy PI = 3.14. In kết quả với 2 chữ số thập phân.`,
     inputFormat: 'Không có input từ người dùng (sử dụng bán kính cố định)',
     outputFormat: 'In chu vi hình tròn với 2 chữ số thập phân',
@@ -18,7 +18,7 @@ export const ch05_03_ex: Lesson = {
     ],
     examples: [
         {
-            input: '(không có)',
+            input: '',
             output: '31.42',
             explanation: 'Chu vi = 2 * 3.14 * 5 = 31.4, in với 2 chữ số thập phân là 31.42'
         }

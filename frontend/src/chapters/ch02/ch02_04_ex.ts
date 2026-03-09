@@ -8,8 +8,8 @@ export const ch02_04_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Chuyển đổi kiểu dữ liệu',
-    timeLimit: '500ms',
     memoryLimit: '256MB',
+    timeLimit: '500ms',
     problemDescription: `Cho trước chuỗi số "  42  " (có khoảng trắng ở đầu và cuối). Hãy chuyển đổi chuỗi này thành số nguyên \`u32\` và in ra màn hình.`,
     inputFormat: 'Không có input',
     outputFormat: 'In ra số: 42',

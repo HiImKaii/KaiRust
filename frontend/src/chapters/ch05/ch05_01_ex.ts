@@ -8,9 +8,20 @@ export const ch05_01_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Tạo Struct User',
-    timeLimit: '1s',
     memoryLimit: '256MB',
-    problemDescription: `Cho trước thông tin của một người dùng. Hãy định nghĩa một Struct User trong Rust với các thông tin: username, email, age, và active. Sau đó tạo hai user: user1 với thông tin đầy đủ, và user2 được tạo từ user1 nhưng có email mới sử dụng Struct Update Syntax.`,
+    timeLimit: '1s',
+    // Đề bài chi tiết
+    problemDescription: `Định nghĩa một Struct User trong Rust với các thông tin:
+- username: Tên đăng nhập (String)
+- email: Địa chỉ email (String)
+- age: Tuổi (u32)
+- active: Trạng thái hoạt động (bool)
+
+Tạo hai user:
+1. user1 với thông tin: username="alice", email="alice@example.com", age=25, active=true
+2. user2 được tạo từ user1 nhưng có email mới là "new@example.com" (sử dụng Struct Update Syntax)
+
+In ra thông tin của user1 và email của user2.`,
     inputFormat: 'Không có input từ người dùng',
     outputFormat: 'In ra thông tin của user1 và user2 theo format: Username: {username}\\nEmail: {email}\\nAge: {age}\\nActive: {active}\\nUser2 email: {email}',
     constraints: [
@@ -21,7 +32,7 @@ export const ch05_01_ex: Lesson = {
     ],
     examples: [
         {
-            input: '(không có)',
+            input: '',
             output: 'Username: alice\nEmail: alice@example.com\nAge: 25\nActive: true\nUser2 email: new@example.com',
             explanation: 'user1 có email là alice@example.com, user2 được tạo từ user1 với email mới là new@example.com'
         }
@@ -54,20 +65,20 @@ export const ch05_01_ex: Lesson = {
 // - active: bool
 
 fn main() {
-    // Tạo user1 với thông tin:
+    // TODO: Tạo user1 với thông tin:
     // username: "alice"
     // email: "alice@example.com"
     // age: 25
     // active: true
     // TODO: Tạo instance user1
 
-    // In thông tin user1
+    // TODO: In thông tin user1
     // TODO: Sử dụng println! để in username, email, age, active
 
-    // Tạo user2 từ user1 với email mới là "new@example.com"
+    // TODO: Tạo user2 từ user1 với email mới là "new@example.com"
     // TODO: Sử dụng Struct Update Syntax: User { email: String::from("new@example.com"), ..user1 }
 
-    // In email của user2
+    // TODO: In email của user2
     // TODO: println!("User2 email: {}", user2.email);
 }
 `,

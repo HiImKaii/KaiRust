@@ -8,8 +8,8 @@ export const ch02_05_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'So sánh hai số',
-    timeLimit: '500ms',
     memoryLimit: '256MB',
+    timeLimit: '500ms',
     problemDescription: `Cho trước hai số \`guess = 50\` và \`secret_number = 77\`. Hãy so sánh và in kết quả:
 - Nếu guess < secret_number: in "Too small!"
 - Nếu guess > secret_number: in "Too big!"

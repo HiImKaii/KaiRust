@@ -9,8 +9,8 @@ export const ch03_02_ex3: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Truy cập phần tử mảng',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Tính tổng số ngày của tháng đầu tiên và tháng cuối cùng trong năm.',
     inputFormat: 'Không có input (đã cho sẵn mảng)',
     outputFormat: 'In ra tổng số ngày',
@@ -20,7 +20,7 @@ export const ch03_02_ex3: Lesson = {
     ],
     examples: [
         {
-            input: '(không có)',
+            input: '',
             output: '62'
         }
     ],

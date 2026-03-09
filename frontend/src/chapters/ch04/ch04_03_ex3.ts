@@ -9,8 +9,8 @@ export const ch04_03_ex3: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Longest Substring Without Repeating',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Tìm độ dài longest substring không có ký tự lặp lại.',
     inputFormat: 'Cho sẵn chuỗi "abcabcbb" và "pwwkew"',
     outputFormat: 'In độ dài max',

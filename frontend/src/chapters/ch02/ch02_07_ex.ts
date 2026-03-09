@@ -8,8 +8,8 @@ export const ch02_07_ex: Lesson = {
     isExercise: true,
 
     problemTitle: 'Sử dụng nhiều kiểu dữ liệu',
-    timeLimit: '500ms',
     memoryLimit: '256MB',
+    timeLimit: '500ms',
     problemDescription: `Viết chương trình nhập vào hai số: số nguyên và số thực. In ra màn hình lần lượt giá trị của hai số đó.`,
     inputFormat: 'Dòng 1: số nguyên, Dòng 2: số thực',
     outputFormat: 'Dòng 1: "Gia tri cua bien thu nhat la {number1}", Dòng 2: "Gia tri cua bien thu hai la {number2}"',

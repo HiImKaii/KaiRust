@@ -9,8 +9,8 @@ export const ch03_05_ex: Lesson = {
 
   // Competitive Programming Format
   problemTitle: 'Kiểm tra số chẵn',
-  timeLimit: '1s',
   memoryLimit: '256MB',
+  timeLimit: '1s',
   problemDescription: 'Viết hàm is_even nhận số nguyên n và trả về true nếu n là số chẵn, false nếu là số lẻ.',
   inputFormat: 'Gọi hàm với n = 4 và n = 7',
   outputFormat: 'In kết quả kiểm tra',

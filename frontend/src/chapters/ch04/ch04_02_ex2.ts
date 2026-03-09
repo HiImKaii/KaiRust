@@ -9,8 +9,8 @@ export const ch04_02_ex2: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Tham chiếu Mutable',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Dùng &mut để thay đổi chuỗi trong hàm.',
     inputFormat: 'Cho sẵn "Xin chào"',
     outputFormat: 'In: Xin chào, bạn tôi!',

@@ -9,8 +9,8 @@ export const ch03_05_ex8: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Cellular Automaton 1D',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Mô phỏng Cellular Automaton 1D với 3 thế hệ. Quần thể ban đầu: [0, 0, 1, 0, 1, 0, 0, 1, 0].',
     inputFormat: 'Cho sẵn mảng 9 phần tử',
     outputFormat: 'In ra trạng thái các thế hệ',

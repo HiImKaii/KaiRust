@@ -9,8 +9,8 @@ export const ch04_03_ex1: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'String Slice - Từ thứ hai',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Viết hàm second_word trả về slice của từ thứ hai.',
     inputFormat: 'Cho sẵn "Rust Tutorial on Slices"',
     outputFormat: 'In: Tutorial',

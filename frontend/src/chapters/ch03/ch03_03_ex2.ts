@@ -9,8 +9,8 @@ export const ch03_03_ex2: Lesson = {
 
     // Competitive Programming Format
     problemTitle: 'Hàm trả về Tuple',
-    timeLimit: '1s',
     memoryLimit: '256MB',
+    timeLimit: '1s',
     problemDescription: 'Viết hàm calculate_length nhận String và trả về tuple (String, usize) chứa chuỗi và độ dài.',
     inputFormat: 'Không có input (gọi với "hello")',
     outputFormat: 'In ra chuỗi và độ dài',
