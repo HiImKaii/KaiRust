@@ -628,7 +628,7 @@ const setupInlineCodeRunners = () => {
                         const msg = JSON.parse(event.data);
                         switch (msg.type) {
                             case 'compile_error':
-                                output += msg.data;
+                                output = msg.stderr;
                                 outputArea.innerHTML = `<span class="output-label">Compiler Error</span><span class="output-error">${escapeHtml(output)}</span>`;
                                 ws.close();
                                 break;

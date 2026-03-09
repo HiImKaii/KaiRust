@@ -215,7 +215,7 @@ rand = "0.8"
     // Step 2: Run with streaming output
     let _ = tx.send(WsServerMessage::Running).await;
 
-    let mut child = match Command::new(work_dir.join("main"))
+    let mut child = match Command::new(work_dir.join("target").join("release").join("user_code"))
         .current_dir(&work_dir)
         .stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())
