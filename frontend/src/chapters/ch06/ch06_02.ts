@@ -6,7 +6,7 @@ export const ch06_02: Lesson = {
             duration: '40 phút',
             type: 'theory',
             content: `
-<p>Rust có một cấu trúc điều khiển luồn (Control flow construct) cực kì mạnh tên là <strong>match</strong>. Nó cho phép bạn so sánh một giá trị với một chuỗi các pattern và thực thi code dựa trên pattern nào khớp. Pattern có thể là literal values, variable names, wildcards, và nhiều thứ khác. Sức mạnh của match đến từ tính biểu đạt của các patterns và thực tế là compiler xác nhận rằng tất cả các trường hợp có thể đều được xử lý.</p>
+<p>Rust có một cấu trúc điều khiển luồng (Control flow construct) cực kì mạnh tên là <strong>match</strong>. Nó cho phép bạn so sánh một giá trị với một chuỗi các pattern và thực thi code dựa trên pattern nào khớp. Pattern có thể là literal values, variable names, wildcards, và nhiều thứ khác. Sức mạnh của match đến từ tính biểu đạt của các patterns và thực tế là compiler xác nhận rằng tất cả các trường hợp có thể đều được xử lý.</p>
 
 <p>Hãy tưởng tượng một biểu thức match như một máy phân loại tiền xu: Các đồng xu trượt xuống một ray với các lỗ có kích thước khác nhau dọc theo đó, và mỗi đồng xu rơi qua lỗ đầu tiên mà nó vừa. Tương tự, các giá trị đi qua mỗi pattern trong match, và tại pattern đầu tiên mà giá trị "vừa", giá trị rơi vào khối code liên kết để sử dụng trong quá trình thực thi.</p>
 
