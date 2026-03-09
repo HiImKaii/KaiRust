@@ -23,7 +23,7 @@ export const ch03_01: Lesson = {
 </div>
 
 <p>Code này sẽ KHÔNG compile được:</p>
-<pre>error[E0384]: cannot assign twice to immutable variable x
+<pre class="error-block">error[E0384]: cannot assign twice to immutable variable x
  --> src/main.rs:4:5
   |
 2 |     let x = 5;
@@ -35,10 +35,6 @@ help: consider making this binding mutable
   |
 2 |     let mut x = 5;
   |         +++</pre>
-
-<div class="cyber-alert info">
-  <strong>Tại sao có lỗi này?</strong> Vì bạn cố gắng gán giá trị thứ hai cho biến immutable. Compiler giúp bạn phát hiện lỗi TẠI THỜI ĐIỂM BIÊN DỊCH, không phải khi chạy chương trình.
-</div>
 
 <h4>Tại sao Rust khuyến khích Immutability?</h4>
 
@@ -75,14 +71,35 @@ The value of x is: 6</code></pre>
 
 <p>Giống như biến immutable, hằng số là giá trị được gắn với tên và không được phép thay đổi. Nhưng có vài điểm khác biệt quan trọng:</p>
 
-<table>
-<tr><th>Constants</th><th>Biến Immutable</th></tr>
-<tr><td>Không dùng được <code>mut</code></td><td>Dùng <code>mut</code> để mutable</td></tr>
-<tr><td>Dùng từ khóa <code>const</code></td><td>Dùng từ khóa <code>let</code></td></tr>
-<tr><td><strong>Bắt buộc</strong> ghi rõ kiểu dữ liệu</td><td>Type inference có thể bỏ qua</td></tr>
-<tr><td>Có thể khai báo ở <strong>global scope</strong></td><td>Chỉ trong scope cụ thể</td></tr>
-<tr><td>Chỉ gán <strong>constant expression</strong></td><td>Có thể gán runtime value</td></tr>
-<tr><td>Valid trong suốt thời gian chạy program</td><td>Theo scope</td></tr>
+<table class="comparison-table">
+  <tr>
+    <th>Constants</th>
+    <th>Biến Immutable</th>
+  </tr>
+  <tr>
+    <td>Không dùng được <code>mut</code></td>
+    <td>Dùng <code>mut</code> để mutable</td>
+  </tr>
+  <tr>
+    <td>Dùng từ khóa <code>const</code></td>
+    <td>Dùng từ khóa <code>let</code></td>
+  </tr>
+  <tr>
+    <td><strong>Bắt buộc</strong> ghi rõ kiểu dữ liệu</td>
+    <td>Type inference có thể bỏ qua</td>
+  </tr>
+  <tr>
+    <td>Có thể khai báo ở <strong>global scope</strong></td>
+    <td>Chỉ trong scope cụ thể</td>
+  </tr>
+  <tr>
+    <td>Chỉ gán <strong>constant expression</strong></td>
+    <td>Có thể gán runtime value</td>
+  </tr>
+  <tr>
+    <td>Valid trong suốt thời gian chạy program</td>
+    <td>Theo scope</td>
+  </tr>
 </table>
 
 <p>Hằng số có thể được khai báo trong bất kỳ scope nào, kể cả global scope - hữu ích cho các giá trị mà nhiều phần code cần biết.</p>
@@ -140,7 +157,7 @@ The value of x is: 6</code></pre>
 </div>
 
 <p>Nếu dùng <code>mut</code> sẽ lỗi:</p>
-<pre>error[E0308]: mismatched types
+<pre class="error-block">error[E0308]: mismatched types
   |
 2 |     let mut spaces = "   ";
   |                      ----- expected due to this value
@@ -149,16 +166,28 @@ The value of x is: 6</code></pre>
 
 <h3 class="task-heading">So sánh: Shadowing vs Mut</h3>
 
-<table>
-<tr><th>Shadowing</th><th>Mut</th></tr>
-<tr><td>Tạo biến <strong>mới</strong></td><td>Thay đổi giá trị <strong>cùng</strong> biến</td></tr>
-<tr><td>Dùng <code>let</code> để reassign</td><td>Gán trực tiếp <code>x = ...</code></td></tr>
-<tr><td>Cho phép <strong>đổi kiểu dữ liệu</strong></td><td>Giữ nguyên kiểu</td></tr>
+<table class="comparison-table">
+  <tr>
+    <th>Shadowing</th>
+    <th>Mut</th>
+  </tr>
+  <tr>
+    <td>Tạo biến <strong>mới</strong></td>
+    <td>Thay đổi giá trị <strong>cùng</strong> biến</td>
+  </tr>
+  <tr>
+    <td>Dùng <code>let</code> để reassign</td>
+    <td>Gán trực tiếp <code>x = ...</code></td>
+  </tr>
+  <tr>
+    <td>Cho phép <strong>đổi kiểu dữ liệu</strong></td>
+    <td>Giữ nguyên kiểu</td>
+  </tr>
 </table>
 
 <h3 class="task-heading">Tổng kết</h3>
 
-<ul>
+<ul class="task-list">
   <li><strong>Biến mặc định immutable</strong> - an toàn, dễ reason about</li>
   <li><strong>Dùng <code>mut</code> để mutable</strong> - tiện lợi khi cần thay đổi</li>
   <li><strong>Constants</strong> - luôn immutable, cần type annotation, có thể global</li>

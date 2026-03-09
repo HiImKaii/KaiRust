@@ -25,14 +25,42 @@ export const ch03_02: Lesson = {
 
 <p>Số nguyên là một số không có phần thập phân. Chúng ta đã dùng kiểu <code>u32</code> (số nguyên không dấu 32-bit). Ký tự <code>u</code> là unsigned (không dấu - chỉ dương hoặc 0), còn <code>i</code> là signed (có dấu - có thể âm hoặc dương).</p>
 
-<table class="data-table">
-  <tr><th>Kích thước</th><th>Có dấu (Signed)</th><th>Không dấu (Unsigned)</th></tr>
-  <tr><td>8-bit</td><td><code>i8</code></td><td><code>u8</code></td></tr>
-  <tr><td>16-bit</td><td><code>i16</code></td><td><code>u16</code></td></tr>
-  <tr><td>32-bit</td><td><code>i32</code></td><td><code>u32</code></td></tr>
-  <tr><td>64-bit</td><td><code>i64</code></td><td><code>u64</code></td></tr>
-  <tr><td>128-bit</td><td><code>i128</code></td><td><code>u128</code></td></tr>
-  <tr><td>arch</td><td><code>isize</code></td><td><code>usize</code></td></tr>
+<table class="comparison-table">
+  <tr>
+    <th>Kích thước</th>
+    <th>Có dấu (Signed)</th>
+    <th>Không dấu (Unsigned)</th>
+  </tr>
+  <tr>
+    <td>8-bit</td>
+    <td><code>i8</code></td>
+    <td><code>u8</code></td>
+  </tr>
+  <tr>
+    <td>16-bit</td>
+    <td><code>i16</code></td>
+    <td><code>u16</code></td>
+  </tr>
+  <tr>
+    <td>32-bit</td>
+    <td><code>i32</code></td>
+    <td><code>u32</code></td>
+  </tr>
+  <tr>
+    <td>64-bit</td>
+    <td><code>i64</code></td>
+    <td><code>u64</code></td>
+  </tr>
+  <tr>
+    <td>128-bit</td>
+    <td><code>i128</code></td>
+    <td><code>u128</code></td>
+  </tr>
+  <tr>
+    <td>arch</td>
+    <td><code>isize</code></td>
+    <td><code>usize</code></td>
+  </tr>
 </table>
 
 <p>Mỗi biến thể có thể có dấu hoặc không dấu và có một kích thước rõ ràng. Số có dấu được lưu trữ bằng phương pháp <strong>bù hai</strong> (two's complement). Các kiểu <code>isize</code> và <code>usize</code> phụ thuộc vào kiến trúc máy tính đang chạy: 64-bit nếu là kiến trúc 64-bit và 32-bit nếu là kiến trúc 32-bit.</p>
@@ -41,13 +69,37 @@ export const ch03_02: Lesson = {
 
 <p>Bạn có thể viết các giá trị số nguyên theo nhiều định dạng:</p>
 
-<table class="data-table">
-  <tr><th>Loại</th><th>Cú pháp</th><th>Ví dụ</th></tr>
-  <tr><td>Thập phân</td><td>...</td><td><code>98_222</code></td></tr>
-  <tr><td>Thập lục phân</td><td>0x</td><td><code>0xff</code></td></tr>
-  <tr><td>Bát phân</td><td>0o</td><td><code>0o77</code></td></tr>
-  <tr><td>Nhị phân</td><td>0b</td><td><code>0b1111_0000</code></td></tr>
-  <tr><td>Byte (u8)</td><td>b</td><td><code>b'A'</code></td></tr>
+<table class="comparison-table">
+  <tr>
+    <th>Loại</th>
+    <th>Cú pháp</th>
+    <th>Ví dụ</th>
+  </tr>
+  <tr>
+    <td>Thập phân</td>
+    <td>...</td>
+    <td><code>98_222</code></td>
+  </tr>
+  <tr>
+    <td>Thập lục phân</td>
+    <td>0x</td>
+    <td><code>0xff</code></td>
+  </tr>
+  <tr>
+    <td>Bát phân</td>
+    <td>0o</td>
+    <td><code>0o77</code></td>
+  </tr>
+  <tr>
+    <td>Nhị phân</td>
+    <td>0b</td>
+    <td><code>0b1111_0000</code></td>
+  </tr>
+  <tr>
+    <td>Byte (u8)</td>
+    <td>b</td>
+    <td><code>b'A'</code></td>
+  </tr>
 </table>
 
 <p>Bạn cũng có thể dùng dấu gạch dưới <code>_</code> làm dấu phân cách cho dễ đọc, ví dụ <code>1_000</code>.</p>
@@ -64,7 +116,7 @@ export const ch03_02: Lesson = {
 
 <p>Việc cố tình dựa vào hành vi gói (wrap) khi tràn số này được coi là một lỗi. Để xử lý rủi ro tràn số một cách tường minh, bạn có thể dùng các phương thức mà thư viện chuẩn cung cấp:</p>
 
-<ul>
+<ul class="task-list">
   <li><code>wrapping_*</code>: gói lại (wrap around)</li>
   <li><code>checked_*</code>: trả về <code>None</code> nếu tràn</li>
   <li><code>overflowing_*</code>: trả về giá trị và boolean cho biết có tràn không</li>
@@ -219,27 +271,79 @@ let a = [3; 5];  // tạo mảng gồm 5 phần tử, mỗi phần tử là 3
 
 <p>Nếu bạn viết index trực tiếp (compile-time constant), trình biên dịch có thể phát hiện và báo lỗi ngay. Nhưng nếu bạn lấy <code>index</code> từ input của người dùng rồi mới đọc <code>a[index]</code>, khi compile sẽ vẫn thành công. Nhưng khi chương trình chạy thực tế, nếu người dùng nhập số 10, Rust sẽ lập tức <strong>panic</strong> (ngưng chương trình) ở runtime.</p>
 
-<pre>thread 'main' panicked at src/main.rs:19:19:
+<pre class="error-block">thread 'main' panicked at src/main.rs:19:19:
 index out of bounds: the len is 5 but the index is 10</pre>
 
 <p>Đây là ví dụ rõ nhất về nguyên tắc <strong>memory safety</strong> (an toàn bộ nhớ) của Rust - nó dừng chương trình ngay lập tức thay vì tiếp tục chạy và cho phép đọc dữ liệu sai lệch (như ở ngôn ngữ C/C++).</p>
 
 <h3 class="task-heading">Tổng kết</h3>
 
-<table class="data-table">
-  <tr><th>Kiểu</th><th>Kích thước</th><th>Ghi chú</th></tr>
-  <tr><td><code>i8</code>/<code>u8</code></td><td>8 bits</td><td></td></tr>
-  <tr><td><code>i16</code>/<code>u16</code></td><td>16 bits</td><td></td></tr>
-  <tr><td><code>i32</code>/<code>u32</code></td><td>32 bits</td><td>Default cho integers</td></tr>
-  <tr><td><code>i64</code>/<code>u64</code></td><td>64 bits</td><td></td></tr>
-  <tr><td><code>i128</code>/<code>u128</code></td><td>128 bits</td><td></td></tr>
-  <tr><td><code>isize</code>/<code>usize</code></td><td>64/32 bits</td><td>Phụ thuộc architecture</td></tr>
-  <tr><td><code>f32</code></td><td>32 bits</td><td>IEEE-754</td></tr>
-  <tr><td><code>f64</code></td><td>64 bits</td><td>Default cho floats</td></tr>
-  <tr><td><code>bool</code></td><td>1 byte</td><td><code>true</code>/<code>false</code></td></tr>
-  <tr><td><code>char</code></td><td>4 bytes</td><td>Unicode</td></tr>
-  <tr><td>Tuple</td><td>Fixed</td><td>Hỗn hợp kiểu</td></tr>
-  <tr><td>Array</td><td>Fixed</td><td>Cùng kiểu</td></tr>
+<table class="comparison-table">
+  <tr>
+    <th>Kiểu</th>
+    <th>Kích thước</th>
+    <th>Ghi chú</th>
+  </tr>
+  <tr>
+    <td><code>i8</code>/<code>u8</code></td>
+    <td>8 bits</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><code>i16</code>/<code>u16</code></td>
+    <td>16 bits</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><code>i32</code>/<code>u32</code></td>
+    <td>32 bits</td>
+    <td>Default cho integers</td>
+  </tr>
+  <tr>
+    <td><code>i64</code>/<code>u64</code></td>
+    <td>64 bits</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><code>i128</code>/<code>u128</code></td>
+    <td>128 bits</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><code>isize</code>/<code>usize</code></td>
+    <td>64/32 bits</td>
+    <td>Phụ thuộc architecture</td>
+  </tr>
+  <tr>
+    <td><code>f32</code></td>
+    <td>32 bits</td>
+    <td>IEEE-754</td>
+  </tr>
+  <tr>
+    <td><code>f64</code></td>
+    <td>64 bits</td>
+    <td>Default cho floats</td>
+  </tr>
+  <tr>
+    <td><code>bool</code></td>
+    <td>1 byte</td>
+    <td><code>true</code>/<code>false</code></td>
+  </tr>
+  <tr>
+    <td><code>char</code></td>
+    <td>4 bytes</td>
+    <td>Unicode</td>
+  </tr>
+  <tr>
+    <td>Tuple</td>
+    <td>Fixed</td>
+    <td>Hỗn hợp kiểu</td>
+  </tr>
+  <tr>
+    <td>Array</td>
+    <td>Fixed</td>
+    <td>Cùng kiểu</td>
+  </tr>
 </table>
 `,
   defaultCode: `fn main() {

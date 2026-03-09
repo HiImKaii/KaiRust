@@ -918,6 +918,20 @@ code {
   color: #ef4444;
 }
 
+/* Error block styling for code examples */
+.error-block {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #dc2626;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
 .task-heading {
   color: var(--color-blue);
   margin-bottom: 12px;
