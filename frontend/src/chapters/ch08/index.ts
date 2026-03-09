@@ -26,10 +26,10 @@ export const ch08: Chapter = {
 
     <h3>Bạn sẽ học gì?</h3>
     <ul>
-      <li><strong>Vector (Vec&lt;T&gt;):</strong> Mảng động có thể thay đổi kích thước</li>
-      <li><strong>String và &amp;str:</strong> Xử lý văn bản trong Rust</li>
-      <li><strong>HashMap:</strong> Lưu trữ key-value pairs với hiệu suất cao</li>
-      <li><strong>Iterators và Methods:</strong> Cách thao tác với collections</li>
+      <li>→ <strong>Vector (Vec&lt;T&gt;):</strong> Mảng động có thể thay đổi kích thước</li>
+      <li>→ <strong>String và &amp;str:</strong> Xử lý văn bản trong Rust</li>
+      <li>→ <strong>HashMap:</strong> Lưu trữ key-value pairs với hiệu suất cao</li>
+      <li>→ <strong>Iterators và Methods:</strong> Cách thao tác với collections</li>
     </ul>
   `,
   lessons: [

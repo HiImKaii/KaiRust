@@ -11,11 +11,11 @@ export const ch10: Chapter = {
     <p>Đây là các tính năng nâng cao cho phép bạn viết code linh hoạt và tái sử dụng được trong Rust.</p>
     <h3>Bạn sẽ học gì?</h3>
     <ul>
-      <li><strong>Generics:</strong> Viết code hoạt động với nhiều kiểu dữ liệu</li>
-      <li><strong>Traits:</strong> Định nghĩa hành vi chia sẻ giữa các types</li>
-      <li><strong>Trait Bounds:</strong> Giới hạn kiểu dữ liệu generic</li>
-      <li><strong>Lifetimes:</strong> Đảm bảo tham chiếu luôn hợp lệ</li>
-      <li><strong>Advanced Patterns:</strong> Kết hợp generics với traits</li>
+      <li>→ <strong>Generics:</strong> Viết code hoạt động với nhiều kiểu dữ liệu</li>
+      <li>→ <strong>Traits:</strong> Định nghĩa hành vi chia sẻ giữa các types</li>
+      <li>→ <strong>Trait Bounds:</strong> Giới hạn kiểu dữ liệu generic</li>
+      <li>→ <strong>Lifetimes:</strong> Đảm bảo tham chiếu luôn hợp lệ</li>
+      <li>→ <strong>Advanced Patterns:</strong> Kết hợp generics với traits</li>
     </ul>
     <p>Nắm vững những khái niệm này sẽ giúp bạn viết code Rust chuyên nghiệp.</p>
   `,

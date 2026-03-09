@@ -25,12 +25,12 @@ export const ch06: Chapter = {
 
     <h3>Bạn sẽ học gì?</h3>
     <ul>
-      <li><strong>Enum cơ bản:</strong> Định nghĩa enum với nhiều variants</li>
-      <li><strong>Enum với dữ liệu:</strong> Mỗi variant có thể chứa dữ liệu khác nhau</li>
-      <li><strong>Option enum:</strong> Kiểu an toàn thay thế cho null</li>
-      <li><strong>Pattern Matching với match:</strong> Xử lý từng variant một cách toàn diện</li>
-      <li><strong>if let / while let:</strong> Cú pháp rút gọn cho các trường hợp đơn giản</li>
-      <li><strong>Result<T, E>:</strong> Enum xử lý lỗi</li>
+      <li>→ <strong>Enum cơ bản:</strong> Định nghĩa enum với nhiều variants</li>
+      <li>→ <strong>Enum với dữ liệu:</strong> Mỗi variant có thể chứa dữ liệu khác nhau</li>
+      <li>→ <strong>Option enum:</strong> Kiểu an toàn thay thế cho null</li>
+      <li>→ <strong>Pattern Matching với match:</strong> Xử lý từng variant một cách toàn diện</li>
+      <li>→ <strong>if let / while let:</strong> Cú pháp rút gọn cho các trường hợp đơn giản</li>
+      <li>→ <strong>Result<T, E>:</strong> Enum xử lý lỗi</li>
     </ul>
     <p>Enums và Pattern Matching là công cụ mạnh mẽ giúp code an toàn hơn - trình biên dịch sẽ báo lỗi nếu bạn quên xử lý một trường hợp nào đó!</p>
   `,

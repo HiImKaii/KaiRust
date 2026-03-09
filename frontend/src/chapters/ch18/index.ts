@@ -10,10 +10,10 @@ export const ch18: Chapter = {
     <p>Rust hỗ trợ các nguyên lý OOP nhưng theo cách riêng, tận dụng strength của ownership và traits.</p>
     <h3>Bạn sẽ học gì?</h3>
     <ul>
-      <li><strong>Object-oriented patterns:</strong> Áp dụng OOP trong Rust</li>
-      <li><strong>Trait objects:</strong> Dynamic dispatch với dyn Trait</li>
-      <li><strong>State pattern:</strong> Implement state machine với structs</li>
-      <li><strong>Design patterns:</strong> Các patterns phổ biến trong Rust</li>
+      <li>→ <strong>Object-oriented patterns:</strong> Áp dụng OOP trong Rust</li>
+      <li>→ <strong>Trait objects:</strong> Dynamic dispatch với dyn Trait</li>
+      <li>→ <strong>State pattern:</strong> Implement state machine với structs</li>
+      <li>→ <strong>Design patterns:</strong> Các patterns phổ biến trong Rust</li>
     </ul>
     <p>Rust không phải OOP language thuần túy, nhưng vẫn hỗ trợ OOP patterns hiệu quả.</p>
   `,

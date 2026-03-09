@@ -2,6 +2,7 @@ pub mod ch01;
 pub mod ch02;
 pub mod ch03;
 pub mod ch04;
+pub mod ch05;
 pub mod ch06;
 pub mod ch07;
 pub mod ch08;
@@ -36,6 +37,17 @@ pub fn get_test_code(lesson_id: &str) -> Option<&'static str> {
         "ch03_05_ex6"   => Some(include_str!("ch03/ch03_05_ex6.rs")),
         "ch03_05_ex7"   => Some(include_str!("ch03/ch03_05_ex7.rs")),
         "ch03_05_ex8"   => Some(include_str!("ch03/ch03_05_ex8.rs")),
+        // ch05
+        "ch05_01_ex"    => Some(include_str!("ch05/ch05_01_ex.rs")),
+        "ch05_02_ex"    => Some(include_str!("ch05/ch05_02_ex.rs")),
+        "ch05_03_ex"    => Some(include_str!("ch05/ch05_03_ex.rs")),
+        "ch05_04_ex"    => Some(include_str!("ch05/ch05_04_ex.rs")),
+        "ch05_05_ex"    => Some(include_str!("ch05/ch05_05_ex.rs")),
+        "ch05_06_ex"    => Some(include_str!("ch05/ch05_06_ex.rs")),
+        "ch05_07_ex"    => Some(include_str!("ch05/ch05_07_ex.rs")),
+        "ch05_08_ex"    => Some(include_str!("ch05/ch05_08_ex.rs")),
+        "ch05_09_ex"    => Some(include_str!("ch05/ch05_09_ex.rs")),
+        "ch05_10_ex"    => Some(include_str!("ch05/ch05_10_ex.rs")),
         // ch06
         "ch06_01_ex"    => Some(include_str!("ch06/ch06_01_ex.rs")),
         "ch06_02_ex"    => Some(include_str!("ch06/ch06_02_ex.rs")),

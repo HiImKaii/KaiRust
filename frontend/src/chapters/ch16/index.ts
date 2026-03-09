@@ -11,10 +11,10 @@ export const ch16: Chapter = {
     <p>Concurrency cho phép chương trình thực hiện nhiều tác vụ đồng thời. Rust đảm bảo thread safety ở compile time.</p>
     <h3>Bạn sẽ học gì?</h3>
     <ul>
-      <li><strong>Threads:</strong> Tạo và quản lý threads với spawn</li>
-      <li><strong>Message passing:</strong> Giao tiếp giữa các threads qua channels</li>
-      <li><strong>Shared state:</strong> Mutex và Arc cho shared data</li>
-      <li><strong>Sync và Send:</strong> Traits đảm bảo thread safety</li>
+      <li>→ <strong>Threads:</strong> Tạo và quản lý threads với spawn</li>
+      <li>→ <strong>Message passing:</strong> Giao tiếp giữa các threads qua channels</li>
+      <li>→ <strong>Shared state:</strong> Mutex và Arc cho shared data</li>
+      <li>→ <strong>Sync và Send:</strong> Traits đảm bảo thread safety</li>
     </ul>
     <p>Rust cho phép viết concurrent code an toàn mà không lo data races.</p>
   `,

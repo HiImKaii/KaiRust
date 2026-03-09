@@ -11,11 +11,11 @@ export const ch20: Chapter = {
     <p>Chương cuối cùng giới thiệu các tính năng nâng cao của Rust, giúp bạn viết code chuyên nghiệp và tối ưu.</p>
     <h3>Bạn sẽ học gì?</h3>
     <ul>
-      <li><strong>Unsafe Rust:</strong> Bypassing compiler checks khi cần thiết</li>
-      <li><strong>Advanced traits:</strong> Associated types, supertraits, blanket implementations</li>
-      <li><strong>Advanced types:</strong> Newtype pattern, type aliases, never type</li>
-      <li><strong>Advanced functions:</strong> Function pointers, returning closures</li>
-      <li><strong>Macros:</strong> Declarative và procedural macros</li>
+      <li>→ <strong>Unsafe Rust:</strong> Bypassing compiler checks khi cần thiết</li>
+      <li>→ <strong>Advanced traits:</strong> Associated types, supertraits, blanket implementations</li>
+      <li>→ <strong>Advanced types:</strong> Newtype pattern, type aliases, never type</li>
+      <li>→ <strong>Advanced functions:</strong> Function pointers, returning closures</li>
+      <li>→ <strong>Macros:</strong> Declarative và procedural macros</li>
     </ul>
     <p>Chương này hoàn thiện hành trình học Rust của bạn!</p>
   `,

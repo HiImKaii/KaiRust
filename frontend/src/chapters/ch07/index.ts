@@ -26,11 +26,11 @@ export const ch07: Chapter = {
 
     <h3>Bạn sẽ học gì?</h3>
     <ul>
-      <li><strong>Packages và Crates:</strong> Hiểu sự khác biệt và cách tổ chức project</li>
-      <li><strong>Modules:</strong> Tổ chức code với từ khóa mod</li>
-      <li><strong>Paths và use:</strong> Import và truy cập items</li>
-      <li><strong>Visibility:</strong> Sử dụng pub để kiểm soát truy cập</li>
-      <li><strong>External crates:</strong> Sử dụng thư viện từ crates.io</li>
+      <li>→ <strong>Packages và Crates:</strong> Hiểu sự khác biệt và cách tổ chức project</li>
+      <li>→ <strong>Modules:</strong> Tổ chức code với từ khóa mod</li>
+      <li>→ <strong>Paths và use:</strong> Import và truy cập items</li>
+      <li>→ <strong>Visibility:</strong> Sử dụng pub để kiểm soát truy cập</li>
+      <li>→ <strong>External crates:</strong> Sử dụng thư viện từ crates.io</li>
     </ul>
   `,
   lessons: [

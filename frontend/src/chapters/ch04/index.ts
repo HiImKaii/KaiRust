@@ -30,10 +30,10 @@ export const ch04: Chapter = {
     </ul>
     <h3>Bạn sẽ học gì?</h3>
     <ul>
-      <li><strong>Quy tắc Ownership:</strong> Ba quy tắc cốt lõi của Rust</li>
-      <li><strong>Borrowing:</strong> Tham chiếu (&) - borrow mà không sở hữu</li>
-      <li><strong>Lifetimes:</strong> Đảm bảo tham chiếu luôn hợp lệ</li>
-      <li><strong>Slice types:</strong> Tham chiếu đến một phần của collection</li>
+      <li>→ <strong>Quy tắc Ownership:</strong> Ba quy tắc cốt lõi của Rust</li>
+      <li>→ <strong>Borrowing:</strong> Tham chiếu (&) - borrow mà không sở hữu</li>
+      <li>→ <strong>Lifetimes:</strong> Đảm bảo tham chiếu luôn hợp lệ</li>
+      <li>→ <strong>Slice types:</strong> Tham chiếu đến một phần của collection</li>
     </ul>
     <p>Đây là chương quan trọng nhất để hiểu Rust. Hãy dành thời gian để nắm vững!</p>
   `,
