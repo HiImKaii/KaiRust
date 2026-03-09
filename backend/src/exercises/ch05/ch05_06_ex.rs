@@ -1,6 +1,8 @@
 // Chapter 5: Example Program - Using Structs
 // Bài tập 6: Tính diện tích hình chữ nhật với Struct
 
+#![allow(dead_code)]
+
 // TODO: Định nghĩa struct Rectangle với width và height là u32
 #[derive(Debug)]
 struct Rectangle {

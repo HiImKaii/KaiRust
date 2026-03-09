@@ -2,7 +2,7 @@ import { Lesson } from '../../courses';
 
 export const ch05_07_ex: Lesson = {
     id: 'ch05-07-ex',
-    title: 'Bài tập 5.7: Method Syntax - Định nghĩa Methods',
+    title: 'Bài tập 5.7: Method area() cho Rectangle',
     duration: '20 phút',
     type: 'practice',
     isExercise: true,
@@ -10,49 +10,59 @@ export const ch05_07_ex: Lesson = {
     problemTitle: 'Method area() cho Rectangle',
     timeLimit: '1s',
     memoryLimit: '256MB',
-    problemDescription: 'Định nghĩa method area() trong impl block cho Rectangle.',
-    inputFormat: 'Không có input',
-    outputFormat: 'In diện tích',
+    problemDescription: `Hãy định nghĩa một struct Rectangle với width và height kiểu u32. Sau đó định nghĩa một impl block cho Rectangle với method area(&self) trả về diện tích (width * height). Tạo rect1 với width = 30, height = 50 và gọi method area() để tính diện tích.`,
+    inputFormat: 'Không có input từ người dùng',
+    outputFormat: 'In ra: "The area of the rectangle is 1500 square pixels."',
     constraints: [
-        { field: 'impl Rectangle', condition: 'Có method area(&self)' }
+        { field: 'Rectangle', condition: 'Struct với width: u32, height: u32' },
+        { field: 'impl Rectangle', condition: 'Method area(&self) -> u32' }
     ],
     examples: [
         {
             input: '(không có)',
-            output: 'The area of the rectangle is 1500 square pixels.'
+            output: 'The area of the rectangle is 1500 square pixels.',
+            explanation: 'Diện tích = 30 * 50 = 1500'
         }
     ],
 
     content: `
-<p>Methods được định nghĩa trong impl block với tham số đầu tiên là &self.</p>
-`,
-    defaultCode: `#[derive(Debug)]
-struct Rectangle {
-    width: u32,
-    height: u32,
-}
+<h3 class="task-heading">Bài tập: Method area() cho Rectangle</h3>
 
-// TODO: Định nghĩa một impl block cho Rectangle
-impl Rectangle {
-    // TODO: Định nghĩa method area (không có tham số khác ngoài &self)
-    // Trả về diện tích = width * height
-    fn area(&self) -> u32 {
-        self.width * self.height
-    }
-}
+<p>Trong bài tập này, bạn sẽ thực hành:</p>
+<ol>
+    <li>Định nghĩa struct với impl block</li>
+    <li>Định nghĩa method với tham số đầu tiên là &self</li>
+    <li>Gọi method sử dụng dot notation</li>
+</ol>
+
+<h4 class="task-heading">Hướng dẫn:</h4>
+<ul>
+    <li>Cú pháp impl: <code>impl Rectangle { fn area(&self) -> u32 { ... } }</code></li>
+    <li>Gọi method: <code>rect1.area()</code></li>
+    <li>Trong method, truy cập field: <code>self.width</code></li>
+</ul>
+`,
+    defaultCode: `// TODO: Định nghĩa struct Rectangle với width: u32, height: u32
+// Thêm #[derive(Debug)]
+
+// TODO: Định nghĩa impl Rectangle với method area(&self) -> u32
+// Diện tích = self.width * self.height
 
 fn main() {
-    let rect1 = Rectangle {
-        width: 30,
-        height: 50,
-    };
+    // Tạo rect1 với width = 30, height = 50
+    // TODO: let rect1 = Rectangle { ... };
 
-    // Gọi method area bằng dot notation
-    println!(
-        "The area of the rectangle is {} square pixels.",
-        rect1.area()
-    );
+    // Gọi method area() và in kết quả
+    // Format: "The area of the rectangle is {} square pixels."
+    // TODO: println!("The area of the rectangle is {} square pixels.", rect1.area());
 }
 `,
-    expectedOutput: 'The area of the rectangle is 1500 square pixels.'
+    expectedOutput: 'The area of the rectangle is 1500 square pixels.',
+    testCases: [
+        {
+            input: '',
+            expectedOutput: 'The area of the rectangle is 1500 square pixels.',
+            description: 'Tính diện tích sử dụng method'
+        }
+    ]
 };

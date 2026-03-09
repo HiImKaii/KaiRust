@@ -26,6 +26,8 @@ pub struct RunResponse {
     pub stderr: String,
     /// Compilation + execution time in milliseconds
     pub execution_time_ms: u64,
+    /// Memory usage in KB
+    pub memory_usage_kb: u64,
 }
 
 /// WebSocket message from client
@@ -34,12 +36,14 @@ pub struct RunResponse {
 pub enum WsClientMessage {
     /// Submit code to compile and run
     #[serde(rename = "run")]
-    Run { 
+    Run {
         code: String,
         /// Optional flag to compile with --test. Defaults to false.
         is_test: Option<bool>,
         /// Optional ID of the lesson to load test cases from backend/exercises/
         lesson_id: Option<String>,
+        /// Optional stdin input
+        stdin: Option<String>,
     },
     /// Send stdin input to running process
     #[serde(rename = "stdin")]
@@ -70,7 +74,7 @@ pub enum WsServerMessage {
     Stderr { data: String },
     /// Program exited
     #[serde(rename = "exit")]
-    Exit { code: i32, execution_time_ms: u64 },
+    Exit { code: i32, execution_time_ms: u64, memory_usage_kb: u64 },
     /// Error occurred
     #[serde(rename = "error")]
     Error { message: String },

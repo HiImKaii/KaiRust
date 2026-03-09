@@ -1,6 +1,8 @@
 // Chapter 5: Method Syntax
 // Bài tập 8: Methods với nhiều Parameters
 
+#![allow(dead_code)]
+
 #[derive(Debug)]
 struct Rectangle {
     width: u32,

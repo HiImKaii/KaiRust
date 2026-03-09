@@ -2,7 +2,7 @@ import { Lesson } from '../../courses';
 
 export const ch05_06_ex: Lesson = {
     id: 'ch05-06-ex',
-    title: 'Bài tập 5.6: Ví dụ Rectangle với Struct',
+    title: 'Bài tập 5.6: Tính diện tích hình chữ nhật',
     duration: '20 phút',
     type: 'practice',
     isExercise: true,
@@ -10,50 +10,67 @@ export const ch05_06_ex: Lesson = {
     problemTitle: 'Tính diện tích hình chữ nhật',
     timeLimit: '1s',
     memoryLimit: '256MB',
-    problemDescription: 'Sử dụng struct Rectangle để tính diện tích hình chữ nhật. Sử dụng #[derive(Debug)] để có thể in struct.',
-    inputFormat: 'Không có input',
-    outputFormat: 'In diện tích và debug info',
+    problemDescription: `Hãy định nghĩa một struct Rectangle với hai field: width (chiều rộng) và height (chiều cao), cả hai đều có kiểu u32. Sau đó viết một hàm area nhận vào tham chiếu bất biến của Rectangle (&Rectangle) và trả về diện tích (u32). Tạo một instance rect1 với width = 30, height = 50. Tính và in diện tích. Cuối cùng, in rect1 sử dụng định dạng Debug.`,
+    inputFormat: 'Không có input từ người dùng',
+    outputFormat: 'Dòng 1: "The area of the rectangle is 1500 square pixels."\nDòng 2: "rect1 is Rectangle { width: 30, height: 50 }"',
     constraints: [
-        { field: 'Rectangle', condition: 'width: u32, height: u32' },
+        { field: 'Rectangle', condition: 'Struct với width: u32, height: u32' },
         { field: 'area function', condition: 'Nhận &Rectangle, trả về u32' }
     ],
     examples: [
         {
             input: '(không có)',
-            output: 'The area of the rectangle is 1500 square pixels.\nrect1 is Rectangle { width: 30, height: 50 }'
+            output: 'The area of the rectangle is 1500 square pixels.\nrect1 is Rectangle { width: 30, height: 50 }',
+            explanation: 'Tính diện tích = 30 * 50 = 1500 và in thông tin Rectangle'
         }
     ],
 
     content: `
-<p>Ví dụ thực tế sử dụng struct để giải quyết bài toán tính diện tích hình chữ nhật.</p>
-`,
-    defaultCode: `// TODO: Định nghĩa struct Rectangle với width và height là u32
-#[derive(Debug)]
-struct Rectangle {
-    width: u32,
-    height: u32,
-}
+<h3 class="task-heading">Bài tập: Tính diện tích hình chữ nhật</h3>
 
-// TODO: Viết hàm area nhận vào tham chiếu Rectangle và trả về diện tích
-fn area(rectangle: &Rectangle) -> u32 {
-    rectangle.width * rectangle.height
-}
+<p>Trong bài tập này, bạn sẽ thực hành:</p>
+<ol>
+    <li>Định nghĩa struct Rectangle với width và height</li>
+    <li>Sử dụng #[derive(Debug)] để có thể in struct ra màn hình</li>
+    <li>Viết hàm tính diện tích nhận tham chiếu bất biến</li>
+    <li>Gọi hàm và in kết quả</li>
+</ol>
+
+<h4 class="task-heading">Hướng dẫn:</h4>
+<ul>
+    <li>Định nghĩa struct: <code>struct Rectangle { width: u32, height: u32 }</code></li>
+    <li>Thêm <code>#[derive(Debug)]</code> để in được struct</li>
+    <li>Hàm area: <code>fn area(rect: &Rectangle) -> u32 { rect.width * rect.height }</code></li>
+    <li>In định dạng Debug: <code>println!("{:?}", rect1)</code></li>
+</ul>
+`,
+    defaultCode: `// TODO: Định nghĩa struct Rectangle với:
+// - width: u32
+// - height: u32
+// Thêm #[derive(Debug)] phía trên
+
+// TODO: Viết hàm area nhận &Rectangle và trả về u32
+// Diện tích = width * height
 
 fn main() {
-    let rect1 = Rectangle {
-        width: 30,
-        height: 50,
-    };
+    // Tạo rect1 với width = 30, height = 50
+    // TODO: let rect1 = Rectangle { ... };
 
     // Tính và in diện tích
-    println!(
-        "The area of the rectangle is {} square pixels.",
-        area(&rect1)
-    );
+    // Format: "The area of the rectangle is {} square pixels."
+    // TODO: println!("The area of the rectangle is {} square pixels.", ...);
 
-    // In struct ra màn hình (sử dụng Debug trait)
-    println!("rect1 is {:?}", rect1);
+    // In rect1 sử dụng định dạng Debug
+    // Format: "rect1 is {:?}"
+    // TODO: println!("rect1 is {:?}", rect1);
 }
 `,
-    expectedOutput: 'The area of the rectangle is 1500 square pixels.\nrect1 is Rectangle { width: 30, height: 50 }'
+    expectedOutput: 'The area of the rectangle is 1500 square pixels.\nrect1 is Rectangle { width: 30, height: 50 }',
+    testCases: [
+        {
+            input: '',
+            expectedOutput: 'The area of the rectangle is 1500 square pixels.\nrect1 is Rectangle { width: 30, height: 50 }',
+            description: 'Tính và in diện tích hình chữ nhật'
+        }
+    ]
 };

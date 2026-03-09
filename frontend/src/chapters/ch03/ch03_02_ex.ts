@@ -1,47 +1,70 @@
 import { Lesson } from '../../courses';
 
 export const ch03_02_ex: Lesson = {
-  id: 'ch03-02-ex',
-  title: 'Bài tập 3.2: Kiểu dữ liệu (Data Types)',
-  duration: '10 phút',
-  type: 'practice',
-  isExercise: true,
+    id: 'ch03-02-ex',
+    title: 'Bài tập 3.2: Tuple và Array',
+    duration: '10 phút',
+    type: 'practice',
+    isExercise: true,
 
-  // Competitive Programming Format
-  problemTitle: 'Kiểu dữ liệu - Tuple và Array',
-  timeLimit: '1s',
-  memoryLimit: '256MB',
-  problemDescription: 'Tạo tuple và array với các giá trị cụ thể, sau đó destructure tuple.',
-  inputFormat: 'Không có input',
-  outputFormat: 'In ra tất cả các phần tử theo thứ tự',
-  constraints: [
-    { field: 'Tuple', condition: 'Chứa: i32=500, f64=6.4, char=Z' },
-    { field: 'Array', condition: 'Chứa: [1, 2, 3, 4, 5]' }
-  ],
-  examples: [
-    {
-      input: '(không có)',
-      output: '500 6.4 Z [1, 2, 3, 4, 5]'
-    }
-  ],
+    problemTitle: 'Tuple và Array',
+    timeLimit: '1s',
+    memoryLimit: '256MB',
+    problemDescription: `Viết chương trình tạo một Tuple chứa ba giá trị: i32 = 500, f64 = 6.4, char = 'Z'. Sau đó destructure tuple để lấy các giá trị. Tiếp theo, tạo một Array chứa các số [1, 2, 3, 4, 5]. In các giá trị theo định dạng.`,
+    inputFormat: 'Không có input từ người dùng',
+    outputFormat: 'Dòng 1: "500 6.4 Z"\nDòng 2: "[1, 2, 3, 4, 5]"',
+    constraints: [
+        { field: 'Tuple', condition: '(i32, f64, char) = (500, 6.4, Z)' },
+        { field: 'Array', condition: '[i32; 5] = [1, 2, 3, 4, 5]' }
+    ],
+    examples: [
+        {
+            input: '(không có)',
+            output: '500 6.4 Z\n[1, 2, 3, 4, 5]',
+            explanation: 'Destructure tuple và in array'
+        }
+    ],
 
-  content: `
-<div class="cyber-alert info">
-  Sau khi code xong, hãy nhấn <strong>Run</strong> để vượt qua bài kiểm tra!
-</div>
+    content: `
+<h3 class="task-heading">Bài tập: Tuple và Array</h3>
+
+<p>Trong bài tập này, bạn sẽ thực hành:</p>
+<ol>
+    <li>Tạo Tuple với nhiều kiểu dữ liệu khác nhau</li>
+    <li>Destructure Tuple thành các biến riêng biệt</li>
+    <li>Tạo Array với nhiều phần tử</li>
+    <li>In các giá trị ra màn hình</li>
+</ol>
+
+<h4 class="task-heading">Hướng dẫn:</h4>
+<ul>
+    <li>Tuple: <code>let my_tuple = (500, 6.4, 'Z');</code></li>
+    <li>Destructure: <code>let (x, y, z) = my_tuple;</code></li>
+    <li>Array: <code>let my_array = [1, 2, 3, 4, 5];</code></li>
+    <li>In tuple: <code>println!("{} {} {}", x, y, z);</code></li>
+    <li>In array: <code>println!("{:?}", my_array);</code></li>
+</ul>
 `,
-  defaultCode: `fn main() {
-    // Tạo tuple: (i32, f64, char)
-    let my_tuple = (500, 6.4, 'Z');
+    defaultCode: `fn main() {
+    // TODO: Tạo tuple (i32, f64, char) = (500, 6.4, 'Z')
 
-    // Destructure tuple
-    let (x, y, z) = my_tuple;
+    // TODO: Destructure tuple thành các biến x, y, z
 
-    // Tạo array
-    let my_array = [1, 2, 3, 4, 5];
+    // TODO: Tạo array [1, 2, 3, 4, 5]
 
-    println!("{} {} {}", x, y, z);
-    println!("{:?}", my_array);
+    // TODO: In các giá trị của x, y, z
+    // Format: "{} {} {}"
+
+    // TODO: In array
+    // Format: "{:?}"
 }
-`
+`,
+    expectedOutput: '500 6.4 Z\n[1, 2, 3, 4, 5]',
+    testCases: [
+        {
+            input: '',
+            expectedOutput: '500 6.4 Z\n[1, 2, 3, 4, 5]',
+            description: 'Tạo và in Tuple và Array'
+        }
+    ]
 };

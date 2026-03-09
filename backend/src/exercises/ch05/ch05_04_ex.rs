@@ -1,6 +1,8 @@
 // Chapter 5: Defining and Instantiating Structs
 // Bài tập 4: Tuple Structs
 
+#![allow(dead_code)]
+
 // TODO: Định nghĩa Tuple Struct Color với 3 tham số i32
 struct Color(i32, i32, i32);
 

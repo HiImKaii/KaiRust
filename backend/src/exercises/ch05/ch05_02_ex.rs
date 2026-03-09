@@ -1,6 +1,8 @@
 // Chapter 5: Defining and Instantiating Structs
 // Bài tập 2: Mutable Struct
 
+#![allow(dead_code)]
+
 // TODO: Tạo một mutable struct User và thay đổi email
 
 // Định nghĩa struct User

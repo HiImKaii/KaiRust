@@ -1,12 +1,14 @@
 // Chapter 5: Defining and Instantiating Structs
 // Bài tập 5: Unit-Like Structs
 
+#![allow(dead_code)]
+
 // TODO: Định nghĩa một Unit-Like Struct AlwaysEqual
 struct AlwaysEqual;
 
 fn main() {
     // TODO: Tạo một instance của AlwaysEqual
-    let subject = AlwaysEqual;
+    let _subject = AlwaysEqual;
 
     println!("AlwaysEqual instance created successfully!");
 }
@@ -33,7 +35,7 @@ mod tests {
         let code_normalized: String = user_code.chars().filter(|c| !c.is_whitespace()).collect();
 
         // Kiểm tra tạo instance
-        assert!(code_normalized.contains("letsubject=AlwaysEqual"),
+        assert!(code_normalized.contains("let_subject=AlwaysEqual") || code_normalized.contains("letsubject=AlwaysEqual"),
             "Chưa tạo instance của AlwaysEqual!");
     }
 }

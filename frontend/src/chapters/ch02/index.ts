@@ -5,8 +5,12 @@ import { ch02_03 } from './ch02_03';
 import { ch02_04 } from './ch02_04';
 import { ch02_05 } from './ch02_05';
 import { ch02_01_ex } from './ch02_01_ex';
+import { ch02_02_ex } from './ch02_02_ex';
+import { ch02_03_ex } from './ch02_03_ex';
 import { ch02_04_ex } from './ch02_04_ex';
 import { ch02_05_ex } from './ch02_05_ex';
+import { ch02_06_ex } from './ch02_06_ex';
+import { ch02_07_ex } from './ch02_07_ex';
 
 export const ch02: Chapter = {
   id: 'ch02',
@@ -26,5 +30,5 @@ export const ch02: Chapter = {
     </ul>
     <p>Đây là dự án hoàn hảo để áp dụng những gì bạn đã học về Rust cơ bản. Hãy bắt đầu!</p>
   `,
-  lessons: [ch02_01, ch02_02, ch02_03, ch02_04, ch02_05, ch02_01_ex, ch02_04_ex, ch02_05_ex]
+  lessons: [ch02_01, ch02_02, ch02_03, ch02_04, ch02_05, ch02_01_ex, ch02_02_ex, ch02_03_ex, ch02_04_ex, ch02_05_ex, ch02_06_ex, ch02_07_ex]
 };

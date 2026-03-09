@@ -292,8 +292,14 @@ const selectLesson = (lesson: Lesson, restoreScrollPosition: number | null = nul
         editorInstance.setValue(lesson.defaultCode);
     }
 
-    // Clear terminal
+    // Clear terminal and reset stats
     clearTerminal();
+
+    // Reset stats to show limits from the new lesson
+    const lessonAny = lesson as any;
+    const defaultMem = lessonAny.memoryLimit || '—';
+    const defaultTime = lessonAny.timeLimit ? `${parseFloat(lessonAny.timeLimit.replace('s', '')) * 1000}ms` : '—';
+    updateStats(defaultMem, defaultTime, lessonAny.memoryLimit, lessonAny.timeLimit);
 
     // Highlight active lesson in sidebar (remove active, keep read)
     document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('active'));
@@ -385,11 +391,17 @@ const startCodeExecution = (is_test: boolean) => {
     ws.onopen = () => {
         let payload: any = { type: 'run', code: code, is_test };
 
-        // Gửi kèm lesson_id nếu đây là bài exercise
+        // Gửi kèm lesson_id và stdin nếu đây là bài exercise
         if (is_test && currentLessonIndex >= 0) {
             const lesson = flatLessons[currentLessonIndex];
             if (lesson.type === 'practice') {
                 payload.lesson_id = lesson.id;
+
+                // Gửi stdin từ testCases (lấy test case đầu tiên)
+                const lessonAny = lesson as any;
+                if (lessonAny.testCases && lessonAny.testCases.length > 0) {
+                    payload.stdin = lessonAny.testCases[0].input;
+                }
             }
         }
 
@@ -408,26 +420,48 @@ const startCodeExecution = (is_test: boolean) => {
                     appendTerminal(`<span class="log-error">${escapeHtml(msg.stderr)}</span>`);
                     updateStats('—', '—');
                     ws.close();
+                    // Reset test output
+                    (window as any).__testOutput = '';
                     break;
                 case 'running':
                     appendTerminal(`<span class="log-info">Running...</span>`);
                     break;
                 case 'stdout':
                     appendTerminal(`<span class="log-success">${escapeHtml(msg.data)}</span>`);
+                    // Lưu output để so sánh khi là bài tập
+                    if (isSubmitting && currentLessonIndex >= 0) {
+                        const lesson = flatLessons[currentLessonIndex];
+                        if (lesson.type === 'practice' && (lesson as any).expectedOutput !== undefined) {
+                            (window as any).__testOutput = ((window as any).__testOutput || '') + msg.data;
+                        }
+                    }
                     break;
                 case 'stderr':
                     appendTerminal(`<span class="log-warning">${escapeHtml(msg.data)}</span>`);
                     break;
                 case 'exit':
                     const exitClass = msg.code === 0 ? 'log-info' : 'log-error';
-                    appendTerminal(`<span class="${exitClass}">[Exited with code ${msg.code}] (${msg.execution_time_ms}ms)</span>`);
-                    updateStats('—', `${msg.execution_time_ms}ms`);
+                    const memoryKb = msg.memory_usage_kb || 0;
+                    const memoryStr = memoryKb > 0 ? `${Math.round(memoryKb / 1024)}MB` : '—';
+                    appendTerminal(`<span class="${exitClass}">[Exited with code ${msg.code}] (${msg.execution_time_ms}ms, ${memoryStr})</span>`);
+
+                    // Get limits from current lesson
+                    const lessonAny = currentLessonIndex >= 0 ? flatLessons[currentLessonIndex] as any : null;
+                    const memLimit = lessonAny?.memoryLimit;
+                    const timeLimit = lessonAny?.timeLimit;
+                    updateStats(memoryStr, `${msg.execution_time_ms}ms`, memLimit, timeLimit);
 
                     // Display Exercise result when submitting
                     if (isSubmitting && currentLessonIndex >= 0) {
                         const lesson = flatLessons[currentLessonIndex];
                         if (lesson.type === 'practice') {
-                            if (msg.code === 0) {
+                            // Lấy expected output từ lesson
+                            const lessonAny = lesson as any;
+                            const expectedOutput = lessonAny.expectedOutput;
+                            const testOutput = (window as any).__testOutput || '';
+                            const testPassed = msg.code === 0 && expectedOutput && testOutput.trim() === expectedOutput.trim();
+
+                            if (testPassed) {
                                 appendTerminal(`<br><span class="log-success" style="font-weight:bold; font-size:1.1rem">CHÚC MỪNG BẠN ĐÃ VƯỢT QUA BÀI TẬP!</span>`);
                                 appendTerminal(`<span class="log-info">Bạn đã xuất sắc hoàn thành tất cả các Testcase. Tiếp tục phát huy nhé!</span>`);
                                 ProgressManager.markCompleted(lesson.id);
@@ -439,8 +473,14 @@ const startCodeExecution = (is_test: boolean) => {
                                 unlockNextLesson();
                             } else {
                                 appendTerminal(`<br><span class="log-error" style="font-weight:bold; font-size:1.1rem">RẤT TIẾC, CHƯA ĐẠT YÊU CẦU.</span>`);
+                                if (expectedOutput) {
+                                    appendTerminal(`<span class="log-warning">Expected: ${escapeHtml(expectedOutput)}</span>`);
+                                    appendTerminal(`<span class="log-warning">Got: ${escapeHtml(testOutput.trim())}</span>`);
+                                }
                                 appendTerminal(`<span class="log-warning">Hãy đọc kỹ lỗi bên trên và kiểm tra lại mã của mình. Cố lên!</span>`);
                             }
+                            // Reset test output
+                            (window as any).__testOutput = '';
                         }
                     }
                     ws.close();
@@ -636,11 +676,31 @@ const setupInlineCodeRunners = () => {
 };
 
 // ---- Update Technical Stats ----
-const updateStats = (memory: string, execTime: string) => {
+// Hiển thị: "Memory: X MB / Y MB" và "Time: X ms / Y ms"
+// memory/execTime là giá trị thực tế, memoryLimit/timeLimit là giới hạn từ bài tập
+const updateStats = (memory: string, execTime: string, memoryLimit?: string, timeLimit?: string) => {
     const memEl = document.querySelector('.highlight-blue');
     const timeEl = document.querySelector('.highlight-pink');
-    if (memEl) memEl.textContent = memory;
-    if (timeEl) timeEl.textContent = execTime;
+
+    // Hiển thị memory: "X MB / Y MB" hoặc "X MB" nếu không có limit
+    if (memEl) {
+        if (memoryLimit && memory !== '—') {
+            memEl.textContent = `${memory} / ${memoryLimit}`;
+        } else {
+            memEl.textContent = memory;
+        }
+    }
+
+    // Hiển thị time: "X ms / Y s" hoặc "X ms" nếu không có limit
+    if (timeEl) {
+        if (timeLimit && execTime !== '—') {
+            // timeLimit format: "1s", "2s", etc - convert to ms
+            const limitMs = parseFloat(timeLimit.replace('s', '')) * 1000;
+            timeEl.textContent = `${execTime} / ${limitMs}ms`;
+        } else {
+            timeEl.textContent = execTime;
+        }
+    }
 };
 
 // ---- Escape HTML for safe terminal rendering ----

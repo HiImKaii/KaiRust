@@ -1,6 +1,8 @@
 // Chapter 5: Method Syntax
 // Bài tập 7: Định nghĩa Methods với impl Block
 
+#![allow(dead_code)]
+
 #[derive(Debug)]
 struct Rectangle {
     width: u32,

@@ -64,7 +64,7 @@ async fn handle_ws_connection(socket: WebSocket) {
         };
 
         match client_msg {
-            WsClientMessage::Run { code, is_test, lesson_id } => {
+            WsClientMessage::Run { code, is_test, lesson_id, stdin } => {
                 // Kill previous process if any
                 if let Some(kill_tx) = child_kill.take() {
                     let _ = kill_tx.send(());
@@ -79,7 +79,7 @@ async fn handle_ws_connection(socket: WebSocket) {
 
                 // Spawn execution task
                 tokio::spawn(async move {
-                    run_interactive(code, is_test.unwrap_or(false), lesson_id, tx_clone, kill_receiver, stdin_rx).await;
+                    run_interactive(code, is_test.unwrap_or(false), lesson_id, stdin, tx_clone, kill_receiver, stdin_rx).await;
                 });
             }
             WsClientMessage::Stdin { data } => {
@@ -107,6 +107,7 @@ async fn run_interactive(
     mut code: String,
     is_test: bool,
     lesson_id: Option<String>,
+    initial_stdin: Option<String>,
     tx: tokio::sync::mpsc::Sender<WsServerMessage>,
     mut kill_rx: tokio::sync::oneshot::Receiver<()>,
     mut stdin_rx: tokio::sync::mpsc::Receiver<String>,
@@ -149,25 +150,31 @@ async fn run_interactive(
         }
     }
 
-    let _ = tokio::fs::write(work_dir.join("main.rs"), &code).await;
+    let _ = tokio::fs::write(work_dir.join("src").join("main.rs"), &code).await;
+
+    // Tạo Cargo.toml nếu cần
+    let cargo_toml = r#"
+[package]
+name = "user_code"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand = "0.8"
+"#;
+    let _ = tokio::fs::write(work_dir.join("Cargo.toml"), cargo_toml).await;
 
     let start = Instant::now();
 
-    // Step 1: Compile
+    // Step 1: Compile với cargo
     let _ = tx.send(WsServerMessage::Compiling).await;
 
-    let mut cmd_compile = Command::new("rustc");
-    cmd_compile.arg(work_dir.join("main.rs"))
-        .arg("-o")
-        .arg(work_dir.join("main"))
-        .arg("--edition")
-        .arg("2021");
+    let mut cmd_compile = Command::new("cargo");
+    cmd_compile.arg("build")
+        .arg("--release")
+        .current_dir(&work_dir);
 
-    if is_test {
-        cmd_compile.arg("--test");
-    }
-
-    // Lệnh build + test 
+    // Lệnh build
     let compile_result = cmd_compile.output().await;
 
     match compile_result {
@@ -218,7 +225,16 @@ async fn run_interactive(
     let stdout = child.stdout.take();
     let stderr = child.stderr.take();
 
-    // Stream stdin
+    // Gửi stdin ban đầu (từ test case)
+    if let Some(initial) = initial_stdin {
+        if let Some(ref mut stdin) = child_stdin {
+            use tokio::io::AsyncWriteExt;
+            let _ = stdin.write_all(initial.as_bytes()).await;
+            let _ = stdin.shutdown().await;
+        }
+    }
+
+    // Stream stdin (từ WebSocket)
     let stdin_task = tokio::spawn(async move {
         if let Some(ref mut stdin) = child_stdin {
             use tokio::io::AsyncWriteExt;
@@ -261,6 +277,9 @@ async fn run_interactive(
         }
     });
 
+    // Lưu PID của process để theo dõi memory
+    let pid = child.id().unwrap_or(0);
+
     // Wait for process to finish or timeout/kill
     let exit_code = tokio::select! {
         result = child.wait() => {
@@ -288,13 +307,59 @@ async fn run_interactive(
     stdin_task.abort();
 
     let elapsed = start.elapsed().as_millis() as u64;
+
+    // Lấy memory usage (tổng RSS của process và các process con)
+    let memory_kb = get_memory_usage(pid);
+
     let _ = tx
         .send(WsServerMessage::Exit {
             code: exit_code,
             execution_time_ms: elapsed,
+            memory_usage_kb: memory_kb,
         })
         .await;
 
     // Cleanup
     let _ = tokio::fs::remove_dir_all(&work_dir).await;
+}
+
+/// Lấy memory usage (RSS - Resident Set Size) của process và các process con
+/// Trả về memory tính theo KB
+fn get_memory_usage(pid: u32) -> u64 {
+    if pid == 0 {
+        return 0;
+    }
+
+    // Đọc thông tin từ /proc/[pid]/status
+    let status_path = format!("/proc/{}/status", pid);
+
+    match std::fs::read_to_string(&status_path) {
+        Ok(content) => {
+            // Tìm dòng VmRSS (Resident Set Size - thực tế memory sử dụng)
+            for line in content.lines() {
+                if line.starts_with("VmRSS:") {
+                    // Format: "VmRSS:    1234 kB"
+                    let parts: Vec<&str> = line.split_whitespace().collect();
+                    if parts.len() >= 2 {
+                        if let Ok(kb) = parts[1].parse::<u64>() {
+                            return kb;
+                        }
+                    }
+                }
+            }
+            // Nếu không tìm thấy VmRSS, thử VmSize (virtual memory)
+            for line in content.lines() {
+                if line.starts_with("VmSize:") {
+                    let parts: Vec<&str> = line.split_whitespace().collect();
+                    if parts.len() >= 2 {
+                        if let Ok(kb) = parts[1].parse::<u64>() {
+                            return kb;
+                        }
+                    }
+                }
+            }
+            0
+        }
+        Err(_) => 0,
+    }
 }

@@ -15,6 +15,7 @@
 
 // TODO: In ra email của user1 bằng dot notation
 
+#[allow(dead_code)]
 fn main() {
     // Định nghĩa struct User
     struct User {

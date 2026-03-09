@@ -760,6 +760,26 @@ code {
   margin-bottom: 16px;
 }
 
+/* Input/Output boxes - separated */
+.cp-example .example-box {
+  background: var(--bg-dark);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin: 8px 0;
+}
+
+.cp-example .example-box:first-child {
+  margin-top: 0;
+}
+
+.cp-example .example-explanation {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
 .cp-example pre {
   background: var(--bg-dark);
   padding: 12px;

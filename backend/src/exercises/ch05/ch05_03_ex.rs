@@ -1,5 +1,7 @@
 // Chapter 5: Defining and Instantiating Structs
-// Bài tập 3: Field Init Shorthand và Struct Update Syntax
+// Bài tập 3: Field init shorthand và struct update syntax
+
+#![allow(dead_code)]
 
 struct User {
     active: bool,

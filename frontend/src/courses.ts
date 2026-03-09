@@ -9,11 +9,11 @@ export function generateCPContent(lesson: Lesson): string {
 
   let html = `<h2>${lesson.problemTitle}</h2>`;
 
-  // Time and Memory limits
-  if (lesson.timeLimit || lesson.memoryLimit) {
+  // Memory and Time limits (Memory first, then Time)
+  if (lesson.memoryLimit || lesson.timeLimit) {
     html += `<div class="cp-limits">`;
-    if (lesson.timeLimit) html += `<span>Time: ${lesson.timeLimit}</span>`;
     if (lesson.memoryLimit) html += `<span>Memory: ${lesson.memoryLimit}</span>`;
+    if (lesson.timeLimit) html += `<span>Time: ${lesson.timeLimit}</span>`;
     html += `</div>`;
   }
 
@@ -41,16 +41,16 @@ export function generateCPContent(lesson: Lesson): string {
     html += `</ul>`;
   }
 
-  // Examples
+  // Examples - Hiển thị Input và Output trong các ô riêng biệt
   if (lesson.examples && lesson.examples.length > 0) {
     html += `<h3>Ví dụ</h3>`;
     for (let i = 0; i < lesson.examples.length; i++) {
       const ex = lesson.examples[i];
       html += `<div class="cp-example">`;
-      html += `<div><strong>Input ${i + 1}:</strong><pre>${ex.input}</pre></div>`;
-      html += `<div><strong>Output ${i + 1}:</strong><pre>${ex.output}</pre></div>`;
+      html += `<div class="example-box"><strong>Input ${i + 1}:</strong><pre>${ex.input || '(trống)'}</pre></div>`;
+      html += `<div class="example-box"><strong>Output ${i + 1}:</strong><pre>${ex.output}</pre></div>`;
       if (ex.explanation) {
-        html += `<div><strong>Giải thích:</strong> ${ex.explanation}</div>`;
+        html += `<div class="example-explanation"><strong>Giải thích:</strong> ${ex.explanation}</div>`;
       }
       html += `</div>`;
     }

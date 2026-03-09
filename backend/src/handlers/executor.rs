@@ -58,6 +58,7 @@ pub async fn compile_and_run(code: &str, stdin_input: Option<&str>, is_test: boo
             stdout: String::new(),
             stderr: format!("Lỗi tạo workspace: {}", e),
             execution_time_ms: 0,
+            memory_usage_kb: 0,
         };
     }
 
@@ -73,30 +74,33 @@ pub async fn compile_and_run(code: &str, stdin_input: Option<&str>, is_test: boo
                 stdout: String::new(),
                 stderr,
                 execution_time_ms: start.elapsed().as_millis() as u64,
+                memory_usage_kb: 0,
             };
         }
         Ok(_) => {}
     }
 
     // Step 2: Run
-    let run_result = run_binary(&work_dir, stdin_input).await;
+    let run_result = run_binary(&work_dir, stdin_input, is_test).await;
     let elapsed = start.elapsed().as_millis() as u64;
 
     // Cleanup
     cleanup(&work_dir).await;
 
     match run_result {
-        Ok((stdout, stderr)) => RunResponse {
+        Ok((stdout, stderr, memory_kb)) => RunResponse {
             success: true,
             stdout: truncate_output(&stdout),
             stderr: truncate_output(&stderr),
             execution_time_ms: elapsed,
+            memory_usage_kb: memory_kb,
         },
         Err(err_msg) => RunResponse {
             success: false,
             stdout: String::new(),
             stderr: err_msg,
             execution_time_ms: elapsed,
+            memory_usage_kb: 0,
         },
     }
 }
@@ -108,26 +112,42 @@ async fn setup_workspace(work_dir: &PathBuf, code: &str) -> Result<(), String> {
         .await
         .map_err(|e| e.to_string())?;
 
-    let source_file = work_dir.join("main.rs");
+    // Tạo src directory nếu chưa có (cho cargo)
+    let src_dir = work_dir.join("src");
+    tokio::fs::create_dir_all(&src_dir)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    // Viết main.rs vào src/
+    let source_file = src_dir.join("main.rs");
     tokio::fs::write(&source_file, code)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    // Tạo Cargo.toml
+    let cargo_toml = r#"
+[package]
+name = "user_code"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand = "0.8"
+"#;
+    let cargo_file = work_dir.join("Cargo.toml");
+    tokio::fs::write(&cargo_file, cargo_toml)
         .await
         .map_err(|e| e.to_string())?;
 
     Ok(())
 }
 
-async fn compile(work_dir: &PathBuf, is_test: bool) -> Result<(), String> {
-    let mut cmd = Command::new("rustc");
-    cmd.arg("main.rs")
-       .arg("-o")
-       .arg("main")
-       .arg("--edition")
-       .arg("2021")
-       .current_dir(work_dir);  // IMPORTANT: Set working directory!
-
-    if is_test {
-        cmd.arg("--test");
-    }
+async fn compile(work_dir: &PathBuf, _is_test: bool) -> Result<(), String> {
+    // Luôn dùng cargo build - đơn giản và hiệu quả
+    let mut cmd = Command::new("cargo");
+    cmd.arg("build");
+    cmd.arg("--release")
+       .current_dir(work_dir);
 
     let result = tokio::time::timeout(
         std::time::Duration::from_secs(TIMEOUT_SECS),
@@ -144,7 +164,7 @@ async fn compile(work_dir: &PathBuf, is_test: bool) -> Result<(), String> {
                 Err(stderr)
             }
         }
-        Ok(Err(e)) => Err(format!("Lỗi chạy rustc: {}", e)),
+        Ok(Err(e)) => Err(format!("Lỗi chạy cargo: {}", e)),
         Err(_) => Err("Biên dịch quá thời gian (timeout)".to_string()),
     }
 }
@@ -152,22 +172,21 @@ async fn compile(work_dir: &PathBuf, is_test: bool) -> Result<(), String> {
 async fn run_binary(
     work_dir: &PathBuf,
     stdin_input: Option<&str>,
-) -> Result<(String, String), String> {
-    let binary = work_dir.join("main");
+    _is_test: bool,
+) -> Result<(String, String, u64), String> {
+    // Chạy binary trực tiếp
+    let binary_path = work_dir.join("target").join("release").join("user_code");
 
-    let mut cmd = Command::new(&binary);
+    let mut cmd = Command::new(&binary_path);
     cmd.current_dir(work_dir);
-
-    if stdin_input.is_some() {
-        cmd.stdin(std::process::Stdio::piped());
-    }
-    cmd.stdout(std::process::Stdio::piped());
-    cmd.stderr(std::process::Stdio::piped());
 
     let result = tokio::time::timeout(
         std::time::Duration::from_secs(TIMEOUT_SECS),
         async {
             let mut child = cmd.spawn().map_err(|e| format!("Lỗi chạy binary: {}", e))?;
+
+            // Lấy PID để theo dõi memory
+            let pid = child.id().unwrap_or(0);
 
             // Write stdin if provided
             if let Some(input) = stdin_input {
@@ -183,9 +202,12 @@ async fn run_binary(
                 .await
                 .map_err(|e| format!("Lỗi đọc output: {}", e))?;
 
+            // Lấy memory usage sau khi process kết thúc
+            let memory_kb = get_memory_usage(pid);
+
             let stdout = String::from_utf8_lossy(&output.stdout).to_string();
             let stderr = String::from_utf8_lossy(&output.stderr).to_string();
-            Ok((stdout, stderr))
+            Ok((stdout, stderr, memory_kb))
         },
     )
     .await;
@@ -193,6 +215,43 @@ async fn run_binary(
     match result {
         Ok(inner) => inner,
         Err(_) => Err("Chương trình chạy quá thời gian (timeout 10s)".to_string()),
+    }
+}
+
+/// Lấy memory usage (RSS - Resident Set Size) của process
+/// Trả về memory tính theo KB
+fn get_memory_usage(pid: u32) -> u64 {
+    if pid == 0 {
+        return 0;
+    }
+
+    let status_path = format!("/proc/{}/status", pid);
+
+    match std::fs::read_to_string(&status_path) {
+        Ok(content) => {
+            for line in content.lines() {
+                if line.starts_with("VmRSS:") {
+                    let parts: Vec<&str> = line.split_whitespace().collect();
+                    if parts.len() >= 2 {
+                        if let Ok(kb) = parts[1].parse::<u64>() {
+                            return kb;
+                        }
+                    }
+                }
+            }
+            for line in content.lines() {
+                if line.starts_with("VmSize:") {
+                    let parts: Vec<&str> = line.split_whitespace().collect();
+                    if parts.len() >= 2 {
+                        if let Ok(kb) = parts[1].parse::<u64>() {
+                            return kb;
+                        }
+                    }
+                }
+            }
+            0
+        }
+        Err(_) => 0,
     }
 }
 

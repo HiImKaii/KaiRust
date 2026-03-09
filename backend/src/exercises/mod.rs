@@ -18,8 +18,12 @@ pub fn get_test_code(lesson_id: &str) -> Option<&'static str> {
         "ch01_02"       => Some(include_str!("ch01/ch01_02.rs")),
         // ch02
         "ch02_01_ex"    => Some(include_str!("ch02/ch02_01_ex.rs")),
+        "ch02_02_ex"    => Some(include_str!("ch02/ch02_02_ex.rs")),
+        "ch02_03_ex"    => Some(include_str!("ch02/ch02_03_ex.rs")),
         "ch02_04_ex"    => Some(include_str!("ch02/ch02_04_ex.rs")),
         "ch02_05_ex"    => Some(include_str!("ch02/ch02_05_ex.rs")),
+        "ch02_06_ex"    => Some(include_str!("ch02/ch02_06_ex.rs")),
+        "ch02_07_ex"    => Some(include_str!("ch02/ch02_07_ex.rs")),
         // ch03
         "ch03_01_ex"    => Some(include_str!("ch03/ch03_01_ex.rs")),
         "ch03_01_ex2"   => Some(include_str!("ch03/ch03_01_ex2.rs")),
