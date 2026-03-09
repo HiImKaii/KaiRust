@@ -6,43 +6,98 @@ export const ch06_09_ex: Lesson = {
     duration: '35 phút',
     type: 'practice',
     isExercise: true,
+
+    problemTitle: 'Binary Tree với Enum',
+    memoryLimit: '256MB',
+    timeLimit: '1s',
+
+    problemDescription: `Sử dụng Enum để xây dựng cấu trúc cây nhị phân và thực hành pattern matching nâng cao.
+
+Yêu cầu:
+1. Định nghĩa enum Tree:
+   - Empty - cây rỗng
+   - Node { value: i32, left: Box<Tree>, right: Box<Tree> }
+2. Viết hàm insert(tree: Tree, value: i32) -> Tree chèn giá trị vào cây
+3. Viết hàm contains(tree: &Tree, value: i32) -> bool kiểm tra giá trị có trong cây không
+4. Viết hàm sum(tree: &Tree) -> i32 tính tổng tất cả giá trị`,
+
+    inputFormat: 'Gọi hàm với Tree',
+    outputFormat: 'In ra kết quả tương ứng',
+
+    constraints: [
+        { field: 'Enum Tree', condition: '2 variant: Empty, Node{value:i32,left:Box<Tree>,right:Box<Tree>}' },
+        { field: 'insert', condition: 'Chèn giá trị vào cây, trả về Tree mới' },
+        { field: 'contains', condition: 'Kiểm tra giá trị có trong cây không' },
+        { field: 'sum', condition: 'Tính tổng tất cả giá trị trong cây' }
+    ],
+
+    examples: [
+        {
+            input: 'sum(&tree)',
+            output: '29',
+            explanation: 'Tổng các giá trị trong cây: 5 + 10 + 14 = 29'
+        }
+    ],
+
     content: `
-<p>Hãy sử dụng Enum để xây dựng cấu trúc cây nhị phân và thực hành pattern matching nâng cao!</p>
-<h3 class="task-heading">Yêu cầu</h3>
-<ol class="task-list">
-  <li>Định nghĩa enum <code>Tree</code>:
-    <ul>
-      <li><code>Empty</code> - cây rỗng</li>
-      <li><code>Node { value: i32, left: Box&lt;Tree&gt;, right: Box&lt;Tree&gt; }</code></li>
-    </ul>
-  </li>
-  <li>Tạo hàm <code>insert(tree: Tree, value: i32) -> Tree</code> chèn giá trị vào cây</li>
-  <li>Tạo hàm <code>contains(tree: &Tree, value: i32) -> bool</code> kiểm tra giá trị có trong cây không</li>
-  <li>Tạo hàm <code>sum(tree: &Tree) -> i32</code> tính tổng tất cả giá trị</li>
-</ol>
+<h3>Cấu trúc cây nhị phân</h3>
+<pre><code>enum Tree {
+    Empty,
+    Node {
+        value: i32,
+        left: Box<Tree>,
+        right: Box<Tree>,
+    },
+}</code></pre>
 `,
-    defaultCode: `// Định nghĩa cấu trúc cây nhị phân
 
-// Hàm chèn giá trị vào cây
+    defaultCode: `// TODO: Định nghĩa enum Tree
 
-// Hàm kiểm tra giá trị có trong cây không
+// TODO: Viết hàm insert(tree: Tree, value: i32) -> Tree
 
-// Hàm tính tổng tất cả giá trị
+// TODO: Viết hàm contains(tree: &Tree, value: i32) -> bool
+
+// TODO: Viết hàm sum(tree: &Tree) -> i32
 
 fn main() {
+    // Tạo cây: 10
+    //          /  \\
+    //         5    14
+    let tree = Tree::Node {
+        value: 10,
+        left: Box::new(Tree::Node {
+            value: 5,
+            left: Box::new(Tree::Empty),
+            right: Box::new(Tree::Empty),
+        }),
+        right: Box::new(Tree::Node {
+            value: 14,
+            left: Box::new(Tree::Empty),
+            right: Box::new(Tree::Empty),
+        }),
+    };
+
+    println!("Sum: {}", sum(&tree));
+    println!("Contains 10: {}", contains(&tree, 10));
+    println!("Contains 99: {}", contains(&tree, 99));
 }
 `,
-    expectedOutput: '',
+
     testCases: [
-        {
-            input: 'insert(Tree::Empty, 5)',
-            expectedOutput: 'Node',
-            description: 'Chèn vào cây rỗng'
-        },
         {
             input: 'sum(&tree)',
             expectedOutput: '29',
             description: 'Tổng các giá trị trong cây'
+        },
+        {
+            input: 'contains(&tree, 10)',
+            expectedOutput: 'true',
+            description: 'Tìm thấy giá trị 10'
+        },
+        {
+            input: 'contains(&tree, 99)',
+            expectedOutput: 'false',
+            description: 'Không tìm thấy giá trị 99'
         }
     ]
 };

@@ -6,33 +6,78 @@ export const ch06_04_ex: Lesson = {
     duration: '15 phút',
     type: 'practice',
     isExercise: true,
-    content: `
-<p>Hãy thực hành định nghĩa và sử dụng Enum cơ bản!</p>
-<h3 class="task-heading">Yêu cầu</h3>
-<ol class="task-list">
-  <li>Định nghĩa enum <code>TrafficLight</code> với các variant: Red, Yellow, Green</li>
-  <li>Tạo hàm <code>get_action(light: &TrafficLight) -> &str</code> trả về hành động tương ứng:
-    <ul>
-      <li>Red → "Dừng lại"</li>
-      <li>Yellow → "Chuẩn bị dừng"</li>
-      <li>Green → "Đi tiếp"</li>
-    </ul>
-  </li>
-</ol>
-`,
-    defaultCode: `// Định nghĩa enum TrafficLight
 
-// Tạo hàm get_action trả về hành động tương ứng
+    problemTitle: 'Enum cơ bản - TrafficLight',
+    memoryLimit: '256MB',
+    timeLimit: '1s',
+
+    problemDescription: `Thực hành định nghĩa và sử dụng Enum cơ bản.
+
+Yêu cầu:
+1. Định nghĩa enum TrafficLight với các variant: Red, Yellow, Green
+2. Viết hàm get_action(light: &TrafficLight) -> &str trả về hành động tương ứng:
+   - Red → "Dừng lại"
+   - Yellow → "Chuẩn bị dừng"
+   - Green → "Đi tiếp"`,
+
+    inputFormat: 'Gọi hàm get_action với các TrafficLight khác nhau',
+    outputFormat: 'In ra hành động tương ứng',
+
+    constraints: [
+        { field: 'Enum TrafficLight', condition: '3 variant: Red, Yellow, Green' },
+        { field: 'Hàm get_action', condition: 'Trả về &str tương ứng với từng variant' }
+    ],
+
+    examples: [
+        {
+            input: 'TrafficLight::Red',
+            output: 'Dừng lại',
+            explanation: 'Đèn đỏ phải dừng lại'
+        },
+        {
+            input: 'TrafficLight::Green',
+            output: 'Đi tiếp',
+            explanation: 'Đèn xanh được đi tiếp'
+        }
+    ],
+
+    content: `
+<h3>Hướng dẫn</h3>
+<pre><code>enum TrafficLight {
+    Red,
+    Yellow,
+    Green,
+}
+
+fn get_action(light: &TrafficLight) -> &str {
+    match light {
+        TrafficLight::Red => "Dừng lại",
+        TrafficLight::Yellow => "Chuẩn bị dừng",
+        TrafficLight::Green => "Đi tiếp",
+    }
+}</code></pre>
+`,
+
+    defaultCode: `// TODO: Định nghĩa enum TrafficLight
+
+// TODO: Viết hàm get_action trả về &str
 
 fn main() {
+    println!("{}", get_action(&TrafficLight::Red));
+    println!("{}", get_action(&TrafficLight::Green));
 }
 `,
-    expectedOutput: '',
+
     testCases: [
         {
             input: 'TrafficLight::Red',
             expectedOutput: 'Dừng lại',
             description: 'Đèn đỏ phải dừng lại'
+        },
+        {
+            input: 'TrafficLight::Yellow',
+            expectedOutput: 'Chuẩn bị dừng',
+            description: 'Đèn vàng chuẩn bị dừng'
         },
         {
             input: 'TrafficLight::Green',

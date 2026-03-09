@@ -4,7 +4,7 @@ export const ch06_03: Lesson = {
             id: 'ch06-03',
             title: '6.3 Cú pháp siêu tắt: if let',
             duration: '15 phút',
-            type: 'practice',
+            type: 'theory',
             content: `
 <p>Cú pháp <code>if let</code> là cách viết gọn để xử lý khi bạn chỉ quan tâm đến MỘT TRƯỜNG HỢP DUY NHẤT và muốn bỏ qua các Variant còn lại thay vì phải viết đầy đủ match expression.</p>
 

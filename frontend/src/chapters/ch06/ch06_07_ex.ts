@@ -6,25 +6,79 @@ export const ch06_07_ex: Lesson = {
     duration: '25 phút',
     type: 'practice',
     isExercise: true,
+
+    problemTitle: 'Result<T, E> - Xử lý lỗi',
+    memoryLimit: '256MB',
+    timeLimit: '1s',
+
+    problemDescription: `Thực hành sử dụng Result<T, E> để xử lý lỗi trong Rust.
+
+Yêu cầu:
+1. Viết hàm parse_age(s: &str) -> Result<i32, &str>
+   - Chuyển string thành tuổi
+   - Trả về Err nếu không hợp lệ
+2. Viết hàm divide(a: i32, b: i32) -> Result<i32, String>
+   - Chia hai số nguyên
+   - Trả về Err với thông báo nếu b = 0
+3. Sử dụng ? operator để propagate lỗi`,
+
+    inputFormat: 'Gọi hàm với các tham số khác nhau',
+    outputFormat: 'In ra Result tương ứng',
+
+    constraints: [
+        { field: 'parse_age', condition: 'Trả về Result<i32, &str>, Err nếu không parse được' },
+        { field: 'divide', condition: 'Trả về Result<i32, String>, Err nếu b=0' }
+    ],
+
+    examples: [
+        {
+            input: 'parse_age("25")',
+            output: 'Ok(25)',
+            explanation: 'Parse tuổi hợp lệ thành công'
+        },
+        {
+            input: 'parse_age("abc")',
+            output: 'Err',
+            explanation: 'Parse thất bại, trả về Err'
+        }
+    ],
+
     content: `
-<p>Result&lt;T, E&gt; là enum dùng để xử lý lỗi trong Rust. Hãy thực hành sử dụng nó!</p>
-<h3 class="task-heading">Yêu cầu</h3>
-<ol class="task-list">
-  <li>Tạo hàm <code>parse_age(s: &str) -> Result&lt;i32, &str&gt;</code> chuyển string thành tuổi, lỗi nếu không hợp lệ</li>
-  <li>Tạo hàm <code>divide(a: i32, b: i32) -> Result&lt;i32, String&gt;</code> chia hai số với thông báo lỗi</li>
-  <li>Sử dụng <code>?</code> operator để propagate lỗi</li>
-</ol>
+<h3>Giới thiệu về Result<T, E></h3>
+<pre><code>enum Result<T, E> {
+    Ok(T),   // Thành công, chứa giá trị T
+    Err(E),  // Thất bại, chứa lỗi E
+}</code></pre>
+
+<h3>Hướng dẫn</h3>
+<pre><code>fn parse_age(s: &str) -> Result<i32, &str> {
+    match s.parse::<i32>() {
+        Ok(age) if age > 0 => Ok(age),
+        _ => Err("Tuổi không hợp lệ"),
+    }
+}
+
+fn divide(a: i32, b: i32) -> Result<i32, String> {
+    if b == 0 {
+        Err("Không thể chia cho 0".to_string())
+    } else {
+        Ok(a / b)
+    }
+}</code></pre>
 `,
-    defaultCode: `// Hàm parse string thành tuổi
 
-// Hàm chia hai số với thông báo lỗi
+    defaultCode: `// TODO: Viết hàm parse_age(s: &str) -> Result<i32, &str>
 
-// Hàm sử dụng ? operator để chain các operation
+// TODO: Viết hàm divide(a: i32, b: i32) -> Result<i32, String>
 
 fn main() {
+    println!("{:?}", parse_age("25"));
+    println!("{:?}", parse_age("abc"));
+    println!("{:?}", divide(10, 2));
+    println!("{:?}", divide(10, 0));
 }
 `,
-    expectedOutput: '',
+
     testCases: [
         {
             input: 'parse_age("25")',
@@ -35,6 +89,16 @@ fn main() {
             input: 'parse_age("abc")',
             expectedOutput: 'Err',
             description: 'Parse thất bại'
+        },
+        {
+            input: 'divide(10, 2)',
+            expectedOutput: 'Ok(5)',
+            description: 'Chia thành công'
+        },
+        {
+            input: 'divide(10, 0)',
+            expectedOutput: 'Err',
+            description: 'Chia cho 0'
         }
     ]
 };

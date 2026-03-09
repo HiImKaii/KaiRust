@@ -9,6 +9,7 @@ pub mod ch08;
 
 /// Giới hạn của bài tập
 #[derive(Debug, Clone, Copy)]
+#[allow(dead_code)]
 pub struct ExerciseLimits {
     /// Time limit in seconds
     pub time_limit_secs: f64,

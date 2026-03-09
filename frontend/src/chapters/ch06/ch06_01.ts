@@ -55,7 +55,30 @@ let home = IpAddr {
 let home = IpAddr::V4(String::from("127.0.0.1"));
 let loopback = IpAddr::V6(String::from("::1"));</code></pre>
 </div>
-<p>Điểm mạnh nhất của tính năng nhúng dữ liệu vào bên trong variant của Enum là <strong>Mỗi variant có thể chứa các kiểu dữ liệu và số lượng hoàn toàn khác nhau</strong>. Ví dụ: IPv4 là tập hợp của 4 số <code>u8</code> từ 0-255, vậy ta có thể gán cho V4 một Tuple gồm 4 ô u8, trong khi gán chuỗi String cho V6!</p></p>
+<p>Điểm mạnh nhất của tính năng nhúng dữ liệu vào bên trong variant của Enum là <strong>Mỗi variant có thể chứa các kiểu dữ liệu và số lượng hoàn toàn khác nhau</strong>. Ví dụ: IPv4 là tập hợp của 4 số <code>u8</code> từ 0-255, vậy ta có thể gán cho V4 một Tuple gồm 4 ô u8, trong khi gán chuỗi String cho V6!</p>
+
+<p>Cần lưu ý rằng mỗi tên variant của enum mà ta định nghĩa cũng trở thành một <strong>hàm tạo (constructor function)</strong> để tạo một instance của enum đó. Nghĩa là <code>IpAddr::V4()</code> là một function call nhận một tham số String và trả về một instance của kiểu <code>IpAddr</code>. Ta tự động có được function constructor này như là kết quả của việc định nghĩa enum.</p>
+
+<h3 class="task-heading">Enum trong thư viện chuẩn</h3>
+<p>Việc muốn lưu trữ địa chỉ IP và mã hóa loại IP nào thường rất phổ biến, và thư viện chuẩn của Rust cũng có định nghĩa sẵn! Hãy xem cách thư viện chuẩn định nghĩa IpAddr. Nó có enum và các variant giống như ta đã định nghĩa và sử dụng, nhưng nó nhúng dữ liệu address bên trong các variant dưới dạng hai struct khác nhau, được định nghĩa khác nhau cho mỗi variant:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>struct Ipv4Addr {
+    // --snip--
+}
+
+struct Ipv6Addr {
+    // --snip--
+}
+
+enum IpAddr {
+    V4(Ipv4Addr),
+    V6(Ipv6Addr),
+}</code></pre>
+</div>
+<p>Điều này minh họa rằng bạn có thể đặt bất kỳ loại dữ liệu nào bên trong một enum variant: strings, numeric types, hoặc structs. Thậm chí bạn có thể đặt một enum khác! Các kiểu trong thư viện chuẩn thường không phức tạp hơn những gì bạn có thể tự nghĩ ra.</p>
+
+<p>Lưu ý rằng mặc dù thư viện chuẩn có định nghĩa cho IpAddr, ta vẫn có thể tạo và sử dụng định nghĩa của riêng mình mà không bị xung đột vì ta chưa đưa định nghĩa của thư viện chuẩn vào scope. Ta sẽ nói thêm về việc đưa các kiểu vào scope trong chương sau.</p></p>
 
 <div class="code-snippet">
   <span class="code-lang">rust</span>
@@ -68,51 +91,46 @@ let home = IpAddr::V4(127, 0, 0, 1);
 let loopback = IpAddr::V6(String::from("::1"));</code></pre>
 </div>
 
-<h3 class="task-heading">Ba loại Variant trong Enum</h3>
-<p>Enum trong Rust có thể chứa dữ liệu theo 3 cách:</p>
-
-<h4>1. Unit-like (không có dữ liệu)</h4>
-<div class="code-snippet">
-  <span class="code-lang">rust</span>
-  <pre><code>enum Color {
-    Red,
-    Green,
-    Blue,
-}</code></pre>
-</div>
-
-<h4>2. Tuple-like (tuple)</h4>
-<div class="code-snippet">
-  <span class="code-lang">rust</span>
-  <pre><code>enum Result&lt;T, E&gt; {
-    Ok(T),
-    Err(E),
-}</code></pre>
-</div>
-
-<h4>3. Struct-like (giống struct)</h4>
-<div class="code-snippet">
-  <span class="code-lang">rust</span>
-  <pre><code>enum User {
-    Anonymous,
-    Registered { id: u32, name: String },
-}</code></pre>
-</div>
-
-<h3 class="task-heading">Methods trên Enum</h3>
-<p>Giống như Struct, bạn có thể định nghĩa các method cho Enum bằng <code>impl</code>. Method có thể được gọi từ bất kỳ Variant nào và có quyền truy cập đến dữ liệu bên trong.</p>
+<h3 class="task-heading">Enum Message với nhiều kiểu dữ liệu khác nhau</h3>
+<p>Hãy xem một ví dụ khác về enum với các variant chứa dữ liệu hoàn toàn khác nhau:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>enum Message {
-    Quit,
-    Move { x: i32, y: i32 }, // giống struct
-    Write(String), // tuple
-    ChangeColor(i32, i32, i32), // tương tự
-}
+    Quit,                        // Không có dữ liệu
+    Move { x: i32, y: i32 },    // Struct-like
+    Write(String),               // Tuple-like với 1 phần tử
+    ChangeColor(i32, i32, i32), // Tuple-like với 3 phần tử
+}</code></pre>
+</div>
+<p>Các variant có thể chứa:</p>
+<ul>
+  <li><strong>Quit:</strong> Không có dữ liệu</li>
+  <li><strong>Move:</strong> Có named fields như struct</li>
+  <li><strong>Write:</strong> Chứa một String</li>
+  <li><strong>ChangeColor:</strong> Chứa ba giá trị i32</li>
+</ul>
 
-impl Message {
+<h3 class="task-heading">So sánh Enum với Struct</h3>
+<p>Định nghĩa enum với các variant như trên tương tự như định nghĩa các struct khác nhau, ngoại trừ việc enum không dùng từ khóa <code>struct</code> và tất cả các variant được nhóm lại dưới một kiểu <code>Message</code>. Các struct sau đây có thể lưu trữ dữ liệu tương tự như các variant của enum:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>struct QuitMessage; // unit struct
+struct MoveMessage {
+    x: i32,
+    y: i32,
+}
+struct WriteMessage(String); // tuple struct
+struct ChangeColorMessage(i32, i32, i32); // tuple struct</code></pre>
+</div>
+<p>Nhưng nếu dùng các struct khác nhau như vậy, mỗi struct sẽ có kiểu riêng, và ta không thể dễ dàng định nghĩa một hàm nhận bất kỳ loại message nào như khi dùng enum Message!</p>
+
+<h3 class="task-heading">Methods trên Enum</h3>
+<p>Giống như Struct, bạn có thể định nghĩa các method cho Enum bằng <code>impl</code>:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>impl Message {
     fn call(&self) {
-        // do something inside!
+        // method body would be defined here
     }
 }
 
@@ -120,11 +138,8 @@ let m = Message::Write(String::from("hello"));
 m.call();</code></pre>
 </div>
 
-<h3 class="task-heading">Kiểu Option&lt;T&gt; - Thay thế an toàn cho Null</h3>
-<p>Trong nhiều ngôn ngữ lập trình phổ biến, khái niệm <code>null</code> là một giá trị đặc biệt ám chỉ biến đó không có giá trị. Ông Tony Hoare - người phát minh ra Null năm 1965 - gọi đó là <strong>"Sai lầm tỉ đô"</strong>. Bạn sẽ thường gặp lỗi chương trình bị sập khi cố sử dụng một giá trị mà thực ra là <code>null</code>.</p>
-
-<p>Rust giải quyết vấn đề này bằng cách KHÔNG có null! Thay vào đó, Rust định nghĩa sẵn trong thư viện chuẩn một Enum tên là <code>Option&lt;T&gt;</code> với hai Variant: Some (chứa một giá trị T), hoặc None (không có giá trị).</p>
-
+<h3 class="task-heading">Option&lt;T&gt; trong thư viện chuẩn Rust</h3>
+<p>Enum <code>Option&lt;T&gt;</code> được định nghĩa sẵn trong thư viện chuẩn (prelude), bạn không cần import:</p>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
   <pre><code>enum Option&lt;T&gt; {
@@ -132,10 +147,44 @@ m.call();</code></pre>
     Some(T),
 }</code></pre>
 </div>
+<p>Các variants <code>Some</code> và <code>None</code> cũng được include trong prelude, nên bạn có thể dùng trực tiếp mà không cần viết <code>Option::</code></p>
 
-<div class="cyber-alert info">
-  <strong>Vì sao Option&lt;T&gt; tốt hơn null?</strong> Option&lt;T&gt; đại diện cho một kiểu có thể có giá trị hoặc không. Khi dùng type T thông thường (ví dụ u8), compiler hiểu rằng kiểu T luôn có giá trị hợp lệ. Nhưng khi dùng Option&lt;T&gt;, trình compiler Rust BẮT BẠN PHẢI KIỂM TRA xem có giá trị hay không TRƯỚC KHI SỬ DỤNG! Điều này ngăn chặn NullPointerException từ gốc!
+<p><code>&lt;T&gt;</code> là một tính năng của Rust mà chúng ta chưa nói đến - đó là <strong>generic type parameter</strong> (tham số kiểu generic). Nói đơn giản, <code>&lt;T&gt;</code> có nghĩa là variant <code>Some</code> có thể chứa dữ liệu của bất kỳ kiểu nào, và mỗi kiểu cụ thể thay thế cho T sẽ tạo ra một kiểu Option&lt;T&gt; khác nhau.</p>
+
+<p>Dưới đây là ví dụ sử dụng Option với các kiểu dữ liệu khác nhau:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>let some_number = Some(5);
+let some_char = Some('e');
+
+let absent_number: Option&lt;i32&gt; = None;</code></pre>
 </div>
+<p>Kiểu của <code>some_number</code> là <code>Option&lt;i32&gt;</code>. Kiểu của <code>some_char</code> là <code>Option&lt;char&gt;</code>, là hai kiểu khác nhau. Rust có thể suy ra các kiểu này vì chúng ta đã chỉ định giá trị bên trong variant Some. Với <code>absent_number</code>, Rust yêu cầu ta phải khai báo kiểu Option rõ ràng: vì compiler không thể suy ra kiểu mà variant Some sẽ chứa chỉ từ giá trị None.</p>
+
+<h3 class="task-heading">Tại sao Option&lt;T&gt; an toàn hơn null?</h3>
+<p>Vì Option&lt;T&gt; và T (bất kỳ kiểu nào) là các kiểu KHÁC NHAU, compiler sẽ không cho phép bạn sử dụng Option&lt;T&gt; như một giá trị thông thường. Ví dụ code sau sẽ KHÔNG compile được:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>let x: i8 = 5;
+let y: Option&lt;i8&gt; = Some(5);
+
+let sum = x + y; // LỖI COMPILE!</code></pre>
+</div>
+<p>Khi compile sẽ báo lỗi:</p>
+<pre><code>error[E0277]: cannot add Option to i8
+  |
+5 |     let sum = x + y;
+  |                 ^ no implementation for i8 + Option
+</code></pre>
+<p>Compiler báo lỗi vì không thể cộng i8 với Option&lt;i8&gt;. Bạn phải xử lý trường hợp None trước khi sử dụng giá trị. Điều này ngăn chặn vấn đề null phổ biến trong các ngôn ngữ khác!</p>
+
+<p>Vấn đề với giá trị null là khi bạn cố sử dụng một giá trị null như thể nó không phải null, bạn sẽ gặp lỗi nào đó. Vì tính chất null hay không-null phổ biến khắp nơi, rất dễ để mắc phải loại lỗi này.</p>
+
+<p>Tuy nhiên, khái niệm mà null đang cố biểu đạt vẫn hữu ích: null là một giá trị hiện tại không hợp lệ hoặc vắng mặt vì một lý do nào đó. Vấn đề không thực sự nằm ở khái niệm mà ở cách triển khai cụ thể. Do đó, Rust không có null, nhưng có một enum có thể biểu đạt khái niệm giá trị có mặt hoặc vắng mặt - đó là Option&lt;T&gt;.</p>
+
+<p>Khi có giá trị Some, ta biết có giá trị hợp lệ bên trong. Khi có None, về mặt khái niệm nó giống như null: không có giá trị hợp lệ. Nhưng với Option&lt;T&gt;, compiler bắt buộc ta phải xử lý cả hai trường hợp trước khi sử dụng.</p>
+
+<p>Nói tóm lại, để sử dụng một giá trị Option&lt;T&gt;, bạn cần code xử lý từng variant. Bạn muốn một đoạn code chỉ chạy khi có giá trị Some(T), và đoạn code khác chạy khi có None. Cấu trúc điều khiển <code>match</code> làm được điều này với enums - nó sẽ chạy code khác nhau tùy thuộc vào variant nào của enum, và code đó có thể sử dụng dữ liệu bên trong giá trị khớp.</p>
 
 <h3 class="task-heading">Cách sử dụng Option&lt;T&gt;</h3>
 <p>Để lấy giá trị từ Option, bạn có nhiều cách:</p>

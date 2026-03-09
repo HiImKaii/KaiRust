@@ -4,9 +4,22 @@ export const ch06_02: Lesson = {
             id: 'ch06-02',
             title: '6.2 Sức mạnh của match Control Flow',
             duration: '40 phút',
-            type: 'practice',
+            type: 'theory',
             content: `
-<p>Rust có một cấu trúc điều khiển luồn (Control flow construct) cực kì mạnh tên là <strong>match</strong>. Nó so sánh giá trị với một loạt các pattern khác nhau và thực thi code tương ứng. Pattern có thể là literal, biến, wildcard,... Bạn có thể tưởng tượng nó như một máy phân loại tiền xu: nếu kích thước của đồng xu nào vừa với khe của máy, nó sẽ rơi vào rổ tương ứng. Trình biên dịch sẽ kiểm tra MỌI PATTERN TỪ TRÊN XUỐNG DƯỚI, nếu khớp thì chạy code của pattern đó.</p>
+<p>Rust có một cấu trúc điều khiển luồn (Control flow construct) cực kì mạnh tên là <strong>match</strong>. Nó cho phép bạn so sánh một giá trị với một chuỗi các pattern và thực thi code dựa trên pattern nào khớp. Pattern có thể là literal values, variable names, wildcards, và nhiều thứ khác. Sức mạnh của match đến từ tính biểu đạt của các patterns và thực tế là compiler xác nhận rằng tất cả các trường hợp có thể đều được xử lý.</p>
+
+<p>Hãy tưởng tượng một biểu thức match như một máy phân loại tiền xu: Các đồng xu trượt xuống một ray với các lỗ có kích thước khác nhau dọc theo đó, và mỗi đồng xu rơi qua lỗ đầu tiên mà nó vừa. Tương tự, các giá trị đi qua mỗi pattern trong match, và tại pattern đầu tiên mà giá trị "vừa", giá trị rơi vào khối code liên kết để sử dụng trong quá trình thực thi.</p>
+
+<h3 class="task-heading">Giải thích chi tiết về Match</h3>
+<p>Hãy phân tích chi tiết hàm <code>value_in_cents</code>. Đầu tiên, chúng ta liệt kê từ khóa match theo sau bởi một expression, trong trường hợp này là giá trị <code>coin</code>. Điều này có vẻ rất giống với một biểu thức điều kiện được sử dụng với <code>if</code>, nhưng có một điểm khác biệt lớn: Với <code>if</code>, điều kiện cần đánh giá thành giá trị Boolean, nhưng ở đây nó có thể là bất kỳ kiểu nào. Kiểu của <code>coin</code> trong ví dụ này là enum <code>Coin</code> mà ta đã định nghĩa.</p>
+
+<p>Tiếp theo là các nhánh của match (match arms). Một nhánh có hai phần: một pattern và một đoạn code. Nhánh đầu tiên ở đây có pattern là giá trị <code>Coin::Penny</code> và sau đó là toán tử <code>=&gt;</code> để phân tách pattern và code cần chạy. Code trong trường hợp này chỉ là giá trị 1. Mỗi nhánh được phân tách với nhau bằng dấu phẩy.</p>
+
+<p>Khi biểu thức match thực thi, nó so sánh giá trị thu được với pattern của mỗi nhánh, theo thứ tự. Nếu pattern khớp với giá trị, code liên kết với pattern đó được thực thi. Nếu pattern đó không khớp, việc thực thi tiếp tục đến nhánh tiếp theo, giống như trong máy phân loại tiền. Chúng ta có thể có bao nhiêu nhánh tùy thích.</p>
+
+<p>Code liên kết với mỗi nhánh là một biểu thức (expression), và giá trị kết quả của biểu thức trong nhánh khớp là giá trị được trả về cho toàn bộ biểu thức match.</p>
+
+<p>Chúng ta thường không dùng dấu ngoặc nhọn nếu code của nhánh match ngắn, như trong ví dụ trên nơi mỗi nhánh chỉ trả về một giá trị. Nếu bạn muốn chạy nhiều dòng code trong một nhánh match, bạn phải sử dụng dấu ngoặc nhọn, và dấu phẩy sau nhánh là tùy chọn.</p>
 
 <h3 class="task-heading">Cú pháp cấu trúc Match</h3>
 <div class="code-snippet">
@@ -81,8 +94,50 @@ let none = plus_one(None); // None
   <strong>Lưu ý quan trọng về Option Match:</strong> Rust <strong>BUỘC PHẢI XỬ LÝ TẤT CẢ</strong> các Variant. Nếu bạn <code>match</code> một biến Option&lt;T&gt; mà quên không xử lý <code>None</code>, trình biên dịch sẽ BÁO LỖI. Điều này giúp ngăn ngừa NullPointerException (thứ đã gây ra nhiều lỗi nghiêm trọng) ở runtime!
 </div>
 
+<p>Hãy xem phiên bản sau đây của hàm <code>plus_one</code> có bug và sẽ không compile:</p>
+<pre>fn plus_one(x: Option&lt;i32&gt;) -> Option&lt;i32&gt; {
+    match x {
+        Some(i) => Some(i + 1),
+    }
+}</pre>
+<p>Chúng ta đã không xử lý trường hợp None, nên code này sẽ gây bug. May mắn thay, đây là bug mà Rust biết cách bắt. Nếu ta cố compile code này, ta sẽ nhận được lỗi:</p>
+<pre>error[E0004]: non-exhaustive patterns: None not covered
+ --> src/main.rs:3:15
+  |
+3 |         match x {
+  |               ^ pattern None not covered
+  |
+note: Option defined here
+note: the matched value is of type Option
+help: ensure that all possible cases are being handled
+  |
+4 ~             Some(i) => Some(i + 1),
+5 ~             None => todo!(),</pre>
+<p>Rust biết rằng chúng ta đã không cover mọi trường hợp và thậm chí còn biết pattern nào ta đã quên! Matches trong Rust là exhaustive (toàn diện): Chúng ta phải exhaust mọi khả năng cuối cùng để code hợp lệ. Đặc biệt trong trường hợp Option, khi Rust ngăn chúng ta quên xử lý rõ ràng trường hợp None, nó bảo vệ chúng ta khỏi việc giả định rằng ta có một giá trị khi thực tế có thể là null - làm cho "sai lầm tỉ đô" không thể xảy ra.</p>
+
 <h3 class="task-heading">Pattern Catch-All (Wildcard)</h3>
 <p>Khi có nhiều giá trị cần xử lý giống nhau, ta có thể dùng pattern bắt tất cả (Catch-all) bằng cách đặt tên cho giá trị còn lại hoặc dùng <code>_</code> như placeholder.</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>let dice_roll = 9;
+
+match dice_roll {
+    3 => add_fancy_hat(),
+    7 => remove_fancy_hat(),
+    other => move_player(other), // Gán giá trị vào biến other
+}</code></pre>
+</div>
+<p>Biến <code>other</code> sẽ nhận mọi giá trị không khớp với 3 hoặc 7. Nếu không cần sử dụng giá trị, dùng <code>_</code>:</p>
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>match dice_roll {
+    3 => add_fancy_hat(),
+    7 => remove_fancy_hat(),
+    _ => reroll_dice(), // Bỏ qua, không dùng giá trị
+}</code></pre>
+</div>
+<p>Nếu muốn không làm gì cả:</p>
+<pre><code>_ => ()</code></pre>
 
 <h3 class="task-heading">Match với Ranges và Guards</h3>
 <p>Match còn hỗ trợ pattern với khoảng (ranges) và điều kiện (guards):</p>

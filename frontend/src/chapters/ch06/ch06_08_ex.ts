@@ -6,16 +6,49 @@ export const ch06_08_ex: Lesson = {
     duration: '30 phút',
     type: 'practice',
     isExercise: true,
+
+    problemTitle: 'Kết hợp Enum và Pattern Matching',
+    memoryLimit: '256MB',
+    timeLimit: '1s',
+
+    problemDescription: `Bài tập tổng hợp: Kết hợp Enum, Pattern Matching, Option và Result.
+
+Yêu cầu:
+1. Định nghĩa enum PaymentMethod: Cash, CreditCard, DebitCard, Wallet
+2. Định nghĩa enum PaymentStatus: Pending, Completed, Failed(String)
+3. Viết hàm process_payment(method: PaymentMethod, amount: f64) -> PaymentStatus
+4. Viết hàm calculate_fee(method: &PaymentMethod, amount: f64) -> Option<f64>
+
+Phí thanh toán:
+- Cash: 0%
+- Wallet: 1%
+- DebitCard: 2%
+- CreditCard: 3%`,
+
+    inputFormat: 'Gọi hàm với các PaymentMethod khác nhau',
+    outputFormat: 'In ra PaymentStatus hoặc phí thanh toán',
+
+    constraints: [
+        { field: 'PaymentMethod', condition: '4 variant: Cash, CreditCard, DebitCard, Wallet' },
+        { field: 'PaymentStatus', condition: '3 variant: Pending, Completed, Failed(String)' },
+        { field: 'calculate_fee', condition: 'Trả về Option<f64>, Some(phí) hoặc None' }
+    ],
+
+    examples: [
+        {
+            input: 'process_payment(PaymentMethod::Cash, 100.0)',
+            output: 'Completed',
+            explanation: 'Thanh toán tiền mặt luôn thành công'
+        },
+        {
+            input: 'calculate_fee(&PaymentMethod::CreditCard, 100.0)',
+            output: 'Some(3)',
+            explanation: 'Phí thẻ tín dụng 3%'
+        }
+    ],
+
     content: `
-<p>Bài tập tổng hợp: Kết hợp Enum, Pattern Matching, Option và Result!</p>
-<h3 class="task-heading">Yêu cầu</h3>
-<ol class="task-list">
-  <li>Định nghĩa enum <code>PaymentMethod</code>: Cash, creditCard, DebitCard, Wallet</li>
-  <li>Định nghĩa enum <code>PaymentStatus</code>: Pending, Completed, Failed(String)</li>
-  <li>Tạo hàm <code>process_payment(method: PaymentMethod, amount: f64) -> PaymentStatus</code></li>
-  <li>Tạo hàm <code>calculate_fee(method: &PaymentMethod, amount: f64) -> Option&lt;f64&gt;</code></li>
-</ol>
-<h3 class="task-heading">Phí thanh toán</h3>
+<h3>Phí thanh toán</h3>
 <ul>
   <li>Cash: 0%</li>
   <li>Wallet: 1%</li>
@@ -23,28 +56,36 @@ export const ch06_08_ex: Lesson = {
   <li>CreditCard: 3%</li>
 </ul>
 `,
-    defaultCode: `// Định nghĩa enum PaymentMethod
 
-// Định nghĩa enum PaymentStatus
+    defaultCode: `// TODO: Định nghĩa enum PaymentMethod
 
-// Hàm xử lý thanh toán
+// TODO: Định nghĩa enum PaymentStatus
 
-// Hàm tính phí thanh toán
+// TODO: Viết hàm process_payment
+
+// TODO: Viết hàm calculate_fee
 
 fn main() {
+    println!("{:?}", process_payment(PaymentMethod::Cash, 100.0));
+    println!("{:?}", calculate_fee(&PaymentMethod::CreditCard, 100.0));
 }
 `,
-    expectedOutput: '',
+
     testCases: [
         {
-            input: 'PaymentMethod::Cash',
+            input: 'process_payment(PaymentMethod::Cash, 100.0)',
             expectedOutput: 'Completed',
-            description: 'Thanh toán tiền mặt luôn thành công'
+            description: 'Thanh toán tiền mặt'
         },
         {
             input: 'calculate_fee(&PaymentMethod::CreditCard, 100.0)',
-            expectedOutput: 'Some(3.0)',
+            expectedOutput: 'Some(3)',
             description: 'Phí thẻ tín dụng 3%'
+        },
+        {
+            input: 'calculate_fee(&PaymentMethod::Wallet, 100.0)',
+            expectedOutput: 'Some(1)',
+            description: 'Phí wallet 1%'
         }
     ]
 };
