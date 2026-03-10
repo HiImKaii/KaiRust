@@ -669,6 +669,26 @@ code {
   transform: translateY(-1px);
 }
 
+/* Lý Thuyết button - same style as Luyện Tập */
+.btn-back-course {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--color-purple);
+  padding: 8px 16px;
+  line-height: 1;
+  cursor: pointer;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.1));
+  border: none;
+  border-radius: var(--radius-full);
+  transition: all 0.25s var(--ease);
+}
+
+.btn-back-course:hover {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(59, 130, 246, 0.2));
+  transform: translateY(-1px);
+}
+
 /* Left Column - Instruction - Column 2 */
 .instruction-panel {
   flex: 1;
@@ -1204,7 +1224,8 @@ code {
   box-shadow: 0 4px 16px rgba(168, 85, 247, 0.3) !important;
 }
 
-.submit-btn.hidden {
+.submit-btn.hidden,
+.hidden {
   display: none !important;
 }
 

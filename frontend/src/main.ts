@@ -1,6 +1,7 @@
 import * as monaco from 'monaco-editor';
 import { courseData, type Lesson, type Chapter, generateCPContent } from './courses';
 import { ProgressManager } from './progress';
+import { ch28_chapters } from './chapters/ch28/index';
 
 // =====================================================
 // KaiRust - Main Application Logic
@@ -8,6 +9,10 @@ import { ProgressManager } from './progress';
 
 let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null;
 let flatLessons: Lesson[] = [];
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// @ts-ignore - used for routing state
+var currentView: 'course' | 'practice' = 'course';
 let currentLessonIndex = -1;
 let lessonStartTime = 0;
 const readLessons = new Set<string>();
@@ -1473,6 +1478,184 @@ function setupAuthModal() {
 // =====================================================
 // Main Init
 // =====================================================
+// Practice View (28Tech) - Separate Page
+// =====================================================
+
+const showPracticeView = () => {
+    currentView = 'practice';
+
+    // Update URL without reload
+    history.pushState({}, '', '/practice');
+
+    // Show back button (as Lý Thuyết), hide practice button
+    const practiceBtn = document.getElementById('btn-luyen-tap');
+    const backBtn = document.getElementById('btn-back-course');
+    const sidebarTitle = document.querySelector('.sidebar-title');
+    if (practiceBtn) {
+        practiceBtn.classList.add('hidden');
+    }
+    if (backBtn) {
+        backBtn.classList.remove('hidden');
+    }
+    if (sidebarTitle) {
+        sidebarTitle.textContent = '28Tech - Luyện Tập';
+    }
+
+    // Hide curriculum sidebar, show practice lessons
+    const curriculumList = document.getElementById('curriculum-list');
+    if (curriculumList) {
+        curriculumList.innerHTML = '';
+        renderPracticeCurriculum();
+    }
+
+    // Update instruction panel
+    const lessonTitle = document.getElementById('lesson-title');
+    const lessonContent = document.getElementById('lesson-content');
+    const lessonType = document.getElementById('lesson-type');
+
+    if (lessonTitle) lessonTitle.textContent = '28Tech - Luyện Tập';
+    if (lessonType) {
+        lessonType.textContent = 'practice';
+        lessonType.className = 'lesson-badge lesson-badge-practice';
+    }
+    if (lessonContent) {
+        lessonContent.innerHTML = `
+            <h2>28Tech - Luyện Tập</h2>
+            <p>Chọn một buổi học từ danh sách bên trái để bắt đầu luyện tập.</p>
+            <p>Các bài tập được lấy từ tài liệu khóa học 28Tech.</p>
+        `;
+    }
+
+    // Select first practice lesson
+    if (ch28_chapters.length > 0 && ch28_chapters[0].lessons.length > 0) {
+        selectLesson(ch28_chapters[0].lessons[0]);
+    }
+};
+
+const renderPracticeCurriculum = () => {
+    const curriculumList = document.getElementById('curriculum-list');
+    if (!curriculumList) return;
+
+    // Render each chapter (Buổi)
+    ch28_chapters.forEach((chapter, chapterIndex) => {
+        const chapterDiv = document.createElement('div');
+        chapterDiv.className = 'chapter-item';
+
+        const chapterHeader = document.createElement('div');
+        chapterHeader.className = 'chapter-header';
+        chapterHeader.innerHTML = `
+            <span class="chapter-title">${chapter.title}</span>
+        `;
+        // Make chapter expandable
+        chapterHeader.addEventListener('click', () => {
+            chapterHeader.classList.toggle('open');
+            const lessonList = chapterDiv.querySelector('.lesson-list') as HTMLElement;
+            if (lessonList) {
+                lessonList.classList.toggle('open');
+            }
+        });
+
+        const lessonList = document.createElement('div');
+        lessonList.className = 'lesson-list';
+
+        chapter.lessons.forEach((lesson, lessonIndex) => {
+            const lessonItem = document.createElement('div');
+            lessonItem.className = 'lesson-item';
+            lessonItem.dataset.lessonId = lesson.id;
+            lessonItem.innerHTML = `
+                <span class="lesson-number">${chapterIndex + 1}.${lessonIndex + 1}</span>
+                <span class="lesson-title">${lesson.title}</span>
+            `;
+            lessonItem.addEventListener('click', () => {
+                selectLesson(lesson);
+            });
+            lessonList.appendChild(lessonItem);
+        });
+
+        chapterDiv.appendChild(chapterHeader);
+        chapterDiv.appendChild(lessonList);
+        curriculumList.appendChild(chapterDiv);
+    });
+};
+
+// Setup Luyện Tập button
+const setupPracticeButton = () => {
+    const practiceBtn = document.getElementById('btn-luyen-tap');
+    practiceBtn?.addEventListener('click', () => {
+        showPracticeView();
+    });
+
+    // Back to course button
+    const backBtn = document.getElementById('btn-back-course');
+    backBtn?.addEventListener('click', () => {
+        currentView = 'course';
+        history.pushState({}, '', '/');
+
+        // Show practice button (Luyện Tập), hide back button
+        if (practiceBtn) {
+            practiceBtn.classList.remove('hidden');
+        }
+        if (backBtn) {
+            backBtn.classList.add('hidden');
+        }
+
+        // Restore sidebar title
+        const sidebarTitle = document.querySelector('.sidebar-title');
+        if (sidebarTitle) {
+            sidebarTitle.textContent = 'Nội dung khóa học';
+        }
+
+        // Render normal curriculum
+        const curriculumList = document.getElementById('curriculum-list');
+        if (curriculumList) {
+            curriculumList.innerHTML = '';
+            renderCurriculum();
+        }
+
+        // Select first lesson
+        if (flatLessons.length > 0) {
+            selectLesson(flatLessons[0]);
+        }
+    });
+};
+
+// Handle browser back/forward navigation
+const handleNavigation = () => {
+    window.addEventListener('popstate', () => {
+        const path = window.location.pathname;
+        if (path === '/practice') {
+            showPracticeView();
+        } else {
+            // Show normal course view
+            currentView = 'course';
+            const curriculumList = document.getElementById('curriculum-list');
+            const sidebarTitle = document.querySelector('.sidebar-title');
+            const practiceBtn = document.getElementById('btn-luyen-tap');
+            const backBtn = document.getElementById('btn-back-course');
+
+            if (curriculumList) {
+                curriculumList.innerHTML = '';
+                renderCurriculum();
+            }
+            if (sidebarTitle) {
+                sidebarTitle.textContent = 'Nội dung khóa học';
+            }
+            if (practiceBtn) {
+                practiceBtn.classList.remove('hidden');
+            }
+            if (backBtn) {
+                backBtn.classList.add('hidden');
+            }
+        }
+    });
+
+    // Check initial URL
+    if (window.location.pathname === '/practice') {
+        showPracticeView();
+    }
+};
+
+// =====================================================
 
 document.addEventListener('DOMContentLoaded', () => {
     initEditor();
@@ -1480,6 +1663,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupRunButton();
     setupStdinInput();
     setupClearButton();
+    setupPracticeButton();
+    handleNavigation();
     updateProgress();
     setupNavButtons();
     setupThemeToggle();
