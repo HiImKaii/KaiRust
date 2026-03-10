@@ -13,52 +13,69 @@ const backprop_lessons: Lesson[] = [
     duration: '45 phút',
     type: 'theory',
     content: `
-      <h2>1. Chain Rule - Nền tảng toán học cho Backpropagation</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">account_tree</span> 10. Chain Rule - Nền tảng toán học cho Backpropagation</h2>
 
-      <h3>1.1. Tại sao cần Chain Rule?</h3>
-      <p>Trong Neural Network, output phụ thuộc vào input qua nhiều "lớp" (layers) tính toán. Để biết thay đổi một weight ở lớp đầu ảnh hưởng như thế nào đến kết quả cuối cùng, ta cần Chain Rule.</p>
+  <h3>10.1. Tại sao cần Chain Rule?</h3>
+  <p>Trong Neural Network, output phụ thuộc vào input qua nhiều "lớp" (layers) tính toán. Để biết thay đổi một weight ở lớp đầu ảnh hưởng như thế nào đến kết quả cuối cùng, ta cần <strong>Chain Rule</strong> (Đạo hàm hợp).</p>
 
-      <h3>1.2. Định lý Chain Rule</h3>
-      <p>Nếu y = f(g(x)), tức là y phụ thuộc vào z = g(x), thì:</p>
-      <pre><code>dy/dx = (df/dg) * (dg/dx)
+  <h3>10.2. Định nghĩa Chain Rule</h3>
+  <div class="definition-block">
+    <p>Nếu <code>y = f(g(x))</code>, tức là y phụ thuộc vào <code>z = g(x)</code>, thì:</p>
+    <div class="formula-block">
+      dy/dx = (df/dg) * (dg/dx)
+    </div>
+    <p>Hay viết chi tiết hơn: <strong>dy/dx = dy/dz * dz/dx</strong></p>
+  </div>
 
-Hay viết chi tiết hơn:
-dy/dx = dy/dz * dz/dx</code></pre>
+  <h3>10.3. Ví dụ Step-by-Step</h3>
+  <p>Cho: <code>x → z = 2x → y = z²</code>. Tính <code>dy/dx = ?</code></p>
+  
+  <div class="steps-container mt-4">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <div>
+        <strong>Tính dy/dz</strong>
+        <p>y = z² → <code>dy/dz = 2z</code></p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <div>
+        <strong>Tính dz/dx</strong>
+        <p>z = 2x → <code>dz/dx = 2</code></p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <div>
+        <strong>Áp dụng Chain Rule</strong>
+        <p><code>dy/dx = dy/dz * dz/dx = 2z * 2 = 4z</code></p>
+        <p>Thay <code>z = 2x</code> vào → <code>4(2x) = 8x</code></p>
+      </div>
+    </div>
+  </div>
+  <div class="callout callout-info">
+    <div class="callout-icon"><span class="material-symbols-outlined">verified</span></div>
+    <div class="callout-content">
+      <strong>Kiểm tra lại:</strong> <code>y = (2x)² = 4x²</code> → <code>dy/dx = 8x</code> ✓
+    </div>
+  </div>
 
-      <h3>1.3. Ví dụ đơn giản</h3>
-      <p>Cho: x → z = 2x → y = z²</p>
-      <pre><code>Tính dy/dx = ?
-
-Bước 1: Tính dy/dz
-  y = z²
-  dy/dz = 2z
-
-Bước 2: Tính dz/dx
-  z = 2x
-  dz/dx = 2
-
-Bước 3: Áp dụng Chain Rule
-  dy/dx = dy/dz * dz/dx
-        = 2z * 2
-        = 4z
-        = 4(2x)
-        = 8x
-
-Kiểm tra:
-  y = (2x)² = 4x²
-  dy/dx = 8x ✓</code></pre>
-
-      <h3>1.4. Chain Rule với nhiều biến</h3>
-      <p>Nếu có nhiều đường đến cùng một output:</p>
-      <pre><code>        x₁ ──┐
+  <h3>10.4. Chain Rule với 3 hàm số</h3>
+  <p>Nếu có nhiều đường đến cùng một output:</p>
+  <div class="image-showcase">
+    <pre class="bg-slate-100 p-4 rounded-lg font-mono text-sm">        x₁ ──┐
              │
         x₂ ──┼──► z ──► y
              │
-        x₃ ──┘
-
-y = f(z) = f(g₁(x₁) + g₂(x₂) + g₃(x₃))
-
-dy/dx₁ = dy/dz * dz/dg₁ * dg₁/dx₁</code></pre>
+        x₃ ──┘</pre>
+  </div>
+  <div class="formula-block mt-4 mb-4">
+    <p>y = f(z) = f(g₁(x₁) + g₂(x₂) + g₃(x₃))</p>
+    <p class="mt-2 text-blue-600 font-bold">dy/dx₁ = dy/dz * dz/dg₁ * dg₁/dx₁</p>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // CHAIN RULE - MINH HỌA CHI TIẾT
@@ -140,57 +157,87 @@ fn main() {
     duration: '60 phút',
     type: 'theory',
     content: `
-      <h2>2. Backpropagation từng bước một</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">u_turn_left</span> 11. Backpropagation từng bước một</h2>
 
-      <h3>2.1. Forward Pass vs Backward Pass</h3>
-      <pre><code>FORWARD PASS (Tính toán thuận):
-  Input x
-    → z₁ = w₁x + b₁
-    → a₁ = σ(z₁)
-    → z₂ = w₂a₁ + b₂
-    → a₂ = σ(z₂) = Output
-    → Loss
+  <h3>11.1. Forward Pass vs Backward Pass</h3>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon text-blue-500"><span class="material-symbols-outlined">east</span></div>
+      <h4>FORWARD PASS (Tính toán thuận)</h4>
+      <ul class="text-sm space-y-2 mt-2">
+        <li><code>Input x</code></li>
+        <li>→ <code>z₁ = w₁x + b₁</code></li>
+        <li>→ <code>a₁ = σ(z₁)</code></li>
+        <li>→ <code>z₂ = w₂a₁ + b₂</code></li>
+        <li>→ <code>a₂ = σ(z₂) = Output</code></li>
+        <li>→ <strong>Loss</strong></li>
+      </ul>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon text-red-500"><span class="material-symbols-outlined">west</span></div>
+      <h4>BACKWARD PASS (Lan truyền ngược)</h4>
+      <ul class="text-sm space-y-2 mt-2">
+        <li><strong>Loss</strong></li>
+        <li>→ <code>da₂</code></li>
+        <li>→ <code>dz₂ = da₂ * σ'(z₂)</code></li>
+        <li>→ <code>dw₂ = dz₂ * a₁</code> | <code>db₂ = dz₂</code></li>
+        <li>→ <code>da₁ = dz₂ * w₂</code></li>
+        <li>→ <code>dz₁ = da₁ * σ'(z₁)</code></li>
+        <li>→ <code>dw₁ = dz₁ * x</code> | <code>db₁ = dz₁</code></li>
+      </ul>
+    </div>
+  </div>
 
-BACKWARD PASS (Lan truyền ngược):
-  Loss
-    → da₂
-    → dz₂ = da₂ * σ'(z₂)
-    → dw₂ = dz₂ * a₁
-    → db₂ = dz₂
-    → da₁ = dz₂ * w₂
-    → dz₁ = da₁ * σ'(z₁)
-    → dw₁ = dz₁ * x
-    → db₁ = dz₁</code></pre>
+  <h3>11.2. Công thức Backpropagation cho 1 sample</h3>
 
-      <h3>2.2. Công thức Backpropagation cho 1 sample</h3>
+  <h4>Output Layer:</h4>
+  <div class="definition-block mb-4">
+    <p><strong>Giả sử:</strong> Output: <code>a</code> (sau activation), Target: <code>y</code>, Loss: <code>L = (a - y)² (MSE)</code>, Activation: sigmoid <code>σ(z)</code></p>
+  </div>
+  
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <div>
+        <strong>dL/da (Đạo hàm Loss)</strong>
+        <p>L = (a - y)² → <code>dL/da = 2(a - y)</code></p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <div>
+        <strong>da/dz (Qua activation)</strong>
+        <p>a = σ(z) → <code>da/dz = σ'(z) = a(1-a)</code></p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <div>
+        <strong>dz/dw (Qua weighted sum)</strong>
+        <p>z = wa + b → <code>dz/dw = a</code></p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="callout callout-info mt-4 mb-4">
+    <div class="callout-icon"><span class="material-symbols-outlined">link</span></div>
+    <div class="callout-content">
+      <strong>Kết hợp (Chain Rule):</strong><br/>
+      <code>dL/dw = dL/da * da/dz * dz/dw</code><br/>
+      <code class="text-blue-600 font-bold">= 2(a-y) * a(1-a) * a</code>
+    </div>
+  </div>
 
-      <h4>Output Layer:</h4>
-      <pre><code>Giả sử:
-- Output: a (sau activation)
-- Target: y
-- Loss: L = (a - y)² (MSE)
-- Activation: sigmoid σ(z)
-
-Bước 1: dL/da
-  L = (a - y)²
-  dL/da = 2(a - y)
-
-Bước 2: da/dz (qua activation)
-  a = σ(z)
-  da/dz = σ'(z) = σ(z)(1 - σ(z)) = a(1-a)
-
-Bước 3: dz/dw (qua weighted sum)
-  z = wa + b
-  dz/dw = a
-
-Kết hợp (Chain Rule):
-  dL/dw = dL/da * da/dz * dz/dw
-        = 2(a-y) * a(1-a) * a</code></pre>
-
-      <h4>Hidden Layer:</h4>
-      <pre><code>Gradient truyền về hidden:
-  dL/dz₁ = dL/da₁ * da₁/dz₁
-         = (dL/dz₂ * w₂) * σ'(z₁)</code></pre>
+  <h4>Hidden Layer:</h4>
+  <div class="callout callout-warning">
+    <div class="callout-icon"><span class="material-symbols-outlined">reply_all</span></div>
+    <div class="callout-content">
+      <strong>Gradient truyền về hidden:</strong><br/>
+      <code>dL/dz₁ = dL/da₁ * da₁/dz₁ = (dL/dz₂ * w₂) * σ'(z₁)</code>
+    </div>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // BACKPROPAGATION - CÀI ĐẶT CHI TIẾT
@@ -363,43 +410,93 @@ fn main() {
     duration: '45 phút',
     type: 'theory',
     content: `
-      <h2>3. Full Training Loop - Vòng lặp huấn luyện hoàn chỉnh</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">refresh</span> 12. Full Training Loop - Vòng lặp huấn luyện hoàn chỉnh</h2>
 
-      <h3>3.1. Các bước trong Training</h3>
-      <pre><code>TRAINING LOOP:
-  FOR epoch = 1 TO num_epochs:
-    FOR each batch:
-      1. FORWARD PASS
-         - Tính output từ input
-         - Tính loss
+  <h3>12.1. Các bước trong Training</h3>
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <div>
+        <strong>FORWARD PASS</strong>
+        <p>Tính Output từ Input và chạy hàm Loss.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number" style="background-color: var(--secondary-blue)">2</div>
+      <div>
+        <strong>BACKWARD PASS</strong>
+        <p>Tính gradients (đạo hàm) cho tất cả weights thông qua Chain Rule.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number" style="background-color: var(--danger-red)">3</div>
+      <div>
+        <strong>UPDATE WEIGHTS</strong>
+        <p>Cập nhật số bằng Optimizer: <code>w = w - learning_rate * gradient</code></p>
+      </div>
+    </div>
+  </div>
 
-      2. BACKWARD PASS
-         - Tính gradients cho tất cả weights
+  <h3>12.2. Các chiến lược cập nhật</h3>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">inventory_2</span></div>
+      <h4>Batch GD</h4>
+      <p>Tính gradient trên <strong>TOÀN BỘ</strong> dữ liệu trước khi Update 1 lần.</p>
+      <p class="text-sm text-green-600">Ưu: Chính xác (Gradient mượt)</p>
+      <p class="text-sm text-red-600">Nhược: Cực kì chậm và ngốn RAM!</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">bolt</span></div>
+      <h4>Stochastic GD (SGD)</h4>
+      <p>Tính gradient và Update sau <strong>MỖI 1 SAMPLE</strong> (từng dòng một).</p>
+      <p class="text-sm text-green-600">Ưu: Cực nhanh, thoát Local Minima tốt do nhiễu.</p>
+      <p class="text-sm text-red-600">Nhược: Dao động dữ dội, khó hội tụ.</p>
+    </div>
+    <div class="concept-card highlight-success">
+      <div class="concept-icon"><span class="material-symbols-outlined">layers</span></div>
+      <h4>Mini-batch GD</h4>
+      <p>Tính gradient trên <strong>TỪNG BATCH</strong> (32, 64, 128 samples) rồi Update.</p>
+      <p class="mt-2 font-bold text-center">DÙNG PHỔ BIẾN NHẤT!</p>
+    </div>
+  </div>
 
-      3. UPDATE WEIGHTS
-         - w = w - learning_rate * gradient
+  <h3>12.3. Phân biệt Epoch, Iteration, và Batch</h3>
+  <div class="definition-block">
+    <p><strong>EPOCH</strong> = 1 lần đi hết <strong>TOÀN BỘ</strong> dữ liệu.</p>
+    <p><strong>BATCH_SIZE</strong> = Số lượng mẫu đem ra gom lại tính.</p>
+    <p><strong>ITERATION (Step)</strong> = 1 lần chạy Update Weights.</p>
+    <hr class="my-2 border-gray-300">
+    <p><strong>Ví dụ:</strong> Data có 1000 samples, batch_size = 100.</p>
+    <p>→ 1 EPOCH sẽ có 10 ITERATIONS.</p>
+  </div>
 
-    END FOR
-  END FOR</code></pre>
-
-      <h3>3.2. Các loại Gradient Descent</h3>
-
-      <h4>Batch Gradient Descent:</h4>
-      <pre><code>- Tính gradient trên TOÀN BỘ dữ liệu
-- Cập nhật weights 1 lần/epoch
-- Ưu: Chính xác
-- Nhược: Chậm với dữ liệu lớn</code></pre>
-
-      <h4>Stochastic Gradient Descent (SGD):</h4>
-      <pre><code>- Tính gradient trên 1 sample
-- Cập nhật weights sau mỗi sample
-- Ưu: Nhanh, có noise giúp thoát local minimum
-- Nhược: Ồn ào, không ổn định</code></pre>
-
-      <h4>Mini-batch Gradient Descent:</h4>
-      <pre><code>- Tính gradient trên batch (32-128 samples)
-- Cập nhật weights sau mỗi batch
-- Ưu: Cân bằng tốt nhất → DÙNG PHỔ BIẾN NHẤT!</code></pre>
+  <h3><span class="material-symbols-outlined">lightbulb</span> 12.4. Training Tips - Mẹo huấn luyện thực tế</h3>
+  
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">shuffle</span></div>
+      <h4>Shuffle Data</h4>
+      <p>Xáo trộn thứ tự dữ liệu mỗi Epoch để Network học Pattern chứ không học theo thứ tự đưa vào mồm.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">monitor_heart</span></div>
+      <h4>Validation Loss</h4>
+      <p>Luôn phải giám sát Valid Loss. Nếu Train Loss tụt mà Valid Loss tăng phi mã → dính Chướng ngại vật lớn nhất của Deep Learning: <strong>Overfitting</strong>.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">stop_circle</span></div>
+      <h4>Early Stopping</h4>
+      <p>Thiết lập luật dừng: Đứng hình sau N Epoch mà Validation không khá hơn. Lưu Checkpoint tốt nhất.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">thermostat</span></div>
+      <h4>Learning Rate Decay</h4>
+      <p>Về cuối lúc gần chạm đáy, nhịp chân (LR) cần co lại bớt để không bị nhảy tuột qua Minima (như Cosine Annealing).</p>
+    </div>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // FULL TRAINING LOOP - VÒNG LẶP HUẤN LUYỆN HOÀN CHỈNH
@@ -513,7 +610,7 @@ fn main() {
 // Export
 export const ch21_backprop: Chapter = {
   id: 'ch21_backprop',
-  title: '21.X. Backpropagation',
+  title: '21.4. Backpropagation',
   introduction: `<h2>Backpropagation - Lan truyền ngược</h2>`,
   lessons: backprop_lessons,
 };

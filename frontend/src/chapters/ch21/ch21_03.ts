@@ -23,24 +23,36 @@ const ch21_03_lessons: Lesson[] = [
     duration: '30 phút',
     type: 'theory',
     content: `
-      <h2>1. Vấn đề: Làm sao tìm được weights tốt nhất?</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">psychology</span> 7. Vấn đề: Làm sao tìm được weights tốt nhất?</h2>
 
-      <h3>1.1. Nhắc lại bài cũ</h3>
-      <p>Ở bài trước, ta đã biết Neural Network có công thức:</p>
-      <pre><code>y = f(w₁x₁ + w₂x₂ + ... + b)</code></pre>
-      <p>Và ta cần tìm weights (w) và bias (b) để output gần với giá trị thực nhất.</p>
+  <h3>7.1. Nhắc lại bài cũ</h3>
+  <div class="definition-block">
+    <p>Ở bài trước, ta đã biết Neural Network có công thức:</p>
+    <div class="formula-block">
+      y = f(w₁x₁ + w₂x₂ + ... + b)
+    </div>
+    <p>Và ta cần tìm <strong>weights (w)</strong> và <strong>bias (b)</strong> để output gần với giá trị thực nhất.</p>
+  </div>
 
-      <h3>1.2. Thử tất cả các giá trị - Brute Force</h3>
-      <p>Cách đơn giản nhất: Thử tất cả các giá trị có thể của w và b!</p>
-      <pre><code>Ví dụ:
-- w từ -10 đến 10, bước 0.1 → 200 giá trị
-- b từ -10 đến 10, bước 0.1 → 200 giá trị
-- Tổng: 200 × 200 = 40,000 combinations</code></pre>
-      <p>Vấn đề: Với Neural Network thực tế có HÀNG TRIỆU weights, cách này KHÔNG THỂ!</p>
+  <h3>7.2. Thử tất cả các giá trị - Brute Force</h3>
+  <p>Cách đơn giản nhất: Thử tất cả các giá trị có thể của w và b!</p>
+  <div class="callout callout-warning">
+    <div class="callout-icon"><span class="material-symbols-outlined">warning</span></div>
+    <div class="callout-content">
+      <strong>Ví dụ Brute Force:</strong>
+      <ul>
+        <li>w từ -10 đến 10, bước 0.1 → <strong>200 giá trị</strong></li>
+        <li>b từ -10 đến 10, bước 0.1 → <strong>200 giá trị</strong></li>
+        <li>Tổng cộng: 200 × 200 = <strong>40,000 combinations</strong></li>
+      </ul>
+      <p class="mt-2 text-red-400"><strong>Vấn đề:</strong> Với Neural Network thực tế có HÀNG TRIỆU weights, cách này KHÔNG THỂ TÍNH TOÁN NỔI!</p>
+    </div>
+  </div>
 
-      <h3>1.3. Thử ngẫu nhiên - Random Search</h3>
-      <p>Cách khác: Chọn ngẫu nhiên weights và giữ lại cái tốt nhất.</p>
-      <pre><code>random_search():
+  <h3>7.3. Thử ngẫu nhiên - Random Search</h3>
+  <p>Cách khác: Chọn ngẫu nhiên weights nhiều lần và giữ lại bộ số có Loss thấp nhất.</p>
+  <pre><code class="language-python">def random_search():
     best_loss = infinity
     best_weights = None
 
@@ -52,15 +64,18 @@ const ch21_03_lessons: Lesson[] = [
             best_weights = weights
 
     return best_weights</code></pre>
-      <p>Vấn đề: Không hiệu quả, tốn nhiều lần thử!</p>
+  <p><strong>Vấn đề:</strong> Không hiệu quả vì nó giống như đi tìm kim đáy biển, tốn vô vàn lần thử một cách vô định!</p>
 
-      <h3>1.4. Giải pháp: Gradient Descent</h3>
-      <p><strong>Gradient Descent</strong> là thuật toán tìm điểm tối ưu BẰNG TOÁN HỌC, không cần thử ngẫu nhiên!</p>
-      <ul>
-        <li>Nhanh hơn Brute Force</li>
-        <li>Chính xác hơn Random Search</li>
-        <li>Áp dụng được cho hàng triệu parameters</li>
-      </ul>
+  <h3><span class="material-symbols-outlined">check_circle</span> 7.4. Giải pháp: Gradient Descent</h3>
+  <div class="key-takeaway">
+    <strong>Gradient Descent</strong> là thuật toán tìm điểm tối ưu BẰNG TOÁN HỌC, có định hướng rõ ràng, không cần thử mò ngẫu nhiên!
+    <ul class="mt-2">
+      <li>Nhanh hơn Brute Force.</li>
+      <li>Chính xác hơn Random Search.</li>
+      <li>Áp dụng được cho mạng có hàng triệu (thậm chí tỷ) parameters.</li>
+    </ul>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // VÍ DỤ: SO SÁNH CÁC PHƯƠNG PHÁP TÌM WEIGHTS TỐT NHẤT
@@ -190,76 +205,139 @@ fn main() {
     duration: '45 phút',
     type: 'theory',
     content: `
-      <h2>2. Gradient Descent là gì? Giải thích bằng hình ảnh</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">image</span> 8. Gradient Descent là gì? Giải thích bằng hình ảnh</h2>
 
-      <h3>2.1. Ý tưởng cốt lõi</h3>
-      <p>Hãy tưởng tượng bạn đang đứng trên một ngọn núi trong sương mù. Bạn không nhìn thấy đường, nhưng bạn cảm nhận được độ dốc dưới chân. Nếu bạn muốn xuống đáy thung lũng nhanh nhất, bạn sẽ đi theo hướng dốc xuống!</p>
+  <h3>8.1. Ý tưởng cốt lõi</h3>
+  <div class="callout callout-info">
+    <div class="callout-icon"><span class="material-symbols-outlined">lightbulb</span></div>
+    <div class="callout-content">
+      <p>Hãy tưởng tượng bạn đang đứng trên một ngọn núi trong sương mù. Bạn không nhìn thấy đường, nhưng bạn <strong>cảm nhận được độ dốc dưới chân</strong>. Nếu bạn muốn xuống đáy thung lũng nhanh nhất, bạn sẽ đi theo hướng <strong>dốc xuống</strong> lớn nhất!</p>
+    </div>
+  </div>
 
-      <p><strong>Gradient Descent hoạt động y hệt như vậy!</strong></p>
-      <ul>
-        <li><strong>Gradient</strong>: Độ dốc tại điểm hiện tại</li>
-        <li><strong>Descent</strong>: Đi xuống (giảm giá trị)</li>
-        <li><strong>Đi theo gradient âm</strong>: Đi ngược hướng dốc lên để xuống đáy</li>
-      </ul>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">moving</span></div>
+      <h4>Gradient</h4>
+      <p>Chính là "Độ dốc" tại điểm hiện tại bạn đang đứng.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">south</span></div>
+      <h4>Descent</h4>
+      <p>"Đi xuống" (giảm giá trị của hàm Loss).</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">turn_right</span></div>
+      <h4>Chiến lược</h4>
+      <p>Đi ngược hướng gradient (dốc lên) để hướng xuống đáy.</p>
+    </div>
+  </div>
 
-      <h3>2.2. Gradient trong toán học</h3>
-      <p><strong>Gradient</strong> của một hàm số f(x) tại điểm x là đạo hàm f'(x) tại điểm đó.</p>
-      <pre><code>Gradient cho biết:
-- Hướng nào đi LÊN nhanh nhất (gradient dương)
-- Hướng nào đi XUỐNG nhanh nhất (gradient âm)
-- Độ dốc bao nhiêu (độ lớn của gradient)</code></pre>
+  <div class="image-showcase mt-4 mb-4">
+    <img src="/assets/ch21/gradient_descent_valley_1773153973142.png" alt="Gradient Descent Valley 3D" style="width: 100%; border-radius: 8px;">
+    <p class="image-caption">Minh hoạ quá trình Gradient Descent nhảy từ đỉnh núi xuống đáy thung lũng (Loss thấp nhất)</p>
+  </div>
 
-      <h4>Ví dụ: f(x) = x²</h4>
-      <table class="comparison-table">
-        <tr><th>Vị trí x</th><th>f(x) = x²</th><th>Gradient f'(x) = 2x</th><th>Hướng đi</th></tr>
-        <tr><td>10</td><td>100</td><td>+20</td><td>Đi lên → Cần đi ngược lại</td></tr>
-        <tr><td>5</td><td>25</td><td>+10</td><td>Đi lên → Cần đi ngược lại</td></tr>
-        <tr><td>1</td><td>1</td><td>+2</td><td>Đi lên nhẹ → Cần đi ngược lại</td></tr>
-        <tr><td>0</td><td>0</td><td>0</td><td>Điểm tối ưu!</td></tr>
-        <tr><td>-1</td><td>1</td><td>-2</td><td>Đi xuống → Cần đi tiếp</td></tr>
-        <tr><td>-5</td><td>25</td><td>-10</td><td>Đi xuống → Cần đi tiếp</td></tr>
-      </table>
+  <h3>8.2. Gradient trong toán học</h3>
+  <p><strong>Gradient</strong> của một hàm số f(x) tại điểm x chính là <strong>đạo hàm f'(x)</strong> tại điểm đó.</p>
+  <div class="definition-block">
+    <strong>Gradient cho biết:</strong>
+    <ul>
+      <li>Hướng đi <strong>LÊN</strong> dốc nhất (gradient dương).</li>
+      <li>Hướng đi <strong>XUỐNG</strong> dốc nhất (gradient âm).</li>
+      <li><strong>Độ dốc</strong> thay đổi nhanh đến mức nào (độ lớn của gradient).</li>
+    </ul>
+  </div>
 
-      <h3>2.3. Công thức Gradient Descent</h3>
-      <pre><code>x_moi = x_cu - learning_rate * gradient
+  <h4>Ví dụ: f(x) = x²</h4>
+  <table class="comparison-table">
+    <thead>
+      <tr><th>Vị trí x</th><th>f(x) = x²</th><th>Gradient f'(x) = 2x</th><th>Hướng đi</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>10</td><td>100</td><td>+20</td><td>Đi lên → Cần đi ngược lại (giảm x)</td></tr>
+      <tr><td>5</td><td>25</td><td>+10</td><td>Đi lên → Cần đi ngược lại</td></tr>
+      <tr><td>1</td><td>1</td><td>+2</td><td>Đi lên nhẹ → Cần đi ngược lại</td></tr>
+      <tr class="highlight"><td>0</td><td>0</td><td>0</td><td>Đáy phẳng → Tối ưu! (Loss cực tiểu)</td></tr>
+      <tr><td>-1</td><td>1</td><td>-2</td><td>Đi xuống → Cần đi tiếp (tăng x)</td></tr>
+      <tr><td>-5</td><td>25</td><td>-10</td><td>Đi xuống → Cần đi tiếp</td></tr>
+    </tbody>
+  </table>
 
-Trong đó:
-- x_cu: vị trí hiện tại
-- x_moi: vị trí mới (sau khi cập nhật)
-- learning_rate: kích thước bước đi
-- gradient: f'(x_cu)
+  <h3>8.3. Công thức Gradient Descent</h3>
+  <div class="formula-block">
+    x_moi = x_cu - learning_rate * gradient
+  </div>
+  <p>Tính chất dấu Trừ (<code>-</code>) mang ý nghĩa điều hướng:</p>
+  <ul>
+    <li>Gradient <strong>Dương</strong> (đang đi vào sườn dốc lên) → Cố tình <strong>Trừ</strong> để quay xe đi ngược lại.</li>
+    <li>Gradient <strong>Âm</strong> (trúng sườn dốc xuống) → <strong>Trừ với Âm thành Cộng</strong> → Tới luôn đi tiếp.</li>
+  </ul>
 
-Vì sao TRỪ?
-- Gradient dương → cần đi ngược (trừ)
-- Gradient âm → cần đi xuống (trừ âm = cộng)</code></pre>
+  <h3>8.4. Learning Rate (Tốc độ học tập / Kích thước bước)</h3>
+  <p><strong>Learning rate</strong> (lr) quyết định <em>sải chân</em> của bạn dài bao nhiêu sau mỗi bước.</p>
+  
+  <div class="concept-grid">
+    <div class="concept-card highlight-danger">
+      <div class="concept-icon"><span class="material-symbols-outlined">fast_forward</span></div>
+      <h4>Too Big (LR quá lớn)</h4>
+      <p>Sải chân khổng lồ, nhảy vọt qua lại hai bên bờ thung lũng. <strong>Kết quả: Phân kỳ (Diverge)</strong>, mãi không xuống đáy.</p>
+    </div>
+    <div class="concept-card highlight-warning">
+      <div class="concept-icon"><span class="material-symbols-outlined">slow_motion_video</span></div>
+      <h4>Too Small (LR quá nhỏ)</h4>
+      <p>Sải chân bằng con kiến nhích từng mm. <strong>Kết quả: Tốn cực kỳ nhiều thời gian</strong> (triệu bước) để xuống tới nơi.</p>
+    </div>
+    <div class="concept-card highlight-success">
+      <div class="concept-icon"><span class="material-symbols-outlined">check</span></div>
+      <h4>Just Right (LR vừa đủ)</h4>
+      <p>Bước chân chắc nhịp, tiến lẹ nhưng phanh kịp sát đáy. <strong>Kết quả: Hội tụ nhanh và an toàn.</strong></p>
+    </div>
+  </div>
 
-      <h3>2.4. Learning Rate - Kích thước bước</h3>
-      <p><strong>Learning rate</strong> (lr) quyết định mỗi bước đi bao xa.</p>
+  <h3>8.5. Convex vs Non-convex</h3>
+  <p>Gradient Descent có chắc chắn tìm được điểm tốt nhất không?</p>
+  
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">interests</span></div>
+      <h4>Convex (Hàm Lồi)</h4>
+      <p>Như cái bát phở. Chỉ có <strong>DUY NHẤT một đáy</strong> (Global Minimum). Thả bi từ đâu cũng dồn về giữa. Đoan chắc GD sẽ ăn.</p>
+      <p><em>(Ví dụ: Linear Regression)</em></p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">query_stats</span></div>
+      <h4>Non-convex (Đồi núi ngập ghềnh)</h4>
+      <p>Nhiều hố lồi lõm rải rác. Điểm kẹt tạm thời gọi là hố <strong>Local Minima</strong>. Đáy sâu nhất là <strong>Global Minimum</strong>.</p>
+      <p><em>(Ví dụ: Neural Networks)</em></p>
+    </div>
+  </div>
 
-      <h4>Learning rate quá lớn</h4>
-      <pre><code>x = 10, lr = 1.0
+  <div class="callout callout-warning">
+    <div class="callout-icon"><span class="material-symbols-outlined">help_outline</span></div>
+    <div class="callout-content">
+      <strong>Ở mảng Deep Learning, điều kỳ diệu là:</strong> Dù mắc hố Local Minima suốt ngày, nhưng ở không gian hàng triệu/tỷ chiều, kết quả loss của Local Minima thường vẫn tiệm cận Global, đủ xài thực tế! Quái vật cản đường chính lại là <strong>Saddle Points</strong> (Điểm yên ngựa).
+    </div>
+  </div>
 
-Bước 1: x = 10 - 1.0 * 20 = -10  (nhảy qua!)
-Bước 2: x = -10 - 1.0 * (-20) = 10  (lại nhảy về!)
-Bước 3: x = 10 - 1.0 * 20 = -10
-→ KHÔNG BAO GIỜ HỘI TỤ!</code></pre>
-
-      <h4>Learning rate quá nhỏ</h4>
-      <pre><code>x = 10, lr = 0.001
-
-Bước 1: x = 10 - 0.001 * 20 = 9.98
-Bước 2: x = 9.98 - 0.001 * 19.96 = 9.96
-...
-→ Cần HÀNG TRIỆU bước để đến 0!</code></pre>
-
-      <h4>Learning rate vừa đủ</h4>
-      <pre><code>x = 10, lr = 0.1
-
-Bước 1: x = 10 - 0.1 * 20 = 8.0
-Bước 2: x = 8 - 0.1 * 16 = 6.4
-Bước 3: x = 6.4 - 0.1 * 12.8 = 5.12
-...
-→ HỘI TỤ SAU ~40 BƯỚC!</code></pre>
+  <h3>8.6. Dấu hiệu dừng chạy GD (Early Stopping)</h3>
+  <p>Khi nào biết ném cờ trắng không chạy tiếp vòng lặp nữa?</p>
+  <ul class="steps-container">
+    <li class="step-card">
+      <div class="step-number">1</div>
+      <p>Loss kẹt không thấy giảm thêm sau dăm ba vòng (Epoch) ròng rã.</p>
+    </li>
+    <li class="step-card">
+      <div class="step-number">2</div>
+      <p>Gradient ≈ 0 (Trượt sát đáy không còn đà đẩy nữa).</p>
+    </li>
+    <li class="step-card">
+      <div class="step-number">3</div>
+      <p>Đạt Target (Loss đã nhỏ ưng cái bụng chốt luôn).</p>
+    </li>
+  </ul>
+</div>
     `,
     defaultCode: `// =====================================================
 // GRADIENT DESCENT - MINH HỌA BẰNG HÌNH ẢNH
@@ -437,49 +515,122 @@ fn main() {
     duration: '45 phút',
     type: 'theory',
     content: `
-      <h2>3. Áp dụng Gradient Descent vào Neural Network</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">network_node</span> 9. Áp dụng Gradient Descent vào Neural Network</h2>
 
-      <h3>3.1. Neural Network đơn giản nhất</h3>
-      <p>Xét Neural Network đơn giản nhất: Linear Regression</p>
-      <pre><code>y = w * x + b
+  <h3>9.1. Neural Network đơn giản nhất</h3>
+  <p>Xét một Neural Network đơn giản nhất có thể: <strong>Linear Regression</strong> (Chỉ 1 input, 1 output, không activation)</p>
+  <div class="formula-block">
+    <p>y = w * x + b</p>
+  </div>
+  <div class="definition-block">
+    <ul>
+      <li><strong>x:</strong> input</li>
+      <li><strong>w:</strong> weight (trọng số)</li>
+      <li><strong>b:</strong> bias (độ lệch)</li>
+      <li><strong>y:</strong> output dự đoán</li>
+    </ul>
+    <p><strong>Mục tiêu:</strong> Ta cần tìm w và b để y ≈ y_true (nhãn thật).</p>
+  </div>
 
-Trong đó:
-- x: input
-- w: weight (trọng số)
-- b: bias (độ lệch)
-- y: output dự đoán
+  <h3>9.2. Hàm mất mát (Loss Function)</h3>
+  <p>Đo lường sai số giữa y dự đoán và y thực bằng Mean Squared Error (MSE):</p>
+  <div class="formula-block">
+    <p>MSE = (1/n) * Σ(y_pred - y_true)²</p>
+    <p class="mt-2 text-sm">Hay với Linear Regression: MSE = (1/n) * Σ(w*x + b - y_true)²</p>
+  </div>
 
-Ta cần tìm w và b để y ≈ y_true</code></pre>
+  <h3>9.3. Tính gradient cho w và b</h3>
+  <p>Ta cần tính đạo hàm riêng phần để biết cách sửa weight và bias:</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">functions</span></div>
+      <h4>Gradient theo w (∂MSE/∂w)</h4>
+      <p>Cho biết: Cần thay đổi w theo hướng nào để Loss giảm.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">tune</span></div>
+      <h4>Gradient theo b (∂MSE/∂b)</h4>
+      <p>Cho biết: Cần thay đổi b theo hướng nào để Loss giảm.</p>
+    </div>
+  </div>
 
-      <h3>3.2. Hàm mất mát (Loss Function)</h3>
-      <p>Đo lường sai số giữa y dự đoán và y thực:</p>
-      <pre><code>MSE = (1/n) * Σ(y_pred - y_true)²
-
-Với Linear Regression:
-MSE = (1/n) * Σ(w*x + b - y_true)²</code></pre>
-
-      <h3>3.3. Tính gradient cho w và b</h3>
-      <p>Ta cần tính:</p>
+  <div class="callout callout-info">
+    <div class="callout-icon"><span class="material-symbols-outlined">auto_awesome</span></div>
+    <div class="callout-content">
+      <strong>Áp dụng Chain Rule (Đạo hàm hợp):</strong>
+      <p>Gọi <code>y_pred = w*x + b = z</code> và <code>MSE = (z - y_true)²</code></p>
       <ul>
-        <li>∂MSE/∂w: Gradient theo w</li>
-        <li>∂MSE/∂b: Gradient theo b</li>
+        <li>∂MSE/∂z = 2 * (z - y_true)</li>
+        <li>∂z/∂w = x</li>
+        <li>∂z/∂b = 1</li>
       </ul>
+      <p><strong>Kết quả:</strong></p>
+      <ul>
+        <li>∂MSE/∂w = ∂MSE/∂z * ∂z/∂w = <strong>2*(z-y_true) * x</strong></li>
+        <li>∂MSE/∂b = ∂MSE/∂z * ∂z/∂b = <strong>2*(z-y_true)</strong></li>
+      </ul>
+    </div>
+  </div>
 
-      <h4>Áp dụng Chain Rule:</h4>
-      <pre><code>Gọi y_pred = w*x + b = z
-MSE = (z - y_true)²
+  <h3>9.4. Cập nhật weights</h3>
+  <div class="formula-block">
+    <p>w_moi = w_cu - lr * ∂MSE/∂w</p>
+    <p>b_moi = b_cu - lr * ∂MSE/∂b</p>
+  </div>
 
-∂MSE/∂z = 2 * (z - y_true)
+  <h3><span class="material-symbols-outlined">model_training</span> 9.5. Weight Initialization</h3>
+  <p>Cách khởi tạo weights ảnh hưởng quyết định đến việc NN học được hay "mù chữ":</p>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">block</span></div>
+      <h4>TẤT CẢ = 0</h4>
+      <p>Tất cả neurons cho cùng output → Cùng lấy 1 gradient → Symmetry Problem không bao giờ bị phá vỡ. Mạng không học được!</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">shuffle</span></div>
+      <h4>Ngẫu nhiên quá lớn</h4>
+      <p>Ví dụ: [-100, 100]. Activation sẽ bị bão hòa (sigmoid ra 0 hoặc 1 hết), gây ra Vanishing gradient ngay từ Epoch 1!</p>
+    </div>
+    <div class="concept-card highlight-success">
+      <div class="concept-icon"><span class="material-symbols-outlined">science</span></div>
+      <h4>Xavier & He Init</h4>
+      <p><strong>Xavier</strong> (cho Sigmoid/Tanh): <code>w ~ N(0, √(2 / (in+out)))</code></p>
+      <p><strong>He</strong> (cho ReLU): <code>w ~ N(0, √(2 / in))</code></p>
+    </div>
+  </div>
 
-∂z/∂w = x
-∂z/∂b = 1
+  <h3><span class="material-symbols-outlined">balance</span> 9.6. Feature Scaling</h3>
+  <p>Tại sao cần chuẩn hóa dữ liệu Input?</p>
+  <div class="callout callout-warning">
+    <div class="callout-icon"><span class="material-symbols-outlined">warning</span></div>
+    <div class="callout-content">
+      <strong>VẤN ĐỀ:</strong>
+      <p>Nhà: Diện tích (50-500m²) và Số phòng (1-10).</p>
+      <p>Gradient đi theo chiểu "Diện tích" quá lớn gây ra hiện tượng học "Zig-Zag" siêu chậm!</p>
+    </div>
+  </div>
 
-→ ∂MSE/∂w = ∂MSE/∂z * ∂z/∂w = 2*(z-y_true) * x
-→ ∂MSE/∂b = ∂MSE/∂z * ∂z/∂b = 2*(z-y_true)</code></pre>
-
-      <h3>3.4. Cập nhật weights</h3>
-      <pre><code>w_moi = w_cu - lr * ∂MSE/∂w
-b_moi = b_cu - lr * ∂MSE/∂b</code></pre>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">compress</span></div>
+      <h4>Min-Max Normalization</h4>
+      <code>x_norm = (x - min) / (max - min)</code>
+      <p>→ Ép Output về thang [0, 1]</p>
+      <p><em>Ví dụ: 50m² → 0.0,  500m² → 1.0</em></p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">center_focus_strong</span></div>
+      <h4>Z-Score Standardization</h4>
+      <code>x_norm = (x - mean) / std</code>
+      <p>→ Output: Trung bình = 0, Độ lệch chuẩn = 1</p>
+      <p><em>Ví dụ: 275m² → 0.0</em></p>
+    </div>
+  </div>
+  <div class="key-takeaway">
+    Sau khi chuẩn hóa, tất cả Feature cùng Scale, GD chạy thẳng tắp xuống hố trung tâm, có thể hội tụ nhanh hơn gấp 10-100 lần!
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // GRADIENT DESCENT CHO NEURAL NETWORK (LINEAR REGRESSION)

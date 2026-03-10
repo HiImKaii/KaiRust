@@ -12,35 +12,118 @@ const activation_lessons: Lesson[] = [
     duration: '45 phút',
     type: 'theory',
     content: `
-      <h2>1. Activation Functions - Tại sao cần thiết?</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">network_ping</span> 13. Activation Functions - Tại sao cần thiết?</h2>
 
-      <h3>1.1. Vấn đề không có Activation</h3>
-      <p>Nếu không có activation function, Neural Network chỉ là một phép biến đổi tuyến tính (linear transformation):</p>
+  <h3>13.1. Vấn đề: Không có activation function</h3>
+  <p>Nếu không có activation function, Neural Network chỉ là một phép <strong>biến đổi tuyến tính</strong> (linear transformation). Dù bạn có xếp 1000 layer lên nhau thì kết quả cuối cùng vẫn chỉ tương đương với 1 layer duy nhất!</p>
 
-      <pre><code>Giả sử không có activation:
-  a = W2 * (W1 * x + b1) + b2
-    = (W2 * W1) * x + (W2 * b1 + b2)
-    = W' * x + b'
+  <div class="formula-block">
+    <p>Giả sử không có activation:</p>
+    <code>a = W2 * (W1 * x + b1) + b2</code><br/>
+    <code>&nbsp;&nbsp;= (W2 * W1) * x + (W2 * b1 + b2)</code><br/>
+    <code class="text-blue-600 font-bold">&nbsp;&nbsp;= W' * x + b'</code>
+    <p class="mt-2 text-red-500">→ Vẫn là một đường thẳng! Không thể học patterns phức tạp!</p>
+  </div>
 
-→ Vẫn là đường thẳng! Không thể học patterns phức tạp!</code></pre>
+  <h3>13.2. Giải pháp: Activation Functions</h3>
+  <div class="callout callout-info mt-4 mb-4">
+    <div class="callout-icon"><span class="material-symbols-outlined">functions</span></div>
+    <div class="callout-content">
+      <strong>Đưa vào tính phi tuyến (Non-linearity):</strong>
+      <p><code>a = σ(W2 * σ(W1 * x + b1) + b2)</code></p>
+      <p>Nhờ có hàm <code>σ</code>, hàm số bị bẻ cong, từ đó mạng Neural có thể xấp xỉ MỌI HÀM SỐ trên đời (Universal Approximation Theorem).</p>
+    </div>
+  </div>
 
-      <h3>1.2. Với Activation Function</h3>
-      <pre><code>Với activation:
-  a = σ(W2 * σ(W1 * x + b1) + b2)
+  <h3>13.3. Các loại Activation Functions</h3>
+  <div class="image-showcase mt-4 mb-4">
+    <img src="/assets/ch21/activation_functions_1773152787399.png" alt="Các hàm kích hoạt phổ biến" style="width: 100%; border-radius: 8px;">
+    <p class="image-caption">Bản đồ hình dáng các hàm kích hoạt (Sigmoid, Tanh, ReLU)</p>
+  </div>
 
-→ Đây là hàm PHI TUYẾN!
-→ Có thể học bất kỳ pattern nào!</code></pre>
+  <table class="comparison-table">
+    <thead>
+      <tr><th>Tên</th><th>Công thức</th><th>Output Range</th><th>Thường dùng ở</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Step</strong></td><td><code>1 (z≥0), 0 (z&lt;0)</code></td><td>{0, 1}</td><td>Perceptron cổ điển</td></tr>
+      <tr><td><strong>Sigmoid</strong></td><td><code>1 / (1 + e⁻ᶻ)</code></td><td>(0, 1)</td><td>Output Layer (Binary Classification)</td></tr>
+      <tr><td><strong>Tanh</strong></td><td><code>(eᶻ-e⁻ᶻ)/(eᶻ+e⁻ᶻ)</code></td><td>(-1, 1)</td><td>Hidden Layers (RNN, LSTM)</td></tr>
+      <tr class="highlight"><td><strong>ReLU</strong></td><td><code>max(0, z)</code></td><td>[0, +∞)</td><td>Hidden Layers (CNN, Feedforward NN)</td></tr>
+      <tr><td><strong>Leaky ReLU</strong></td><td><code>z (z>0), 0.01z (z≤0)</code></td><td>(-∞, +∞)</td><td>Tránh lỗi Dying ReLU</td></tr>
+      <tr><td><strong>Softmax</strong></td><td><code>eᶻ / Σ(eᶻ)</code></td><td>(0, 1), Tổng=1</td><td>Output Layer (Multi-class Classification)</td></tr>
+    </tbody>
+  </table>
 
-      <h3>1.3. Các loại Activation</h3>
-      <table class="comparison-table">
-        <tr><th>Tên</th><th>Công thức</th><th>Output</th><th>Dùng khi</th></tr>
-        <tr><td>Step</td><td>1 nếu z≥0, 0 nếu z&lt;0</td><td>{0, 1}</td><td>Perceptron gốc</td></tr>
-        <tr><td>Sigmoid</td><td>1/(1+e^(-z))</td><td>(0, 1)</td><td>Binary output</td></tr>
-        <tr><td>Tanh</td><td>(e^z-e^(-z))/(e^z+e^(-z))</td><td>(-1, 1)</td><td>Hidden layers</td></tr>
-        <tr><td>ReLU</td><td>max(0, z)</td><td>[0, +∞)</td><td>Hidden layers (phổ biến)</td></tr>
-        <tr><td>Leaky ReLU</td><td>z nếu z>0, 0.01z nếu z≤0</td><td>(-∞, +∞)</td><td>Tránh dying ReLU</td></tr>
-        <tr><td>Softmax</td><td>e^z / Σe^z</td><td>(0, 1), sum=1</td><td>Multi-class output</td></tr>
-      </table>
+  <h3>13.4. GELU - Activation của Transformers/BERT</h3>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">hub</span></div>
+      <h4>GELU (Gaussian Error Linear Unit)</h4>
+      <p><code>GELU(x) = x × Φ(x)</code></p>
+      <p class="text-sm mt-2 text-gray-600">Với Φ(x) là hàm phân phối chuẩn.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">trending_flat</span></div>
+      <h4>Đặc điểm</h4>
+      <ul class="text-sm">
+        <li>Mượt (Smooth) hơn ReLU.</li>
+        <li>Cho phép một chút giá trị âm thấm qua mượt mà.</li>
+        <li>Là "quốc thực" của các mô hình LLM hiện nay (GPT, BERT).</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>13.5. Ý nghĩa hình học - Activation "bẻ cong" không gian</h3>
+  <div class="concept-grid mt-4">
+    <div class="concept-card">
+      <div class="concept-icon text-gray-500"><span class="material-symbols-outlined">straight</span></div>
+      <h4>KHÔNG CÓ ACTIVATION</h4>
+      <p>Mỗi layer chỉ xoay, co hoặc dãn không gian một cách rập khuôn. Dữ liệu phức tạp như đồ thị XOR mãi mãi không thể kẻ một đường thẳng để cắt.</p>
+    </div>
+    <div class="concept-card highlight-success">
+      <div class="concept-icon"><span class="material-symbols-outlined">waves</span></div>
+      <h4>CÓ ACTIVATION</h4>
+      <p>Nhào nặn không gian dữ liệu như đất sét. Bẻ cong, cắt dán giúp những điểm dữ liệu vốn đan xen nhau nay có thể dễ dàng tách biệt bởi một đường cắt phẳng lì.</p>
+    </div>
+  </div>
+
+  <h3>13.6. Dead Neuron Problem (Đặc biệt với ReLU)</h3>
+  <div class="callout callout-warning">
+    <div class="callout-icon"><span class="material-symbols-outlined">heart_broken</span></div>
+    <div class="callout-content">
+      <strong>VẤN ĐỀ: Dying ReLU</strong>
+      <p>Nếu trọng số vô tình khiến z luôn < 0 cho toàn bộ tập training, hàm ReLU sẽ trả về 0. Lúc này Gradient = 0, Weight TỊT luôn KHÔNG update nữa. Neuron đó chính thức "đã chết" (Dead Neuron).</p>
+      <p class="mt-2 text-blue-600 font-bold">Giải Pháp:</p>
+      <ul>
+        <li>Dùng <strong>Leaky ReLU</strong>: Cho rỉ một xíu giá trị (0.01) khi âm.</li>
+        <li>Dùng <strong>ELU / GELU</strong>: Làm mềm đường cong tiếp cận số 0.</li>
+        <li>Khởi tạo weight và thiết lập Learning Rate kỹ lưỡng.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>13.7. Hướng dẫn chọn Activation nhanh gọn</h3>
+  <ul class="steps-container mt-4">
+    <li class="step-card">
+      <div class="step-number" style="background-color: var(--primary-gray);">1</div>
+      <p>Model thông thường (Hidden Layers)? → Nhắm mắt chọn <strong>ReLU</strong>.</p>
+    </li>
+    <li class="step-card">
+      <div class="step-number" style="background-color: var(--primary-gray);">2</div>
+      <p>Train LLM hoặc Transformer? → Xin mời xài <strong>GELU/Swish</strong>.</p>
+    </li>
+    <li class="step-card">
+      <div class="step-number" style="background-color: var(--primary-gray);">3</div>
+      <p>Dự đoán Xác suất Có/Không? (Output layer) → Về đội <strong>Sigmoid</strong>.</p>
+    </li>
+    <li class="step-card">
+      <div class="step-number" style="background-color: var(--primary-gray);">4</div>
+      <p>Phân loại Hình ảnh Chó/Mèo/Lợn/Gà? (Output layer) → Chốt đơn <strong>Softmax</strong>.</p>
+    </li>
+  </ul>
+</div>
     `,
     defaultCode: `// =====================================================
 // ACTIVATION FUNCTIONS - TẤT CẢ TRONG MỘT
@@ -123,28 +206,91 @@ fn main() {
     duration: '30 phút',
     type: 'theory',
     content: `
-      <h2>2. Vanishing Gradient - Vấn đề lớn</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">water_drop</span> 14. Vanishing Gradient - Cơn ác mộng của Deep Learning</h2>
 
-      <h3>2.1. Vấn đề là gì?</h3>
-      <p>Khi mạng quá sâu, gradient "biến mất" (→ 0) khi lan truyền ngược về các lớp đầu. Điều này khiến weights ở lớp đầu không được cập nhật!</p>
+  <h3>14.1. Vấn đề là gì?</h3>
+  <div class="callout callout-warning">
+    <div class="callout-icon"><span class="material-symbols-outlined">warning</span></div>
+    <div class="callout-content">
+      <strong>Gradient bị "bay màu":</strong>
+      Khi mạng quá sâu (Deep Neural Networks có hàng chục layer), Gradient khi lội ngược dòng từ Output về Input sẽ bị teo nhỏ dần, tới mức chạm mốc 0. Hậu quả là các Layer ở phần đầu mạng "phá sản", không nhận được tí Error Signal nào để update Weights → Mạng KHÔNG HỌC ĐƯỢC!
+    </div>
+  </div>
 
-      <h3>2.2. Nguyên nhân</h3>
-      <p>Sigmoid và Tanh có derivative ≤ 1:</p>
-      <pre><code>Sigmoid derivative max = 0.25
-Tanh derivative max = 1
+  <h3>14.2. Nguyên nhân cốt lõi</h3>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon"><span class="material-symbols-outlined">calculate</span></div>
+      <h4>Phạm tội do Hàm Kích Hoạt</h4>
+      <p>Do sử dụng <strong>Sigmoid/Tanh</strong> có vùng đạo hàm kịch trần rất hẹp (Max Sigmoid' = 0.25). Thử tưởng tượng: nhân liên tiếp hàng chục con số <= 0.25 vào với nhau thì kết quả sẽ tiệm cận 0 siêu nhanh.</p>
+    </div>
+  </div>
 
-Khi nhân nhiều số &lt; 1 qua nhiều layers:
-  0.25 × 0.25 × 0.25 × ... → 0
+  <h3>14.3. Giải pháp hiệu nghiệm</h3>
+  <div class="concept-grid">
+    <div class="concept-card highlight-success">
+      <div class="concept-icon"><span class="material-symbols-outlined">done</span></div>
+      <h4>Dùng ReLU</h4>
+      <p>Gradient = 1 (với x > 0). Nhân 1 ngàn lần số 1 vẫn là 1. Gradient không bao giờ suy yếu!</p>
+    </div>
+    <div class="concept-card highlight-success">
+      <div class="concept-icon"><span class="material-symbols-outlined">tune</span></div>
+      <h4>Batch Normalization</h4>
+      <p>Ép Activation về vùng ổn định, không cho nó "trôi dạt" ra rìa đạo hàm = 0 của Sigmoid/Tanh.</p>
+    </div>
+    <div class="concept-card highlight-success">
+      <div class="concept-icon"><span class="material-symbols-outlined">route</span></div>
+      <h4>Skip Connections (ResNet)</h4>
+      <p>Tạo "đường rẽ tắt" (Xuyên không) cho Gradient chạy phi nước đại từ cuối lên thẳng đầu mạng.</p>
+    </div>
+  </div>
 
-Gradient → 0 → Không học được!</code></pre>
+  <hr class="my-6 border-gray-300">
 
-      <h3>2.3. Giải pháp</h3>
-      <ul>
-        <li><strong>ReLU</strong>: Gradient = 1 khi x > 0</li>
-        <li><strong>Residual Connections</strong>: Skip connections</li>
-        <li><strong>Batch Normalization</strong>: Chuẩn hóa activations</li>
-        <li><strong>Better initialization</strong>: Khởi tạo weights tốt hơn</li>
+  <h3><span class="material-symbols-outlined">rocket_launch</span> 14.4. Exploding Gradient - Vấn đề ngược lại</h3>
+  <p>Thay vì bé đi, lần này Gradient hóa thú lớn vọt lên tới tận vũ trụ (Infinity).</p>
+  <div class="features-grid mt-4">
+    <div class="feature-card">
+      <div class="feature-icon text-red-600"><span class="material-symbols-outlined">emergency</span></div>
+      <h4>Dấu Hiệu</h4>
+      <ul class="text-sm">
+        <li>Loss đột ngột = NaN hoặc Inf.</li>
+        <li>Weights tăng rất nhanh, văng tung tóe.</li>
+        <li>Training cực kỳ thiếu ổn định (nhảy lung tung).</li>
       </ul>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon text-blue-600"><span class="material-symbols-outlined">car_crash</span></div>
+      <h4>Khắc phục</h4>
+      <ul class="text-sm">
+        <li><strong>Gradient Clipping:</strong> Đóng trần! Nếu gradient > 5, gọt chóp nó xuống còn 5.</li>
+        <li><strong>Weight Regularization:</strong> Đội thêm hình phạt cho hàm Loss.</li>
+        <li><strong>Batch Normalization.</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>14.5. Batch Normalization (Trụ cột của Modern DL)</h3>
+  <div class="definition-block">
+    <p>Ép output của mỗi layer về Trung bình (Mean) = 0 và Độ lệch chuẩn (Std) = 1 ngay trước khi nạp vào Activation.</p>
+    <div class="formula-block">
+      z_norm = (z - μ) / √(σ² + ε)
+    </div>
+    <p class="mt-2"><strong>Lợi ích:</strong> Train nhanh hơn hẳn, cho phép dùng Learning Rate to đùng bão không sợ ngã, đè bẹp Vanishing / Exploding.</p>
+  </div>
+
+  <h3>14.6. Residual/Skip Connections (Cách mạng mạng rất sâu)</h3>
+  <div class="callout callout-info">
+    <div class="callout-icon"><span class="material-symbols-outlined">alt_route</span></div>
+    <div class="callout-content">
+      <strong>Bí thuật của ResNet:</strong><br/>
+      Thay vì cố ép mạng học Mapping <code>F(x)</code>, ta chế đường rẽ tắt x từ ngoài vào CỘNG trực tiếp vào output: <code>output = F(x) + x</code>.
+      <br/><br/>
+      Khi chạy Backprop, Gradient sẽ đi thẳng qua dải phân cách rẽ tắt này nguyên vẹn về layer trước mà không bị mài mòn! Phép màu này giúp Microsoft đẻ ra mạng có tận 152 layers (ResNet-152) chiến thắng ImageNet 2015.
+    </div>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // VANISHING GRADIENT - MINH HỌA VẤN ĐỀ
@@ -186,7 +332,7 @@ fn main() {
 
 export const ch21_activation: Chapter = {
   id: 'ch21_activation',
-  title: '21.X. Activation Functions',
+  title: '21.5. Activation Functions',
   introduction: `<h2>Activation Functions chi tiết</h2>`,
   lessons: activation_lessons,
 };

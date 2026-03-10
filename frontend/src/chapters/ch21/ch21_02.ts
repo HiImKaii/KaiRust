@@ -22,58 +22,104 @@ const ch21_02_lessons: Lesson[] = [
     duration: '30 phút',
     type: 'theory',
     content: `
-      <h2>1. Loss Function - Đo lường sai số</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">troubleshoot</span> 3. Loss Function - Đo lường sai số</h2>
 
-      <h3>Tại sao cần Loss Function?</h3>
-      <p>Neural Network cần một cách để <strong>đo lường</strong> xem nó đang hoạt động tốt hay không. <strong>Loss Function</strong> (hàm mất mát) làm điều này.</p>
+  <h3><span class="material-symbols-outlined">help</span> 3.1. Tại sao cần Loss Function?</h3>
+  <div class="definition-block">
+    <p><strong>Loss Function (Hàm mất mát)</strong> là thước đo đánh giá xem mạng Neural Network đang hoạt động tốt hay tệ. Nó nhận đầu ra dự đoán của model và giá trị thực tế (ground truth) để trả về một con số duy nhất gọi là <strong>loss (sai số)</strong>.</p>
+    <ul>
+      <li><strong>Loss cao</strong>: Model dự đoán rất chệch.</li>
+      <li><strong>Loss thấp</strong>: Model dự đoán tốt, gần với thực tế.</li>
+    </ul>
+    <p>Mục tiêu tối thượng của quá trình training là <em>tìm cách giảm thiểu Loss xuống thấp nhất có thể</em>.</p>
+  </div>
 
-      <h3>Định nghĩa</h3>
-      <p><strong>Loss Function</strong> là một hàm số nhận đầu ra của model và giá trị thực (ground truth), trả về một số duy nhất gọi là <strong>loss</strong> (sai số).</p>
-      <ul>
-        <li><strong>Loss cao</strong> = Model dự đoán kém</li>
-        <li><strong>Loss thấp</strong> = Model dự đoán tốt</li>
-        <li><strong>Loss = 0</strong> = Model hoàn hảo (lý tưởng, hiếm đạt được)</li>
-      </ul>
-
-      <h3>Các Loss Functions phổ biến</h3>
-
+  <h3><span class="material-symbols-outlined">calculate</span> 3.2. Các Loss Functions phổ biến</h3>
+  
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">analytics</span></div>
       <h4>1. Mean Squared Error (MSE)</h4>
-      <pre><code>MSE = (1/n) * Σ(y_true - y_pred)²
-
-Dùng cho: Regression (dự đoán giá trị liên tục)</code></pre>
-
+      <p>Trung bình bình phương sai số.</p>
+      <p><em>Dùng cho:</em> <strong>Regression</strong> (dự đoán giá trị liên tục như Giá nhà, Nhiệt độ).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">straighten</span></div>
       <h4>2. Mean Absolute Error (MAE)</h4>
-      <pre><code>MAE = (1/n) * Σ|y_true - y_pred|
+      <p>Trung bình trị tuyệt đối sai số.</p>
+      <p><em>Dùng cho:</em> Regression bị ảnh hưởng nhiều bởi giá trị dị biệt (outliers).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">rule</span></div>
+      <h4>3. Binary Cross Entropy</h4>
+      <p>Phạt rất nặng khi dự đoán sai nhưng lại tự tin.</p>
+      <p><em>Dùng cho:</em> <strong>Binary Classification</strong> (Phân loại 2 lớp vd: Spam/Không Spam).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">category</span></div>
+      <h4>4. Categorical Cross Entropy</h4>
+      <p>Bản mở rộng của BCE.</p>
+      <p><em>Dùng cho:</em> <strong>Multi-class Classification</strong> (Phân loại nhiều lớp diễn ra cùng lúc).</p>
+    </div>
+  </div>
 
-Dùng cho: Regression, ít nhạy cảm với outliers</code></pre>
+  <h3><span class="material-symbols-outlined">table_chart</span> 3.3. Ví dụ trực quan về MSE</h3>
+  <p>Cho dữ liệu dự đoán giá nhà như sau:</p>
+  <table class="comparison-table">
+    <thead>
+      <tr><th>Giá trị thực (y)</th><th>Dự đoán (ŷ)</th><th>Sai số (Error)</th><th>Bình phương (Error²)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>100</td><td>80</td><td>-20</td><td>400</td></tr>
+      <tr><td>100</td><td>90</td><td>-10</td><td>100</td></tr>
+      <tr><td>100</td><td>100</td><td>0</td><td>0</td></tr>
+      <tr><td>100</td><td>120</td><td>+20</td><td>400</td></tr>
+    </tbody>
+  </table>
+  <div class="formula-block">
+    <p><strong>Tính MSE (Trung bình cộng của các bình phương sai số):</strong></p>
+    <p>MSE = (400 + 100 + 0 + 400) / 4 = <strong>225</strong></p>
+  </div>
 
-      <h4>3. Cross Entropy (Binary)</h4>
-      <pre><code>Binary Cross Entropy = -Σ[y_true * log(y_pred) + (1-y_true) * log(1-y_pred)]
-
-Dùng cho: Binary Classification</code></pre>
-
-      <h4>4. Cross Entropy (Multi-class)</h4>
-      <pre><code>Cross Entropy = -ΣΣ y_true[i] * log(y_pred[i])
-
-Dùng cho: Multi-class Classification</code></pre>
-
-      <h3>Ví dụ trực quan về MSE</h3>
-      <table class="comparison-table">
-        <tr><th>Giá trị thực</th><th>Dự đoán</th><th>Sai số</th><th>Bình phương</th></tr>
-        <tr><td>100</td><td>80</td><td>-20</td><td>400</td></tr>
-        <tr><td>100</td><td>90</td><td>-10</td><td>100</td></tr>
-        <tr><td>100</td><td>100</td><td>0</td><td>0</td></tr>
-        <tr><td>100</td><td>120</td><td>+20</td><td>400</td></tr>
-      </table>
-      <p><strong>MSE = (400 + 100 + 0 + 400) / 4 = 225</strong></p>
-
-      <h3>Tại sao dùng bình phương?</h3>
+  <div class="callout callout-info">
+    <div class="callout-icon"><span class="material-symbols-outlined">quiz</span></div>
+    <div class="callout-content">
+      <strong>Tại sao phải bình phương sai số?</strong>
       <ol>
-        <li><strong>Luôn dương</strong>: (-20)² = 400, không bị âm</li>
-        <li><strong>Trừng phạt sai số lớn</strong>: (20)² = 400 gấp 4 lần (10)² = 100</li>
-        <li><strong>Có đạo hàm</strong>: Dễ tối ưu bằng Gradient Descent</li>
-        <li><strong>Phạt cả hai phía</strong>: Sai 20 đơn vị (dương hay âm) đều bị phạt như nhau</li>
+        <li><strong>Luôn dương</strong>: Tránh việc sai số âm và dương triệt tiêu lẫn nhau khi cộng tổng.</li>
+        <li><strong>Trừng phạt mạnh sai số lớn</strong>: Nếu khoảng cách sai lệch tăng gấp đôi, hình phạt sẽ tăng gấp 4 (10² = 100, 20² = 400). Đảm bảo mạng bị ép sửa các lỗi lầm lớn.</li>
+        <li><strong>Đường cong mượt mà có đạo hàm</strong>: Rất quan trọng để biểu diễn thành cái phễu phục vụ tối ưu bằng Gradient Descent.</li>
       </ol>
+    </div>
+  </div>
+
+  <h3><span class="material-symbols-outlined">landscape</span> 3.4. Loss Surface - Bề mặt sai số</h3>
+  <div class="image-showcase">
+    <img src="/assets/ch21/gradient_descent_valley_1773153973142.png" alt="Bề mặt hàm mất mát Loss Surface" />
+    <div class="image-caption">Bề mặt đồ thị Loss Surface mô phỏng các giá trị sai số theo sự thay đổi của các tham số. Đáy thung lũng (màu xanh dương) chính là Điểm cực tiểu - Nơi mô hình hoạt động tối ưu nhất.</div>
+  </div>
+  
+  <p>Mục tiêu của việc Training một Neural Network chính là làm sao tìm đường <strong>đi bộ từ sườn núi xuống tới tận đáy thung lũng</strong> này để lấy bộ giá trị <code>weights</code> & <code>bias</code> tối ưu.</p>
+
+  <h3><span class="material-symbols-outlined">warning</span> 3.5. Tại sao Classification dùng Cross Entropy thay vì MSE?</h3>
+  <div class="callout callout-warning">
+    <div class="callout-icon"><span class="material-symbols-outlined">gavel</span></div>
+    <div class="callout-content">
+      <strong>Sự khác biệt khi phạt cực đoan giữa MSE và Cross Entropy (CE)</strong>
+      <p>Giả sử ta chỉ làm phân loại với y_true = 1 (Lớp Nhãn dương tính).</p>
+      <ul>
+        <li>Dự đoán sai nhè: <strong>y_pred = 0.01</strong>
+          <ul>
+            <li><code>MSE = (0.01 - 1)² ≈ 0.98</code> → Điểm phạt trông có vẻ vừa phải.</li>
+            <li><code>CE = -log(0.01) ≈ 4.60</code> → Điểm <strong>PHẠT RẤT NẶNG!</strong></li>
+          </ul>
+        </li>
+      </ul>
+      <p>Với phân loại (Classification), ta cần hệ thống trở nên thiếu tự tin nếu đánh cược vào phe ngược lại. Cross Entropy phạt rất nặng những cú "Dự đoán sai mà còn tự tin", giúp Gradient tạo ra độ dốc lớn nên mô hình sẽ học sửa sai nhanh nhạy hơn là MSE.</p>
+    </div>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // LOSS FUNCTIONS - CÀI ĐẶT CHI TIẾT TỪNG DÒNG
@@ -221,60 +267,114 @@ fn main() {
     duration: '40 phút',
     type: 'theory',
     content: `
-      <h2>2. Gradient Descent - Leo dốc ngược</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">moving</span> 4. Gradient Descent - Lăn cầu tuyết xuống núi</h2>
 
-      <h3>Ý tưởng cốt lõi</h3>
-      <p><strong>Gradient Descent</strong> (Leo dốc ngược) là thuật toán tìm điểm thấp nhất của một hàm số bằng cách di chuyển dần theo hướng ngược của đạo hàm (gradient).</p>
+  <h3><span class="material-symbols-outlined">explore</span> 4.1. Ý tưởng cốt lõi</h3>
+  <div class="definition-block">
+    <p><strong>Gradient Descent</strong> là thuật toán tìm điểm thấp nhất (Minima) của một hàm mất mát (Loss Function) bằng cách di chuyển dần các tham số theo hướng ngược lại của đạo hàm (Gradient). Nếu đạo hàm dương (đang dốc lên chiều dương), ta trừ bớt để đi lùi. Nếu đạo hàm âm (đang dốc xuống), ta cộng thêm để đi tới.</p>
+  </div>
 
-      <h3>So sánh trực quan</h3>
-      <pre><code>Ví dụ: Tìm đáy thung lũng
+  <h3><span class="material-symbols-outlined">functions</span> 4.2. Công thức toán học cốt lõi</h3>
+  <div class="formula-block">
+    <p><code>W_mới = W_cũ - Learning_Rate * Gradient</code></p>
+  </div>
+  <p><strong>Trong đó:</strong></p>
+  <ul>
+    <li><strong>W_cũ</strong>: Parameter hiện tại.</li>
+    <li><strong>Learning_Rate (Tốc độ học)</strong>: Hệ số thu phóng bước nhảy (Ví dụ: nhảy dài hay ngắn mỗi bước).</li>
+    <li><strong>Gradient</strong>: Đạo hàm của Loss theo W (Chỉ ra hướng dốc hiện tại).</li>
+  </ul>
 
-Gradient Descent:
-     ▲
-     │        ╱╲
-     │       ╱  ╲
-     │      ╱    ╲
-     │     ╱      ╲
-     │    ╱        ╲_______
-     │   ╱
-     │  ╱  ← Đi ngược gradient
-     │ ╱
-     └───────────────────
-           Vị trí
+  <h3><span class="material-symbols-outlined">speed</span> 4.3. Chọn Learning Rate sao cho chuẩn?</h3>
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Kích thước Learning Rate</th>
+        <th>Trạng thái mô hình</th>
+        <th>Hậu quả</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Quá lớn (VD: 1.0)</strong></td>
+        <td>Bước nhảy quá dài</td>
+        <td>Vượt lố văng ra khỏi đáy (Divergence), không hội tụ được.</td>
+      </tr>
+      <tr>
+        <td><strong>Quá nhỏ (VD: 0.0001)</strong></td>
+        <td>Bước đi quá ngắn e dè</td>
+        <td>Mất quá nhiều thời gian để tới đáy (Convergence siêu chậm).</td>
+      </tr>
+      <tr>
+        <td><strong>Vừa đủ (0.01 - 0.1)</strong></td>
+        <td>Ổn định</td>
+        <td>Chạm tới đáy nhanh gọn.</td>
+      </tr>
+    </tbody>
+  </table>
 
-Gradient (đạo hàm) cho biết:
-- Hướng nào đi LÊN (positive gradient)
-- Hướng nào đi XUỐNG (negative gradient)
-- Độ dốc bao nhiêu (gradient magnitude)</code></pre>
+  <h3><span class="material-symbols-outlined">compare_arrows</span> 4.4. Các biến thể Gradient Descent</h3>
+  <div class="features-grid">
+    <div class="feature-card">
+      <h4>a) Batch Gradient Descent</h4>
+      <p>Nhìn toàn bộ dữ liệu 100% rồi mới cập nhật Weights đúng 1 lần. <br/><em>Ưu điểm</em>: Cực kỳ chính xác quỹ đạo. <br/><em>Nhược</em>: Siêu ì ạch, cần quá nhiều RAM.</p>
+    </div>
+    <div class="feature-card">
+      <h4>b) Stochastic Gradient Descent (SGD)</h4>
+      <p>Xem đúng 1 mẫu (sample) là cập nhật Weights ngay. <br/><em>Ưu điểm</em>: Cực nhanh, update liều mạng liên tục. <br/><em>Nhược</em>: Cực ồn (noisy gradient), quỹ đạo đi zigzag lộn xộn.</p>
+    </div>
+    <div class="feature-card">
+      <h4>c) Mini-batch Gradient Descent</h4>
+      <p>Gộp Data thành từng lô nhỏ (VD 32-128 samples). <strong>Đây là chuẩn mực!</strong> Vừa tận dụng tính toán song song, khử nhiễu của SGD mà khỏi tốn RAM nặng nề.</p>
+    </div>
+  </div>
 
-      <h3>Công thức toán học</h3>
-      <pre><code>// Cập nhật weight
-w_moi = w_cu - learning_rate * gradient
+  <h3><span class="material-symbols-outlined">crisis_alert</span> 4.5. Nỗi ác mộng Local Minima & Saddle Points</h3>
+  <div class="callout callout-warning">
+    <div class="callout-icon"><span class="material-symbols-outlined">report</span></div>
+    <div class="callout-content">
+      <strong>Kẻ bị nhốt - Local Minima & Điểm yên ngựa (Saddle Points)</strong>
+      <p>Mặt Loss 3D ngoài thực tế không mịn màng như cái bát, mà uốn lượn như đồi núi. Cả 2 điểm này đều có <strong>Gradient = 0</strong>.</p>
+      <ul>
+        <li><strong>Local Minima</strong>: Một cái hố nằm trên lưng chừng núi. Quả trứng lăn vào sẽ tưởng đó là đáy xịn nhất nhưng thực chất là đáy rởm (so với Global Minimum).</li>
+        <li><strong>Saddle Points (Điểm yên ngựa)</strong>: Nơi mà uốn cong trũng chiều này nhưng lại lồi ở chiều kia, như cái yên ngựa. SGD đi tới đây rờ thấy Gradient=0 thì dừng lại, khiến mô hình bị "mắc kẹt" rất lâu.</li>
+      </ul>
+    </div>
+  </div>
 
-// Trong đó:
-// - w_cu: weight hiện tại
-// - w_moi: weight mới sau khi cập nhật
-// - learning_rate: kích thước bước đi
-// - gradient: đạo hàm của loss theo w
+  <h3><span class="material-symbols-outlined">surfing</span> 4.6. Momentum - Thêm "Quán tính" để vượt ải</h3>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">directions_bike</span></div>
+      <h4>SGD Nguyên thủy</h4>
+      <p>Cứ đụng hố hay ranh dốc Gradient=0 là cái thắng xe nhồi đứng khựng lại hoàn toàn bất kể trước đó lăn nhanh ra sao.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">rocket_launch</span></div>
+      <h4>Momentum (Sức đà)</h4>
+      <p>Giống như lăn 1 quả tạ sắt siêu nặng. Nếu đụng Local Minima dốc hơi bằng bằng, lực quán tính khổng lồ bồi dư âm từ những bước trước đủ quăng cục tạ này tuột lố sang bên kia miệng hố dỏm, phi thẳng xuống Đáy chân chính bên dưới.</p>
+    </div>
+  </div>
+  <div class="formula-block">
+    <p><code>v_hiện_tại = β * v_trước + (1 - β) * Gradient</code><br/><code>W = W - learning_rate * v_hiện_tại</code></p>
+  </div>
 
-// Gradient = hướng tăng nhanh nhất
-// - gradient > 0: đi lên → cần trừ để đi xuống
-// - gradient < 0: đi xuống → cần cộng để đi lên</code></pre>
-
-      <h3>Learning Rate</h3>
-      <table class="comparison-table">
-        <tr><th>Learning Rate</th><th>Hiệu ứng</th></tr>
-        <tr><td>Quá lớn (1.0)</td><td>Nhảy qua điểm tối ưu, không hội tụ</td></tr>
-        <tr><td>Quá nhỏ (0.0001)</td><td>Hội tụ rất chậm</td></tr>
-        <tr><td>Vừa đủ (0.01-0.1)</td><td>Hội tụ nhanh và ổn định</td></tr>
-      </table>
-
-      <h3>Các loại Gradient Descent</h3>
+  <h3><span class="material-symbols-outlined">stars</span> 4.7. Quyền năng tột bậc: Adam Optimizer</h3>
+  <div class="callout callout-info">
+    <div class="callout-icon"><span class="material-symbols-outlined">verified</span></div>
+    <div class="callout-content">
+      <strong>Adam = Tinh hoa của SGD kết hợp Momentum và RMSprop</strong>
+      <p>Trình tối ưu hóa tiêu chuẩn vàng của giới Deep Learning với 3 triết lý:</p>
       <ol>
-        <li><strong>Batch Gradient Descent</strong>: Dùng toàn bộ dữ liệu mỗi lần cập nhật → Chính xác nhưng chậm</li>
-        <li><strong>Stochastic Gradient Descent (SGD)</strong>: Dùng 1 sample mỗi lần → Nhanh nhưng ồn ào</li>
-        <li><strong>Mini-batch GD</strong>: Dùng 32-128 samples → Cân bằng tốt nhất</li>
+        <li>Dùng Momentum lấy trung bình Gradient các bước qua.</li>
+        <li>Dùng RMSprop theo dõi phương sai (bình phương) của các Gradient qua.</li>
+        <li>Tùy chỉnh riêng lẻ được tốc độ học (adaptive learning-rate) <em>DÀNH RIÊNG</em> cho từng mảnh Weight một! Cái nào quen rồi thì chạy chậm, cái nào khuyết thì phóng nhanh.</li>
       </ol>
+      <p><em>Mặc định thần thánh cực ít lỗi: <code>lr=0.001</code>, <code>beta1=0.9</code>, <code>beta2=0.999</code>. Bạn chẳng cần đổi các thứ này đâu!</em></p>
+    </div>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // GRADIENT DESCENT - CÀI ĐẶT CHI TIẾT TỪNG DÒNG
@@ -459,59 +559,61 @@ fn main() {
     duration: '35 phút',
     type: 'theory',
     content: `
-      <h2>3. Chain Rule - Quy tắc dây chuyền</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">link</span> 5. Chain Rule - Quy tắc dây chuyền</h2>
 
-      <h3>Tại sao cần Chain Rule?</h3>
-      <p>Trong Neural Network, output phụ thuộc vào input qua nhiều lớp. Để tính đạo hàm của loss theo weights ở lớp đầu tiên, ta cần <strong>Chain Rule</strong> (quy tắc dây chuyền).</p>
+  <h3><span class="material-symbols-outlined">help</span> 5.1. Tại sao cần Chain Rule?</h3>
+  <p>Trong Neural Network, Output cuối cùng bị chịu hệ quả liên tục qua nhiều lớp ẩn (Hidden Layers). Để tính đạo hàm ngược dòng từ Loss Function về tận những lớp đầu tiên, ta cần dùng đến vũ khí toán học tên là <strong>Chain Rule</strong> (Quy tắc dây chuyền).</p>
 
-      <h3>Định lý Chain Rule</h3>
-      <pre><code>Nếu y = f(g(x)), thì:
-dy/dx = df/dg * dg/dx
+  <h3><span class="material-symbols-outlined">functions</span> 5.2. Định lý Chain Rule</h3>
+  <div class="formula-block">
+    <p>Nếu <code>y = f(g(x))</code>, thì:</p>
+    <p><code>dy/dx = df/dg * dg/dx</code></p>
+    <br/>
+    <p><strong>Hoặc viết theo góc độ Neural Network:</strong></p>
+    <p><code>∂L/∂W = ∂L/∂A * ∂A/∂Z * ∂Z/∂W</code></p>
+  </div>
 
-Hay viết theo ký hiệu:
-∂L/∂x = ∂L/∂y * ∂y/∂z * ∂z/∂x
+  <h3><span class="material-symbols-outlined">visibility</span> 5.3. Ví dụ trực quan</h3>
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">Giả định</div>
+      <p>Ta có chuỗi phép tính: <code>x → z = 2x → a = z² → L = a</code>. Hãy tìm <code>dL/dx</code>?</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <p><strong>dL/da = 1</strong> (Bởi vì L = a)</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <p><strong>da/dz = 2z</strong> (Đạo hàm của a = z²)</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <p><strong>dz/dx = 2</strong> (Đạo hàm của z = 2x)</p>
+    </div>
+  </div>
+  <p><strong>Kết hợp lại bằng Chain Rule:</strong></p>
+  <ul>
+    <li><code>dL/dx = dL/da * da/dz * dz/dx</code></li>
+    <li><code>dL/dx = 1 * 2z * 2 = 4z</code></li>
+    <li>Thế <code>z = 2x</code> vào → <code>dL/dx = 4 * (2x) = 8x</code></li>
+  </ul>
+  <p>✅ Kiểm tra chéo: L = (2x)² = 4x². Đạo hàm dL/dx đúng bằng 8x!</p>
 
-Tổng quát:
-∂L/∂w = ∂L/∂a * ∂a/∂z * ∂z/∂w</code></pre>
-
-      <h3>Ví dụ trực quan</h3>
-      <pre><code>Giả sử ta có:
-  x → z = 2x → a = z² → L = a
-
-Tính dL/dx = ?
-
-Bước 1: dL/da = 1      (vì L = a)
-Bước 2: da/dz = 2z     (vì a = z²)
-Bước 3: dz/dx = 2      (vì z = 2x)
-
-Kết hợp:
-dL/dx = dL/da * da/dz * dz/dx
-      = 1 * 2z * 2
-      = 4z
-      = 4 * (2x)
-      = 8x
-
-Kiểm tra: L = (2x)² = 4x²
-           dL/dx = 8x ✓</code></pre>
-
-      <h3>Chain Rule trong Neural Network</h3>
-      <pre><code>Forward pass:
-  x → z₁ = w₁*x + b₁ → a₁ = σ(z₁) → z₂ = w₂*a₁ + b₂ → a₂ = σ(z₂) → L
-
-Backward pass (Chain Rule):
-  ∂L/∂w₂ = ∂L/∂a₂ * ∂a₂/∂z₂ * ∂z₂/∂w₂
-         = (a₂ - y) * σ'(z₂) * a₁
-
-  ∂L/∂w₁ = ∂L/∂a₂ * ∂a₂/∂z₂ * ∂z₂/∂a₁ * ∂a₁/∂z₁ * ∂z₁/∂w₁
-         = (a₂ - y) * σ'(z₂) * w₂ * σ'(z₁) * x</code></pre>
-
-      <h3>Ý nghĩa trong Backpropagation</h3>
-      <p>Mỗi bước trong backpropagation là một ứng dụng của chain rule!</p>
-      <ul>
-        <li>Ta tính gradient từ output → input</li>
-        <li>Mỗi layer "truyền" gradient cho layer trước đó</li>
-        <li>Weight nào có ảnh hưởng lớn hơn → gradient lớn hơn</li>
-      </ul>
+  <h3><span class="material-symbols-outlined">account_tree</span> 5.4. Computational Graph - Đồ thị tính toán</h3>
+  <div class="callout callout-info">
+    <div class="callout-icon"><span class="material-symbols-outlined">schema</span></div>
+    <div class="callout-content">
+      <strong>Mọi phép tính đều có hướng đi rành mạch</strong>
+      <p>Trong NN, mỗi phép tính như cộng, nhân, hàm kích hoạt là 1 Nút (Node). Quá trình có 2 luồng rõ rệt:</p>
+      <ol>
+        <li><strong>Forward Pass (Tiến):</strong> Đẩy Dữ Liệu Input lên phía trước để tính ra Kết Quả (Loss).</li>
+        <li><strong>Backward Pass (Lùi):</strong> Nhận Đạo hàm Đầu Vào (Gradient In) từ phía Layer sau gửi ngược về, lấy cái đó <strong>nhân thêm</strong> với Local Gradient của nguyên bản Node đó, rồi lại truyền cục to đùng đó về cho Layer trước. <em>(Đó chính là Backpropagation!)</em></li>
+      </ol>
+    </div>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // CHAIN RULE - MINH HỌA TRONG NEURAL NETWORK
@@ -723,64 +825,67 @@ fn main() {
     duration: '45 phút',
     type: 'theory',
     content: `
-      <h2>4. Backpropagation - Lan truyền ngược</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">reply_all</span> 6. Backpropagation - Lan truyền ngược</h2>
 
-      <h3>Định nghĩa</h3>
-      <p><strong>Backpropagation</strong> (lan truyền ngược) là thuật toán dùng để tính gradient của loss function theo các weights trong Neural Network. Nó kết hợp Chain Rule để tính đạo hàm từ output ngược về input.</p>
+  <h3><span class="material-symbols-outlined">menu_book</span> 6.1. Định nghĩa</h3>
+  <div class="definition-block">
+    <p><strong>Backpropagation</strong> (Lan truyền ngược) là thuật toán thần thánh đằng sau Deep Learning cho việc huấn luyện Neural Network. Nó kết hợp <em>Chain Rule (Quy tắc dây chuyền)</em> để truyền ngược thông báo Sai số (Loss) xuống từng Layer bên dưới để chỉ điểm cho chúng cách cập nhật Weights hòng sửa sai.</p>
+  </div>
 
-      <h3>Quy trình Backpropagation</h3>
-      <pre><code>1. FORWARD PASS:
-   - Input → Hidden → Output
-   - Lưu tất cả activations và z values
+  <h3><span class="material-symbols-outlined">sync</span> 6.2. 4 Bước quy chuẩn</h3>
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <p><strong>Forward Pass (Tiến):</strong> Đưa Input vào chạy qua tới Output, lưu lại toàn bộ các trung gian.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <p><strong>Tính Loss:</strong> So sánh kết quả của Output với Câu trả lời thực (Ground Truth) ra điểm phạt Loss.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <p><strong>Backward Pass (Lùi):</strong> Tính Đạo hàm của Loss truyền ngược qua từng Layer. Từng Node lấy đạo hàm đó nhân với tỷ trọng góp phần của chính mình trước đó.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-number">4</div>
+      <p><strong>Optimize (Cập nhật):</strong> <code>Weight = Weight - LR * Gradient_vừa_tính_xong</code>.</p>
+    </div>
+  </div>
 
-2. TÍNH LOSS:
-   - So sánh output với ground truth
-   - Tính loss = (y_pred - y_true)²
-
-3. BACKWARD PASS (từ output về input):
-   - Tính gradient của loss theo output
-   - Lan truyền ngược qua từng layer
-   - Tính gradient cho từng weight
-
-4. CẬP NHẬT WEIGHTS:
-   - w = w - learning_rate * gradient</code></pre>
-
-      <h3>Giải thích chi tiết từng bước</h3>
-
-      <h4>Bước 1: Forward Pass</h4>
-      <pre><code>Input x:
-  z₁ = w₁*x + b₁         (weighted sum 1)
-  a₁ = σ(z₁)             (activation 1)
-  z₂ = w₂*a₁ + b₂        (weighted sum 2)
-  a₂ = σ(z₂)             (activation 2 = output)
-  Loss = (a₂ - y)²</code></pre>
-
-      <h4>Bước 2: Tính gradient từ output</h4>
-      <pre><code>∂L/∂a₂ = 2*(a₂ - y)
-
-∂L/∂z₂ = ∂L/∂a₂ * ∂a₂/∂z₂
-       = 2*(a₂ - y) * σ'(z₂)</code></pre>
-
-      <h4>Bước 3: Lan truyền ngược</h4>
-      <pre><code>∂L/∂w₂ = ∂L/∂z₂ * ∂z₂/∂w₂ = ∂L/∂z₂ * a₁
-∂L/∂b₂ = ∂L/∂z₂ * ∂z₂/∂b₂ = ∂L/∂z₂ * 1
-
-∂L/∂a₁ = ∂L/∂z₂ * ∂z₂/∂a₁ = ∂L/∂z₂ * w₂
-∂L/∂z₁ = ∂L/∂a₁ * ∂a₁/∂z₁</code></pre>
-
-      <h4>Bước 4: Cập nhật weights</h4>
-      <pre><code>w₂ = w₂ - lr * ∂L/∂w₂
-b₂ = b₂ - lr * ∂L/∂b₂
-w₁ = w₁ - lr * ∂L/∂w₁
-b₁ = b₁ - lr * ∂L/∂b₁</code></pre>
-
-      <h3>Điểm quan trọng cần nhớ</h3>
+  <h3><span class="material-symbols-outlined">warning</span> 6.3. Sát thủ mạng nơ-ron: Vanishing Gradient</h3>
+  <div class="callout callout-warning">
+    <div class="callout-icon"><span class="material-symbols-outlined">sentiment_dissatisfied</span></div>
+    <div class="callout-content">
+      <strong>Vấn đề Gradient tụt về con số Không (Vanishing)</strong>
+      <p>Khi mạng quá Sâu (nhiều lớp), mỗi lớp đạo hàm nhân nhồi một số thập phân nhỏ hơn 1 (Ví dụ đạo hàm Sigmoid tối đa = 0.25).</p>
       <ul>
-        <li><strong>Forward pass</strong>: Lưu tất cả intermediate values</li>
-        <li><strong>Backward pass</strong>: Dùng chain rule để tính gradient</li>
-        <li><strong>Gradient</strong>: Cho biết hướng và độ lớn cần điều chỉnh</li>
-        <li><strong>Learning rate</strong>: Kiểm soát tốc độ học</li>
+        <li>Lớp thứ 5: <code>0.25^5 = 0.00097</code></li>
+        <li>Lớp thứ 20: <code>0.25^20 ≈ 0.0000000000009</code> (Về mốc 0)</li>
       </ul>
+      <p><strong>Hậu quả:</strong> Tín hiệu gửi về các lớp dưới cùng tan biến sạch, chúng không còn cái gì để học nữa (No Update). Lớp đỉnh học được, Lớp móng mù chữ → Toàn mạng vô dụng.</p>
+    </div>
+  </div>
+
+  <h3><span class="material-symbols-outlined">done_all</span> 6.4. Cách khắc phục Vanishing & Exploding</h3>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">timeline</span></div>
+      <h4>Bỏ Sigmoid, Thay ReLU</h4>
+      <p>Hàm ReLU có đạo hàm là 1 cho nhánh dương, tức là <code>1 x 1 x 1</code> đi qua 100 lớp vẫn dạt dào 100% năng lượng Gradient không bị hụt.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">trending_down</span></div>
+      <h4>Gradient Clipping (Chặt ngọn)</h4>
+      <p>Ngược với tình trạng Vanishing là Exploding (Gradient quá lớn phát nổ). Rất phổ biến ở cấu trúc RNN. Ta cứ xét nếu <code>Gradient > Ngưỡng</code> thì gọt bằng lại đúng Ngưỡng là xong!</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">alt_route</span></div>
+      <h4>Skip Connections</h4>
+      <p>Kiến trúc ResNet sử dụng lối tắt đi vượt qua 2-3 lớp liền mạch, Gradient chảy vèo qua xa lộ bypass hòng giữ an toàn năng lượng về tận đáy.</p>
+    </div>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // BACKPROPAGATION - CÀI ĐẶT ĐẦY ĐỦ

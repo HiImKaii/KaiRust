@@ -24,126 +24,189 @@ const ch21_01_lessons: Lesson[] = [
     duration: '45 phút',
     type: 'theory',
     content: `
-      <h2>1. Neural Network là gì? Giải thích bằng ví dụ thực tế</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">psychology</span> 1. Neural Network là gì? Giải thích bằng ví dụ thực tế</h2>
 
-      <h3>1.1. Định nghĩa đơn giản nhất</h3>
-      <p>Hãy tưởng tượng bạn đang dạy một đứa trẻ nhận biết con mèo. Bạn chỉ cho nó xem nhiều hình ảnh con mèo và nói "Đây là mèo". Sau đó, khi gặp một con mèo chưa từng thấy, đứa trẻ vẫn nhận ra "À, đây cũng là mèo".</p>
+  <h3><span class="material-symbols-outlined">lightbulb</span> 1.1. Trước hết: Machine Learning (Học Máy) là gì?</h3>
+  <p>Trước khi nói về Neural Network, ta cần hiểu <strong>Machine Learning (ML)</strong> - nền tảng mà Neural Network được xây dựng trên đó. <strong>Machine Learning</strong> là một nhánh của Trí Tuệ Nhân Tạo (AI), cho phép máy tính <strong>"học" từ dữ liệu</strong> mà không cần lập trình viên viết code cho từng tình huống cụ thể.</p>
 
-      <p><strong>Neural Network hoạt động tương tự!</strong> Nó "học" từ nhiều ví dụ và sau đó có thể nhận ra những ví dụ mới chưa từng thấy.</p>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">code</span></div>
+      <h4>Lập trình truyền thống</h4>
+      <p>Input + RULES (do con người viết) &rarr; Output</p>
+      <p><em>Ví dụ:</em> Viết 100 quy tắc phân biệt email spam bằng tay.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">model_training</span></div>
+      <h4>Machine Learning</h4>
+      <p>Input + Output (dữ liệu mẫu) &rarr; RULES (máy tự học)</p>
+      <p><em>Ví dụ:</em> Cho máy xem 10,000 email spam/không spam, máy TỰ tìm quy tắc.</p>
+    </div>
+  </div>
 
-      <h3>1.2. So sánh giữa não bộ và máy tính</h3>
-      <table class="comparison-table">
-        <tr><th>Não bộ con người</th><th>Neural Network (máy tính)</th><th>Ý nghĩa</th></tr>
-        <tr><td>Neuron (tế bào thần kinh)</td><td>Node / Neuron</td><td>Đơn vị tính toán cơ bản</td></tr>
-        <tr><td>Synapse (khớp thần kinh)</td><td>Weight (trọng số)</td><td>Độ mạnh của kết nối giữa các neuron</td></tr>
-        <tr><td>Tín hiệu điện</td><td>Số (giá trị)</td><td>Thông tin được truyền đi</td></tr>
-        <tr><td>Khoảng 86 tỷ neurons</td><td>Từ vài đến hàng tỷ</td><td>Số lượng đơn vị tính toán</td></tr>
-        <tr><td>Học trong vài giây</td><td>Cần hàng triệu phép tính</td><td>Tốc độ xử lý</td></tr>
-      </table>
+  <h4>Ba loại Machine Learning chính:</h4>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">school</span></div>
+      <h4>Supervised Learning (Học có giám sát)</h4>
+      <p>Có <strong>DỮ LIỆU</strong> và <strong>NHÃN</strong>.</p>
+      <p><em>Ví dụ:</em> Dự đoán giá nhà dựa trên diện tích.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">travel_explore</span></div>
+      <h4>Unsupervised Learning (Không giám sát)</h4>
+      <p>Chỉ có <strong>DỮ LIỆU</strong>, không có nhãn. Tự tìm cấu trúc ẩn.</p>
+      <p><em>Ví dụ:</em> Phân nhóm khách hàng.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">sports_esports</span></div>
+      <h4>Reinforcement Learning (Học tăng cường)</h4>
+      <p>Học bằng <strong>THỬ VÀ SAI</strong>, nhận thưởng/phạt.</p>
+      <p><em>Ví dụ:</em> AI chơi game, Robot tự lái.</p>
+    </div>
+  </div>
 
-      <h3>1.3. Neural Network giải quyết những bài toán gì?</h3>
-      <p>Neural Network có thể giải quyết rất nhiều loại bài toán, được chia thành 4 nhóm chính:</p>
+  <div class="callout callout-important">
+    <span class="material-symbols-outlined">stars</span>
+    <div class="callout-content">
+      <span class="callout-title">Neural Network nằm ở đâu?</span>
+      <p>Neural Network chủ yếu thuộc <strong>Supervised Learning</strong> - ta cho nó dữ liệu và đáp án, nó tự tìm ra quy luật!</p>
+    </div>
+  </div>
 
-      <h4>a) Classification (Phân loại)</h4>
-      <pre><code>Bài toán: Đưa vào dữ liệu, dự đoán nó thuộc loại nào?
+  <div class="callout callout-tip">
+    <span class="material-symbols-outlined">dataset</span>
+    <div class="callout-content">
+      <span class="callout-title">Training Data vs Test Data</span>
+      <p>Khi có dữ liệu (ví dụ 10,000 ảnh), ta luôn chia thành:
+      <ul>
+        <li><strong>Training Data (80%):</strong> Máy "học" từ đây (giống học sinh làm bài tập).</li>
+        <li><strong>Test Data (20%):</strong> Kiểm tra máy học có tốt không (giống học sinh đi thi). KHÔNG ĐƯỢC để máy nhìn thấy trước!</li>
+      </ul></p>
+    </div>
+  </div>
 
-Ví dụ thực tế:
-- Email → Spam hoặc Không phải Spam
-- Ảnh → Con mèo hoặc Con chó hoặc Con chim
-- Tin nhắn → Tích cực / Tiêu cực / Trung tính
-- Chữ viết tay → Số 0, 1, 2, ..., 9</code></pre>
+  <h3><span class="material-symbols-outlined">biotech</span> 1.2. Neuron sinh học - Cơ sở cảm hứng</h3>
+  <p>Neural Network nhân tạo <strong>mô phỏng</strong> quá trình gửi/nhận tín hiệu của não bộ.</p>
+  
+  <div class="definition-block">
+    <span class="definition-term">Nguyên tắc Hebb (1949): "Neurons that fire together, wire together"</span>
+    <p>Những neuron cùng "bắn" tín hiệu sẽ có kết nối <strong>mạnh hơn</strong>. Ví dụ: Thấy "Lửa" &rarr; Bị "Nóng" (hai neuron cùng bắn). Sau này chỉ cần nghĩ tới "Lửa" là não tự liên kết đến "Nóng". Cơ chế này hình thành trí nhớ và học tập.</p>
+  </div>
 
-      <h4>b) Regression (Hồi quy)</h4>
-      <pre><code>Bài toán: Dự đoán một giá trị số liên tục
+  <table class="comparison-table">
+    <thead>
+      <tr><th>Bộ não con người</th><th>Neural Network (Máy tính)</th><th>Vai trò</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Dendrites (Nhánh nhận)</td><td>Inputs ($x$)</td><td>Thu thập thông tin</td></tr>
+      <tr><td>Synapse</td><td>Weight ($w$)</td><td>Quản lý "Độ mạnh" của kết nối</td></tr>
+      <tr><td>Cell body</td><td>Weighted Sum ($z = \\sum wx + b$)</td><td>Tổng hợp thông tin</td></tr>
+      <tr><td>Ngưỡng bắn (Threshold)</td><td>Activation Function $f(z)$</td><td>Quyết định kích hoạt</td></tr>
+      <tr><td>Axon (Sợi xâu)</td><td>Output ($y$)</td><td>Đưa kết quả ra ngoài</td></tr>
+    </tbody>
+  </table>
 
-Ví dụ thực tế:
-- Diện tích nhà → Giá nhà (triệu đồng)
-- Tuổi, sức khỏe → Tuổi thọ (năm)
-- Quảng cáo → Doanh số (triệu đồng)
-- Nhiệt độ, độ ẩm → Lượng mưa (mm)</code></pre>
+  <h3><span class="material-symbols-outlined">memory</span> 1.3. Universal Approximation Theorem</h3>
+  <div class="definition-block">
+    <span class="definition-term">Định lý Xấp xỉ Phổ quát (1989)</span>
+    <p>Một Neural Network với <strong>ÍT NHẤT 1 hidden layer</strong> chứa đủ neurons có thể <strong>XẤP XỈ BẤT KỲ</strong> hàm số liên tục nào với độ chính xác tùy ý.</p>
+  </div>
+  <p>Tuy nhiên, định lý này chỉ nói NN <strong>có thể</strong> xấp xỉ chứ không cung cấp phương pháp <strong>làm sao để tìm</strong> weights hợp lý. Đó là lý do ta phải huấn luyện (train) mô hình.</p>
 
-      <h4>c) Generation (Sinh dữ liệu)</h4>
-      <pre><code>Bài toán: Tạo ra dữ liệu mới dựa trên những gì đã học
+  <h3><span class="material-symbols-outlined">apps</span> 1.4. Neural Network giải quyết bài toán gì?</h3>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">category</span></div>
+      <h4>Classification (Phân loại)</h4>
+      <p>Dự đoán một loại rời rạc.</p>
+      <p><em>VD:</em> Ảnh &rarr; Chó/Mèo, Email &rarr; Spam/Inb.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">ssid_chart</span></div>
+      <h4>Regression (Hồi quy)</h4>
+      <p>Dự đoán số thực liên tục.</p>
+      <p><em>VD:</em> Kích thước nhà &rarr; Giá 5 tỷ.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">auto_fix_high</span></div>
+      <h4>Generation (Sinh mới)</h4>
+      <p>Sinh dữ liệu từ mẫu đã học.</p>
+      <p><em>VD:</em> ChatGPT viết bài, AI vẽ ảnh.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">workspaces</span></div>
+      <h4>Clustering (Gom cụm)</h4>
+      <p>Gom nhóm không cần nhãn.</p>
+      <p><em>VD:</em> Phân khúc khách hàng.</p>
+    </div>
+  </div>
 
-Ví dụ thực tế:
-- Văn bản: ChatGPT viết bài, dịch thuật
-- Hình ảnh: Deepfake, AI vẽ tranh
-- Âm nhạc: AI sáng tác nhạc
-- Code: GitHub Copilot viết code</code></pre>
+  <h3><span class="material-symbols-outlined">history</span> 1.5. Lịch sử phát triển Neural Networks</h3>
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h4>1943 - Khởi nguồn & Toán học</h4>
+        <p>Warren McCulloch và Walter Pitts đề xuất mô hình toán học neuron đầu tiên.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h4>1958 - Perceptron</h4>
+        <p>Frank Rosenblatt tạo ra <strong>Perceptron</strong> - neuron nhân tạo có thể học. Nhưng vướng rào cản XOR problem.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h4>1986 - Backpropagation (LAN TRUYỀN NGƯỢC)</h4>
+        <p>Hinton, Rumelhart và Williams phổ biến Backpropagation - giúp Model có nhiều Hidden Layers học thành công!</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <h4>HIỆN TẠI - Deep Learning</h4>
+        <p>AlexNet (2012) chiến thắng ImageNet. Transformers (2017) dẫn đến LLM, ChatGPT, Copilot (AI thống trị).</p>
+      </div>
+    </div>
+  </div>
 
-      <h4>d) Clustering (Gom cụm)</h4>
-      <pre><code>Bài toán: Nhóm các dữ liệu giống nhau lại
+  <h3><span class="material-symbols-outlined">schema</span> 1.6. Cấu trúc điển hình</h3>
+  <div class="image-showcase">
+    <img src="/assets/ch21/neural_network_layers_1773152542781.png" alt="Neural Network Component Layers" />
+    <div class="image-caption"><span class="material-symbols-outlined">info</span> Sơ đồ cấu tạo một mạng Neural Network 2 Hidden Layers</div>
+  </div>
 
-Ví dụ thực tế:
-- Khách hàng → Nhóm người mua sắm giống nhau
-- Bài báo → Chủ đề tương tự
-- Ảnh → Khuôn mặt giống nhau</code></pre>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">login</span></div>
+      <h4>Input Layer (Lớp đầu vào)</h4>
+      <p>Nơi dữ liệu thô đi vào (ví dụ ảnh 28x28 có 784 biến inputs).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">layers</span></div>
+      <h4>Hidden Layer(s) (Lớp ẩn)</h4>
+      <p>Làm nhiệm vụ "phần cứng" trích xuất đặc trưng và xử lý tính toán cực kì phức tạp.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">logout</span></div>
+      <h4>Output Layer (Lớp đầu ra)</h4>
+      <p>Lớp quyết định đưa ra dự báo cuối cùng (vd: "Số 9", "Thư Rác").</p>
+    </div>
+  </div>
 
-      <h3>1.4. Lịch sử phát triển của Neural Networks</h3>
-      <p>Neural Networks không phải là công nghệ mới, nó đã được nghiên cứu từ rất lâu:</p>
-
-      <h4>1943 - Khởi nguồn</h4>
-      <p><strong>Warren McCulloch và Walter Pitts</strong> đề xuất mô hình toán học đầu tiên của neuron. Họ chứng minh rằng một mạng các neuron nhân tạo có thể tính toán bất kỳ phép toán logic nào.</p>
-
-      <h4>1958 - Perceptron ra đời</h4>
-      <p><strong>Frank Rosenblatt</strong> (nhà tâm lý học người Mỹ) giới thiệu Perceptron - phiên bản đầu tiên của neuron nhân tạo có thể học được. Ông còn chế tạo một máy tính vật lý có tên "Mark I" để thực hiện thuật toán này.</p>
-
-      <h4>1969 - Mùa đông AI</h4>
-      <p><strong>Marvin Minsky và Seymour Papert</strong> chứng minh rằng Perceptron (1 lớp) không thể giải quyết được bài toán XOR. Điều này dẫn đến sự suy giảm nghiên cứu Neural Networks trong gần 20 năm!</p>
-
-      <h4>1986 - Sự hồi sinh</h4>
-      <p><strong>David Rumelhart, Geoffrey Hinton, và Ronald Williams</strong> phổ biến thuật toán Backpropagation (lan truyền ngược), cho phép Neural Networks có nhiều lớp học được. Đây là bước ngoặt quan trọng!</p>
-
-      <h4>2012 - Kỷ nguyên Deep Learning</h4>
-      <p><strong>AlexNet</strong> (của Alex Krizhevsky, Ilya Sutskever, Geoffrey Hinton) chiến thắng cuộc thi ImageNet với cách biệt lớn. Thuật ngữ "Deep Learning" (Học sâu) trở nên phổ biến.</p>
-
-      <h4>2020 - Transformers</h4>
-      <p><strong>Attention is All You Need</strong> (Vaswani et al., 2017) dẫn đến BERT, GPT, và các mô hình ngôn ngữ lớn. ChatGPT ra đời năm 2022.</p>
-
-      <h3>1.5. Tại sao Neural Networks quan trọng đến vậy?</h3>
-      <ol>
-        <li><strong>Tự động học features</strong>: Thay vì phải viết code để trích xuất đặc điểm (features), Neural Networks tự học chúng từ dữ liệu thô.</li>
-        <li><strong>Khả năng tổng quát hóa</strong>: Có thể áp dụng cho nhiều loại bài toán khác nhau với cùng một cách tiếp cận.</li>
-        <li><strong>Scale vô hạn</strong>: Càng nhiều dữ liệu, càng nhiều parameters → càng chính xác (với điều kiện đủ compute).</li>
-        <li><strong>Giải quyết bài toán phức tạp</strong>: Nhận dạng hình ảnh, xử lý ngôn ngữ tự nhiên, chơi game - những gì trước đây máy tính không làm được.</li>
-      </ol>
-
-      <h3>1.6. Các thành phần cơ bản của Neural Network</h3>
-      <pre><code>Cấu trúc của một Neural Network điển hình:
-
-         ┌─────────────────────────────────────┐
-         │         INPUT LAYER                │  ← Lớp đầu vào (dữ liệu)
-         │   (x₁)    (x₂)    (x₃)   ...      │
-         └──────────┬──────────┬─────────────┘
-                    │          │
-         ┌──────────▼──────────▼─────────────┐
-         │        HIDDEN LAYER 1              │  ← Lớp ẩn (xử lý trung gian)
-         │   (h¹₁)  (h¹₂)  (h¹₃)  (h¹₄)    │
-         └──────────┬──────────┬─────────────┘
-                    │          │
-         ┌──────────▼──────────▼─────────────┐
-         │        HIDDEN LAYER 2              │  ← Lớp ẩn thứ 2
-         │   (h²₁)  (h²₂)  (h²₃)            │
-         └──────────┬──────────┬─────────────┘
-                    │          │
-         ┌──────────▼──────────▼─────────────┐
-         │        OUTPUT LAYER               │  ← Lớp đầu ra (kết quả)
-         │      (y₁)    (y₂)   ...          │
-         └─────────────────────────────────────┘
-
-Các mũi tên = weights (trọng số)
-Mỗi lớp ẩn có thể có nhiều neurons</code></pre>
-
-      <table class="comparison-table">
-        <tr><th>Thành phần</th><th>Tiếng Việt</th><th>Giải thích</th></tr>
-        <tr><td>Input Layer</td><td>Lớp đầu vào</td><td>Nhận dữ liệu đầu vào (ảnh, text, số...)</td></tr>
-        <tr><td>Hidden Layer</td><td>Lớp ẩn</td><td>Xử lý trung gian, trích xuất features</td></tr>
-        <tr><td>Output Layer</td><td>Lớp đầu ra</td><td>Đưa ra kết quả dự đoán</td></tr>
-        <tr><td>Neuron/Node</td><td>Neuron</td><td>Đơn vị tính toán cơ bản</td></tr>
-        <tr><td>Weight</td><td>Trọng số</td><td>Độ quan trọng của mỗi kết nối</td></tr>
-        <tr><td>Bias</td><td>Hệ số điều chỉnh</td><td>Giúp model linh hoạt hơn</td></tr>
-        <tr><td>Activation</td><td>Hàm kích hoạt</td><td>Thêm tính phi tuyến</td></tr>
-      </table>
+  <div class="key-takeaway">
+    <div class="key-takeaway-icon">
+      <span class="material-symbols-outlined">psychology</span>
+    </div>
+    <h3>Quy tắc Tối Thượng</h3>
+    <p>Neural Network tóm lại là một biểu thức toán khổng lồ có khả năng <strong>tự điều chỉnh các Trọng Số (Weights)</strong> để <strong>Biến Inputs &rarr; Outputs</strong> một cách chính xác nhất thông qua việc học bù trừ từ dữ liệu mẫu.</p>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // VÍ DỤ MINH HỌA: NEURAL NETWORK ĐƠN GIẢN NHẤT
@@ -298,147 +361,165 @@ fn main() {
     duration: '60 phút',
     type: 'theory',
     content: `
-      <h2>2. Perceptron - Đơn vị cơ bản nhất của Neural Network</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">psychology</span> 2. Perceptron - Đơn vị cơ bản nhất của Neural Network</h2>
 
-      <h3>2.1. Perceptron là gì?</h3>
-      <p><strong>Perceptron</strong> là đơn vị tính toán cơ bản nhất của Neural Network, được phát minh bởi Frank Rosenblatt năm 1958. Nó là một mô hình toán học mô phỏng hoạt động của một neuron sinh học.</p>
+  <h3><span class="material-symbols-outlined">help</span> 2.1. Perceptron là gì?</h3>
+  <div class="definition-block">
+    <p><strong>Perceptron</strong> là đơn vị tính toán cơ bản nhất của Neural Network, được phát minh bởi Frank Rosenblatt năm 1958. Nó là một mô hình toán học mô phỏng hoạt động của một neuron sinh học.</p>
+  </div>
 
-      <h3>2.2. Cấu trúc của một Perceptron</h3>
-      <pre><code>         ┌─────────────────────────────────────────┐
-         │           PERCEPTRON                     │
-         │                                         │
-         │   Input x₁ ────► ┌──────────────┐       │
-         │                 │  Weighted Sum │       │
-         │   Input x₂ ────► │    (z = wx+b) │       │
-         │                 └───────┬────────┘       │
-         │                         │                │
-         │                         ▼                │
-         │                 ┌──────────────┐         │
-         │                 │  Activation  │         │
-         │                 │    f(z)      │         │
-         │                 └───────┬────────┘         │
-         │                         │                │
-         │                         ▼                │
-         │                    Output y              │
-         │                                         │
-         └─────────────────────────────────────────┘
+  <h3><span class="material-symbols-outlined">architecture</span> 2.2. Cấu trúc của một Perceptron</h3>
+  <div class="image-showcase">
+    <img src="/assets/ch21/perceptron_model_1773152558045.png" alt="Sơ đồ mô hình Perceptron" />
+    <div class="image-caption">Mô hình Perceptron với Inputs, Weights, Bias và Activation Function</div>
+  </div>
 
-Công thức toán học:
-  z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b
-  y = f(z)
+  <div class="formula-block">
+    <p><strong>Công thức toán học:</strong></p>
+    <p>z = w₁x₁ + w₂x₂ + ... + wₙxₙ + b</p>
+    <p>y = f(z)</p>
+  </div>
 
-Trong đó:
-  - x₁, x₂, ..., xₙ: inputs (đầu vào)
-  - w₁, w₂, ..., wₙ: weights (trọng số)
-  - b: bias (hệ số điều chỉnh)
-  - z: weighted sum (tổng có trọng số)
-  - f(): activation function (hàm kích hoạt)
-  - y: output (đầu ra)</code></pre>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">input</span></div>
+      <h4>Inputs (x₁, ..., xₙ)</h4>
+      <p>Các giá trị đầu vào của mô hình (luôn là dạng số học).</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">fitness_center</span></div>
+      <h4>Weights (w₁, ..., wₙ)</h4>
+      <p>Trọng số quyết định mức độ quan trọng của từng input.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">tune</span></div>
+      <h4>Bias (b)</h4>
+      <p>Hệ số điều chỉnh ranh giới độc lập với input.</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon"><span class="material-symbols-outlined">functions</span></div>
+      <h4>Activation Function f()</h4>
+      <p>Hàm biến đổi tổng (z) thành output cuối cùng (y).</p>
+    </div>
+  </div>
 
-      <h3>2.3. Giải thích từng thành phần</h3>
-
+  <h3><span class="material-symbols-outlined">info</span> 2.3. Giải thích từng thành phần</h3>
+  
+  <div class="features-grid">
+    <div class="feature-card">
       <h4>a) Inputs (Đầu vào) - x</h4>
-      <p>Inputs là dữ liệu đưa vào Perceptron. Có thể là:</p>
-      <ul>
-        <li>Pixels của một bức ảnh (mỗi pixel = 1 input)</li>
-        <li>Các đặc điểm của một căn nhà (diện tích, số phòng...)</li>
-        <li>Các từ trong một câu (sau khi đã mã hóa)</li>
-      </ul>
-      <p><strong>Quan trọng</strong>: Inputs phải là số (numerical). Nếu là text hay categorical, cần chuyển sang số trước!</p>
-
+      <p>Dữ liệu đưa vào Perceptron (phải là số). Ví dụ: pixel của ảnh, đặc điểm ngôi nhà.</p>
+    </div>
+    <div class="feature-card">
       <h4>b) Weights (Trọng số) - w</h4>
-      <p>Weights quyết định mỗi input quan trọng như thế nào:</p>
-      <ul>
-        <li><strong>Weight lớn (dương)</strong>: Input này rất quan trọng, kéo output lên</li>
-        <li><strong>Weight nhỏ (âm)</strong>: Input này làm giảm output</li>
-        <li><strong>Weight gần 0</strong>: Input này không quan trọng, có thể bỏ qua</li>
-      </ul>
-      <p><strong>Ví dụ</strong>: Trong bài toán dự đoán giá nhà:</p>
-      <pre><code>  - Diện tích có weight = 10 (quan trọng!)
-  - Số tầng có weight = 5 (khá quan trọng)
-  - Màu sơn có weight = 0.1 (không quan trọng lắm)</code></pre>
+      <p><strong>Dương:</strong> tỷ lệ thuận, <strong>Âm:</strong> tỷ lệ nghịch, <strong>Gần 0:</strong> không quan trọng.</p>
+    </div>
+    <div class="feature-card">
+      <h4>c) Bias (Độ lệch) - b</h4>
+      <p>Cho phép neuron dễ/khó "bắn" thông tin hơn mà không phụ thuộc vào input.</p>
+    </div>
+    <div class="feature-card">
+      <h4>d) Weighted Sum (Tổng) - z</h4>
+      <p>z = tổng của (weight × input) + bias.</p>
+    </div>
+  </div>
 
-      <h4>c) Bias (Hệ số điều chỉnh) - b</h4>
-      <p>Bias cho phép Perceptron linh hoạt hơn, không phụ thuộc hoàn toàn vào inputs:</p>
-      <ul>
-        <li><strong>Bias dương</strong>: Làm cho neuron dễ "bắn" (activate) hơn</li>
-        <li><strong>Bias âm</strong>: Làm cho neuron khó "bắn" hơn</li>
-        <li><strong>Bias = 0</strong>: Không có điều chỉnh</li>
-      </ul>
-      <p><strong>Ví dụ</strong>: Dù giá nhà phụ thuộc diện tích, luôn có giá tối thiểu (chi phí xây dựng cơ bản). Bias đại diện cho chi phí này!</p>
+  <div class="callout callout-info">
+    <div class="callout-icon"><span class="material-symbols-outlined">functions</span></div>
+    <div class="callout-content">
+      <strong>e) Activation Function - f()</strong>
+      <p>Chuyển đổi z thành output y. Giúp tạo ra tính <em>phi tuyến</em> (thay vì chỉ nối các đường thẳng tuyến tính) và qua đó giới hạn mức output không bị bùng nổ quá lớn.</p>
+    </div>
+  </div>
 
-      <h4>d) Weighted Sum - z</h4>
-      <p>z = w₁x₁ + w₂x₂ + ... + b</p>
-      <p>Đây là tổng của tất cả inputs sau khi đã nhân với weights, cộng thêm bias. Nó là một con số duy nhất.</p>
+  <h3><span class="material-symbols-outlined">trending_up</span> 2.4. Activation Functions phổ biến</h3>
+  <div class="image-showcase">
+    <img src="/assets/ch21/activation_functions_1773152787399.png" alt="Đồ thị các hàm kích hoạt (Step, Sigmoid, ReLU)" />
+    <div class="image-caption">Trực quan hoá hình dáng các hàm kích hoạt phổ biến</div>
+  </div>
 
-      <h4>e) Activation Function - f()</h4>
-      <p>Activation function biến đổi z thành output y. Tại sao cần nó?</p>
-      <ol>
-        <li><strong>Thêm phi tuyến</strong>: Không có activation, mạng chỉ học được quan hệ tuyến tính</li>
-        <li><strong>Giới hạn output</strong>: Không cho output quá lớn</li>
-        <li><strong>Quyết định neuron có "bắn" hay không</strong>: Giống neuron sinh học</li>
-      </ol>
-
-      <h3>2.4. Activation Functions phổ biến</h3>
-
-      <h4>Step Function (Perceptron gốc)</h4>
-      <pre><code>f(z) = 1 nếu z >= 0
-      = 0 nếu z < 0
-
-Đây là hàm kích hoạt đầu tiên của Rosenblatt.
-Nhược điểm: Không có gradient (không thể học được!)</code></pre>
-
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>Step Function (Nguyên thuỷ)</h4>
+      <p>1 nếu z ≥ 0, ngược lại 0.</p>
+      <p><em>Nhược điểm:</em> Đạo hàm bằng 0, không thể học bằng Gradient Descent hiệu quả.</p>
+    </div>
+    <div class="concept-card">
       <h4>Sigmoid</h4>
-      <pre><code>        σ(z) = 1 / (1 + e^(-z))
-
-Đặc điểm:
-- Output luôn trong khoảng (0, 1)
-- Có thể xem như xác suất
-- Đạo hàm đẹp (phổ biến trong deep learning cũ)
-
-Nhược điểm:
-- Vanishing gradient (đạo hàm max = 0.25)</code></pre>
-
+      <p>Output luôn ∈ (0, 1), đẹp như xác suất.</p>
+      <p><em>Nhược điểm:</em> Triệt tiêu Gradient ở 2 đầu đuôi (Vanishing gradient).</p>
+    </div>
+    <div class="concept-card">
       <h4>ReLU (Rectified Linear Unit)</h4>
-      <pre><code>        ReLU(z) = max(0, z)
+      <p>max(0, z). Tức là báo cáo tuyến tính với z > 0, chặn 0 với z ≤ 0.</p>
+      <p><em>Ưu điểm:</em> Học cực nhanh, tránh vanishing gradient. Phổ biến nhất Deep Learning.</p>
+    </div>
+  </div>
 
-Đặc điểm:
-- Nếu z > 0: output = z (đường thẳng)
-- Nếu z <= 0: output = 0
-- Tính toán cực nhanh (chỉ so sánh với 0)
-- Đạo hàm = 1 khi z > 0
+  <h3><span class="material-symbols-outlined">calculate</span> 2.5. Perceptron có thể làm gì?</h3>
+  
+  <div class="features-grid">
+    <div class="feature-card">
+      <h4>Làm được: Xử lý Logic Tuyến Tính</h4>
+      <p>Perceptron đơn lớp có thể giải được hoàn hảo mô phỏng các cổng logic AND, OR, NOT vì chúng có bộ Input có thể chia làm 2 nửa dễ dàng bằng một ranh giới thẳng.</p>
+    </div>
+    <div class="feature-card">
+      <h4>Bất lực: Logic Phi Tuyến như XOR</h4>
+      <p>XOR yêu cầu một đường cắt gấp gãy ranh giới. Không thể dùng một đường thẳng để chia lớp 2 nhóm chéo nhau 100% → Perceptron đơn lớp <strong>chắc chắn thất bại</strong>.</p>
+    </div>
+  </div>
 
-Ưu điểm:
-- Tránh vanishing gradient
-- Học nhanh hơn sigmoid nhiều
-- Đây là activation PHỔ BIẾN NHẤT hiện nay!</code></pre>
+  <h3><span class="material-symbols-outlined">shape_line</span> 2.6. Linear Separability</h3>
+  
+  <div class="callout callout-warning">
+    <div class="callout-icon"><span class="material-symbols-outlined">warning</span></div>
+    <div class="callout-content">
+      <strong>Khả năng phân tách bằng đường thẳng</strong>
+      <p>Perceptron thực chất đang vẽ một đường thẳng (hoặc mặt siêu phẳng với dữ liệu cao chiều) trong không gian để phân chia các lớp dữ liệu. Nếu dữ liệu không bị trộn lẫn và có thể chia bằng một đường thẳng phẳng lì (gọi là <code>Linear Separability</code>), Perceptron sẽ hoạt động. Ngược lại nó sẽ bế tắc.</p>
+    </div>
+  </div>
 
-      <h3>2.5. Perceptron có thể làm gì?</h3>
+  <h3><span class="material-symbols-outlined">school</span> 2.7. Perceptron Learning Rule</h3>
+  
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h4>Tính toán Output & Error</h4>
+        <p>Tính Output hiện tại (y_pred), lấy kết quả mục tiêu trừ đi để ra chênh lệch sai số (<code>error = y_true - y_pred</code>).</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h4>Cập nhật Tham số</h4>
+        <p>Sửa lỗi Weights: <code>w_i = w_i + learning_rate × error × x_i</code>.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h4>Hội Tụ (Convergence Theorem)</h4>
+        <p>Frank Rosenblatt đã chứng minh bằng toán học: nếu dữ liệu khả thi tách bằng đường thẳng, cập nhật này sẽ hội tụ tự động và dừng lại ở đáp án chính xác sau số bước hữu hạn.</p>
+      </div>
+    </div>
+  </div>
 
-      <h4>Có thể: AND, OR, NOT</h4>
-      <pre><code>AND Gate:
-x₁  x₂  |  y
---------------
-0   0   |  0
-0   1   |  0
-1   0   |  0
-1   1   |  1
+  <h3><span class="material-symbols-outlined">layers</span> 2.8. Từ Perceptron đến Multi-Layer Perceptron</h3>
+  <div class="image-showcase">
+    <img src="/assets/ch21/neural_network_layers_1773152542781.png" alt="Sơ đồ Multi-Layer Perceptron với Hidden Layers" />
+    <div class="image-caption">Từ một neuron đơn lẻ, ta xếp chúng thành các vỉ (Layer) tạo nên mạng Neural Network đồ sộ.</div>
+  </div>
 
-→ Perceptron với w₁=1, w₂=1, b=-1.5
-→ z = x₁ + x₂ - 1.5
-→ z >= 0 khi x₁ + x₂ >= 1.5 → chỉ khi (1,1)</code></pre>
+  <p>Giải pháp cho các giới hạn như cổng XOR là ghép thật nhiều Perceptron lại! Chẳng hạn như 1 perceptron diễn ra OR, 1 đại diện NAND, và đưa kết quả của 2 đứa đó cho 1 cục perceptron cuối làm cổng AND. Đó chính là <strong>Multi-Layer Perceptron (MLP)</strong>.</p>
 
-      <h4>KHÔNG thể: XOR</h4>
-      <pre><code>XOR Gate:
-x₁  x₂  |  y
---------------
-0   0   |  0
-0   1   |  1
-1   0   |  1
-1   1   |  0
-
-→ KHÔNG thể vẽ một đường thẳng phân tách!
-→ Đây là lý do cần HIDDEN LAYERS!</code></pre>
+  <div class="key-takeaway">
+    <div class="key-takeaway-icon"><span class="material-symbols-outlined">psychology</span></div>
+    <h3>Từ khoá: LAYER ("Lớp ẩn", "Độ sâu")</h3>
+    <p>Thuật ngữ <strong>"Deep"</strong> trong Deep Learning ám chỉ số lượng <strong>những tầng Hidden Layers trung gian này</strong>. Hidden Layer giúp "bẻ cong" không gian dữ liệu gốc ban đầu, biến một bài toán không thể chia bằng đường thẳng trong không gian cũ thành bài toán dễ dàng chia bằng đường thẳng trong một thứ nguyên cao/trừu tượng hơn. <br/><br/>Ví dụ nhận diện ảnh chó mèo: Layer 1 nhận diện góc cạnh, Layer 2 ghép cạnh thành hình khối tam giác/tròn, Layer 3 ghép tiếp thành Mắt/Mũi, Layer cuối sẽ phân loại đó là chó hay mèo.</p>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // PERCEPTRON - CÀI ĐẶT CHI TIẾT TỪNG DÒNG

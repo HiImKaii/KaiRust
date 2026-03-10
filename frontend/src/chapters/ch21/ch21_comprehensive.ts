@@ -17,47 +17,45 @@ const comprehensive_lessons: Lesson[] = [
     duration: '90 phút',
     type: 'theory',
     content: `
-      <h2>1. Neural Network hoạt động như thế nào? Giải thích toàn bộ</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">hub</span> 1. Neural Network hoạt động như thế nào?</h2>
 
-      <h3>1.1. Tổng quan kiến trúc</h3>
-      <p>Neural Network là một hệ thống tính toán được lấy cảm hứng từ cách hoạt động của não bộ sinh học. Nó bao gồm nhiều "neurons" (đơn vị tính toán) được kết nối với nhau thông qua các "weights" (trọng số).</p>
+  <h3>1.1. Tổng quan kiến trúc</h3>
+  <p>Neural Network là một hệ thống tính toán được lấy cảm hứng từ cấu trúc phân tầng của não bộ sinh học. Nó bao gồm nhiều <strong>"Neurons"</strong> (đơn vị tính toán vô cơ) được kết nối chằng chịt với nhau thông qua các <strong>"Weights"</strong> (trọng số).</p>
 
-      <h3>1.2. Cấu trúc của một Neural Network</h3>
-      <pre><code>                    ┌─────────────────────────────────────────────┐
-                    │            INPUT LAYER (Lớp đầu vào)           │
-                    │                                              │
-                    │    x₁ ──┐                                    │
-                    │    x₂ ──┼──►  [Input Neurons]              │
-                    │    x₃ ──┤     Nhận dữ liệu đầu vào         │
-                    │    ...  ──┤                                    │
-                    └──────────┼────────────────────────────────────┘
-                               │
-                               ▼
-                    ┌─────────────────────────────────────────────┐
-                    │          HIDDEN LAYER 1 (Lớp ẩn 1)          │
-                    │    h₁¹ = f(w₁₁¹x₁ + w₂₁¹x₂ + ... + b₁¹)   │
-                    │    h₂¹ = f(w₁₂¹x₁ + w₂₂¹x₂ + ... + b₂¹)   │
-                    │    ...                                        │
-                    └──────────┬────────────────────────────────────┘
-                               │
-                               ▼
-                    ┌─────────────────────────────────────────────┐
-                    │           OUTPUT LAYER (Lớp đầu ra)        │
-                    │    y₁ ──┐                                    │
-                    │    y₂ ──┼──►  Kết quả dự đoán              │
-                    │    ...  ──┘                                    │
-                    └─────────────────────────────────────────────┘</code></pre>
+  <h3>1.2. Giải phẫu một Neural Network</h3>
+  <div class="image-showcase mt-4 mb-4">
+    <pre class="bg-slate-100 p-4 rounded-lg font-mono text-sm leading-relaxed overflow-x-auto text-center mx-auto w-max text-blue-900 border border-slate-200 shadow-sm">
+      [INPUT LAYER]                [HIDDEN LAYER 1]               [OUTPUT LAYER]
 
-      <h3>1.3. Mỗi thành phần có nhiệm vụ gì?</h3>
+         x₁ ──┐               h₁ = f(w₁₁x₁ + w₂₁x₂ + b₁)         
+              │                            │                     
+         x₂ ──┼──► [N] ───────────────►   [N]   ───────────────►  [N] ──► y (Dự đoán)
+              │                            │                     
+         x₃ ──┘               h₂ = f(w₁₂x₁ + w₂₂x₂ + b₂)         
+    </pre>
+    <p class="image-caption">Sơ đồ luân chuyển dữ liệu (Forward Pass) của một Neural Network cơ bản</p>
+  </div>
 
-      <h4>Input Layer (Lớp đầu vào)</h4>
-      <p>Nhận dữ liệu từ bên ngoài và đưa vào mạng. Mỗi neuron trong lớp này đại diện cho một feature (đặc điểm) của dữ liệu.</p>
-
+  <h3>1.3. Nhiệm vụ của từng Layer</h3>
+  <div class="features-grid">
+    <div class="feature-card highlight-info">
+      <div class="feature-icon"><span class="material-symbols-outlined">login</span></div>
+      <h4>Input Layer (Đầu vào)</h4>
+      <p>Gateway đón nhận dữ liệu. Số lượng neuron đúng bằng số Features (Đặc trưng) của Data. Ví dụ: Ảnh 28x28 pixels → cần 784 Input Neurons.</p>
+    </div>
+    <div class="feature-card highlight-warning">
+      <div class="feature-icon"><span class="material-symbols-outlined">layers</span></div>
       <h4>Hidden Layers (Lớp ẩn)</h4>
-      <p>Xử lý trung gian, trích xuất features từ dữ liệu thô. Đây là nơi "học" diễn ra.</p>
-
-      <h4>Output Layer (Lớp đầu ra)</h4>
-      <p>Đưa ra kết quả dự đoán cuối cùng.</p>
+      <p>Nơi "Ma thuật" xuất hiện. Chịu trách nhiệm trích xuất từ các Feature thô ráp ra các Pattern phức tạp siêu hình. Càng nhiều Layer thì Network càng "Sâu" (Deep Learning).</p>
+    </div>
+    <div class="feature-card highlight-success">
+      <div class="feature-icon"><span class="material-symbols-outlined">logout</span></div>
+      <h4>Output Layer (Đầu ra)</h4>
+      <p>Chốt hạ phán quyết cuối cùng thành hình hài con người hiểu được. Phân loại Chó/Mèo thì có 2 Neurons, dự đoán Giá Nhà thì có 1 Neuron.</p>
+    </div>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // NEURAL NETWORK HOẠT ĐỘNG NHƯ THẾ NÀO?
@@ -138,28 +136,104 @@ fn main() {
     duration: '90 phút',
     type: 'theory',
     content: `
-      <h2>2. Backpropagation - Cách Neural Networks HỌC</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">psychology</span> 2. Backpropagation - Cách Neural Networks thức tỉnh</h2>
 
-      <h3>2.1. Tại sao cần Backpropagation?</h3>
-      <p>Sau Forward Pass, ta có được kết quả dự đoán. Nhưng làm sao để biết weights có tốt không? Và làm sao để CẢI THIỆN weights?</p>
+  <h3>2.1. Tại sao cần Backpropagation?</h3>
+  <div class="definition-block mb-4">
+    <p>Sau Forward Pass, mạng chốt xong câu trả lời. Nhưng nếu trả lời SAI thì sao? Làm sao để tự thân Network biết sửa sai chỗ nào trong hàng triệu <strong>Weights</strong> đang hoạt động dưới gầm xe? Đó là lúc <strong>Backpropagation</strong> (Lan truyền ngược) xuất hiện.</p>
+    <hr class="my-2 border-gray-300">
+    <p>Thuật toán này chỉ có 3 mục đích tồn tại:</p>
+    <ol class="list-decimal pl-5 mt-2 space-y-1 text-sm font-semibold">
+      <li>Tính mức độ sai trái (Loss).</li>
+      <li>Tính xem AI đó sai là do "thằng Weight" nào gây ra nhiều nhất (Gradient).</li>
+      <li>Phết một cái tát sửa lưng đám Weights (Cập nhật Weights).</li>
+    </ol>
+  </div>
 
-      <p><strong>Backpropagation</strong> là thuật toán để:</p>
-      <ol>
-        <li>Tính sai số (loss) giữa dự đoán và giá trị thực</li>
-        <li>Tính gradient của loss theo từng weight</li>
-        <li>Cập nhật weights để GIẢM sai số</li>
-      </ol>
+  <h3>2.2. Chain Rule - Trái tim toán học</h3>
+  <div class="formula-block text-center mb-4">
+    <p>Output phụ thuộc vào Weights thông qua nhiều lớp trung gian. Chain Rule cho phép truy ngược trách nhiệm:</p>
+    <code class="text-blue-700 block mt-2 text-sm bg-blue-50 p-2 rounded">∂Loss / ∂Weight(in) = (∂Loss / ∂Output) × (∂Output / ∂Hidden) × (∂Hidden / ∂Weight(in))</code>
+  </div>
 
-      <h3>2.2. Chain Rule - Công cụ toán học</h3>
-      <p>Trong Neural Network, output phụ thuộc vào weights qua nhiều lớp. Chain Rule cho phép tính đạo hàm tổng hợp.</p>
+  <h3>2.3. Cập nhật Weights bằng Optimizer</h3>
+  <p class="mb-4">Theo phương pháp Gradient Descent:</p>
+  <div class="formula-block mb-6 border-l-4 border-green-500 bg-green-50">
+    <code>Weight_mới = Weight_cũ - (Learning_Rate × Gradient)</code>
+  </div>
 
-      <pre><code>Ví dụ:
-  Loss → Output → Hidden → Input
+  <h3>2.4. Overfitting vs Underfitting - Ngã rẽ sinh tử</h3>
+  <div class="concept-grid">
+    <div class="concept-card highlight-danger">
+      <div class="concept-icon text-red-500"><span class="material-symbols-outlined">sentiment_dissatisfied</span></div>
+      <h4>UNDERFITTING (Học dốt)</h4>
+      <p>Model quá hời hợt, không bắt được quy luật (Ví dụ đem đường thẳng đi fit vòng tròn).</p>
+      <ul class="text-xs mt-2 list-disc pl-4 text-red-700 space-y-1">
+        <li>Loss lúc train RẤT CAO.</li>
+        <li>Loss lúc test cũng RẤT CAO.</li>
+        <li><strong>Đơn thuốc:</strong> Làm Model to lên (thêm Layer), nhồi thêm Data Feature, Train lâu hơn.</li>
+      </ul>
+    </div>
+    <div class="concept-card highlight-warning">
+      <div class="concept-icon text-yellow-600"><span class="material-symbols-outlined">sentiment_very_dissatisfied</span></div>
+      <h4>OVERFITTING (Học vẹt)</h4>
+      <p>Model quá thông minh nên mắc bệnh... học thuộc lòng cả nhiễu thay vì hiểu quy luận gốc.</p>
+      <ul class="text-xs mt-2 list-disc pl-4 text-yellow-800 space-y-1">
+        <li>Loss lúc train GẦN NHƯ BẰNG 0.</li>
+        <li>Loss lúc test CAO ĐỤNG NÓC.</li>
+        <li><strong>Đơn thuốc:</strong> Thêm Regularization, Dropout, Early Stopping.</li>
+      </ul>
+    </div>
+    <div class="concept-card highlight-success">
+      <div class="concept-icon text-green-500"><span class="material-symbols-outlined">sentiment_very_satisfied</span></div>
+      <h4>JUST RIGHT (Điểm vàng)</h4>
+      <p>Tìm được sự cân bằng, Model khái quát hóa (Generalize) cực tốt lên dữ liệu ngoài đời thực chưa bao giờ thấy.</p>
+      <ul class="text-xs mt-2 list-disc pl-4 text-green-700 space-y-1">
+        <li>Train Loss & Test Loss SÁT NHAU.</li>
+        <li>Cả hai đều NHỎ.</li>
+      </ul>
+    </div>
+  </div>
 
-∂Loss/∂w = ∂Loss/∂Output × ∂Output/∂Hidden × ∂Hidden/∂w</code></pre>
+  <h3><span class="material-symbols-outlined">shield_locked</span> 2.5. Regularization - Vắc xin chống Overfitting</h3>
+  <div class="steps-container mt-4">
+    <div class="step-card">
+      <div class="step-number" style="background-color: var(--secondary-blue);">1</div>
+      <div>
+        <strong>L2 Regularization (Weight Decay)</strong>
+        <p>Cộng thêm tham số <code>λ × Σ(w²)</code> vào hàm Loss. Nghĩa là cố tình răn đe Model, <em>"đứa nào Weight quá lớn sẽ ăn phạt vỡ đầu"</em>. Buộc tất cả Weights phải nén lại ngoan ngoãn, không được phép bùng nổ quá khích.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number" style="background-color: var(--secondary-blue);">2</div>
+      <div>
+        <strong>Dropout (Ma thuật của rèn luyện)</strong>
+        <p>Trong lúc Train, cứ mải mốt ngẫu nhiên <em>rúm cổ ném ra ngoài</em> 20%-50% số Neuron khiến đội hình rớt lả tả. Buộc những Neuron còn lại phải "tự cường" gánh team, thoát khỏi lối làm việc ăn bám lẫn nhau (co-dependency).</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number" style="background-color: var(--secondary-blue);">3</div>
+      <div>
+        <strong>Early Stopping</strong>
+        <p>Đơn giản là rút điện cái phích giữa chừng nếu thấy Loss lúc Test bắt đầu có dấu hiệu ngoi đầu tăng lên trở lại trong khi chữ cái Train vẫn cố lùi xuống sâu.</p>
+      </div>
+    </div>
+  </div>
 
-      <h3>2.3. Cập nhật Weights</h3>
-      <pre><code>w_moi = w_cu - learning_rate × gradient</code></pre>
+  <h3>2.6. Định luật Bias-Variance Tradeoff</h3>
+  <div class="callout callout-info">
+    <div class="callout-icon"><span class="material-symbols-outlined">balance</span></div>
+    <div class="callout-content">
+      <strong>Sự đánh đổi không thể tránh khỏi:</strong>
+      <ul class="mt-2 text-sm pl-4 list-disc space-y-1">
+        <li><strong>Bias (Thiên kiến):</strong> Mức độ bảo thủ (Underfitting). Model càng bé, Bias càng bự.</li>
+        <li><strong>Variance (Phương sai):</strong> Mức độ lả lơi chạy theo lời đường mật của Data nhiễu (Overfitting). Model càng chằng chịt siêu to khổng lồ, Variance càng dễ vọt xà.</li>
+      </ul>
+      <p class="mt-2 text-center font-bold text-red-600 bg-red-50 py-1 rounded border border-red-200">Trò chơi của Kỹ Sư AI chính là đi tìm Điểm Chạm Cân Bằng nằm giữa 2 đường chéo Bias - Variance.</p>
+    </div>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // BACKPROPAGATION - MINH HỌA CHI TIẾT
@@ -234,17 +308,57 @@ fn main() {
     duration: '60 phút',
     type: 'practice',
     content: `
-      <h2>3. Training Loop hoàn chỉnh</h2>
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">autorenew</span> 3. Training Loop hoàn chỉnh (Bánh xe luân hồi)</h2>
 
-      <h3>3.1. Các bước</h3>
-      <pre><code>FOR epoch = 1 TO num_epochs:
-    FOR each sample:
+  <h3>3.1. Vòng lặp vĩnh cửu của trí tuệ</h3>
+  <div class="steps-container mt-4 mb-4">
+    <div class="step-card">
+      <div class="step-number" style="background-color: var(--primary-color);">1</div>
+      <div>
+        <strong>Forward Pass (Tiến lên)</strong>
+        <p>Bơm Data qua mạng nhện các Layers, đi qua các Activate Functions để mài dũa tín hiệu cho đến khi ra được Output cuối cùng.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number" style="background-color: var(--accent-red);">2</div>
+      <div>
+        <strong>Compute Loss (Đo lường tội lỗi)</strong>
+        <p>So sánh Output vừa tính với Ground Truth bằng các hàm Loss (BCE, MSE...). Ghi nhận khoản nợ học phí này.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number" style="background-color: var(--secondary-blue);">3</div>
+      <div>
+        <strong>Backward Pass (Quay đầu là bờ)</strong>
+        <p>Tính Gradient bằng Chain Rule từ Output ngược về Input. Truy tìm "thủ phạm" gây ra số Loss ban nãy. Đây là khâu tốn xăng nhất.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number" style="background-color: var(--success-green);">4</div>
+      <div>
+        <strong>Update Weights (Cải tà quy chính)</strong>
+        <p>Dùng Optimizer (SGD, Adam...) trừ Gradient khỏi Weights hiện tại để nhích dần về đáy của thung lũng Loss.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-warning">
+    <div class="callout-icon"><span class="material-symbols-outlined">repeat</span></div>
+    <div class="callout-content">
+      <strong>Vòng lặp (Epochs)</strong>
+      <p class="mb-2">4 bước trên diễn ra trên một tập dữ liệu nhỏ gọi là <strong>Batch</strong>. Toàn bộ dataset đi qua đủ 4 bước n lần tính là 1 <strong>Epoch</strong>.</p>
+      <pre class="bg-yellow-50 p-2 text-sm text-yellow-900 border border-yellow-200"><code>FOR epoch = 1 TO num_epochs:
+    FOR each batch IN dataset:
         1. Forward Pass
         2. Compute Loss
         3. Backward Pass
         4. Update Weights
     END FOR
 END FOR</code></pre>
+    </div>
+  </div>
+</div>
     `,
     defaultCode: `// =====================================================
 // FULL TRAINING LOOP - AND GATE

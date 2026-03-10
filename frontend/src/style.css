@@ -1845,3 +1845,324 @@ code {
   flex: 1;
   max-width: 160px;
 }
+
+/* =====================================================
+   LESSON CONTENT PRESENTATION (NEW SYSTEM)
+   ===================================================== */
+
+/* 1. Headings & Typography */
+.article-content h2 {
+  font-size: 1.6rem;
+  color: var(--color-purple);
+  margin: 40px 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+}
+.article-content h3 {
+  font-size: 1.3rem;
+  color: var(--text-primary);
+  margin: 32px 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+.article-content h4 {
+  font-size: 1.1rem;
+  color: var(--color-blue);
+  margin: 24px 0 12px 0;
+  font-weight: 600;
+}
+.article-content ul, .article-content ol {
+  margin-bottom: 24px;
+  padding-left: 24px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.article-content li {
+  margin-bottom: 10px;
+}
+.article-content li::marker {
+  color: var(--color-purple-light);
+  font-weight: 600;
+}
+.article-content strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* 2. Callout Boxes (Material Symbols) */
+.callout {
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  margin: 24px 0;
+  display: flex;
+  gap: 16px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  background: var(--bg-soft);
+  border-left: 4px solid var(--border-subtle);
+}
+.callout .material-symbols-outlined {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.callout-content {
+  flex: 1;
+}
+.callout-content p:last-child {
+  margin-bottom: 0;
+}
+.callout-title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.callout-info {
+  border-left-color: var(--color-blue);
+  background: rgba(59, 130, 246, 0.05);
+}
+.callout-info .material-symbols-outlined, .callout-info .callout-title { color: var(--color-blue); }
+
+.callout-tip {
+  border-left-color: var(--color-teal);
+  background: rgba(20, 184, 166, 0.05);
+}
+.callout-tip .material-symbols-outlined, .callout-tip .callout-title { color: var(--color-teal); }
+
+.callout-warning {
+  border-left-color: var(--color-amber);
+  background: rgba(245, 158, 11, 0.05);
+}
+.callout-warning .material-symbols-outlined, .callout-warning .callout-title { color: var(--color-amber); }
+
+.callout-important {
+  border-left-color: var(--color-purple);
+  background: rgba(168, 85, 247, 0.05);
+}
+.callout-important .material-symbols-outlined, .callout-important .callout-title { color: var(--color-purple); }
+
+/* 3. Definitions & Formulas */
+.definition-block {
+  background: var(--bg-absolute);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin: 32px 0;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.definition-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: linear-gradient(to bottom, var(--color-purple), var(--color-blue));
+}
+.definition-term {
+  color: var(--color-purple);
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+.definition-block p {
+  margin: 0;
+}
+
+.formula-block {
+  background: var(--bg-soft);
+  padding: 24px 20px;
+  border-radius: var(--radius-md);
+  margin: 28px 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  color: var(--color-blue);
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* 4. Image Showcase (AI Generated Images) */
+.image-showcase {
+  margin: 36px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.image-showcase img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
+  transition: transform 0.3s var(--ease);
+}
+.image-showcase img:hover {
+  transform: scale(1.02);
+}
+.image-caption {
+  margin-top: 14px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* 5. Sequence Steps */
+.steps-container {
+  margin: 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+.steps-container::before {
+  content: '';
+  position: absolute;
+  top: 24px; bottom: 24px; left: 24px;
+  width: 2px;
+  background: var(--border-subtle);
+  z-index: 0;
+}
+.step-card {
+  display: flex;
+  gap: 20px;
+  background: var(--bg-absolute);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  z-index: 1;
+  position: relative;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.step-card:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-purple-light);
+}
+.step-number {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--bg-soft);
+  border: 2px solid var(--color-purple);
+  color: var(--color-purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 4px var(--bg-absolute);
+}
+.step-content {
+  padding-top: 4px;
+}
+.step-content h4 {
+  margin: 0 0 10px 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+}
+.step-content p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+/* 6. Concept Grid (Cards) */
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin: 32px 0;
+}
+.concept-card {
+  background: var(--bg-absolute);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.25s var(--ease);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.concept-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-blue-light);
+}
+.concept-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--color-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.concept-icon .material-symbols-outlined {
+  font-size: 28px;
+}
+.concept-card h4 {
+  margin: 0 0 12px 0;
+  color: var(--text-primary);
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+.concept-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* 7. Key Takeaway */
+.key-takeaway {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(59, 130, 246, 0.05));
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  margin: 48px 0 24px 0;
+  text-align: center;
+}
+.key-takeaway-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: white;
+  color: var(--color-purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+  box-shadow: var(--shadow-sm);
+}
+.key-takeaway-icon .material-symbols-outlined {
+  font-size: 32px;
+}
+.key-takeaway h3 {
+  margin: 0 0 12px 0;
+  color: var(--text-primary);
+  justify-content: center;
+}
+.key-takeaway p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+}
