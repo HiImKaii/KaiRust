@@ -8,6 +8,7 @@ use axum::{
     response::IntoResponse,
 };
 use futures::{SinkExt, StreamExt};
+use sha2::{Sha256, Digest};
 use std::path::PathBuf;
 use std::time::Instant;
 use tokio::process::Command;
@@ -16,6 +17,80 @@ use uuid::Uuid;
 use crate::models::{WsClientMessage, WsServerMessage};
 
 const SANDBOX_DIR: &str = "/tmp/kairust_sandbox";
+const CACHE_DIR: &str = "/tmp/kairust_cache";
+
+/// Compute SHA256 hash of code for cache key
+fn compute_code_hash(code: &str) -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(code.as_bytes());
+    format!("{:x}", hasher.finalize())
+}
+
+/// Check if cached binary exists and is valid
+/// Returns the path to cached binary if hit, None if miss
+async fn get_cached_binary(code_hash: &str) -> Option<PathBuf> {
+    let cache_binary = PathBuf::from(CACHE_DIR).join(format!("{}.bin", code_hash));
+
+    if cache_binary.exists() {
+        // Verify it's a valid executable
+        if let Ok(metadata) = tokio::fs::metadata(&cache_binary).await {
+            if metadata.len() > 0 {
+                return Some(cache_binary);
+            }
+        }
+    }
+    None
+}
+
+/// Save compiled binary to cache
+async fn save_to_cache(code_hash: &str, binary_path: &PathBuf) -> Result<(), String> {
+    let cache_dir = PathBuf::from(CACHE_DIR);
+    tokio::fs::create_dir_all(&cache_dir)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let cache_binary = cache_dir.join(format!("{}.bin", code_hash));
+    tokio::fs::copy(binary_path, &cache_binary)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
+/// Clean old cache entries (keep only last N entries)
+async fn clean_old_cache(max_entries: usize) -> Result<(), String> {
+    let cache_dir = PathBuf::from(CACHE_DIR);
+
+    let mut entries = tokio::fs::read_dir(&cache_dir)
+        .await
+        .map_err(|e| e.to_string())?;
+
+    let mut files: Vec<(u64, PathBuf)> = Vec::new();
+
+    while let Some(entry) = entries.next_entry().await.map_err(|e| e.to_string())? {
+        if let Ok(metadata) = entry.metadata().await {
+            if let Ok(modified) = metadata.modified() {
+                let timestamp = modified
+                    .duration_since(std::time::UNIX_EPOCH)
+                    .map(|d| d.as_secs())
+                    .unwrap_or(0);
+                files.push((timestamp, entry.path()));
+            }
+        }
+    }
+
+    // Sort by timestamp (oldest first)
+    files.sort_by_key(|(t, _)| *t);
+
+    // Delete oldest entries if over limit
+    if files.len() > max_entries {
+        for (_, path) in files.iter().take(files.len() - max_entries) {
+            let _ = tokio::fs::remove_file(path).await;
+        }
+    }
+
+    Ok(())
+}
 
 /// Get timeout in seconds based on exercise limits
 fn get_timeout_secs(lesson_id: &Option<String>) -> u64 {
@@ -138,6 +213,17 @@ async fn run_interactive(
         return;
     }
 
+    // Tạo thư mục src/ cho cargo project
+    let src_dir = work_dir.join("src");
+    if let Err(e) = tokio::fs::create_dir_all(&src_dir).await {
+        let _ = tx
+            .send(WsServerMessage::Error {
+                message: format!("Lỗi tạo thư mục src: {}", e),
+            })
+            .await;
+        return;
+    }
+
     // Nếu là bài kiểm tra và có lesson_id, tự động nối thêm test case từ backend
     if is_test {
         eprintln!("[DEBUG] is_test=true, lesson_id={:?}", lesson_id);
@@ -163,7 +249,10 @@ async fn run_interactive(
         }
     }
 
-    let _ = tokio::fs::write(work_dir.join("src").join("main.rs"), &code).await;
+    // Compute hash for caching (use original code without test for cache key)
+    let cache_key = compute_code_hash(&code);
+
+    let _ = tokio::fs::write(src_dir.join("main.rs"), &code).await;
 
     // Tạo Cargo.toml nếu cần
     let cargo_toml = r#"
@@ -179,43 +268,73 @@ rand = "0.8"
 
     let start = Instant::now();
 
-    // Step 1: Compile với cargo
-    let _ = tx.send(WsServerMessage::Compiling).await;
+    // Step 1: Check cache first
+    let mut use_cache = false;
+    let binary_path;
 
-    let mut cmd_compile = Command::new("cargo");
-    cmd_compile.arg("build")
-        .arg("--release")
-        .current_dir(&work_dir);
+    if let Some(cached_path) = get_cached_binary(&cache_key).await {
+        // Cache hit - copy cached binary to work dir
+        let target_binary = work_dir.join("target").join("release").join("user_code");
 
-    // Lệnh build
-    let compile_result = cmd_compile.output().await;
+        // Create target directory
+        let _ = tokio::fs::create_dir_all(work_dir.join("target").join("release")).await;
 
-    match compile_result {
-        Ok(output) if !output.status.success() => {
-            let stderr = String::from_utf8_lossy(&output.stderr).to_string();
-            let _ = tx.send(WsServerMessage::CompileError { stderr }).await;
-            let _ = tokio::fs::remove_dir_all(&work_dir).await;
-            return;
+        if tokio::fs::copy(&cached_path, &target_binary).await.is_ok() {
+            use_cache = true;
+            binary_path = target_binary;
+            eprintln!("[CACHE] Cache HIT - using cached binary");
+        } else {
+            use_cache = false;
+            binary_path = target_binary;
         }
-        Err(e) => {
-            let _ = tx
-                .send(WsServerMessage::Error {
-                    message: format!("Lỗi rustc: {}", e),
-                })
-                .await;
-            let _ = tokio::fs::remove_dir_all(&work_dir).await;
-            return;
-        }
-        _ => {}
+    } else {
+        // Cache miss - need to compile
+        binary_path = work_dir.join("target").join("release").join("user_code");
     }
 
-    // Lệnh rustc --test chỉ mới biên dịch thành ứng dụng kiểm thử độc lập có tên là main (chứa mọi Unit Tests). 
-    // Chúng ta vẫn phải chạy file main để tiến hành Unit Test.
+    // Step 1b: Compile if cache miss
+    if !use_cache {
+        let _ = tx.send(WsServerMessage::Compiling).await;
+
+        let mut cmd_compile = Command::new("cargo");
+        cmd_compile.arg("build")
+            .arg("--release")
+            .current_dir(&work_dir);
+
+        let compile_result = cmd_compile.output().await;
+
+        match compile_result {
+            Ok(output) if !output.status.success() => {
+                let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+                let _ = tx.send(WsServerMessage::CompileError { stderr }).await;
+                let _ = tokio::fs::remove_dir_all(&work_dir).await;
+                return;
+            }
+            Err(e) => {
+                let _ = tx
+                    .send(WsServerMessage::Error {
+                        message: format!("Lỗi rustc: {}", e),
+                    })
+                    .await;
+                let _ = tokio::fs::remove_dir_all(&work_dir).await;
+                return;
+            }
+            _ => {
+                // Save successful compile to cache
+                let compiled_binary = work_dir.join("target").join("release").join("user_code");
+                if compiled_binary.exists() {
+                    let _ = save_to_cache(&cache_key, &compiled_binary).await;
+                    // Clean old cache entries periodically
+                    let _ = clean_old_cache(100).await;
+                }
+            }
+        }
+    }
 
     // Step 2: Run with streaming output
     let _ = tx.send(WsServerMessage::Running).await;
 
-    let mut child = match Command::new(work_dir.join("target").join("release").join("user_code"))
+    let mut child = match Command::new(&binary_path)
         .current_dir(&work_dir)
         .stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())
