@@ -4678,43 +4678,119 @@ fn main() {
   <!-- ========================================= -->
   <h3><span class="material-symbols-outlined">account_tree</span> 9.3. Sơ đồ tóm tắt nội dung bài học</h3>
 
-  <div class="features-grid">
-    <div class="feature-card">
-      <h4>Phần 1: Machine Learning Overview</h4>
-      <pre>
-AI → Machine Learning → Deep Learning → Neural Networks
-                │
-    ┌───────────┼───────────┐
-    │           │           │
-Supervised  Unsupervised  Reinforcement
-    │           │           │
-Classification Clustering  Agent+Env
-Regression   Dim.Reduction Reward
-      </pre>
+  <!-- Phần 1: Machine Learning Overview -->
+  <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin-bottom: 20px; border: 1px solid #334155;">
+    <h4 style="color: #38bdf8; margin: 0 0 16px 0; font-size: 1.05rem;">
+      <span class="material-symbols-outlined" style="vertical-align: middle; margin-right: 6px;">schema</span>
+      Phần 1: Machine Learning Overview
+    </h4>
+    <div style="text-align: center;">
+      <!-- Top chain -->
+      <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; margin-bottom: 16px;">
+        <span style="background: #7c3aed; color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">AI</span>
+        <span style="color: #64748b;">→</span>
+        <span style="background: #2563eb; color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Machine Learning</span>
+        <span style="color: #64748b;">→</span>
+        <span style="background: #0891b2; color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Deep Learning</span>
+        <span style="color: #64748b;">→</span>
+        <span style="background: #059669; color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Neural Networks</span>
+      </div>
+      <!-- Arrow down -->
+      <div style="color: #64748b; margin-bottom: 12px;">▼</div>
+      <!-- 3 branches -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+        <div style="background: #1e3a5f; border-radius: 10px; padding: 12px; border: 1px solid #2563eb40;">
+          <p style="color: #60a5fa; font-weight: 700; margin: 0 0 8px 0; font-size: 0.85rem;">Supervised</p>
+          <p style="color: #94a3b8; font-size: 0.75rem; margin: 0; line-height: 1.5;">Classification<br>Regression</p>
+        </div>
+        <div style="background: #1e3a3f; border-radius: 10px; padding: 12px; border: 1px solid #0891b240;">
+          <p style="color: #22d3ee; font-weight: 700; margin: 0 0 8px 0; font-size: 0.85rem;">Unsupervised</p>
+          <p style="color: #94a3b8; font-size: 0.75rem; margin: 0; line-height: 1.5;">Clustering<br>Dim. Reduction</p>
+        </div>
+        <div style="background: #2d1e3f; border-radius: 10px; padding: 12px; border: 1px solid #7c3aed40;">
+          <p style="color: #a78bfa; font-weight: 700; margin: 0 0 8px 0; font-size: 0.85rem;">Reinforcement</p>
+          <p style="color: #94a3b8; font-size: 0.75rem; margin: 0; line-height: 1.5;">Agent + Env<br>Reward</p>
+        </div>
+      </div>
     </div>
-    <div class="feature-card">
-      <h4>Phần 2: Neural Network Architecture</h4>
-      <pre>
-Input → Linear → Activation → Linear → ... → Output
-  $X$    $z=WX+b$  $h=f(z)$    $z=Wh+b$      $\\hat{y}$
-                                         
- Data    Weights  Non-linear   Weights    Prediction
-         Bias                  Bias       + Loss
-      </pre>
+  </div>
+
+  <!-- Phần 2: Neural Network Architecture -->
+  <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin-bottom: 20px; border: 1px solid #334155;">
+    <h4 style="color: #34d399; margin: 0 0 16px 0; font-size: 1.05rem;">
+      <span class="material-symbols-outlined" style="vertical-align: middle; margin-right: 6px;">hub</span>
+      Phần 2: Neural Network Architecture
+    </h4>
+    <!-- Flow chain -->
+    <div style="display: flex; align-items: stretch; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+      <div style="background: #1e3a5f; border-radius: 10px; padding: 10px 14px; border: 1px solid #2563eb40; text-align: center; min-width: 80px;">
+        <p style="color: #60a5fa; font-weight: 700; margin: 0; font-size: 0.8rem;">Input</p>
+        <p style="color: #94a3b8; font-size: 0.7rem; margin: 4px 0 0 0;">$X$ (Data)</p>
+      </div>
+      <span style="color: #64748b; display: flex; align-items: center; font-size: 1.2rem;">→</span>
+      <div style="background: #1e3a3f; border-radius: 10px; padding: 10px 14px; border: 1px solid #0891b240; text-align: center; min-width: 80px;">
+        <p style="color: #22d3ee; font-weight: 700; margin: 0; font-size: 0.8rem;">Linear</p>
+        <p style="color: #94a3b8; font-size: 0.7rem; margin: 4px 0 0 0;">$z = WX + b$</p>
+      </div>
+      <span style="color: #64748b; display: flex; align-items: center; font-size: 1.2rem;">→</span>
+      <div style="background: #3f1e2d; border-radius: 10px; padding: 10px 14px; border: 1px solid #e1195740; text-align: center; min-width: 80px;">
+        <p style="color: #fb7185; font-weight: 700; margin: 0; font-size: 0.8rem;">Activation</p>
+        <p style="color: #94a3b8; font-size: 0.7rem; margin: 4px 0 0 0;">$h = f(z)$</p>
+      </div>
+      <span style="color: #64748b; display: flex; align-items: center; font-size: 1.2rem;">→</span>
+      <div style="background: #1e3a3f; border-radius: 10px; padding: 10px 14px; border: 1px solid #0891b240; text-align: center; min-width: 80px;">
+        <p style="color: #22d3ee; font-weight: 700; margin: 0; font-size: 0.8rem;">Linear</p>
+        <p style="color: #94a3b8; font-size: 0.7rem; margin: 4px 0 0 0;">$z = Wh + b$</p>
+      </div>
+      <span style="color: #64748b; display: flex; align-items: center; font-size: 1.2rem;">→ ...</span>
+      <span style="color: #64748b; display: flex; align-items: center; font-size: 1.2rem;">→</span>
+      <div style="background: #1e3f1e; border-radius: 10px; padding: 10px 14px; border: 1px solid #05966940; text-align: center; min-width: 80px;">
+        <p style="color: #34d399; font-weight: 700; margin: 0; font-size: 0.8rem;">Output</p>
+        <p style="color: #94a3b8; font-size: 0.7rem; margin: 4px 0 0 0;">$\\hat{y}$ (Prediction)</p>
+      </div>
     </div>
-    <div class="feature-card">
-      <h4>Phần 3: Data Pipeline</h4>
-      <pre>
-Raw Data → Clean → Feature Eng → Encode → Split
-    │                                        │
-    │                              Train/Val/Test
-    │                                        │
-    └──── Normalize (fit train) ─── Batch ───┘
-                                       │
-                               Forward Pass
-                                       │
-                                  Prediction
-      </pre>
+    <!-- Legend -->
+    <div style="display: flex; justify-content: center; gap: 16px; margin-top: 12px; flex-wrap: wrap;">
+      <span style="color: #64748b; font-size: 0.7rem;"><span style="color: #22d3ee;">●</span> Weights + Bias</span>
+      <span style="color: #64748b; font-size: 0.7rem;"><span style="color: #fb7185;">●</span> Non-linear</span>
+      <span style="color: #64748b; font-size: 0.7rem;"><span style="color: #34d399;">●</span> Prediction + Loss</span>
+    </div>
+  </div>
+
+  <!-- Phần 3: Data Pipeline -->
+  <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 24px; margin-bottom: 20px; border: 1px solid #334155;">
+    <h4 style="color: #f59e0b; margin: 0 0 16px 0; font-size: 1.05rem;">
+      <span class="material-symbols-outlined" style="vertical-align: middle; margin-right: 6px;">conversion_path</span>
+      Phần 3: Data Pipeline
+    </h4>
+    <!-- Pipeline steps -->
+    <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; margin-bottom: 16px;">
+      <span style="background: #92400e; color: #fde68a; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Raw Data</span>
+      <span style="color: #64748b;">→</span>
+      <span style="background: #065f46; color: #6ee7b7; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Clean</span>
+      <span style="color: #64748b;">→</span>
+      <span style="background: #1e3a5f; color: #93c5fd; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Feature Eng</span>
+      <span style="color: #64748b;">→</span>
+      <span style="background: #4c1d95; color: #c4b5fd; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Encode</span>
+      <span style="color: #64748b;">→</span>
+      <span style="background: #7f1d1d; color: #fca5a5; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;">Split</span>
+    </div>
+    <!-- Arrow down -->
+    <div style="text-align: center; color: #64748b; margin-bottom: 12px;">▼</div>
+    <!-- Bottom flow -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center;">
+      <div style="background: #1e293b; border-radius: 10px; padding: 12px; border: 1px solid #f59e0b40;">
+        <p style="color: #fbbf24; font-weight: 700; margin: 0; font-size: 0.85rem;">Train / Val / Test</p>
+        <p style="color: #94a3b8; font-size: 0.7rem; margin: 6px 0 0 0;">Chia tập dữ liệu</p>
+      </div>
+      <div style="background: #1e293b; border-radius: 10px; padding: 12px; border: 1px solid #0891b240;">
+        <p style="color: #22d3ee; font-weight: 700; margin: 0; font-size: 0.85rem;">Normalize → Batch</p>
+        <p style="color: #94a3b8; font-size: 0.7rem; margin: 6px 0 0 0;">Fit on train only</p>
+      </div>
+      <div style="background: #1e293b; border-radius: 10px; padding: 12px; border: 1px solid #05966940;">
+        <p style="color: #34d399; font-weight: 700; margin: 0; font-size: 0.85rem;">Forward Pass</p>
+        <p style="color: #94a3b8; font-size: 0.7rem; margin: 6px 0 0 0;">→ Prediction</p>
+      </div>
     </div>
   </div>
 
