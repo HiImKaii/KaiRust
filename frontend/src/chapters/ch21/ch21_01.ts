@@ -456,7 +456,7 @@ const ch21_01_lessons: Lesson[] = [
   <h3><span class="material-symbols-outlined">schema</span> 1.8. Cấu trúc điển hình của Neural Network</h3>
   
   <div class="image-showcase">
-    <img src="/assets/ch21/neural_network_layers_1773152542781.png" alt="Neural Network Component Layers" />
+    <img src="/images/ch21/nn_layers_correct.png" alt="Neural Network Component Layers" />
     <div class="image-caption"><span class="material-symbols-outlined">info</span> Sơ đồ cấu tạo một mạng Neural Network 2 Hidden Layers</div>
   </div>
 
@@ -701,7 +701,7 @@ fn main() {
   <h3><span class="material-symbols-outlined">architecture</span> 2.2. Cấu trúc toán học của Perceptron</h3>
   
   <div class="image-showcase">
-    <img src="/assets/ch21/perceptron_model_1773152558045.png" alt="Sơ đồ mô hình Perceptron" />
+    <img src="/images/ch21/perceptron_model_1773152558045.png" alt="Sơ đồ mô hình Perceptron" />
     <div class="image-caption">Mô hình Perceptron với Inputs, Weights, Bias và Activation Function</div>
   </div>
 
@@ -819,9 +819,28 @@ fn main() {
   <!-- ========================================= -->
   <h3><span class="material-symbols-outlined">trending_up</span> 2.4. Activation Functions phổ biến (tổng quan)</h3>
 
-  <div class="image-showcase">
-    <img src="/assets/ch21/activation_functions_1773152787399.png" alt="Đồ thị các hàm kích hoạt" />
-    <div class="image-caption">So sánh trực quan: Step, Sigmoid, ReLU</div>
+  <div class="activation-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+    <div class="image-showcase" style="margin: 0;">
+      <img src="/images/ch21/act_step.png" alt="Step Function" style="width: 100%; border-radius: 8px;" />
+    </div>
+    <div class="image-showcase" style="margin: 0;">
+      <img src="/images/ch21/act_linear.png" alt="Linear Function" style="width: 100%; border-radius: 8px;" />
+    </div>
+    <div class="image-showcase" style="margin: 0;">
+      <img src="/images/ch21/act_sigmoid.png" alt="Sigmoid Function" style="width: 100%; border-radius: 8px;" />
+    </div>
+    <div class="image-showcase" style="margin: 0;">
+      <img src="/images/ch21/act_tanh.png" alt="Tanh Function" style="width: 100%; border-radius: 8px;" />
+    </div>
+    <div class="image-showcase" style="margin: 0;">
+      <img src="/images/ch21/act_relu.png" alt="ReLU Function" style="width: 100%; border-radius: 8px;" />
+    </div>
+    <div class="image-showcase" style="margin: 0;">
+      <img src="/images/ch21/act_leaky_relu.png" alt="Leaky ReLU Function" style="width: 100%; border-radius: 8px;" />
+    </div>
+    <div class="image-showcase" style="margin: 0;">
+      <img src="/images/ch21/act_gelu.png" alt="GELU Function" style="width: 100%; border-radius: 8px;" />
+    </div>
   </div>
 
   <table class="comparison-table">
@@ -883,6 +902,22 @@ fn main() {
         <td>Chuẩn hóa thành phân phối xác suất</td>
         <td>Chỉ dùng ở output layer</td>
         <td>Output layer cho Multi-class Classification</td>
+      </tr>
+      <tr>
+        <td><strong>GELU</strong></td>
+        <td>$f(z) = z \\cdot \\Phi(z)$</td>
+        <td>(-0.17, ∞)</td>
+        <td>Smooth, kết hợp kết quả tuyến tính và xác suất, siêu vượt trội ở NLP</td>
+        <td>Tính toán hơi phức tạp hơn ReLU</td>
+        <td>Modern Transformers (BERT, GPT), ViT, State-of-the-Art models</td>
+      </tr>
+      <tr>
+        <td><strong>GELU</strong></td>
+        <td>$f(z) = z \\cdot \\Phi(z)$</td>
+        <td>(-0.17, ∞)</td>
+        <td>Smooth, kết hợp kết quả tuyến tính và xác suất, siêu vượt trội ở NLP</td>
+        <td>Tính toán hơi phức tạp hơn ReLU</td>
+        <td>Modern Transformers (BERT, GPT), ViT, State-of-the-Art models</td>
       </tr>
     </tbody>
   </table>
@@ -1060,8 +1095,8 @@ fn main() {
   <p>Giải pháp cho XOR: Xếp chồng nhiều lớp Perceptron.</p>
 
   <div class="image-showcase">
-    <img src="/assets/ch21/neural_network_layers_1773152542781.png" alt="Multi-Layer Perceptron" />
-    <div class="image-caption">Từ Perceptron đơn lẻ → MLP nhiều tầng</div>
+    <img src="/images/ch21/mlp_xor_correct.png" alt="Multi-Layer Perceptron XOR" />
+    <div class="image-caption">Từ Perceptron đơn lẻ → MLP nhiều tầng: Giải bài toán XOR bằng 1 lớp ẩn</div>
   </div>
 
   <div class="callout callout-info">
@@ -2110,14 +2145,10 @@ fn main() {
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">shape_line</span></div>
       <h4>Không normalize: Loss Landscape hẹp dài</h4>
-      <p>Gradient phải zigzag hàng ngàn bước:</p>
-      <pre>
-      w₂ │     /  /  /  /
-         │    /  /  /  /
-         │   /  /  /  /    ← rất dài, hẹp
-         │  /  /  /  /        zigzag liên tục
-         └──────────── w₁
-      </pre>
+      <p>Gradient phải zigzag hàng ngàn bước (giống đáy thung lũng hẹp):</p>
+      <div class="image-showcase" style="margin: 10px 0;">
+        <img src="/images/ch21/gradient_descent_valley_1773153973142.png" alt="Gradient Descent Valley" style="width: 100%; border-radius: 8px;" />
+      </div>
     </div>
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">circle</span></div>
@@ -4669,7 +4700,10 @@ fn main() {
     <p class="font-mono mt-1">BatchNorm: $\\hat{x} = \\frac{x - \\mu_B}{\\sqrt{\\sigma_B^2 + \\epsilon}}$, &emsp; $y = \\gamma \\hat{x} + \\beta$</p>
   </div>
 
-  <h4>Gradient Descent:</h4>
+  <h4 class="mt-4">Gradient Descent:</h4>
+  <div class="image-showcase" style="margin: 10px 0;">
+    <img src="/images/ch21/gradient_descent_3d_1773152807591.png" alt="Gradient Descent 3D" style="max-width: 400px; border-radius: 8px;" />
+  </div>
   <div class="formula-block my-3 p-3 bg-yellow-50 border-yellow-200">
     <p class="font-mono">$W \\leftarrow W - \\eta \\cdot \\frac{\\partial L}{\\partial W}$</p>
     <p class="font-mono mt-1">$b \\leftarrow b - \\eta \\cdot \\frac{\\partial L}{\\partial b}$</p>

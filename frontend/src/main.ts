@@ -17,6 +17,22 @@ let currentLessonIndex = -1;
 let lessonStartTime = 0;
 const readLessons = new Set<string>();
 
+// ---- Helper: Render Math ----
+const renderMath = (el: HTMLElement) => {
+    if ((window as any).renderMathInElement) {
+        (window as any).renderMathInElement(el, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+        });
+    }
+};
+
+
 // ---- Monaco Editor Setup ----
 const initEditor = () => {
     const container = document.getElementById('editor');
@@ -199,6 +215,7 @@ const showChapterIntroduction = (chapter: Chapter) => {
     const contentEl = document.getElementById('lesson-content');
     if (contentEl) {
         contentEl.innerHTML = chapter.introduction;
+        renderMath(contentEl);
     }
 
     // Reset scrolling
@@ -271,9 +288,10 @@ const selectLesson = (lesson: Lesson, restoreScrollPosition: number | null = nul
 
     // Update content (use CP format if available)
     const contentEl = document.getElementById('lesson-content');
-    if (contentEl) contentEl.innerHTML = generateCPContent(lesson);
-
-    // Handle scroll position (restore if specified, otherwise reset to top)
+    if (contentEl) {
+        contentEl.innerHTML = generateCPContent(lesson);
+        renderMath(contentEl);
+    } // Handle scroll position (restore if specified, otherwise reset to top)
     const scrollArea = document.getElementById('panel-scroll-area');
     if (scrollArea) {
         if (restoreScrollPosition !== null && restoreScrollPosition > 0) {

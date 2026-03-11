@@ -172,6 +172,7 @@ code {
   letter-spacing: -0.02em;
   background: linear-gradient(135deg, var(--color-purple), #8b6914);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -2000,7 +2001,8 @@ code {
   align-items: center;
 }
 .image-showcase img {
-  max-width: 100%;
+  max-width: 600px; /* Giới hạn kích thước ảnh */
+  width: 100%;
   height: auto;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
