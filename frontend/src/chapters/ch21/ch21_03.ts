@@ -87,14 +87,14 @@ const ch21_03_lessons: Lesson[] = [
     <p>Do tính chất kết hợp (Associative Property):</p>
     <p class="font-mono text-center my-2">$(A \\cdot B) \\cdot C = A \\cdot (B \\cdot C)$</p>
     <p>Nên vô vàn các ma trận W nhân nhau cũng chỉ tự triệt tiêu, gộp chung lại thành <strong>ĐÚNG MỘT Ma trận $W_{gop}$ duy nhất</strong>.</p>
-    <p class="mt-3">Nghĩa là mạng 100 lớp của bạn <strong>phế vật không khác gì mạng 1 lớp</strong>. Nó quay về mốc đầu tiên: Vẽ 1 đường thẳng, vĩnh viễn không thể cày nát bài toán XOR!</p>
+    <p class="mt-3">Nghĩa là mạng 100 lớp của bạn <strong>vô dụng không khác gì mạng 1 lớp</strong>. Nó quay về mốc ban đầu: chỉ vẽ được 1 đường thẳng, vĩnh viễn không thể giải quyết bài toán XOR!</p>
   </div>
 
   <div class="callout callout-warning">
     <div class="callout-icon"><span class="material-symbols-outlined">warning</span></div>
     <div class="callout-content">
       <span class="callout-title">HẬU QUẢ NGHIÊM TRỌNG!</span>
-      <p class="font-bold text-lg">Mạng 100 lớp của bạn <span class="text-red-600">PHẾ VẬT</span> không khác gì mạng 1 lớp!</p>
+      <p class="font-bold text-lg">Mạng 100 lớp của bạn <span class="text-red-600">VÔ DỤNG</span>, không khác gì mạng 1 lớp!</p>
       <p class="mt-2">Nó quay về mốc ban đầu: <strong>Vẽ 1 đường thẳng duy nhất</strong>, vĩnh viễn không thể giải quyết các bài toán phức tạp.</p>
     </div>
   </div>
@@ -187,7 +187,7 @@ const ch21_03_lessons: Lesson[] = [
 
   <div class="definition-block mb-4">
     <span class="definition-term">Định nghĩa: Activation Function (Hàm kích hoạt)</span>
-    <p>Là một <strong>hàm phi tuyến tính</strong> được áp dụng sau mỗi neuron. Nó là "chiếc bản lề" (hinge) bẻ gãy đường thẳng, vò nát không gian mượt mà của Toán học Tuyến Tính.</p>
+    <p>Là một <strong>hàm phi tuyến tính</strong> được áp dụng sau mỗi neuron. Nó "bẻ cong" không gian tuyến tính — biến đường thẳng thành đường cong, cho phép mạng mô hình hóa các quan hệ phức tạp.</p>
     <p class="mt-2">Nó tạo ra <strong>quỹ tích cong</strong> (curved manifold) trong không gian latent, cho phép mạng học được các pattern phức tạp.</p>
   </div>
 
@@ -228,8 +228,8 @@ const ch21_03_lessons: Lesson[] = [
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">gate</span></div>
       <h4>Công dụng 2: Gate (Cổng)</h4>
-      <p>Tương tự như Neuron thần kinh sinh học: Nó quyết định <em>"Liệu xung điện này đủ đô để truyền sang rễ thần kinh Neuron kế tiếp hay tắt ngóm?"</em></p>
-      <p class="mt-2">Nó như cái <strong>cổng (gate)</strong> - thằng nào đủ điều kiện mới cho qua, không thì nghỉ đi!</p>
+      <p>Tương tự như Neuron thần kinh sinh học: Nó quyết định <em>"Liệu tín hiệu này đủ mạnh để truyền sang Neuron kế tiếp hay bị triệt tiêu?"</em></p>
+      <p class="mt-2">Nó hoạt động như một <strong>cổng (gate)</strong> — chỉ những tín hiệu đủ điều kiện mới được truyền qua.</p>
       <div class="mt-3 p-2 bg-yellow-50 rounded">
         <p class="font-bold">Đây là tính kích hoạt (firing):</p>
         <ul class="list-disc pl-4">
@@ -439,7 +439,7 @@ const ch21_03_lessons: Lesson[] = [
       <li><strong>3 công dụng:</strong> Giải XOR + Gate + Gradient Flow.</li>
       <li><strong>Universal Approximation:</strong> Chỉ cần 1 layer + non-linear activation = học được mọi thứ!</li>
     </ol>
-    <p class="mt-4 font-bold text-lg">KHÔNG CÓ NON-LINEARITY = MÁY TÍNH BỎ TÚI. CÓ NON-LINEARITY = NÃO NGƯỜI!</p>
+    <p class="mt-4 font-bold text-lg">KHÔNG CÓ NON-LINEARITY = chỉ là phép tính tuyến tính đơn giản. CÓ NON-LINEARITY = sức mạnh xấp xỉ mọi hàm số!</p>
   </div>
 </div>
     `,
@@ -513,7 +513,7 @@ enum ActivationType {
 }
 
 fn main() {
-    println!("=== CHỨNG MINH: AI KHÔNG CÓ ACTIVATION LÀ AI VÔ DỤNG ===");
+    println!("=== CHỨNG MINH: MẠNG KHÔNG CÓ ACTIVATION SỤP ĐỔ VỀ TUYẾN TÍNH ===");
 
     // Ma trận (Để đơn giản ta cho X=1, W là số vô hướng)
     let x = 5.0;
@@ -634,7 +634,7 @@ fn main() {
     println!("║  2. NON-LINEAR (có activation):                                        ║");
     println!("║     → Mỗi lớp thực sự khác nhau                                      ║");
     println!("║     → Có thể giải XOR và mọi pattern phức tạp                        ║");
-    println!("║     → Đây là điều KIẾN TRỤC của Neural Network!                        ║");
+    println!("║     → Đây là nền tảng KIẾN TRÚC của Neural Network!                     ║");
     println!("╚══════════════════════════════════════════════════════════════════════╝");
 }`
   },
@@ -647,7 +647,7 @@ fn main() {
 <div class="article-content">
   <h2><span class="material-symbols-outlined">ssid_chart</span> 2. Các Hàm Cổ Điển: Sigmoid và Tanh</h2>
 
-  <p>Sigmoid và Tanh là hai hàm activation "cổ điển" nhất trong lịch sử Neural Network. Dù đã "về hưu" khỏi vị trí hidden layers, chúng vẫn rất quan trọng trong output layers và việc hiểu chúng giúp bạn hiểu sâu hơn về gradient!</p>
+  <p>Sigmoid và Tanh là hai hàm activation "cổ điển" nhất trong lịch sử Neural Network. Dù không còn được ưu tiên cho hidden layers, chúng vẫn đóng vai trò quan trọng ở output layers, và việc hiểu chúng giúp bạn nắm vững bản chất của gradient.</p>
 
   <!-- ========================================= -->
   <!-- 2.1. SIGMOID -->
@@ -1014,7 +1014,7 @@ fn main() {
 <div class="article-content">
   <h2><span class="material-symbols-outlined">electric_bolt</span> 3. Kỷ nguyên của ReLU và The Dead ReLU Problem</h2>
 
-  <p>ReLU (Rectified Linear Unit) là hàm activation đơn giản nhất nhưng hiệu quả nhất. Nó đã "cách mạng hóa" Deep Learning và vẫn là lựa chọn mặc định cho hidden layers cho đến nay!</p>
+  <p>ReLU (Rectified Linear Unit) là hàm activation đơn giản nhất nhưng hiệu quả nhất. Nó đã tạo bước ngoặt cho Deep Learning và đến nay vẫn là lựa chọn mặc định cho hidden layers.</p>
 
   <!-- ========================================= -->
   <!-- 3.1. RELU - REVOLUTIONARY ACTIVATION -->
@@ -1050,7 +1050,7 @@ fn main() {
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">speed</span></div>
       <h4>No Vanishing Gradient!</h4>
-      <p>Gradient = 1 cho x > 0 → gradient "bay" thoải mái không bị "bóp nghẹt"!</p>
+      <p>Gradient = 1 khi x > 0 → gradient truyền ngược ổn định, không bị suy giảm qua các lớp.</p>
       <div class="mt-3 p-2 bg-green-50 rounded">
         <p class="font-bold">So sánh:</p>
         <ul class="list-disc pl-4 text-sm">
@@ -1314,7 +1314,7 @@ fn main() {
 <div class="article-content">
   <h2><span class="material-symbols-outlined">auto_awesome</span> 4. Softmax và Activation Thế hệ mới (GELU, Swish)</h2>
 
-  <p>Phần này sẽ khám phá Softmax - "ông hoàng" của output layer, và các activation function hiện đại đang làm mưa làm gió trong Transformers và LLM!</p>
+  <p>Phần này sẽ khám phá Softmax — hàm activation không thể thiếu ở output layer, cùng các activation function thế hệ mới đang thống trị trong kiến trúc Transformers và LLM.</p>
 
   <!-- ========================================= -->
   <!-- 4.1. SOFTMAX -->
@@ -1338,7 +1338,7 @@ fn main() {
     <div class="callout-icon"><span class="material-symbols-outlined">warning</span></div>
     <div class="callout-content">
       <span class="callout-title">Lưu ý quan trọng về Softmax!</span>
-      <p>Softmax "nhấn mạnh" (exaggerate) sự khác biệt giữa các classes. Class có x lớn nhất sẽ có xác suất cao hơn rất nhiều. Nếu bạn dùng cho regression hoặc binary classification → overkill!</p>
+      <p>Softmax "khuếch đại" (exaggerate) sự khác biệt giữa các classes: class có giá trị lớn nhất sẽ chiếm xác suất áp đảo. Không nên dùng cho regression hay binary classification — quá thừa thãi!</p>
     </div>
   </div>
 
@@ -1368,7 +1368,7 @@ fn main() {
   <!-- ========================================= -->
   <h3>4.2. GELU - Gaussian Error Linear Unit</h3>
 
-  <p>GELU là activation được sử dụng trong BERT, GPT, và hầu hết Transformer models hiện đại. Nó "mượt mà" hơn ReLU vì nhân với Gaussian CDF.</p>
+  <p>GELU là activation được sử dụng trong BERT, GPT, và hầu hết các Transformer models hiện đại. Nó có đường cong mượt mà hơn ReLU nhờ tích hợp Gaussian CDF vào công thức.</p>
 
   <div class="formula-block my-6 p-5 bg-purple-50 border-l-4 border-purple-500">
     <p class="font-bold text-purple-800 mb-3">Công thức GELU:</p>
@@ -1390,7 +1390,7 @@ fn main() {
     <div class="concept-card">
       <h4>Ưu điểm của GELU</h4>
       <ul>
-        <li>Không phải "bước nhảy" đột ngột như ReLU</li>
+        <li>Không có chuyển đổi đột ngột như ReLU</li>
         <li>Thường outperform ReLU trong NLP tasks</li>
         <li>Được dùng trong BERT, GPT, RoBERTa...</li>
         <li>Smooth gradient everywhere</li>
@@ -1401,7 +1401,7 @@ fn main() {
       <ul>
         <li>Tính toán chậm hơn ReLU (cần tanh, exp)</li>
         <li>Không đơn giản như ReLU</li>
-        <li>Chưa có proof "tại sao nó tốt"</li>
+        <li>Chưa có chứng minh lý thuyết rõ ràng về ưu thế</li>
       </ul>
     </div>
   </div>
@@ -1411,7 +1411,7 @@ fn main() {
   <!-- ========================================= -->
   <h3>4.3. Swish - Self-Gated Activation</h3>
 
-  <p>Swish được Google research phát minh năm 2017. Nó là "self-gated" - tức tự quyết định kích hoạt dựa trên chính input mà không cần thêm parameters.</p>
+  <p>Swish được Google Research công bố năm 2017. Đây là hàm "self-gated" — tự điều chỉnh mức kích hoạt dựa trên chính giá trị input, không cần thêm tham số ngoài.</p>
 
   <div class="formula-block my-6 p-5 bg-pink-50 border-l-4 border-pink-500">
     <p class="font-bold text-pink-800 mb-3">Công thức Swish:</p>
@@ -1428,7 +1428,7 @@ fn main() {
     <div class="callout-icon"><span class="material-symbols-outlined">lightbulb</span></div>
     <div class="callout-content">
       <span class="callout-title">SiLU (Sigmoid Linear Unit)</span>
-      <p>Swish(1) với β cố định = 1 gọi là SiLU. Đơn giản hơn, gần như ngang GELU. Dùng trong Swin Transformer!</p>
+      <p>Swish với β = 1 chính là SiLU (Sigmoid Linear Unit). Hiệu năng gần tương đương GELU, được sử dụng trong Swin Transformer, EfficientNet...</p>
     </div>
   </div>
 
@@ -1647,11 +1647,11 @@ export const ch21_03: Chapter = {
   id: 'ch21_03',
   title: '21.3. Activation Functions',
   introduction: `
-    <h2>Tế bào Linh hồn bóp méo Không Gian Tuyến Tính</h2>
+    <h2>Activation Functions — Bẻ Cong Không Gian Tuyến Tính</h2>
     <ul>
-      <li>Đi sâu vào cốt tủy Đỉnh và Đáy Toán học của Functions.</li>
-      <li>Hiện tượng Triệt tiêu Đạo Hàm (Vanishing) & Xác Nơ-ron (Dead Relu).</li>
-      <li>GELU/Swish làm mưa làm gió trong Transformers/LLM đương đại.</li>
+      <li>Bản chất toán học và vai trò cốt lõi của các hàm kích hoạt.</li>
+      <li>Hiện tượng Triệt tiêu Gradient (Vanishing) và Neuron chết (Dead ReLU).</li>
+      <li>GELU/Swish — thế hệ activation thống trị trong Transformers và LLM hiện đại.</li>
     </ul>
   `,
   lessons: ch21_03_lessons,
