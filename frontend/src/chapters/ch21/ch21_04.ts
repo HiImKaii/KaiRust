@@ -1,12 +1,12 @@
 // =====================================================
 // Chương 21: MẠNG NEURAL NETWORK
-// Bài 4: LOSS FUNCTIONS - THƯỚC ĐO TỘI LỖI CỦA AI
+// Bài 4: LOSS FUNCTIONS - HÀM MẤT MÁT
 //
 // Mục tiêu học thuật:
-// 1. Bản chất Maximum Likelihood Estimation (MLE) giải thích cho Loss.
-// 2. Regression Losses: MSE, MAE và Huber Loss (Toán học và Đạo hàm).
+// 1. Bản chất Maximum Likelihood Estimation (MLE) - nền tảng của mọi hàm Loss.
+// 2. Regression Losses: MSE, MAE và Huber Loss (Công thức và Đạo hàm).
 // 3. Classification Losses: BCE, CCE và KL Divergence.
-// 4. Kỹ thuật nâng cao: Focal Loss - Diệt trừ Imbalanced Data.
+// 4. Kỹ thuật nâng cao: Focal Loss - Xử lý dữ liệu mất cân bằng.
 // =====================================================
 
 import { Lesson, Chapter } from '../../courses';
@@ -14,79 +14,404 @@ import { Lesson, Chapter } from '../../courses';
 const ch21_04_lessons: Lesson[] = [
   {
     id: 'ch21_04_01',
-    title: '1. Góc nhìn Thống kê: Maximum Likelihood Estimation (MLE)',
-    duration: '45 phút',
+    title: '1. Maximum Likelihood Estimation - Nguồn gốc mọi hàm Loss',
+    duration: '60 phút',
     type: 'theory',
     content: `
 <div class="article-content">
-  <h2><span class="material-symbols-outlined">analytics</span> 1. Maximum Likelihood Estimation (MLE) - Nguồn cội của Mọi Hàm Loss</h2>
+  <h2>1. Maximum Likelihood Estimation (MLE) - Nguồn gốc mọi hàm Loss</h2>
 
-  <h3>1.1. Tại sao máy lại cần Hàm Loss (Hàm Suy Hao)?</h3>
-  <div class="definition-block mb-4">
-    <p>Thuật ngữ "Loss" đo lường "mức độ ngu ngốc" của mạng Nơ-ron tại thời điểm hiện tại. Tại sao ta không thể đánh giá máy bằng độ phán đoán Đúng/Sai (Ví dụ: Accuracy = 90%)?</p>
-    <p>Đáp án nằm ở <strong>Calculus (Giải tích)</strong>. Accuracy (Độ chính xác) là một đại lượng bậc thang rời rạc (step-like), <strong>Nó KHÔNG THỂ ĐẠO HÀM ĐƯỢC</strong>. Mà Backpropagation sống nhờ Đạo hàm (Derivatives / Gradients). Do đó, trí tuệ nhân tạo phải viện cầu đến Thống kê học để tạo ra các hàm số trơn tru (Smooth Curves), đạo hàm được mọi lúc mọi nơi.</p>
+  <!-- ========================================= -->
+  <!-- 1.1. TẠI SAO CẦN HÀM LOSS?               -->
+  <!-- ========================================= -->
+  <h3>1.1. Tại sao máy tính cần Hàm Loss?</h3>
+
+  <p>Khi Neural Network đưa ra dự đoán, ta cần một cách để đánh giá mức độ sai lệch giữa dự đoán đó và kết quả thực tế. <strong>Loss Function (Hàm Suy Hao)</strong> chính là thước đo này.</p>
+
+  <div class="definition-block">
+    <span class="definition-term">Loss Function (Hàm Suy Hao / Hàm Mất mát)</span>
+    <p>Là một hàm số đo lường <strong>mức độ sai lệch</strong> giữa dự đoán của mô hình và giá trị thực tế. Loss càng nhỏ → mô hình càng tốt.</p>
   </div>
 
-  <h3>1.2. MLE (Cực đại Hóa Khả năng)</h3>
-  <p>Toàn bộ ngành Deep Learning đứng trên vai của định lý <strong>Maximum Likelihood Estimation (MLE)</strong>. Thay vì ép máy "Trả lời Mèo", ta ép máy: <em>"Làm sao tinh chỉnh $W$ để Xác suất $P$ (Predict=Mèo | Ảnh) là LỚN NHẤT!"</em></p>
-  
-  <div class="formula-block mb-4 p-4 text-center rounded border shadow-sm">
-    <p class="font-bold mb-2 text-blue-900">Tính Likelihood trên toàn Dataset có N ảnh:</p>
-    $L(W) = P_{data1} \\times P_{data2} \\times \\dots \\times P_{dataN} = \\prod_{i=1}^{N} P(y_i | x_i; W)$
+  <h4>Tại sao không dùng Accuracy (Độ chính xác)?</h4>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">✓</div>
+      <h4>Accuracy</h4>
+      <p>Đếm số lần đúng / tổng số lần</p>
+      <p><strong>Là số rời rạc</strong>: 0%, 1%, 2%...</p>
+      <p class="text-red-600 font-bold">KHÔNG THỂ đạo hàm được!</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">✓</div>
+      <h4>Loss</h4>
+      <p>Là số thực liên tục</p>
+      <p>Có thể lấy đạo hàm: ∂L/∂w</p>
+      <p class="text-green-600 font-bold">CÓ THỂ tối ưu bằng Gradient Descent!</p>
+    </div>
   </div>
-  
-  <p>Nhân hàng triệu xác suất ($0.9 \\times 0.2 \\times \\dots$) thì CPU sẽ bị tràn số (Underflow) gãy vụn về 0. Lối thoát duy nhất là lấy <strong>Logarithm</strong> hai vế, biến phép Nhân $\\prod$ thành phép Cộng $\\sum$!</p>
-  
-  <div class="callout callout-warning mt-4">
-    <div class="callout-icon"><span class="material-symbols-outlined">calculate</span></div>
+
+  <div class="callout callout-warning">
+    <div class="callout-icon">⚠</div>
     <div class="callout-content">
-      <strong>Negative Log-Likelihood (NLL) ra đời</strong>
-      <p>Logarithm là hàm đồng biến, nên <strong>Cực Đại Likelihood</strong> cũng chính là <strong>Cực Đại Log-Likelihood</strong>.</p>
-      <p>Nhưng Deep Learning thích "Giảm" Gradient (Descent) để thả dốc tìm cực đáy, nên các nhà khoa học vả thêm dấu trừ (Negative) đằng trước: <code>-Log(Likelihood)</code>.</p>
-      <p class="font-bold text-red-700 mt-2 text-center text-lg bg-red-50 p-2 border-red-200 border rounded">Kết luận: Giảm thiểu NLL Loss $\\iff$ Tối đa hóa MLE (Khả năng đúng).</p>
+      <strong>Vấn đề cốt lõi: Backpropagation cần Gradient</strong>
+      <p>Thuật toán <strong>Backpropagation</strong> (Lan truyền ngược) sử dụng đạo hàm để tính toán mức độ điều chỉnh cho mỗi trọng số. Tuy nhiên, Accuracy là một hàm rời rạc dạng bậc thang nên đạo hàm gần như bằng 0 ở mọi nơi - thuật toán không biết phải học theo hướng nào!</p>
+    </div>
+  </div>
+
+  <p>Vậy ta cần một hàm số <strong>liên tục và có đạo hàm</strong> để thay thế cho Accuracy. Đây chính là lý do <strong>Likelihood</strong> xuất hiện trong lý thuyết Machine Learning.</p>
+
+  <!-- ========================================= -->
+  <!-- 1.2. KHÁI NIỆM LIKELIHOOD                 -->
+  <!-- ========================================= -->
+  <h3>1.2. Likelihood - Xác suất xảy ra dữ liệu</h3>
+
+  <div class="image-showcase">
+    <img src="/images/ch21/loss_mle_concept.png" alt="MLE Concept Visualization" />
+    <div class="image-caption">Hình 1: MLE tìm tham số θ để maximize likelihood</div>
+  </div>
+
+  <p><strong>Likelihood</strong> (độ hợp lý) đo lường xác suất của việc quan sát được dữ liệu hiện tại khi biết trước bộ tham số θ (trọng số).</p>
+
+  <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
+    <p class="font-bold mb-2 text-center">Công thức Likelihood cho N mẫu dữ liệu:</p>
+    <p class="font-mono text-lg text-center">$L(\theta) = P(data | \theta) = \prod_{i=1}^{N} P(x_i, y_i | \theta)$</p>
+    <p class="text-sm text-gray-600 mt-2">Trong đó: θ là bộ trọng số của mạng neural</p>
+  </div>
+
+  <h4>Ví dụ minh họa: Ước lượng xác suất sấp của đồng xu</h4>
+
+  <div class="definition-block">
+    <span class="definition-term">Bài toán ước lượng xác suất sấp (p) của đồng xu</span>
+    <p>Ta tung đồng xu 10 lần, thu được 7 lần sấp (H), 3 lần ngửa (T). Hỏi xác suất sấp thực sự p bằng bao nhiêu?</p>
+    <ul>
+      <li>Nếu p = 0.7: Likelihood = 0.7^7 × 0.3^3 = 0.0042</li>
+      <li>Nếu p = 0.5: Likelihood = 0.5^10 = 0.001</li>
+      <li>Nếu p = 0.9: Likelihood = 0.9^7 × 0.1^3 = 0.00005</li>
+    </ul>
+    <p class="font-bold text-green-700 mt-2">→ MLE chọn p = 0.7 vì đây là giá trị có likelihood cao nhất!</p>
+  </div>
+
+  <p>Tuy nhiên, khi áp dụng vào Neural Network thực tế với hàng triệu mẫu dữ liệu, Likelihood gặp một vấn đề nghiêm trọng về mặt tính toán.</p>
+
+  <!-- ========================================= -->
+  <!-- 1.3. VẤN ĐỀ UNDERFLOW                     -->
+  <!-- ========================================= -->
+  <h3>1.3. Vấn đề Underflow - Tại sao cần Logarithm?</h3>
+
+  <div class="image-showcase">
+    <img src="/images/ch21/loss_underflow.png" alt="Underflow Problem" />
+    <div class="image-caption">Hình 2: Nhân nhiều xác suất nhỏ gây ra underflow</div>
+  </div>
+
+  <p>Trong thực tế, Neural Network xử lý hàng triệu mẫu dữ liệu. Mỗi mẫu có xác suất dự đoán đúng thường nhỏ hơn 1 (ví dụ: 0.9). Khi nhân hàng triệu số nhỏ với nhau, kết quả sẽ <strong>tràn số (overflow)</strong> về 0!</p>
+
+  <div class="callout callout-warning">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-content">
+      <strong>Ví dụ Underflow:</strong>
+      <p>0.9 × 0.9 × 0.9 × ... (100 lần) = 0.9^100 ≈ 2.7 × 10^-5</p>
+      <p>0.9 × 0.9 × 0.9 × ... (1000 lần) ≈ 10^-44</p>
+      <p>0.9 × 0.9 × 0.9 × ... (10000 lần) → <strong>UNDERFLOW!</strong> (số quá nhỏ không lưu được trong float64)</p>
+    </div>
+  </div>
+
+  <h4>Giải pháp: Dùng Logarithm</h4>
+
+  <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
+    <p class="font-bold mb-2 text-center">Logarithm biến phép nhân thành phép cộng:</p>
+    <p class="font-mono text-lg text-center">$\log(A \times B \times C) = \log(A) + \log(B) + \log(C)$</p>
+  </div>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Cách tính</th>
+        <th>100 samples</th>
+        <th>1000 samples</th>
+        <th>Kết quả</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Nhân trực tiếp</strong></td>
+        <td>0.9^100 = 2.7e-5</td>
+        <td>0.9^1000 ≈ 0</td>
+        <td class="text-red-600">UNDERFLOW!</td>
+      </tr>
+      <tr>
+        <td><strong>Cộng Log</strong></td>
+        <td>100 × log(0.9) = -10.5</td>
+        <td>1000 × log(0.9) = -105</td>
+        <td class="text-green-600">An toàn!</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Vậy là Logarithm đã giải quyết được vấn đề Underflow. Tuy nhiên, vẫn còn một vấn đề cần giải quyết: <strong>Gradient Descent tìm cực tiểu (minimum)</strong>, trong khi với Likelihood ta cần <strong>cực đại (maximum)</strong>.</p>
+
+  <!-- ========================================= -->
+  <!-- 1.4. NEGATIVE LOG-LIKELIHOOD (NLL)       -->
+  <!-- ========================================= -->
+  <h3>1.4. Negative Log-Likelihood (NLL) - Hàm Loss hoàn hảo</h3>
+
+  <div class="image-showcase">
+    <img src="/images/ch21/loss_mle_vs_nll.png" alt="NLL Transformation" />
+    <div class="image-caption">Hình 3: Từ Likelihood → Log-Likelihood → NLL Loss</div>
+  </div>
+
+  <p>Tuy nhiên, vẫn còn một vấn đề cần giải quyết: <strong>Gradient Descent tìm cực tiểu (minimum)</strong>, trong khi với Likelihood ta cần <strong>cực đại (maximum)</strong>.</p>
+
+  <div class="definition-block">
+    <span class="definition-term">Negative Log-Likelihood (NLL)</span>
+    <p><strong>NLL = -Log(Likelihood)</strong></p>
+    <ul>
+      <li>Log: Tránh underflow, biến phép nhân thành phép cộng</li>
+      <li>Dấu trừ (-): Biến bài toán cực đại thành bài toán cực tiểu</li>
+    </ul>
+  </div>
+
+  <div class="callout callout-important">
+    <div class="callout-icon">✓</div>
+    <div class="callout-content">
+      <strong>Kết luận quan trọng nhất:</strong>
+      <p class="text-xl text-center font-bold text-blue-700 my-4">Minimize NLL Loss ⇔ Maximize Likelihood ⇔ Tìm mô hình tốt nhất</p>
+      <p>Đây là nền tảng toán học của <strong>mọi</strong> hàm Loss trong Deep Learning!</p>
+    </div>
+  </div>
+
+  <h4>So sánh:</h4>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Hàm</th>
+        <th>Công thức</th>
+        <th>Mục tiêu</th>
+        <th>Đạo hàm được?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Likelihood</td>
+        <td>$\prod P(x_i | \theta)$</td>
+        <td>MAXIMIZE</td>
+        <td>Khó (underflow)</td>
+      </tr>
+      <tr>
+        <td>Log-Likelihood</td>
+        <td>$\sum \log P(x_i | \theta)$</td>
+        <td>MAXIMIZE</td>
+        <td>✓</td>
+      </tr>
+      <tr>
+        <td><strong>NLL (Loss)</strong></td>
+        <td><strong>$-\sum \log P(x_i | \theta)$</strong></td>
+        <td><strong>MINIMIZE</strong></td>
+        <td>✓✓ Rất tốt!</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Bây giờ ta đã có hàm Loss hoàn hảo. Tiếp theo, ta cần tìm hiểu <strong>cách tối ưu hóa</strong> hàm Loss này - đó chính là <strong>Gradient Descent</strong>.</p>
+
+  <!-- ========================================= -->
+  <!-- 1.5. GRADIENT DESCENT                     -->
+  <!-- ========================================= -->
+  <h3>1.5. Gradient Descent - Cách AI học</h3>
+
+  <div class="image-showcase">
+    <img src="/images/ch21/loss_gradient_descent.png" alt="Gradient Descent Visualization" />
+    <div class="image-caption">Hình 4: Gradient Descent tìm minimum bằng cách đi theo hướng ngược gradient</div>
+  </div>
+
+  <p><strong>Gradient Descent (Giảm dần Gradient)</strong> là thuật toán tối ưu cốt lõi: từ một điểm bất kỳ trên đồ thị hàm Loss, thuật toán di chuyển dần về phía có gradient âm (hướng đi xuống) cho đến khi tìm được điểm cực tiểu.</p>
+
+  <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
+    <p class="font-bold mb-2 text-center">Công thức cập nhật trọng số:</p>
+    <p class="font-mono text-lg text-center">$w_{new} = w_{old} - \eta \times \frac{\partial L}{\partial w}$</p>
+    <p class="text-sm text-gray-600 mt-2">Trong đó: η (eta) là tốc độ học (learning rate), ∂L/∂w là gradient của Loss theo trọng số w</p>
+  </div>
+
+  <h4>Các bước của Gradient Descent:</h4>
+
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h4>Khởi tạo</h4>
+        <p>Khởi tạo ngẫu nhiên các trọng số w ban đầu</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h4>Tính Loss</h4>
+        <p>Truyền dữ liệu qua mạng (forward pass), tính giá trị Loss L = NLL(y_pred, y_true)</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h4>Tính Gradient</h4>
+        <p>Lan truyền ngược (backpropagation): tính ∂L/∂w cho mỗi trọng số</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <h4>Cập nhật</h4>
+        <p>w = w - η × gradient</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">5</div>
+      <div class="step-content">
+        <h4>Lặp lại</h4>
+        <p>Lặp lại từ bước 2 cho đến khi Loss đạt giá trị đủ nhỏ</p>
+      </div>
+    </div>
+  </div>
+
+  <p>Một yếu tố quan trọng ảnh hưởng đến khả năng tìm được nghiệm tối ưu của Gradient Descent là <strong>dạng của hàm Loss</strong>.</p>
+
+  <!-- ========================================= -->
+  <!-- 1.6. CONVEX VS NON-CONVEX                 -->
+  <!-- ========================================= -->
+  <h3>1.6. Hàm Loss lồi và không lồi</h3>
+
+  <div class="image-showcase">
+    <img src="/images/ch21/loss_landscape.png" alt="Loss Landscape" />
+    <div class="image-caption">Hình 5: Loss landscape có thể có nhiều local minima</div>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">✓</div>
+      <h4>Convex (Lồi)</h4>
+      <p>Chỉ có 1 global minimum duy nhất</p>
+      <p>Gradient Descent chắc chắn tìm được đáy</p>
+      <p><em>Ví dụ: Linear Regression, Logistic Regression</em></p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">!</div>
+      <h4>Non-Convex (Không lồi)</h4>
+      <p>Có nhiều local minima</p>
+      <p>Gradient Descent có thể mắc kẹt ở local minimum</p>
+      <p><em>Ví dụ: Neural Networks</em></p>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">i</div>
+    <div class="callout-content">
+      <strong>Lưu ý thực tế:</strong>
+      <p>Mặc dù Neural Networks có hàm Loss non-convex với nhiều điểm cực tiểu cục bộ, trong thực tế Gradient Descent thường tìm được các nghiệm đủ tốt (không nhất thiết là global minimum nhưng vẫn đáp ứng được yêu cầu ứng dụng).</p>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- 1.7. TÓM TẮT                              -->
+  <!-- ========================================= -->
+  <h3>1.7. Tóm tắt</h3>
+
+  <div class="key-takeaway">
+    <div class="key-takeaway-icon">📝</div>
+    <div class="key-takeaway-content">
+      <h4>Tổng kết:</h4>
+      <ol>
+        <li><strong>Loss</strong> đo lường mức độ sai lệch giữa dự đoán và giá trị thực tế - cần được tối thiểu hóa</li>
+        <li><strong>Accuracy</strong> không thể sử dụng trực tiếp vì không thể tính đạo hàm</li>
+        <li><strong>Likelihood</strong> đo xác suất của dữ liệu khi biết trước tham số θ</li>
+        <li><strong>Logarithm</strong> giải quyết vấn đề underflow khi nhân nhiều xác suất nhỏ</li>
+        <li><strong>NLL = -Log(Likelihood)</strong> là hàm Loss hoàn hảo: trơn, có thể đạo hàm, cực tiểu hóa NLL tương đương với cực đại hóa likelihood</li>
+        <li><strong>Gradient Descent</strong> tìm điểm cực tiểu bằng cách di chuyển ngược hướng gradient</li>
+      </ol>
     </div>
   </div>
 </div>
     `,
-    defaultCode: `// THÍ NGHIỆM ĐÁNH SẬP KIẾN TRÚC MÁY TÍNH (UNDERFLOW) KHI KHÔNG CÓ LOGARITHM
+    defaultCode: `// =====================================================
+// THUC HANH: TINH TOAN MLE VA NLL
 // =====================================================
 
 fn main() {
     println!("╔══════════════════════════════════════════════════════════════════════╗");
-    println!("║              Quyền Lực Của Logarithm trong Loss Functions            ║");
+    println!("║          THUC HANH: MAXIMUM LIKELIHOOD ESTIMATION (MLE)             ║");
     println!("╚══════════════════════════════════════════════════════════════════════╝");
 
-    // Giả sử có 1000 bức ảnh Mèo, và AI lúc mới sinh ra dự đoán được Mèo với xác suất = 0.5 (hên xui 50/50).
-    // Phép tính MLE: L = 0.5 * 0.5 * 0.5 ... (1000 lần)
-    
-    let probability: f64 = 0.5;
-    let n_images = 1000;
-    
-    // CÁCH 1: NHÂN TRUYỀN THỐNG (Likelihood)
-    let mut total_likelihood = 1.0;
-    for _ in 0..n_images {
-        total_likelihood *= probability;
-    }
-    
-    println!("\\n[1] Tính Likelihood Thô (Nhân Xác Suất):");
-    println!("Xác suất dự đoán đúng cả 1000 ảnh: {}", total_likelihood);
-    if total_likelihood == 0.0 {
-        println!(">>> MÁY TÍNH BÁO BẰNG 0.0! Sập Nguồn (Numerical Underflow) bởi vì 0.5 mũ 1000 quá rớt lồng f64!");
-        println!(">>> Đạo hàm ở vùng 0.0 sẽ tịt. Backpropagation ngủ đông!");
+    // ==========================================================================
+    // BAI TOAN: Tung dong xu 10 lan, duoc 7 sap (H), 3 ngua (T)
+    // Tim xac suat that cua dong xu (p = ?)
+    // ==========================================================================
+
+    let n_heads = 7;
+    let n_tails = 3;
+
+    println!("\n📊 Du lieu: {} lan sap, {} lan ngua trong {} lan tung",
+             n_heads, n_tails, n_heads + n_tails);
+
+    // ==========================================================================
+    // CACH 1: Tinh truc tiep (Likelihood) - KHONG DUNG DUOC!
+    // ==========================================================================
+    println!("\n--- CACH 1: Tinh LIKELIHOOD truc tiep ---");
+
+    let test_probs = [0.3, 0.5, 0.7, 0.9];
+
+    for &p in &test_probs {
+        // Likelihood = p^n_heads * (1-p)^n_tails
+        let likelihood = (p as f64).powi(n_heads) * (1.0 - p as f64).powi(n_tails);
+        println!("  p = {} → Likelihood = {:.6}", p, likelihood);
     }
 
-    // CÁCH 2: CỘNG LOGARITHM (Log-Likelihood)
-    let mut log_likelihood = 0.0;
-    for _ in 0..n_images {
-        // Logarithm tự nhiên (Logarit nê-pe)
-        log_likelihood += probability.ln(); 
+    // ==========================================================================
+    // CACH 2: Tinh LOG-LIKELIHOOD - An toan, khong underflow!
+    // ==========================================================================
+    println!("\n--- CACH 2: Tinh LOG-LIKELIHOOD ---");
+
+    for &p in &test_probs {
+        // log_likelihood = n_heads * log(p) + n_tails * log(1-p)
+        let log_likelihood = n_heads as f64 * (p as f64).ln() +
+                             n_tails as f64 * (1.0 - p as f64).ln();
+        println!("  p = {} → Log-Likelihood = {:.4}", p, log_likelihood);
     }
-    let nll_loss = -log_likelihood; // Thêm dấu trừ để thành hàm đi VỀ ĐÁY.
-    
-    println!("\\n[2] Tính bằng Negative Log-Likelihood (NLL):");
-    println!("Tổng NLL Loss: {:.4}", nll_loss);
-    println!(">>> GỌN GÀNG! Loss là con số 693.14 khổng lồ, đạo hàm thoải mái, không sợ Underflow.");
-    println!(">>> Đây là lý do Mọi Framework Deep Learning đều nhúng hàm ln() vào tận lõi Loss!");
+
+    // ==========================================================================
+    // CACH 3: Tinh NLL (Negative Log-Likelihood) - DAY LA LOSS!
+    // ==========================================================================
+    println!("\n--- CACH 3: Tinh NLL (Negative Log-Likelihood = LOSS) ---");
+
+    let mut best_p = 0.0;
+    let mut min_nll = f64::MAX;
+
+    // Thu nhieu gia tri p de tim minimum
+    for i in 1..100 {
+        let p = i as f64 / 100.0;
+        let nll = -(n_heads as f64 * p.ln() + n_tails as f64 * (1.0 - p).ln());
+        if nll < min_nll {
+            min_nll = nll;
+            best_p = p;
+        }
+    }
+
+    println!("  → p toi uu (MLE): {:.2}", best_p);
+    println!("  → NLL Loss nho nhat: {:.4}", min_nll);
+
+    // ==========================================================================
+    // BAI HOC: Tai sao NLL tot hon Likelihood?
+    // ==========================================================================
+    println!("\n╔══════════════════════════════════════════════════════════════════════╗");
+    println!("║                    BAI HOC QUAN TRONG                                ║");
+    println!("╠══════════════════════════════════════════════════════════════════════╣");
+    println!("║ 1. Likelihood: Nhan nhieu so nho → UNDERFLOW!                      ║");
+    println!("║ 2. Log-Likelihood: Cong cac log → KHONG BAO GIO underflow!        ║");
+    println!("║ 3. NLL = -Log-Likelihood: Minimize → Tuong duong Maximize          ║");
+    println!("║ 4. Gradient Descent CAN NLL vi:                                    ║");
+    println!("║    - La ham tron (smooth), dao ham duoc moi noi                    ║");
+    println!("║    - Minimum cua NLL = Maximum cua Likelihood                       ║");
+    println!("║    - Gia tri Loss cu the, dung de so sanh mo hinh                 ║");
+    println!("╚══════════════════════════════════════════════════════════════════════╝");
 }`
   },
   {
@@ -96,65 +421,272 @@ fn main() {
     type: 'theory',
     content: `
 <div class="article-content">
-  <h2><span class="material-symbols-outlined">trending_flat</span> 2. Nhóm Suy Hao Hồi Quy (Regression Losses)</h2>
+  <h2>2. Nhóm Suy Hao Hồi Quy (Regression Losses)</h2>
 
-  <p class="mb-4">Dùng khi Output của AI là <strong>Trục số Thực liên tục</strong> (Dự báo Giá Bitcoin, Tuổi tác, Mét vuông). Không thể xài Log Xác suất vì Dự đoán Giá Nhà \$100k, thực tế giá \$99k không có nghĩa là AI "Sai Hoàn Toàn".</p>
+  <!-- ========================================= -->
+  <!-- 2.1. GIỚI THIỆU REGRESSION               -->
+  <!-- ========================================= -->
+  <h3>2.1. Khi nào dùng Regression Loss?</h3>
 
-  <h3>2.1. MSE (L2 Loss) - Mean Squared Error</h3>
-  <div class="grid grid-cols-2 gap-4 my-2">
-    <div class="bg-blue-50 p-4 border rounded">
-      <h4 class="font-bold text-blue-800 border-b pb-2 mb-2">Toán học</h4>
-      <p class="font-mono text-sm">Công thức: $L = \\frac{1}{n} \\sum (y - \\hat{y})^2$</p>
-      <p class="font-mono text-sm mt-2 text-red-600">Đạo hàm: $\\frac{\\partial L}{\\partial \\hat{y}} = 2(\\hat{y} - y)$</p>
-      <ul class="text-xs list-disc pl-4 mt-2 text-gray-700">
-        <li>Bình phương $\\to$ Phạt Cực Kì Nặng các ngoại lệ (Outliers). Sai 1 đền 1. Sai 10 đền 100!</li>
-        <li>Hội tụ tại một Điểm duy nhất dưới đáy Parabol mịn màng (Convex func). Đạo hàm tuyến tính nên tìm cực tiểu cực dễ.</li>
+  <p><strong>Regression</strong> (Hồi quy) là bài toán dự đoán một <strong>giá trị liên tục</strong> (continuous value), khác với Classification (phân loại rời rạc).</p>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">📊</div>
+      <h4>Ví dụ Regression</h4>
+      <ul>
+        <li>Dự đoán giá nhà: \$350,000</li>
+        <li>Dự đoán nhiệt độ: 25.5°C</li>
+        <li>Dự đoán lượng mưa: 120mm</li>
       </ul>
     </div>
-    <div class="bg-gray-900 border-gray-700 text-blue-400 p-4 rounded font-mono text-xs flex items-center justify-center font-bold">
-      <pre>
-        |    .       .
-   Loss |     .     .
-        |       _-_
-   ---- + --------|-------
-                  0  (Error)
-      </pre>
+    <div class="concept-card">
+      <div class="concept-icon">🏷️</div>
+      <h4>Ví dụ Classification</h4>
+      <ul>
+        <li>Email là Spam/Không Spam</li>
+        <li>Ảnh là Chó/Mèo/Vịt</li>
+        <li>Giá lên/xuống</li>
+      </ul>
     </div>
   </div>
 
-  <h3>2.2. MAE (L1 Loss) - Mean Absolute Error</h3>
-  <div class="grid grid-cols-2 gap-4 my-2">
-    <div class="bg-green-50 p-4 border rounded">
-      <h4 class="font-bold text-green-800 border-b pb-2 mb-2">Toán học</h4>
-      <p class="font-mono text-sm">Công thức: $L = \\frac{1}{n} \\sum |y - \\hat{y}|$</p>
-      <p class="font-mono text-sm mt-2 text-red-600">Đạo hàm: $\\frac{\\partial L}{\\partial \\hat{y}} = sign(\\hat{y} - y)$</p>
-      <ul class="text-xs list-disc pl-4 mt-2 text-gray-700">
-        <li>Hàm trị tuyệt đối $\\to$ Miễn nhiễm với Outliers. Đồ thị chữ V đanh thép. Đi chệch sai bao nhiêu thì phạt đúng bấy nhiêu.</li>
-        <li><strong>Điểm yếu chết bò:</strong> Phần chóp chữ V dưới đáy 0 nhọn hoắt (Pointy). Không có đạo hàm tại cực tiểu $\\implies$ Gradient Descent sụp hầm dao động dữ dội khi chạm đáy.</li>
-      </ul>
-    </div>
-    <div class="bg-gray-900 border-gray-700 text-green-400 p-4 rounded font-mono text-xs flex items-center justify-center font-bold">
-      <pre>
-        |    \\       /
-   Loss |     \\     /
-        |      \\   /
-   ---- + ------\\-/-------
-                  0  (Error)
-      </pre>
-    </div>
-  </div>
-
-  <h3><span class="material-symbols-outlined">hub</span> 2.3. Huber Loss (Smooth L1 Loss)</h3>
-  <div class="callout callout-info mt-4">
-    <div class="callout-icon"><span class="material-symbols-outlined">handshake</span></div>
+  <div class="callout callout-tip">
+    <div class="callout-icon">i</div>
     <div class="callout-content">
-      <strong>Tinh Hoa Hội Tụ: Con Lai Của Toán Học</strong>
-      <p>Bọn Object Detection (Nhận diện vật thể Yolo/R-CNN) rất ghét Outliers, nhưng lại cần xuống đáy mượt mà.</p>
-      <p>Huber Loss dùng một Ngưỡng cản ($\\delta$ Delta).</p>
-      <ul class="text-sm list-disc pl-4 mt-2 mb-2 font-mono bg-blue-50 p-2">
-        <li>Nếu Error $\\le \\delta$: Áp dụng một nửa MAE $\\to (0.5 \\times Error^2)$ $\\to$ Hoạt động như <strong>MSE Parabol</strong> mượt mà đáy.</li>
-        <li>Nếu Error $> \\delta$: Áp dụng L1 phạt sương sương $\\to (\\delta \\times |Error| - 0.5\\delta^2)$ $\\to$ Hoạt động như <strong>MAE đường thẳng</strong> bẻ gãy đà leo thang khủng khiếp.</li>
+      <strong>Tại sao không dùng Cross-Entropy cho Regression?</strong>
+      <p>Cross-Entropy yêu cầu output là xác suất (tổng = 1). Trong khi Regression dự đoán giá trị thực không giới hạn. Hơn nữa, dự đoán giá nhà \$100k mà thực tế \$99k <strong>không phải là sai hoàn toàn</strong> - đây là "mức độ sai lệch" chứ không phải "đúng/sai".</p>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- 2.2. MSE (L2 LOSS)                       -->
+  <!-- ========================================= -->
+  <h3>2.2. MSE (L2 Loss) - Mean Squared Error</h3>
+
+  <div class="image-showcase">
+    <img src="/images/ch21/loss_regression_comparison.png" alt="MSE vs MAE Comparison" />
+    <div class="image-caption">Hình 1: So sánh đồ thị MSE (parabol) vs MAE (chữ V)</div>
+  </div>
+
+  <p><strong>MSE</strong> (Mean Squared Error) là hàm Loss phổ biến nhất cho Regression. Nó tính <strong>bình phương</strong> của sai số, nhấn mạnh các ngoại lệ (outliers).</p>
+
+  <div class="formula-block my-4 p-4 bg-blue-50 border-blue-300">
+    <p class="font-bold mb-2 text-center">Công thức MSE:</p>
+    <p class="font-mono text-lg text-center">$MSE = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2$</p>
+    <p class="text-sm text-gray-600 mt-2">Trong đó: $y_i$ là giá trị thực tế, $\hat{y}_i$ là dự đoán của model</p>
+  </div>
+
+  <h4>Đạo hàm của MSE:</h4>
+
+  <div class="formula-block my-4 p-4 bg-red-50 border-red-300">
+    <p class="font-bold mb-2 text-center">Đạo hàm theo prediction $\hat{y}$:</p>
+    <p class="font-mono text-lg text-center">$\frac{\partial L_{MSE}}{\partial \hat{y}} = \frac{2}{n} \sum_{i=1}^{n} (\hat{y}_i - y_i)$</p>
+  </div>
+
+  <div class="image-showcase">
+    <img src="/images/ch21/loss_regression_derivatives.png" alt="MSE Derivative Visualization" />
+    <div class="image-caption">Hình 2: Đạo hàm MSE tỷ lệ tuyến tính với sai số</div>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">✓</div>
+      <h4>Ưu điểm</h4>
+      <ul>
+        <li><strong>Khả năng tối ưu:</strong> Hàm parabol lồi (convex) chỉ có 1 điểm minimum duy nhất → Gradient Descent chắc chắn tìm được đáy</li>
+        <li><strong>Đạo hàm mượt:</strong> Gradient thay đổi liên tục, không có "điểm gãy"</li>
+        <li><strong>Nhạy với sai số:</strong> Phạt nặng các dự đoán sai xa</li>
       </ul>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">✗</div>
+      <h4>Nhược điểm</h4>
+      <ul>
+        <li><strong>Nhạy cảm quá mức với Outliers:</strong> Sai 10 đền 100! Một ngoại lệ có thể "phá hủy" toàn bộ training</li>
+        <li><strong>Đơn vị khó hiểu:</strong> Giá trị Loss = (đơn vị)², khó diễn giải trực tiếp</li>
+      </ul>
+    </div>
+  </div>
+
+  <h4>Khi nào dùng MSE?</h4>
+  <ul>
+    <li>Khi dữ liệu <strong>không có nhiễu</strong> (outliers ít)</li>
+    <li>Khi cần model <strong>hội tụ nhanh và ổn định</strong></li>
+    <li>Các bài toán như: Dự đoán giá cổ phiếu, phân tích xu hướng</li>
+  </ul>
+
+  <!-- ========================================= -->
+  <!-- 2.3. MAE (L1 LOSS)                       -->
+  <!-- ========================================= -->
+  <h3>2.3. MAE (L1 Loss) - Mean Absolute Error</h3>
+
+  <p><strong>MAE</strong> (Mean Absolute Error) tính <strong>giá trị tuyệt đối</strong> của sai số, cho mức phạt tuyến tính.</p>
+
+  <div class="formula-block my-4 p-4 bg-green-50 border-green-300">
+    <p class="font-bold mb-2 text-center">Công thức MAE:</p>
+    <p class="font-mono text-lg text-center">$MAE = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|$</p>
+  </div>
+
+  <h4>Đạo hàm của MAE:</h4>
+
+  <div class="formula-block my-4 p-4 bg-red-50 border-red-300">
+    <p class="font-bold mb-2 text-center">Đạo hàm theo prediction $\hat{y}$:</p>
+    <p class="font-mono text-lg text-center">$\frac{\partial L_{MAE}}{\partial \hat{y}} = \frac{1}{n} \sum_{i=1}^{n} \text{sign}(\hat{y}_i - y_i)$</p>
+    <p class="text-sm text-gray-600 mt-2">Trong đó: sign(x) = +1 nếu x > 0, -1 nếu x < 0, 0 nếu x = 0</p>
+  </div>
+
+  <div class="callout callout-warning">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-content">
+      <strong>Vấn đề của MAE tại điểm 0:</strong>
+      <p>Hàm |x| có <strong>đạo hàm không xác định</strong> tại x = 0 (điểm gãy). Gradient Descent sẽ "dao động dữ dội" (oscillate) khi gần điểm minimum, không biết nên đi lên hay đi xuống.</p>
+    </div>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">✓</div>
+      <h4>Ưu điểm</h4>
+      <ul>
+        <li><strong>Miễn nhiễm với Outliers:</strong> Sai 10 phạt 10, không bị "bình phương" phóng đại</li>
+        <li><strong>Đơn vị trực quan:</strong> Loss = đơn vị gốc, dễ hiểu</li>
+        <li><strong>Robust:</strong> Ổn định khi dữ liệu có nhiễu</li>
+      </ul>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">✗</div>
+      <h4>Nhược điểm</h4>
+      <ul>
+        <li><strong>Gradient không smooth:</strong> Dao động tại điểm 0</li>
+        <li><strong>Hội tụ chậm:</strong> Gradient không tỷ lệ với sai số → học chậm khi gần đáp án</li>
+      </ul>
+    </div>
+  </div>
+
+  <h4>Khi nào dùng MAE?</h4>
+  <ul>
+    <li>Khi dữ liệu <strong>có nhiều outliers</strong> (giá nhà có vài căn siêu đắt)</li>
+    <li>Khi cần model <strong>không bị kéo bởi các điểm bất thường</strong></li>
+    <li>Các bài toán như: Dự đoán giá bất động sản, phát hiện gian lận</li>
+  </ul>
+
+  <!-- ========================================= -->
+  <!-- 2.4. SO SÁNH MSE vs MAE                  -->
+  <!-- ========================================= -->
+  <h3>2.4. So sánh MSE và MAE</h3>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Tiêu chí</th>
+        <th>MSE (L2)</th>
+        <th>MAE (L1)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Công thức</strong></td>
+        <td>$(y - \hat{y})^2$</td>
+        <td>$|y - \hat{y}|$</td>
+      </tr>
+      <tr>
+        <td><strong>Đồ thị</strong></td>
+        <td>Parabol (mượt)</td>
+        <td>Chữ V (điểm gãy tại 0)</td>
+      </tr>
+      <tr>
+        <td><strong>Đạo hàm</strong></td>
+        <td>$\partial L/\partial \hat{y} = 2(\hat{y} - y)$</td>
+        <td>$\partial L/\partial \hat{y} = sign(\hat{y} - y)$</td>
+      </tr>
+      <tr>
+        <td><strong>Outliers</strong></td>
+        <td class="text-red-600">Rất nhạy cảm (phạt nặng)</td>
+        <td class="text-green-600">Miễn nhiễm (phạt tuyến tính)</td>
+      </tr>
+      <tr>
+        <td><strong>Hội tụ</strong></td>
+        <td class="text-green-600">Nhanh, ổn định</td>
+        <td class="text-red-600">Chậm, dao động</td>
+      </tr>
+      <tr>
+        <td><strong>Điểm cực tiểu</strong></td>
+        <td>1 điểm (duy nhất)</td>
+        <td>1 điểm (nhưng gradient không xác định tại đó)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ========================================= -->
+  <!-- 2.5. HUBER LOSS                          -->
+  <!-- ========================================= -->
+  <h3>2.5. Huber Loss - Kết hợp tốt nhất của hai thế giới</h3>
+
+  <div class="image-showcase">
+    <img src="/images/ch21/loss_regression_comparison.png" alt="Huber Loss Visualization" />
+    <div class="image-caption">Hình 3: Huber Loss kết hợp MSE (nhỏ) và MAE (lớn)</div>
+  </div>
+
+  <p><strong>Huber Loss</strong> được thiết kế để <strong>kết hợp ưu điểm</strong> của cả MSE và MAE:</p>
+
+  <ul>
+    <li>Dùng <strong>MSE</strong> khi sai số nhỏ (hội tụ mượt mà)</li>
+    <li>Dùng <strong>MAE</strong> khi sai số lớn (không bị outlier phá hủy)</li>
+  </ul>
+
+  <div class="formula-block my-4 p-4 bg-purple-50 border-purple-300">
+    <p class="font-bold mb-2 text-center">Công thức Huber Loss:</p>
+    <p class="font-mono text-lg text-center">$L_{\delta}(y, \hat{y}) = \frac{1}{n} \sum_{i=1}^{n} L_{\delta}(e_i)$</p>
+    <p class="font-mono text-center mt-2">với $e_i = y_i - \hat{y}_i$</p>
+    <p class="font-mono text-center mt-2">$L_{\delta}(e) = \\begin{cases} \\frac{1}{2}e^2 & \\text{nếu } |e| \\le \delta \\\\ \\delta|e| - \\frac{1}{2}\\delta^2 & \\text{nếu } |e| > \\delta \\end{cases}$</p>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">✓</div>
+      <h4>Ưu điểm</h4>
+      <ul>
+        <li><strong>Tại nhỏ (|e| ≤ δ):</strong> Như MSE - mượt, hội tụ nhanh</li>
+        <li><strong>Tại lớn (|e| > δ):</strong> Như MAE - giới hạn phạt, không bị outlier kéo</li>
+        <li><strong>Đạo hàm xác định mọi nơi:</strong> Không có điểm gãy</li>
+      </ul>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚙️</div>
+      <h4>Tham số δ (delta)</h4>
+      <ul>
+        <li><strong>δ nhỏ:</strong> Gần MAE hơn, ít nhạy với outliers</li>
+        <li><strong>δ lớn:</strong> Gần MSE hơn, hội tụ nhanh</li>
+        <li>Thường chọn δ ≈ 1.0 hoặc δ ≈ 1.5</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-icon"><span class="material-symbols-outlined">auto_awesome</span></div>
+    <div class="callout-content">
+      <strong>Ứng dụng thực tế: Object Detection</strong>
+      <p>Các model Object Detection nổi tiếng như <strong>YOLO, R-CNN, Fast R-CNN</strong> đều sử dụng <strong>Huber Loss (Smooth L1)</strong> để dự đoán tọa độ Bounding Box.</p>
+      <p>Lý do: Tọa độ bounding box có thể bị nhiễu (annotation không chính xác), Huber Loss giúp model không bị "phá hủy" bởi các nhãn nhiễu.</p>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- 2.6. TÓM TẮT                              -->
+  <!-- ========================================= -->
+  <h3>2.6. Tóm tắt</h3>
+
+  <div class="key-takeaway">
+    <div class="key-takeaway-icon">📝</div>
+    <div class="key-takeaway-content">
+      <h4>Tổng kết Regression Losses:</h4>
+      <ol>
+        <li><strong>MSE (L2):</strong> Phạt bình phương → Nhạy cảm với outliers, hội tụ nhanh. Dùng khi dữ liệu sạch.</li>
+        <li><strong>MAE (L1):</strong> Phạt tuyến tính → Miễn nhiễm với outliers, gradient có vấn đề tại 0. Dùng khi dữ liệu nhiễu.</li>
+        <li><strong>Huber Loss:</strong> Kết hợp cả hai - MSE cho sai số nhỏ, MAE cho sai số lớn. Đặc biệt tốt cho Object Detection.</li>
+        <li><strong>Quy tắc chọn:</strong> Thử MSE trước → Nếu có vấn đề với outliers → Chuyển MAE hoặc Huber.</li>
+      </ol>
     </div>
   </div>
 </div>
@@ -178,28 +710,28 @@ fn main() {
     println!("╔══════════════════════════════════════════════════════════════════════╗");
     println!("║       SO SÁNH CÁC HÀM LOSS REGRESSION BẰNG BỘ DỮ LIỆU ĐIÊN           ║");
     println!("╚══════════════════════════════════════════════════════════════════════╝");
-    
+
     // Giả sử có MỘT TÊN DỮ LIỆU NHIỄU (OUTLIER) Sai lệch tới 100.0 đơn vị!
     let normal_error_1 = 0.5;
     let normal_error_2 = -1.2;
     let outlier_error  = 100.0;
-    
-    println!("\\n[1] Thấy gì khi gặp Outlier = 100.0?");
-    println!("- L1 (MAE)  phạt: {:.1}", mae(outlier_error)); 
+
+    println!("\n[1] Thấy gì khi gặp Outlier = 100.0?");
+    println!("- L1 (MAE)  phạt: {:.1}", mae(outlier_error));
     // MSE phạt = 100.0 ^ 2 = 10,000. Cú nổ này sẽ nướng chín Graidient vọt cả nghìn dặm, làm bay màu Weight!
-    println!("- L2 (MSE)  phạt: {:.1} (BÙM CÚ TÁT NGÀN CÂN!)", mse(outlier_error)); 
-    
+    println!("- L2 (MSE)  phạt: {:.1} (BÙM CÚ TÁT NGÀN CÂN!)", mse(outlier_error));
+
     // Huber với ngưỡng bẻ lái = 1.0
-    let delta = 1.0; 
+    let delta = 1.0;
     println!("\n[2] HUBER LOSS (Delta={}) - Kẻ Cân Bằng:", delta);
-    
-    println!("   + Sai số Mượt ({:.1}) -> Huber phán: {:.3} (Mượt như nhung chảo parabol)", 
+
+    println!("   + Sai số Mượt ({:.1}) -> Huber phán: {:.3} (Mượt như nhung chảo parabol)",
         normal_error_1, huber_loss(normal_error_1, delta));
-        
-    println!("   + Khủng bố ({:.1}) -> Huber phán: {:.3} (Tách sang MAE chặn đứng cháy nổ)", 
+
+    println!("   + Khủng bố ({:.1}) -> Huber phán: {:.3} (Tách sang MAE chặn đứng cháy nổ)",
         outlier_error, huber_loss(outlier_error, delta));
-        
-    println!("\\n>>> BÀI HỌC: Mã nguồn Object Detection toàn cắm cọc Huber (Smooth L1) để chống móp Bounding Box vì những bức ảnh nhiễu ác đạn!");
+
+    println!("\n>>> BÀI HỌC: Mã nguồn Object Detection toàn cắm cọc Huber (Smooth L1) để chống móp Bounding Box vì những bức ảnh nhiễu ác đạn!");
 }`
   },
   {
@@ -209,40 +741,332 @@ fn main() {
     type: 'theory',
     content: `
 <div class="article-content">
-  <h2><span class="material-symbols-outlined">scatter_plot</span> 3. Nhóm Suy Hao Thể Loại (Classification Losses)</h2>
+  <h2>3. Nhóm Suy Hao Phân Loại (Classification Losses)</h2>
 
-  <h3>3.1. Binary Cross-Entropy (BCE) & KL Divergence</h3>
-  <div class="definition-block mb-4">
-    <p>Như đã giải thích từ chương Information Theory, <strong>Cross-Entropy</strong> đo lường <em>Độ Lệch Pha (KL Divergence)</em> giữa 2 bức tranh Phân Phối Xác Suất: Dữ liệu thực tế $P_{Data}$ (One-hot, chắc chắn 100%) và Dự báo $P_{Model}$ (Hên xui rải rác kiểu Softmax).</p>
-  </div>
-  
-  <div class="formula-block mb-4 text-center text-sm md:text-base">
-    $L_{BCE} = -[y \cdot \log(\hat{y}) + (1-y) \cdot \log(1-\hat{y})]$
-  </div>
-  <p>Toán học sâu xa: Công thức trên CHÍNH LÀ <strong>Negative Log-Likelihood của phân phối nhị thức (Bernoulli Distribution)</strong>. $y=1$ thì cụm bên phải bốc hơi, máy bị tra khảo <code>Log(y_hat)</code>. $y=0$ thì cụm bên trái tàng hình, máy bị cưa sừng <code>Log(1 - y_hat)</code>.</p>
+  <!-- ========================================= -->
+  <!-- 3.1. GIỚI THIỆU CLASSIFICATION           -->
+  <!-- ========================================= -->
+  <h3>3.1. Khi nào dùng Classification Loss?</h3>
 
-  <h3><span class="material-symbols-outlined">groups</span> 3.2. Categorical Cross Entropy (CCE)</h3>
-  <p>BCE xài cho 1 nơ-ron đánh giá Chó (True/False). Còn CCE xài cho Softmax đánh giá Đa Lớp (Chó, Mèo, Vịt).</p>
-  <div class="formula-block mb-4 text-center">
-    $L_{CCE} = - \sum_{i=1}^{C} y_i \cdot \log(\hat{y}_i)$
-  </div>
-  <p class="text-sm italic text-gray-600">Chú ý: Vì Vector sự thật $y$ là one-hot (ví dụ $y_{cat} = [0, 1, 0]$), mọi con số 0 đứng nhân với log đều câm nín. CCE thu gọi lẹ lại thành <strong>Đúng 1 phép tính Log duy nhất</strong> nhắm vào Class đúng. (Negative Log Likelihood thuần túy mộc mạc).</p>
+  <p><strong>Classification</strong> (Phân loại) là bài toán dự đoán một <strong>nhãn rời rạc</strong> (discrete label), khác với Regression (giá trị liên tục).</p>
 
-  <h3><span class="material-symbols-outlined">cruelty_free</span> 3.3. Siêu Đẳng Cứu Thế: Focal Loss (Kaiming He)</h3>
-  <div class="callout callout-warning mt-4">
-    <div class="callout-icon"><span class="material-symbols-outlined">smart_toy</span></div>
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🔴</div>
+      <h4>Binary Classification</h4>
+      <ul>
+        <li>Email: Spam / Không Spam</li>
+        <li>Tin tức: Thật / Giả</li>
+        <li>Y tế: Có bệnh / Không bệnh</li>
+      </ul>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔢</div>
+      <h4>Multi-class Classification</h4>
+      <ul>
+        <li>Ảnh: Chó / Mèo / Vịt</li>
+        <li>Ngôn ngữ: EN / FR / DE / VI</li>
+        <li>Chữ số: 0-9</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">i</div>
     <div class="callout-content">
-      <strong>Kẻ Diệt Trừ Data Bất Bình Đẳng (Class Imbalance)</strong>
-      <p><strong>Nỗi Đau Lịch Sử:</strong> Ảnh chụp X-quang ung thư: 100,000 ảnh nội tạng khỏe, chỉ lọt thỏm 100 tấm có khối u ung thư. Máy AI khôn vặt, nếu nó cứ MẮT NHẮM MẮT MỞ phán: "MỌI KHÁCH HÀNG ĐỀU KHỎE", nó ĐÚNG tới 99.9%! Loss của nó cực thấp. Nó lười không chịu học tiếp. Và Bệnh Nhân Chết.</p>
-      
-      <p>Thuật toán <strong>Focal Loss (Bẻ Gãy BCE bằng hệ số tiêu cự Gamma $\gamma$)</strong></p>
-      <div class="font-mono text-center p-2 mb-2 bg-yellow-100 text-yellow-900 border border-yellow-300">
-        $FL(p_t) = - (1 - p_t)^{\gamma} \log(p_t)$
-      </div>
-      
-      <p>Cơ chế Phép thuật: Cụm $(1 - p_t)^{\gamma}$ là cái Tát Tỉnh Cơn. 
-      <br/>Nếu $p_t=0.99$ (AI thừa sức nhắm mắt đoán bừa bức ảnh khỏe mạnh này dễ quá), $(1-0.99)^2 = 0.0001 \to$ <strong>Ép trọng lượng bóp nát Loss tịt mòi</strong>. AI không học gì từ ảnh Khỏe. 
-      <br/>Nhưng gặp bức Ung thư khó (nó rụt rè đoán $p_t=0.1$), $(1-0.1)^2 = 0.81 \to$ <strong>Giật Loss lên cực khủng vả mạnh vào Gradient Descend</strong>, ép Network phải dồn 100% tài nguyên CPU băm vằm tấm Ung thư bằng được!</p>
+      <strong>Từ MLE đến Cross-Entropy:</strong>
+      <p>Như đã học ở mục 1, <strong>Negative Log-Likelihood (NLL)</strong> là nền tảng của mọi hàm Loss. Cross-Entropy chính là NLL được viết dưới dạng "đo khoảng cách giữa hai phân phối xác suất".</p>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- 3.2. BINARY CROSS-ENTROPY (BCE)         -->
+  <!-- ========================================= -->
+  <h3>3.2. Binary Cross-Entropy (BCE)</h3>
+
+  <div class="image-showcase">
+    <img src="/images/ch21/loss_bce.png" alt="BCE Loss Visualization" />
+    <div class="image-caption">Hình 1: BCE Loss cho binary classification</div>
+  </div>
+
+  <p><strong>Binary Cross-Entropy (BCE)</strong> dùng cho bài toán phân loại nhị phân (2 lớp). Đây chính là <strong>Negative Log-Likelihood của phân phối Bernoulli</strong>.</p>
+
+  <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
+    <p class="font-bold mb-2 text-center">Công thức BCE:</p>
+    <p class="font-mono text-lg text-center">$L_{BCE} = -\frac{1}{n} \sum_{i=1}^{n} [y_i \cdot \log(\hat{y}_i) + (1-y_i) \cdot \log(1-\hat{y}_i)]$</p>
+    <p class="text-sm text-gray-600 mt-2">Trong đó: $y_i \in \{0, 1\}$ là nhãn thực tế, $\hat{y}_i \in [0, 1]$ là xác suất dự đoán</p>
+  </div>
+
+  <h4>Giải thích công thức:</h4>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Trường hợp</th>
+        <th>Giá trị y</th>
+        <th>Công thức rút gọn</th>
+        <th>Ý nghĩa</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Label = 1 (Positive)</strong></td>
+        <td>y = 1</td>
+        <td>$-\log(\hat{y})$</td>
+        <td>Muốn $\hat{y}$ càng gần 1 càng tốt</td>
+      </tr>
+      <tr>
+        <td><strong>Label = 0 (Negative)</strong></td>
+        <td>y = 0</td>
+        <td>$-\log(1-\hat{y})$</td>
+        <td>Muốn $\hat{y}$ càng gần 0 càng tốt</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>Đạo hàm của BCE:</h4>
+
+  <div class="formula-block my-4 p-4 bg-red-50 border-red-300">
+    <p class="font-bold mb-2 text-center">Đạo hàm theo z (trước sigmoid):</p>
+    <p class="font-mono text-lg text-center">$\frac{\partial L_{BCE}}{\partial z} = \hat{y} - y$</p>
+    <p class="text-sm text-gray-600 mt-2">Đạo hàm rất đẹp! Đơn giản = (prediction - target)</p>
+  </div>
+
+  <div class="image-showcase">
+    <img src="/images/ch21/loss_bce_derivative.png" alt="BCE Derivative Visualization" />
+    <div class="image-caption">Hình 2: Đạo hàm BCE = prediction - target</div>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">✓</div>
+      <h4>Ưu điểm</h4>
+      <ul>
+        <li><strong>Đạo hàm đẹp:</strong> $\hat{y} - y$ cực kỳ đơn giản!</li>
+        <li><strong>Xác suất:</strong> Output là [0,1] - có ý nghĩa rõ ràng</li>
+        <li><strong>Từ MLE:</strong> Có nền tảng toán học vững chắc</li>
+      </ul>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">✗</div>
+      <h4>Nhược điểm</h4>
+      <ul>
+        <li><strong>Vanishing gradient:</strong> Khi $\hat{y}$ gần 0 hoặc 1, gradient rất nhỏ</li>
+        <li><strong>Imbalanced data:</strong> Như Focal Loss sẽ giải quyết</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- 3.3. CATEGORICAL CROSS-ENTROPY (CCE)     -->
+  <!-- ========================================= -->
+  <h3>3.3. Categorical Cross-Entropy (CCE)</h3>
+
+  <div class="image-showcase">
+    <img src="/images/ch21/loss_cross_entropy.png" alt="CCE Loss Visualization" />
+    <div class="image-caption">Hình 3: CCE Loss cho multi-class classification</div>
+  </div>
+
+  <p><strong>Categorical Cross-Entropy (CCE)</strong> dùng cho bài toán phân loại đa lớp. Kết hợp với <strong>Softmax</strong> để tạo phân phối xác suất.</p>
+
+  <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
+    <p class="font-bold mb-2 text-center">Công thức CCE:</p>
+    <p class="font-mono text-lg text-center">$L_{CCE} = -\frac{1}{n} \sum_{i=1}^{n} \sum_{c=1}^{C} y_{i,c} \cdot \log(\hat{y}_{i,c})$</p>
+    <p class="text-sm text-gray-600 mt-2">Trong đó: C = số lớp, $y_{i,c} \in \{0, 1\}$ (one-hot), $\hat{y}_{i,c}$ là xác suất dự đoán</p>
+  </div>
+
+  <h4>Tại sao CCE hiệu quả với One-hot?</h4>
+
+  <div class="callout callout-info">
+    <div class="callout-icon"><span class="material-symbols-outlined">lightbulb</span></div>
+    <div class="callout-content">
+      <strong>Magic của One-hot Encoding:</strong>
+      <p>Ví dụ với 3 lớp: Chó(0), Mèo(1), Vịt(2)</p>
+      <p>Giả sử label thực là <strong>Mèo</strong>: $y = [0, 1, 0]$</p>
+      <p>Model dự đoán: $\hat{y} = [0.1, 0.7, 0.2]$</p>
+      <p class="font-mono mt-2">$L = -[0 \cdot \log(0.1) + 1 \cdot \log(0.7) + 0 \cdot \log(0.2)]$</p>
+      <p class="font-mono">$L = -\log(0.7) \approx 0.357$</p>
+      <p class="mt-2"><strong>Chỉ có term của class đúng được tính!</strong> Các term nhân với 0 đều = 0.</p>
+    </div>
+  </div>
+
+  <h4>Softmax + CCE:</h4>
+
+  <div class="formula-block my-4 p-4 bg-blue-50 border-blue-300">
+    <p class="font-bold mb-2 text-center">Softmax function:</p>
+    <p class="font-mono text-lg text-center">$\text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{C} e^{z_j}}$</p>
+    <p class="text-sm text-gray-600 mt-2">Biến logits thành phân phối xác suất (tổng = 1)</p>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">✓</div>
+      <h4>Ưu điểm</h4>
+      <ul>
+        <li><strong>Tự nhiên:</strong> Xử lý multi-class một cách tự nhiên</li>
+        <li><strong>One-hot:</strong> Chỉ tính loss cho class đúng</li>
+        <li><strong>Phổ biến:</strong> Tiêu chuẩn cho mọi bài toán classification</li>
+      </ul>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚠️</div>
+      <h4>Lưu ý</h4>
+      <ul>
+        <li>Cần <strong>Softmax</strong> làm activation layer cuối</li>
+        <li>Tránh overflow: trừ max(z) trước khi exp</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- 3.4. BCE vs CCE                          -->
+  <!-- ========================================= -->
+  <h3>3.4. So sánh BCE và CCE</h3>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Tiêu chí</th>
+        <th>BCE</th>
+        <th>CCE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Số lớp</strong></td>
+        <td>2 lớp (Binary)</td>
+        <td>Nhiều lớp (Multi-class)</td>
+      </tr>
+      <tr>
+        <td><strong>Activation</strong></td>
+        <td>Sigmoid</td>
+        <td>Softmax</td>
+      </tr>
+      <tr>
+        <td><strong>Công thức</strong></td>
+        <td>$-\[y\log\hat{y} + (1-y)\log(1-\hat{y})\]</td>
+        <td>$-\sum y_c \log(\hat{y}_c)$</td>
+      </tr>
+      <tr>
+        <td><strong>Output shape</strong></td>
+        <td>1 giá trị [0,1]</td>
+        <td>N giá trị (tổng = 1)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ========================================= -->
+  <!-- 3.5. FOCAL LOSS                         -->
+  <!-- ========================================= -->
+  <h3>3.5. Focal Loss - Giải quyết Class Imbalance</h3>
+
+  <div class="image-showcase">
+    <img src="/images/ch21/loss_focal.png" alt="Focal Loss Visualization" />
+    <div class="image-caption">Hình 4: Focal Loss giảm weight cho "easy examples"</div>
+  </div>
+
+  <h4>Vấn đề Class Imbalance:</h4>
+
+  <div class="callout callout-warning">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-content">
+      <strong>Ví dụ thực tế: Y tế</strong>
+      <p>Giả sử dữ liệu X-quang ung thư:</p>
+      <ul>
+        <li>100,000 ảnh bình thường (khỏe mạnh)</li>
+        <li>100 ảnh có khối u (ung thư)</li>
+      </ul>
+      <p class="mt-2"><strong>Vấn đề:</strong> Model "lười" có thể đoán tất cả là "khỏe mạnh" → Accuracy = 99.9%! Nhưng thực tế model vô dụng!</p>
+    </div>
+  </div>
+
+  <p><strong>Focal Loss</strong> được thiết kế bởi <strong>Kaiming He</strong> et al. để giải quyết vấn đề mất cân bằng lớp nghiêm trọng.</p>
+
+  <div class="formula-block my-4 p-4 bg-yellow-50 border-yellow-300">
+    <p class="font-bold mb-2 text-center">Công thức Focal Loss:</p>
+    <p class="font-mono text-lg text-center">$FL(p_t) = -(1 - p_t)^{\gamma} \log(p_t)$</p>
+    <p class="text-sm text-gray-600 mt-2">Trong đó: $p_t$ là xác suất của lớp đúng, $\gamma$ (gamma) là tham số tiêu cự</p>
+  </div>
+
+  <h4>Cơ chế hoạt động:</h4>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <div class="concept-icon">🎯</div>
+      <h4>Easy Example (pₜ cao)</h4>
+      <p>Ví dụ: AI đoán 99% là ảnh khỏe mạnh</p>
+      <p class="font-mono">$(1 - 0.99)^2 = 0.0001$</p>
+      <p class="text-green-600"><strong>Loss gần như = 0!</strong></p>
+      <p>Model không học gì từ ảnh quá dễ</p>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">💪</div>
+      <h4>Hard Example (pₜ thấp)</h4>
+      <p>Ví du: AI chỉ đoán 10% là ung thư</p>
+      <p class="font-mono">$(1 - 0.10)^2 = 0.81$</p>
+      <p class="text-red-600"><strong>Loss vẫn lớn!</strong></p>
+      <p>Model tập trung học từ ảnh khó</p>
+    </div>
+  </div>
+
+  <h4>Tham số γ (gamma):</h4>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Gamma</th>
+        <th>Hành vi</th>
+        <th>Ứng dụng</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>γ = 0</td>
+        <td>FL = BCE (không có effect)</td>
+        <td>Dữ liệu cân bằng</td>
+      </tr>
+      <tr>
+        <td>γ = 1</td>
+        <td>Nhẹ nhàng</td>
+        <td>Imbalance nhẹ</td>
+      </tr>
+      <tr>
+        <td>γ = 2</td>
+        <td><strong>Phổ biến nhất</strong></td>
+        <td>Imbalance nặng ( RetinaNet)</td>
+      </tr>
+      <tr>
+        <td>γ > 2</td>
+        <td>Rất mạnh</td>
+        <li>Extreme imbalance</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-info">
+    <div class="callout-icon"><span class="material-symbols-outlined">auto_awesome</span></div>
+    <div class="callout-content">
+      <strong>Ứng dụng lịch sử:</strong>
+      <p>Focal Loss được giới thiệu trong paper <strong>"Focal Loss for Dense Object Detection" (RetinaNet)</strong> - đã thay đổi hoàn toàn cách chúng ta xử lý Object Detection!</p>
+      <p>Trước Focal Loss, các method phải dùng Two-stage detectors (R-CNN) để tránh imbalance. Sau Focal Loss, One-stage detectors (YOLO, SSD) trở nên competitive!</p>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- 3.6. TÓM TẮT                              -->
+  <!-- ========================================= -->
+  <h3>3.6. Tóm tắt</h3>
+
+  <div class="key-takeaway">
+    <div class="key-takeaway-icon">📝</div>
+    <div class="key-takeaway-content">
+      <h4>Tổng kết Classification Losses:</h4>
+      <ol>
+        <li><strong>BCE (Binary Cross-Entropy):</strong> Dùng cho 2 lớp, kết hợp Sigmoid. Đạo hàm đẹp = prediction - target.</li>
+        <li><strong>CCE (Categorical Cross-Entropy):</strong> Dùng cho nhiều lớp, kết hợp Softmax. Tiêu chuẩn cho Image Classification.</li>
+        <li><strong>Focal Loss:</strong> Giải quyết class imbalance bằng cách giảm weight cho "easy examples".</li>
+        <li><strong>Quy tắc chọn:</strong> 2 lớp → BCE | Nhiều lớp → CCE | Imbalance nặng → Focal Loss.</li>
+      </ol>
     </div>
   </div>
 </div>
@@ -263,28 +1087,28 @@ fn main() {
     println!("╔══════════════════════════════════════════════════════════════════════╗");
     println!("║       FOCAL LOSS - NHÀ HOẠT ĐỘNG NHÂN QUYỀN TRÊN BỘ DATA BẤT CÔNG    ║");
     println!("╚══════════════════════════════════════════════════════════════════════╝");
-    
+
     // Tấm X-quang cực dễ (Dễ đoán, AI phán 95% Đúng luôn)
-    let p_de_ec = 0.95; 
-    
+    let p_de_ec = 0.95;
+
     // Tấm X-quang mập mờ, khối u lặn sau màng phổ (Khó đoán, AI lúng túng 10% Đúng)
     let p_sieu_kho = 0.10;
-    
+
     let gamma = 2.0; // Sức nén Tiêu Cự phổ biến của Kaiming He dâng cho võ lâm AI
-    
-    println!("\\n[BCE Cổ Điển] Học mọi thứ cào bằng:");
+
+    println!("\n[BCE Cổ Điển] Học mọi thứ cào bằng:");
     println!("- Ảnh Dễ (p=0.95) tạo Loss: {:.4}", bce_pure(p_de_ec));
     println!("- Ảnh Khó (p=0.10) tạo Loss: {:.4}", bce_pure(p_sieu_kho));
     println!("-> Tỉ lệ độ ưu tiên (Khó/Dễ): Gấp ~{} lần.", (bce_pure(p_sieu_kho)/bce_pure(p_de_ec)).round());
     println!("-> Hàng TRIỆU ảnh dễ nhạt toẹt sẽ lấn át, đè bẹp xô đổ hoàn toàn mảng Gradient của vài tấm ảnh Ung Thư hiểm.");
 
-    println!("\\n[Focal Loss] Người Loe Tắt Kẻ Mạnh, Bơm Cho Kẻ Yếu:");
+    println!("\n[Focal Loss] Người Loe Tắt Kẻ Mạnh, Bơm Cho Kẻ Yếu:");
     let f_loss_de = focal_loss(p_de_ec, gamma);
     let f_loss_kho = focal_loss(p_sieu_kho, gamma);
     println!("- Ảnh Dễ tạo Loss: {:.6} (Bị Bóp vụn triệt tiêu!)", f_loss_de); // 0.0001
-    println!("- Ảnh Khó tạo Loss: {:.4} (Được giữ nguyên uy lực!)", f_loss_kho); 
+    println!("- Ảnh Khó tạo Loss: {:.4} (Được giữ nguyên uy lực!)", f_loss_kho);
     println!("-> Tỉ lệ TẬP TRUNG CHUYÊN MÔN (Khó/Dễ): Gấp ~{} lần!!!", (f_loss_kho/f_loss_de).round());
-    println!("\\n>>> VỚI FOCAL LOSS, Mạng Nơ-ron vứt sạch râu ria thừa dồn tài nguyên bắt các khuyết tật ẩn tàng. Giải xong bài Imbalance rúng động toàn cầu!");
+    println!("\n>>> VỚI FOCAL LOSS, Mạng Nơ-ron vứt sạch râu ria thừa dồn tài nguyên bắt các khuyết tật ẩn tàng. Giải xong bài Imbalance rúng động toàn cầu!");
 }`
   }
 ];
@@ -293,11 +1117,11 @@ export const ch21_04: Chapter = {
   id: 'ch21_04',
   title: '21.4. Loss Functions',
   introduction: `
-    <h2>Thước Đo Tội Lỗi (MLE)</h2>
+    <h2>Hàm Mất Mát</h2>
     <ul>
-      <li>Hiểu Thống kê học nhúng lưng cho AI (Maximum Likelihood/NLL).</li>
-      <li>Regression: Tại sao RCNN xài Huber Loss cứu sống Bounding Boxes.</li>
-      <li>Classification: Bí kíp Focal Loss tiêu diệt dữ liệu Imbalance.</li>
+      <li>Hiểu nền tảng thống kê của AI: Maximum Likelihood Estimation và NLL.</li>
+      <li>Regression: MSE, MAE, Huber Loss - khi nào sử dụng loại nào?</li>
+      <li>Classification: BCE, CCE, Focal Loss - xử lý các bài toán phân loại.</li>
     </ul>
   `,
   lessons: ch21_04_lessons,
