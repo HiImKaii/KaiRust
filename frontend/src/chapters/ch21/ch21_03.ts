@@ -1,800 +1,374 @@
 // =====================================================
 // Chương 21: MẠNG NEURAL NETWORK
-// Bài 3: Gradient Descent - Cách Neural Networks HỌC
+// Bài 3: ACTIVATION FUNCTIONS - TẾ BÀO LINH HỒN CỦA AI
 //
-// Mục tiêu của bài học này:
-// Sau khi học xong bài này, bạn sẽ hiểu:
-// 1. Gradient Descent là gì và tại sao cần nó
-// 2. Gradient (đạo hàm) cho biết điều gì
-// 3. Learning Rate và cách chọn
-// 4. Tại sao Gradient Descent giúp tìm được điểm tối ưu
+// Mục tiêu học thuật:
+// 1. Phân tích toán học bản chất "Phi tuyến tính" (Non-linearity).
+// 2. Mổ xẻ Đồ thị, Đạo hàm và đặc tính của: Sigmoid, Tanh, ReLU, Leaky ReLU.
+// 3. Giải thích sâu sắc các biến cố: Vanishing Gradient, Exploding Gradient, Dead ReLU.
+// 4. Các hàm kích hoạt tối tân hiện nay: SiLU (Swish), GELU, Softmax.
 // =====================================================
 
 import { Lesson, Chapter } from '../../courses';
 
-// =====================================================
-// PHẦN: GRADIENT DESCENT - THUẬT TOÁN HỌC
-// =====================================================
-
 const ch21_03_lessons: Lesson[] = [
   {
     id: 'ch21_03_01',
-    title: '1. Vấn đề: Làm sao tìm được weights tốt nhất?',
-    duration: '30 phút',
+    title: '1. Bản chất Toán học của Non-linearity',
+    duration: '60 phút',
     type: 'theory',
     content: `
 <div class="article-content">
-  <h2><span class="material-symbols-outlined">psychology</span> 7. Vấn đề: Làm sao tìm được weights tốt nhất?</h2>
+  <h2><span class="material-symbols-outlined">network_ping</span> 1. Bản chất Toán học của Sự Phi Tuyến Tính (Non-linearity)</h2>
 
-  <h3>7.1. Nhắc lại bài cũ</h3>
-  <div class="definition-block">
-    <p>Ở bài trước, ta đã biết Neural Network có công thức:</p>
-    <div class="formula-block">
-      y = f(w₁x₁ + w₂x₂ + ... + b)
+  <h3>1.1. Tại sao không thể dùng hàm Tuyến Tính (Linear)?</h3>
+  <div class="definition-block mb-4">
+    <p>Thuật toán cốt lõi của mỗi Nơ-ron là $Z = X \\cdot W + b$. Đây là một phương trình tuyến tính (Linear) thuần túy (đường thẳng/mặt phẳng). Điều gì xảy ra nếu ta chồng 100 lớp ẩn (Hidden Layers) lên nhau nhưng KHÔNG dùng hàm Activation nào (hoặc dùng hàm $f(x)=x$)?</p>
+    
+    <div class="formula-block my-4 p-4 bg-red-50 text-red-900 border-red-300">
+      <p>Lớp 1: $H_1 = X \\cdot W_1$</p>
+      <p>Lớp 2: $H_2 = H_1 \\cdot W_2 = (X \\cdot W_1) \\cdot W_2 = X \\cdot (W_1 \\cdot W_2)$</p>
+      <p>Lớp 3: $H_3 = H_2 \\cdot W_3 = X \\cdot (W_1 \\cdot W_2 \\cdot W_3)$</p>
     </div>
-    <p>Và ta cần tìm <strong>weights (w)</strong> và <strong>bias (b)</strong> để output gần với giá trị thực nhất.</p>
+    <p>Do tính chất kết hợp của Ma trận, vô vàn các mặt phẳng Linear nhân nhau $(W_1 \\cdot W_2 \\cdot W_3)$ cũng chỉ tự triệt tiêu, gộp chung lại thành <strong>ĐÚNG MỘT Ma trận $W_{gop}$ duy nhất</strong>. Nghĩa là mạng 100 lớp của bạn phế vật không khác gì mạng 1 lớp. Nó quay về mốc đầu tiên: Vẽ 1 đường thẳng, vĩnh viễn không thể cày nát bài toán XOR!</p>
   </div>
 
-  <h3>7.2. Thử tất cả các giá trị - Brute Force</h3>
-  <p>Cách đơn giản nhất: Thử tất cả các giá trị có thể của w và b!</p>
-  <div class="callout callout-warning">
-    <div class="callout-icon"><span class="material-symbols-outlined">warning</span></div>
-    <div class="callout-content">
-      <strong>Ví dụ Brute Force:</strong>
-      <ul>
-        <li>w từ -10 đến 10, bước 0.1 → <strong>200 giá trị</strong></li>
-        <li>b từ -10 đến 10, bước 0.1 → <strong>200 giá trị</strong></li>
-        <li>Tổng cộng: 200 × 200 = <strong>40,000 combinations</strong></li>
-      </ul>
-      <p class="mt-2 text-red-400"><strong>Vấn đề:</strong> Với Neural Network thực tế có HÀNG TRIỆU weights, cách này KHÔNG THỂ TÍNH TOÁN NỔI!</p>
-    </div>
-  </div>
-
-  <h3>7.3. Thử ngẫu nhiên - Random Search</h3>
-  <p>Cách khác: Chọn ngẫu nhiên weights nhiều lần và giữ lại bộ số có Loss thấp nhất.</p>
-  <pre><code class="language-python">def random_search():
-    best_loss = infinity
-    best_weights = None
-
-    for i in range(10000):
-        weights = random()
-        loss = compute_loss(weights)
-        if loss < best_loss:
-            best_loss = loss
-            best_weights = weights
-
-    return best_weights</code></pre>
-  <p><strong>Vấn đề:</strong> Không hiệu quả vì nó giống như đi tìm kim đáy biển, tốn vô vàn lần thử một cách vô định!</p>
-
-  <h3><span class="material-symbols-outlined">check_circle</span> 7.4. Giải pháp: Gradient Descent</h3>
-  <div class="key-takeaway">
-    <strong>Gradient Descent</strong> là thuật toán tìm điểm tối ưu BẰNG TOÁN HỌC, có định hướng rõ ràng, không cần thử mò ngẫu nhiên!
-    <ul class="mt-2">
-      <li>Nhanh hơn Brute Force.</li>
-      <li>Chính xác hơn Random Search.</li>
-      <li>Áp dụng được cho mạng có hàng triệu (thậm chí tỷ) parameters.</li>
-    </ul>
-  </div>
+  <h3>1.2. Công dụng cứu rỗi của Activation Function</h3>
+  <p>Hàm kích hoạt (Activation Function) là "chiếc bản lề" bẻ gãy đường thẳng, vò nát không gian mượt mà của Toán học Tuyến Tính.</p>
+  <ul class="steps-container mt-4">
+    <li class="step-card">
+      <div class="step-number" style="background-color: var(--secondary-blue);">XOR</div>
+      <p>Chính sự bẻ gãy (Khuỷu tay của ReLU) hay uốn lượn (Đường lượn sóng chữ S của Sigmoid) ép không gian Vector cuộn tròn hình vòng cung. Nhờ đó đường ranh giới cắt qua XOR (Non-linearly separable) mới được khắc họa.</p>
+    </li>
+    <li class="step-card">
+      <div class="step-number" style="background-color: var(--warning-yellow);">Gate</div>
+      <p>Tương tự như Neuron thần kinh sinh học: Nó quyết định <em>"Liệu xung điện này đủ đô để truyền sang rễ thần kinh Neuron kế tiếp hay tắt ngóm?"</em> (Tính kích hoạt).</p>
+    </li>
+  </ul>
 </div>
     `,
-    defaultCode: `// =====================================================
-// VÍ DỤ: SO SÁNH CÁC PHƯƠNG PHÁP TÌM WEIGHTS TỐT NHẤT
-// =====================================================
-
-// Hàm cần tối ưu: f(x) = x²
-// Điểm tối ưu: x = 0 (vì 0² = 0 là nhỏ nhất)
-
-fn f(x: f64) -> f64 {
-    x * x  // f(x) = x²
-}
-
+    defaultCode: `// Hệ quả Toán học: Mạng Sâu + Không bẻ lượn = Nông cạn.
+// Phép chứng minh bằng Rust: Giả lập 2 Layer không có Phi tuyến tính.
 fn main() {
-    println!("╔══════════════════════════════════════════════════════════════════╗");
-    println!("║  TÌM ĐIỂM TỐI ƯU: SO SÁNH CÁC PHƯƠNG PHÁP                    ║");
-    println!("║  Hàm cần tối ưu: f(x) = x²                                    ║");
-    println!("║  Đáp án đúng: x = 0                                           ║");
-    println!("╚══════════════════════════════════════════════════════════════════╝");
-
-    // =====================================================
-    // CÁCH 1: BRUTE FORCE - THỬ TẤT CẢ
-    // =====================================================
-    println!("\\n=== CÁCH 1: BRUTE FORCE ===");
-    println!("Thử tất cả các giá trị từ -10 đến 10, bước 0.1");
-
-    let mut best_x = 0.0;
-    let mut best_f = f(10.0);
-
-    // Loop từ -10 đến 10, bước 0.1
-    let mut x = -10.0;
-    while x <= 10.0 {
-        let y = f(x);
-        if y < best_f {
-            best_f = y;
-            best_x = x;
-        }
-        x += 0.1;
-    }
-
-    println!("Kết quả: x = {:.1}, f(x) = {:.2}", best_x, best_f);
-    println!("Số lần thử: 201 lần");
-
-    // =====================================================
-    // CÁCH 2: RANDOM SEARCH - THỬ NGẪU NHIÊN
-    // =====================================================
-    println!("\\n=== CÁCH 2: RANDOM SEARCH ===");
-    println!("Thử ngẫu nhiên 100 lần");
-
-    best_x = 0.0;
-    best_f = f(10.0);
-
-    // Simulate random search (dùng seed cố định để reproducible)
-    let mut seed = 12345;
-    for _ in 0..100 {
-        // Random trong khoảng [-10, 10]
-        seed = seed.wrapping_mul(1103515245).wrapping_add(12345);
-        let random_val = (seed % 20001) as f64 / 1000.0 - 10.0;
-
-        let y = f(random_val);
-        if y < best_f {
-            best_f = y;
-            best_x = random_val;
-        }
-    }
-
-    println!("Kết quả: x = {:.2}, f(x) = {:.2}", best_x, best_f);
-    println!("Số lần thử: 100 lần");
-
-    // =====================================================
-    // CÁCH 3: GRADIENT DESCENT - THUẬT TOÁN TỐI ƯU
-    // =====================================================
-    println!("\\n=== CÁCH 3: GRADIENT DESCENT ===");
-    println!("Sử dụng đạo hàm để tìm đường đi nhanh nhất!");
-
-    // Đạo hàm của f(x) = x² là f'(x) = 2x
-    fn gradient(x: f64) -> f64 {
-        2.0 * x
-    }
-
-    // Gradient Descent
-    let mut x = 10.0;  // Bắt đầu từ x = 10
-    let learning_rate = 0.1;
-    let n_steps = 20;
-
-    println!("\\nQuá trình:");
-    println!("Step |   x    |  f(x)  | gradient |");
-    println!("-----|--------|--------|----------|");
-
-    for step in 0..n_steps {
-        let grad = gradient(x);
-        let y = f(x);
-
-        println!(" {:3} | {:6.2} | {:6.2} | {:8.3} |",
-                 step, x, y, grad);
-
-        // Cập nhật: x = x - learning_rate * gradient
-        x = x - learning_rate * grad;
-    }
-
-    println!("\\nKết quả cuối cùng: x = {:.6}", x);
-    println!("Số lần thử: {} lần", n_steps);
-
-    // =====================================================
-    // SO SÁNH
-    // =====================================================
-    println!("\\n╔══════════════════════════════════════════════════════════════════╗");
-    println!("║  SO SÁNH CÁC PHƯƠNG PHÁP                                        ║");
-    println!("╠════════════════════════╦═══════════╦═════════════╦════════════════╣");
-    println!("║ Phương pháp            ║ Kết quả x ║  Số lần    ║ Hiệu quả      ║");
-    println!("╠════════════════════════╬═══════════╬═════════════╬════════════════╣");
-    println!("║ Brute Force (0.1)      ║   -0.0    ║   201       ║ Tốt            ║");
-    println!("║ Random Search (100)    ║   {:.2}    ║   100       ║ Trung bình    ║", best_x);
-    println!("║ Gradient Descent       ║   {:.6}  ║   20        ║ Rất tốt!      ║", x);
-    println!("╚════════════════════════╩═══════════╩═════════════╩════════════════╝");
-
-    println!("\\n=== KẾT LUẬN ===");
-    println!("Gradient Descent:");
-    println!("  ✓ Nhanh nhất (ít iterations nhất)");
-    println!("  ✓ Chính xác nhất");
-    println!("  ✓ Áp dụng được cho hàng triệu parameters!");
-    println!("\\nĐây là thuật toán cốt lõi của Machine Learning!");
-}`,
+    println!("=== CHỨNG MINH: AI KHÔNG CÓ ACTIVATION LÀ AI VÔ DỤNG ===");
+    
+    // Ma trận (Để đơn giản ta cho X=1, W là số vô hướng)
+    let x = 5.0; 
+    let w1 = 2.0;
+    let b1 = 1.0;
+    
+    let w2 = 3.0;
+    let b2 = -2.0;
+    
+    // Forward Pass qua 2 lớp (Không hàm Activation)
+    let z1 = x * w1 + b1;      // Tầng 1 (Ẩn)
+    let z2 = z1 * w2 + b2;     // Tầng 2 (Output)
+    
+    println!("Output khi qua 2 lớp (No activation): {}", z2);
+    
+    // RÚT GỌN MẶT TOÁN HỌC: z2 = (x * w1 + b1) * w2 + b2 
+    // z2 = x * (w1 * w2) + (b1 * w2 + b2)
+    // Đặt W_gop = (w1 * w2) = 2*3 = 6
+    // Đặt B_gop = (b1 * w2 + b2) = 1*3 - 2 = 1
+    let w_gop = w1 * w2;
+    let b_gop = b1 * w2 + b2;
+    let z_rut_gon = x * w_gop + b_gop;
+    
+    println!("Output khi qua 1 Lớp Gộp Duy Nhất: {}", z_rut_gon);
+    println!("\\n>>> KẾT LUẬN: 2 == 1. Mọi Layer chỉ như 1 Layer. Sụp đổ kiến trúc Deep Learning!");
+}`
   },
   {
     id: 'ch21_03_02',
-    title: '2. Gradient Descent là gì? Giải thích bằng hình ảnh',
-    duration: '45 phút',
+    title: '2. Các Hàm Cổ Điển: Sigmoid và Tanh',
+    duration: '80 phút',
     type: 'theory',
     content: `
 <div class="article-content">
-  <h2><span class="material-symbols-outlined">image</span> 8. Gradient Descent là gì? Giải thích bằng hình ảnh</h2>
+  <h2><span class="material-symbols-outlined">ssid_chart</span> 2. Hàm kích hoạt Cổ điển: Sigmoid & Tanh</h2>
 
-  <h3>8.1. Ý tưởng cốt lõi</h3>
-  <div class="callout callout-info">
-    <div class="callout-icon"><span class="material-symbols-outlined">lightbulb</span></div>
+  <h3>2.1. Sigmoid (Logistic Function)</h3>
+  <div class="grid grid-cols-2 gap-4 my-4">
+    <div class="bg-slate-50 p-4 border rounded">
+      <h4 class="font-bold border-b pb-2 mb-2">Toán học & Đạo hàm</h4>
+      <p class="font-mono text-sm">Công thức: $f(x) = \\frac{1}{1 + e^{-x}}$</p>
+      <p class="font-mono text-sm mt-2 text-red-600">Đạo hàm: $f'(x) = f(x)(1 - f(x))$</p>
+      <ul class="text-xs list-disc pl-4 mt-2 text-gray-700">
+        <li>Range (Giới hạn Output): $(0, 1)$</li>
+        <li>Ý nghĩa: Ép vạn vật về dải Xác suất (Probability). Thích hợp cực độ cho Output Layer của bài toán Binary Classification.</li>
+      </ul>
+    </div>
+    <div class="bg-gray-900 border-gray-700 text-green-400 p-4 rounded font-mono text-xs flex items-center justify-center">
+      <pre>
+   1.0 |         .---
+       |       /
+   0.5 +-----.-------
+       |   /
+   0.0 |---
+      -5    0    5
+      </pre>
+    </div>
+  </div>
+
+  <div class="callout callout-danger">
+    <div class="callout-icon"><span class="material-symbols-outlined">warning</span></div>
     <div class="callout-content">
-      <p>Hãy tưởng tượng bạn đang đứng trên một ngọn núi trong sương mù. Bạn không nhìn thấy đường, nhưng bạn <strong>cảm nhận được độ dốc dưới chân</strong>. Nếu bạn muốn xuống đáy thung lũng nhanh nhất, bạn sẽ đi theo hướng <strong>dốc xuống</strong> lớn nhất!</p>
+      <strong>Vấn nạn tử thần: Vanishing Gradient (Triệt tiêu Đạo hàm)</strong>
+      <p>Kẻ Thù Truyền Kiếp giết chết Sigmoid trên các Hidden Layers. Hãy nhìn biểu thức đạo hàm: Giá trị Lớn nhất của $f'(x)$ tại đỉnh $x=0$ chỉ vỏn vẹn $0.25$!</p>
+      <p>Nằm ngoài rìa ($x > 3$ hoặc $x < -3$), đồ thị Sigmoid Cực Kỳ Bằng Phẳng. Đạo hàm (Độ dốc) tại đó rơi tõm về gần bằng $0$. Quá trình Gradient Descent nhân lùi lại (Backprop) qua Chain Rule:</p>
+      <p class="font-mono text-center my-2 text-red-600 bg-red-50 p-1">$0.25 \\times 0.25 \\times 0.25 \\times \\dots \\to 0$ (Biến mất vào khoảng không)</p>
+      <p>Hệ quả: Dữ liệu lan ngược qua 5-10 lớp mạng sâu bị teo tóp về Zero ($0$), các nơ-ron phần gốc bị điếc, không học lóm được con số Weights nào, đẩy mô hình vào trạng thái ngưng trệ <em>"Vanishing Gradient"</em>.</p>
     </div>
   </div>
 
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon"><span class="material-symbols-outlined">moving</span></div>
-      <h4>Gradient</h4>
-      <p>Chính là "Độ dốc" tại điểm hiện tại bạn đang đứng.</p>
+  <h3>2.2. Hyperbolic Tangent (Tanh)</h3>
+  <div class="grid grid-cols-2 gap-4 my-4">
+    <div class="bg-slate-50 p-4 border rounded">
+      <h4 class="font-bold border-b pb-2 mb-2">Toán học & Đạo hàm</h4>
+      <p class="font-mono text-sm">Công thức: $tanh(x) = \\frac{e^x - e^{-x}}{e^x + e^{-x}}$</p>
+      <p class="font-mono text-sm mt-2 text-red-600">Đạo hàm: $f'(x) = 1 - tanh(x)^2$</p>
+      <ul class="text-xs list-disc pl-4 mt-2 text-gray-700">
+        <li>Range (Giới hạn Output): $(-1, 1)$</li>
+        <li>Bản chất: Là hàm Sigmoid được kéo giãn lên xuống và dịch qua trái. Được đánh giá là phiên bản <em>"Sigmoid Thượng đẳng"</em>.</li>
+        <li>Ưu điểm: Zero-centered (Tâm Output xoay quanh số 0), đạo hàm đỉnh điểm đạt $1.0$ thay vì chỉ $0.25$, giúp gradients sống sót đi qua mạng lâu hơn.</li>
+      </ul>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon"><span class="material-symbols-outlined">south</span></div>
-      <h4>Descent</h4>
-      <p>"Đi xuống" (giảm giá trị của hàm Loss).</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon"><span class="material-symbols-outlined">turn_right</span></div>
-      <h4>Chiến lược</h4>
-      <p>Đi ngược hướng gradient (dốc lên) để hướng xuống đáy.</p>
-    </div>
-  </div>
-
-  <div class="image-showcase mt-4 mb-4">
-    <img src="/assets/ch21/gradient_descent_valley_1773153973142.png" alt="Gradient Descent Valley 3D" style="width: 100%; border-radius: 8px;">
-    <p class="image-caption">Minh hoạ quá trình Gradient Descent nhảy từ đỉnh núi xuống đáy thung lũng (Loss thấp nhất)</p>
-  </div>
-
-  <h3>8.2. Gradient trong toán học</h3>
-  <p><strong>Gradient</strong> của một hàm số f(x) tại điểm x chính là <strong>đạo hàm f'(x)</strong> tại điểm đó.</p>
-  <div class="definition-block">
-    <strong>Gradient cho biết:</strong>
-    <ul>
-      <li>Hướng đi <strong>LÊN</strong> dốc nhất (gradient dương).</li>
-      <li>Hướng đi <strong>XUỐNG</strong> dốc nhất (gradient âm).</li>
-      <li><strong>Độ dốc</strong> thay đổi nhanh đến mức nào (độ lớn của gradient).</li>
-    </ul>
-  </div>
-
-  <h4>Ví dụ: f(x) = x²</h4>
-  <table class="comparison-table">
-    <thead>
-      <tr><th>Vị trí x</th><th>f(x) = x²</th><th>Gradient f'(x) = 2x</th><th>Hướng đi</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>10</td><td>100</td><td>+20</td><td>Đi lên → Cần đi ngược lại (giảm x)</td></tr>
-      <tr><td>5</td><td>25</td><td>+10</td><td>Đi lên → Cần đi ngược lại</td></tr>
-      <tr><td>1</td><td>1</td><td>+2</td><td>Đi lên nhẹ → Cần đi ngược lại</td></tr>
-      <tr class="highlight"><td>0</td><td>0</td><td>0</td><td>Đáy phẳng → Tối ưu! (Loss cực tiểu)</td></tr>
-      <tr><td>-1</td><td>1</td><td>-2</td><td>Đi xuống → Cần đi tiếp (tăng x)</td></tr>
-      <tr><td>-5</td><td>25</td><td>-10</td><td>Đi xuống → Cần đi tiếp</td></tr>
-    </tbody>
-  </table>
-
-  <h3>8.3. Công thức Gradient Descent</h3>
-  <div class="formula-block">
-    x_moi = x_cu - learning_rate * gradient
-  </div>
-  <p>Tính chất dấu Trừ (<code>-</code>) mang ý nghĩa điều hướng:</p>
-  <ul>
-    <li>Gradient <strong>Dương</strong> (đang đi vào sườn dốc lên) → Cố tình <strong>Trừ</strong> để quay xe đi ngược lại.</li>
-    <li>Gradient <strong>Âm</strong> (trúng sườn dốc xuống) → <strong>Trừ với Âm thành Cộng</strong> → Tới luôn đi tiếp.</li>
-  </ul>
-
-  <h3>8.4. Learning Rate (Tốc độ học tập / Kích thước bước)</h3>
-  <p><strong>Learning rate</strong> (lr) quyết định <em>sải chân</em> của bạn dài bao nhiêu sau mỗi bước.</p>
-  
-  <div class="concept-grid">
-    <div class="concept-card highlight-danger">
-      <div class="concept-icon"><span class="material-symbols-outlined">fast_forward</span></div>
-      <h4>Too Big (LR quá lớn)</h4>
-      <p>Sải chân khổng lồ, nhảy vọt qua lại hai bên bờ thung lũng. <strong>Kết quả: Phân kỳ (Diverge)</strong>, mãi không xuống đáy.</p>
-    </div>
-    <div class="concept-card highlight-warning">
-      <div class="concept-icon"><span class="material-symbols-outlined">slow_motion_video</span></div>
-      <h4>Too Small (LR quá nhỏ)</h4>
-      <p>Sải chân bằng con kiến nhích từng mm. <strong>Kết quả: Tốn cực kỳ nhiều thời gian</strong> (triệu bước) để xuống tới nơi.</p>
-    </div>
-    <div class="concept-card highlight-success">
-      <div class="concept-icon"><span class="material-symbols-outlined">check</span></div>
-      <h4>Just Right (LR vừa đủ)</h4>
-      <p>Bước chân chắc nhịp, tiến lẹ nhưng phanh kịp sát đáy. <strong>Kết quả: Hội tụ nhanh và an toàn.</strong></p>
+    <div class="bg-gray-900 border-gray-700 text-blue-400 p-4 rounded font-mono text-xs flex items-center justify-center">
+      <pre>
+    1  |         .---
+       |       /
+    0  +-[---]---.---
+       |   /
+   -1  |---
+      -5    0    5
+      </pre>
     </div>
   </div>
-
-  <h3>8.5. Convex vs Non-convex</h3>
-  <p>Gradient Descent có chắc chắn tìm được điểm tốt nhất không?</p>
-  
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon"><span class="material-symbols-outlined">interests</span></div>
-      <h4>Convex (Hàm Lồi)</h4>
-      <p>Như cái bát phở. Chỉ có <strong>DUY NHẤT một đáy</strong> (Global Minimum). Thả bi từ đâu cũng dồn về giữa. Đoan chắc GD sẽ ăn.</p>
-      <p><em>(Ví dụ: Linear Regression)</em></p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon"><span class="material-symbols-outlined">query_stats</span></div>
-      <h4>Non-convex (Đồi núi ngập ghềnh)</h4>
-      <p>Nhiều hố lồi lõm rải rác. Điểm kẹt tạm thời gọi là hố <strong>Local Minima</strong>. Đáy sâu nhất là <strong>Global Minimum</strong>.</p>
-      <p><em>(Ví dụ: Neural Networks)</em></p>
-    </div>
-  </div>
-
-  <div class="callout callout-warning">
-    <div class="callout-icon"><span class="material-symbols-outlined">help_outline</span></div>
-    <div class="callout-content">
-      <strong>Ở mảng Deep Learning, điều kỳ diệu là:</strong> Dù mắc hố Local Minima suốt ngày, nhưng ở không gian hàng triệu/tỷ chiều, kết quả loss của Local Minima thường vẫn tiệm cận Global, đủ xài thực tế! Quái vật cản đường chính lại là <strong>Saddle Points</strong> (Điểm yên ngựa).
-    </div>
-  </div>
-
-  <h3>8.6. Dấu hiệu dừng chạy GD (Early Stopping)</h3>
-  <p>Khi nào biết ném cờ trắng không chạy tiếp vòng lặp nữa?</p>
-  <ul class="steps-container">
-    <li class="step-card">
-      <div class="step-number">1</div>
-      <p>Loss kẹt không thấy giảm thêm sau dăm ba vòng (Epoch) ròng rã.</p>
-    </li>
-    <li class="step-card">
-      <div class="step-number">2</div>
-      <p>Gradient ≈ 0 (Trượt sát đáy không còn đà đẩy nữa).</p>
-    </li>
-    <li class="step-card">
-      <div class="step-number">3</div>
-      <p>Đạt Target (Loss đã nhỏ ưng cái bụng chốt luôn).</p>
-    </li>
-  </ul>
 </div>
     `,
-    defaultCode: `// =====================================================
-// GRADIENT DESCENT - MINH HỌA BẰNG HÌNH ẢNH
-// =====================================================
-
-// Hàm cần tối ưu: f(x) = x²
-fn f(x: f64) -> f64 {
-    x * x
+    defaultCode: `// Demo Đoạn mã Sigmoid và Triệt Tiêu Đạo Hàm (Vanishing Gradient)
+fn sigmoid(x: f64) -> f64 {
+    1.0 / (1.0 + (-x).exp())
 }
 
-// Đạo hàm: f'(x) = 2x
-fn gradient(x: f64) -> f64 {
-    2.0 * x
-}
-
-// Hàm Gradient Descent
-fn gradient_descent(
-    x_start: f64,        // Điểm bắt đầu
-    learning_rate: f64,  // Kích thước bước
-    n_steps: i32         // Số bước
-) -> Vec<(i32, f64, f64, f64)> {
-    let mut x = x_start;
-    let mut history = Vec::new();
-
-    for step in 0..n_steps {
-        let grad = gradient(x);
-        let y = f(x);
-
-        // Lưu lịch sử: (step, x, f(x), gradient)
-        history.push((step, x, y, grad));
-
-        // Cập nhật: x = x - lr * gradient
-        x = x - learning_rate * grad;
-    }
-
-    history
+// Đạo hàm Sigmoid: y * (1 - y)
+fn sigmoid_deriv(x: f64) -> f64 {
+    let s = sigmoid(x);
+    s * (1.0 - s)
 }
 
 fn main() {
-    println!("╔══════════════════════════════════════════════════════════════════════╗");
-    println!("║              GRADIENT DESCENT - MINH HỌA CHI TIẾT                    ║");
-    println!("║                                                                      ║");
-    println!("║  Hàm: f(x) = x²                                                     ║");
-    println!("║  Đạo hàm: f'(x) = 2x                                                ║");
-    println!("║  Điểm tối ưu: x = 0                                                 ║");
-    println!("╚══════════════════════════════════════════════════════════════════════╝");
-
-    // =====================================================
-    // VÍ DỤ 1: XUỐNG TỪ ĐỈNH NÚI
-    // =====================================================
-    println!("\\n=== VÍ DỤ 1: XUỐNG TỪ ĐỈNH (x = 10) ===\\n");
-
-    let history = gradient_descent(10.0, 0.1, 15);
-
-    println!("╔════════════════════════════════════════════════════════════╗");
-    println!("║ Step │    x     │   f(x)   │  Gradient │ Hướng đi        ║");
-    println!("╠══════╪══════════╪══════════╪═══════════╪══════════════════╣");
-
-    for (step, x, y, grad) in &history {
-        let direction = if *grad > 0.0 { "↑ Lên" }
-                       else if *grad < 0.0 { "↓ Xuống" }
-                       else { "● Tối ưu" };
-
-        println!("║ {:4} │ {:8.4} │ {:8.4} │ {:9.4} │ {:14} ║",
-                 step, x, y, grad, direction);
+    println!("=== THẢM HỌA VANISHING GRADIENT CỦA SIGMOID ===");
+    
+    // Đỉnh tại x=0 
+    println!("Độ dốc cực đại tại X=0 đo được: {}", sigmoid_deriv(0.0)); // 0.25!
+    
+    // Lan truyền ngược (Backpropagation) qua mạng sâu 5 lớp.
+    // Giả sử các weights ban đầu xung quanh 0, đạo hàm tốt nhất ở mỗi neuron đang chịu trần là ~0.25.
+    let mut gradient_lan_truyen = 1.0; // Bắt đầu trừ từ Lỗi phía Output
+    let so_lop = 5;
+    
+    for i in 1..=so_lop {
+        // Chain Rule: Gradient cũ * Đạo hàm Activation * Trọng số (Giả định w=1.0)
+        gradient_lan_truyen = gradient_lan_truyen * 0.25 * 1.0;
+        println!("  - Lùi qua Lớp {}: sức mạnh tín hiệu học còn lại: {:.6}", so_lop - i + 1, gradient_lan_truyen);
     }
-    println!("╚════════════════════════════════════════════════════════════╝");
-
-    // =====================================================
-    // VÍ DỤ 2: TỪ VỊ TRÍ ÂM
-    // =====================================================
-    println!("\\n=== VÍ DỤ 2: TỪ VỊ TRÍ ÂM (x = -8) ===\\n");
-
-    let history2 = gradient_descent(-8.0, 0.1, 15);
-
-    println!("╔════════════════════════════════════════════════════════════╗");
-    println!("║ Step │    x     │   f(x)   │  Gradient │ Hướng đi        ║");
-    println!("╠══════╪══════════╪══════════╪═══════════╪══════════════════╣");
-
-    for (step, x, y, grad) in &history2 {
-        let direction = if *grad > 0.0 { "↑ Lên" }
-                       else if *grad < 0.0 { "↓ Xuống" }
-                       else { "● Tối ưu" };
-
-        println!("║ {:4} │ {:8.4} │ {:8.4} │ {:9.4} │ {:14} ║",
-                 step, x, y, grad, direction);
-    }
-    println!("╚════════════════════════════════════════════════════════════╝");
-
-    // =====================================================
-    // VÍ DỤ 3: ẢNH HƯỞNG CỦA LEARNING RATE
-    // =====================================================
-    println!("\\n=== VÍ DỤ 3: ẢNH HƯỞNG CỦA LEARNING RATE ===\\n");
-
-    let learning_rates = vec![0.001, 0.05, 0.1, 0.5, 0.9, 1.05];
-
-    println!("┌─────────────────────────────────────────────────────────────┐");
-    println!("│ Learning Rate │ Kết quả cuối │ Số bước │ Đánh giá          │");
-    println!("├─────────────────────────────────────────────────────────────┤");
-
-    for lr in learning_rates {
-        let history = gradient_descent(8.0, lr, 30);
-        let final_x = history.last().unwrap().1;
-        let converged = if final_x.abs() < 0.01 { "✓ Hội tụ" }
-                       else if final_x.abs() > 7.0 { "✗ Nhảy qua!" }
-                       else { "~ Chậm" };
-
-        println!("│    {:>6.3f}    │   {:>9.4}   │    30   │ {:16} │",
-                 lr, final_x, converged);
-    }
-    println!("└─────────────────────────────────────────────────────────────┘");
-
-    println!("\\n=== NHẬN XÉT ===");
-    println!("• LR = 0.001: Quá nhỏ → Không kịp hội tụ trong 30 bước");
-    println!("• LR = 0.05:  Nhỏ → Hội tụ chậm");
-    println!("• LR = 0.1:   Tốt → Hội tụ nhanh và ổn định");
-    println!("• LR = 0.5:   Hơi lớn → Hội tụ nhanh nhưng có thể overshoot");
-    println!("• LR = 0.9:   Rất lớn → Dao động quanh điểm tối ưu");
-    println!("• LR = 1.05:  Quá lớn → Nhảy qua điểm tối ưu, không hội tụ!");
-
-    // =====================================================
-    // VÍ DỤ 4: HÌNH ẢNH TRỰC QUAN
-    // =====================================================
-    println!("\\n=== HÌNH ẢNH TRỰC QUAN ===\\n");
-
-    // Vẽ đồ thị bằng text
-    println!("f(x) = x² và đường đi của Gradient Descent");
-    println!("");
-
-    // Tạo map
-    let mut map = vec![vec![' '; 60]; 20];
-
-    // Vẽ đường parabol y = x² (scaled)
-    for i in 0..60 {
-        let x = (i as f64 - 30.0) / 5.0;
-        let y = x * x / 5.0;
-        let y_idx = 19 - (y as usize).min(19);
-        if y_idx < 20 {
-            map[y_idx][i] = '●';
-        }
-    }
-
-    // Vẽ điểm xuất phát và đường đi
-    let history = gradient_descent(10.0, 0.15, 20);
-    for (step, x, _, _) in history.iter().take(10) {
-        let x_idx = (x * 5.0 + 30.0) as usize;
-        let y = x * x / 5.0;
-        let y_idx = 19 - (y as usize).min(19);
-
-        if x_idx < 60 && y_idx < 20 {
-            map[y_idx][x_idx] = match step {
-                0 => 'S',
-                _ => '→',
-            };
-        }
-    }
-
-    // In map
-    for row in map {
-        let line: String = row.iter().collect();
-        println!("{}", line);
-    }
-
-    println!("\n  S = Start (xuất phát)  ● = Đường cong f(x) = x²  → = Đường đi GD");
-    println!("\\n=== KẾT LUẬN ===");
-    println!("Gradient Descent:");
-    println!("  1. Tính gradient tại vị trí hiện tại");
-    println!("  2. Đi ngược hướng gradient (trừ gradient)");
-    println!("  3. Lặp lại cho đến khi hội tụ");
-    println!("\\nQuan trọng: Chọn learning rate phù hợp!")`,
+    
+    println!("\\n>>> Tín hiệu học lùi về tận Input Lớp 1 chỉ còn {:.6}. Nơ-ron Lớp 1 gần như bị điếc, không cập nhật được Trọng số nữa!", gradient_lan_truyen);
+    println!("=> Không thể xây mạng Deep Neural Network hàng trăm tầng nếu xài Sigmoid!");
+}`
   },
   {
     id: 'ch21_03_03',
-    title: '3. Áp dụng Gradient Descent vào Neural Network',
-    duration: '45 phút',
+    title: '3. Kỷ nguyên của ReLU và The Dead ReLU',
+    duration: '90 phút',
     type: 'theory',
     content: `
 <div class="article-content">
-  <h2><span class="material-symbols-outlined">network_node</span> 9. Áp dụng Gradient Descent vào Neural Network</h2>
+  <h2><span class="material-symbols-outlined">trending_up</span> 3. ReLU gia nhập giang hồ (Rectified Linear Unit)</h2>
 
-  <h3>9.1. Neural Network đơn giản nhất</h3>
-  <p>Xét một Neural Network đơn giản nhất có thể: <strong>Linear Regression</strong> (Chỉ 1 input, 1 output, không activation)</p>
-  <div class="formula-block">
-    <p>y = w * x + b</p>
-  </div>
-  <div class="definition-block">
-    <ul>
-      <li><strong>x:</strong> input</li>
-      <li><strong>w:</strong> weight (trọng số)</li>
-      <li><strong>b:</strong> bias (độ lệch)</li>
-      <li><strong>y:</strong> output dự đoán</li>
-    </ul>
-    <p><strong>Mục tiêu:</strong> Ta cần tìm w và b để y ≈ y_true (nhãn thật).</p>
+  <h3>3.1. Sự cứu vớt Mạng Sâu</h3>
+  <div class="definition-block mb-4">
+    <p>Khoảng năm 2012 (Kỷ nguyên AlexNet), người ta ngán ngẩm Sigmoid tột độ. Và <strong>ReLU</strong> trở thành vị Thánh Cứu Rỗi của Deep Learning hiện đại. Thuật toán của nó dễ hều đến mức khôi hài, nhưng sự vĩ đại của nó đã định hình lại toán học của AI.</p>
   </div>
 
-  <h3>9.2. Hàm mất mát (Loss Function)</h3>
-  <p>Đo lường sai số giữa y dự đoán và y thực bằng Mean Squared Error (MSE):</p>
-  <div class="formula-block">
-    <p>MSE = (1/n) * Σ(y_pred - y_true)²</p>
-    <p class="mt-2 text-sm">Hay với Linear Regression: MSE = (1/n) * Σ(w*x + b - y_true)²</p>
-  </div>
-
-  <h3>9.3. Tính gradient cho w và b</h3>
-  <p>Ta cần tính đạo hàm riêng phần để biết cách sửa weight và bias:</p>
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon"><span class="material-symbols-outlined">functions</span></div>
-      <h4>Gradient theo w (∂MSE/∂w)</h4>
-      <p>Cho biết: Cần thay đổi w theo hướng nào để Loss giảm.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon"><span class="material-symbols-outlined">tune</span></div>
-      <h4>Gradient theo b (∂MSE/∂b)</h4>
-      <p>Cho biết: Cần thay đổi b theo hướng nào để Loss giảm.</p>
-    </div>
-  </div>
-
-  <div class="callout callout-info">
-    <div class="callout-icon"><span class="material-symbols-outlined">auto_awesome</span></div>
-    <div class="callout-content">
-      <strong>Áp dụng Chain Rule (Đạo hàm hợp):</strong>
-      <p>Gọi <code>y_pred = w*x + b = z</code> và <code>MSE = (z - y_true)²</code></p>
-      <ul>
-        <li>∂MSE/∂z = 2 * (z - y_true)</li>
-        <li>∂z/∂w = x</li>
-        <li>∂z/∂b = 1</li>
-      </ul>
-      <p><strong>Kết quả:</strong></p>
-      <ul>
-        <li>∂MSE/∂w = ∂MSE/∂z * ∂z/∂w = <strong>2*(z-y_true) * x</strong></li>
-        <li>∂MSE/∂b = ∂MSE/∂z * ∂z/∂b = <strong>2*(z-y_true)</strong></li>
+  <div class="grid grid-cols-2 gap-4 my-4">
+    <div class="bg-green-50 p-4 border rounded">
+      <h4 class="font-bold border-b pb-2 mb-2 border-green-200">Toán học & Đạo hàm của ReLU</h4>
+      <p class="font-mono text-sm bg-white p-2">Công thức: $f(x) = max(0, x)$</p>
+      <p class="font-mono text-xs mt-2 text-green-800">
+        Đạo hàm: <br/>
+        $f'(x) = 1$ (Nếu $x > 0$)<br/>
+        $f'(x) = 0$ (Nếu $x < 0$)
+      </p>
+      <ul class="text-xs list-disc pl-4 mt-2 text-gray-700">
+        <li><strong>Đại ưu điểm 1:</strong> Không cãi nhau với Toán vi phân nhiều ($1$ hoặc $0$), tính toán nhanh thần tốc tiết kiệm hàng ngàn TFLOP GPU.</li>
+        <li><strong>Đại ưu điểm 2:</strong> Gradient cho nhánh x dương LA LUÔN LÀ $1.0$! Phá tan phong ấn <em>Vanishing Gradient</em>. Nhân đạo hàm chain rule cả 1000 lần ($1.0 \\times 1.0 \\times 1.0$) nó vẫn không bao giờ bẹp dí về $0$. Tha hồ xếp mạng lưới sâu tỉ lớp!</li>
       </ul>
     </div>
-  </div>
-
-  <h3>9.4. Cập nhật weights</h3>
-  <div class="formula-block">
-    <p>w_moi = w_cu - lr * ∂MSE/∂w</p>
-    <p>b_moi = b_cu - lr * ∂MSE/∂b</p>
-  </div>
-
-  <h3><span class="material-symbols-outlined">model_training</span> 9.5. Weight Initialization</h3>
-  <p>Cách khởi tạo weights ảnh hưởng quyết định đến việc NN học được hay "mù chữ":</p>
-  <div class="concept-grid">
-    <div class="concept-card">
-      <div class="concept-icon"><span class="material-symbols-outlined">block</span></div>
-      <h4>TẤT CẢ = 0</h4>
-      <p>Tất cả neurons cho cùng output → Cùng lấy 1 gradient → Symmetry Problem không bao giờ bị phá vỡ. Mạng không học được!</p>
-    </div>
-    <div class="concept-card">
-      <div class="concept-icon"><span class="material-symbols-outlined">shuffle</span></div>
-      <h4>Ngẫu nhiên quá lớn</h4>
-      <p>Ví dụ: [-100, 100]. Activation sẽ bị bão hòa (sigmoid ra 0 hoặc 1 hết), gây ra Vanishing gradient ngay từ Epoch 1!</p>
-    </div>
-    <div class="concept-card highlight-success">
-      <div class="concept-icon"><span class="material-symbols-outlined">science</span></div>
-      <h4>Xavier & He Init</h4>
-      <p><strong>Xavier</strong> (cho Sigmoid/Tanh): <code>w ~ N(0, √(2 / (in+out)))</code></p>
-      <p><strong>He</strong> (cho ReLU): <code>w ~ N(0, √(2 / in))</code></p>
+    <div class="bg-gray-900 border-gray-700 text-yellow-400 p-4 rounded font-mono text-xs flex items-center justify-center font-bold">
+      <pre>
+        |       / (Độ dốc = 1)
+        |      /
+        |     /
+--------+----/--  (Trục X)
+ (0)    |   /
+      </pre>
     </div>
   </div>
 
-  <h3><span class="material-symbols-outlined">balance</span> 9.6. Feature Scaling</h3>
-  <p>Tại sao cần chuẩn hóa dữ liệu Input?</p>
-  <div class="callout callout-warning">
-    <div class="callout-icon"><span class="material-symbols-outlined">warning</span></div>
+  <h3><span class="material-symbols-outlined">skull</span> 3.2. Cơn Ác Mộng: THE DYING RELU PROBLEM</h3>
+  <div class="callout callout-danger mt-4">
+    <div class="callout-icon"><span class="material-symbols-outlined">gavel</span></div>
     <div class="callout-content">
-      <strong>VẤN ĐỀ:</strong>
-      <p>Nhà: Diện tích (50-500m²) và Số phòng (1-10).</p>
-      <p>Gradient đi theo chiểu "Diện tích" quá lớn gây ra hiện tượng học "Zig-Zag" siêu chậm!</p>
+      <strong>Khi Nơ-ron tử nạn (Dead Neurons)</strong>
+      <p>Khuyết điểm kinh dị nhất của ReLU nằm ngay tại nhánh Âm ($x < 0$, Output $0$, Đạo hàm $0$).</p>
+      <p>Điều gì xảy ra nếu Learning Rate vớ vẩn giật một Nơ-ron văng Weight/Bias của nó xuống vùng Âm cực lớn? Dòng giá trị đi qua Nơ-ron này ngay lập tức bị hàm ReLU băm chết ($=0$). Lúc này Đạo hàm từ Backprop dội ngược lại cũng vướng <strong>$0$</strong>.</p>
+      <p>Chain Rule nhân với $0$ đứt gánh <strong>$\to$</strong> Weight không hề xê dịch <strong>$\to$</strong> Nơ-ron lọt vào bẫy, chết rũ xương mãi mãi câm nín trong suốt những Epoch sau. Mạng của bạn cồng kềnh 100,000 Nơ-ron nhưng thực tế 40,000 tế bào đã... <b>Chết lâm sàng</b>.</p>
     </div>
   </div>
 
+  <h3>3.3. Các vị thần Y thuật (Các biến thể Vá lỗi rò rỉ)</h3>
   <div class="features-grid">
     <div class="feature-card">
-      <div class="feature-icon"><span class="material-symbols-outlined">compress</span></div>
-      <h4>Min-Max Normalization</h4>
-      <code>x_norm = (x - min) / (max - min)</code>
-      <p>→ Ép Output về thang [0, 1]</p>
-      <p><em>Ví dụ: 50m² → 0.0,  500m² → 1.0</em></p>
+        <h4 class="font-bold text-sm">Leaky ReLU</h4>
+        <p class="font-mono text-xs my-2 text-blue-700">$f(x) = x$ nếu $x > 0$</p>
+        <p class="font-mono text-xs mb-2 text-red-700">$f(x) = 0.01x$ nếu $x < 0$</p>
+        <p class="text-xs">Thay vì băm vằm nhánh âm thành mức $0$ bằng phẳng tuyệt đối, ta khoét 1 lỗ kim trích ra chút độ dốc (0.01). Gradient vẫn lách dội qua! Đỡ chết neuron.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon"><span class="material-symbols-outlined">center_focus_strong</span></div>
-      <h4>Z-Score Standardization</h4>
-      <code>x_norm = (x - mean) / std</code>
-      <p>→ Output: Trung bình = 0, Độ lệch chuẩn = 1</p>
-      <p><em>Ví dụ: 275m² → 0.0</em></p>
+        <h4 class="font-bold text-sm">PReLU (Parametric ReLU)</h4>
+        <p class="text-xs mt-2">Độ dốc $\\alpha$ dưới nhánh âm ($x < 0$) không cài cứng $0.01$ nữa, mà ném cho Neural Network tự huấn luyện $\\alpha$ lúc train lóng ngóng mưu cầu độ đốc tốt nhất.</p>
     </div>
-  </div>
-  <div class="key-takeaway">
-    Sau khi chuẩn hóa, tất cả Feature cùng Scale, GD chạy thẳng tắp xuống hố trung tâm, có thể hội tụ nhanh hơn gấp 10-100 lần!
   </div>
 </div>
     `,
-    defaultCode: `// =====================================================
-// GRADIENT DESCENT CHO NEURAL NETWORK (LINEAR REGRESSION)
-// CÀI ĐẶT CHI TIẾT TỪNG DÒNG
+    defaultCode: `// Mô Phỏng Hàm LEAKY RELU Cứu Sống DYING NEURONS
 // =====================================================
 
-// Hàm dự đoán: y = w * x + b
-fn predict(x: f64, w: f64, b: f64) -> f64 {
-    w * x + b
-}
+fn relu(x: f64) -> f64 { if x > 0.0 { x } else { 0.0 } }
+fn relu_deriv(x: f64) -> f64 { if x > 0.0 { 1.0 } else { 0.0 } }
 
-// Hàm mất mát: MSE (Mean Squared Error)
-fn loss(y_true: f64, y_pred: f64) -> f64 {
-    let error = y_true - y_pred;
-    error * error
-}
+fn leaky_relu(x: f64) -> f64 { if x > 0.0 { x } else { 0.01 * x } }
+fn leaky_relu_deriv(x: f64) -> f64 { if x > 0.0 { 1.0 } else { 0.01 } }
 
-// Đạo hàm của loss theo w: dL/dw = -2 * x * (y_true - y_pred)
-fn d_loss_dw(x: f64, y_true: f64, w: f64, b: f64) -> f64 {
-    let y_pred = predict(x, w, b);
-    -2.0 * x * (y_true - y_pred)
-}
+fn main() {
+    println!("=== DYING RELU vs. SỰ CHỮA LÀNH CỦA LEAKY RELU ===");
+    
+    // Một Nơ-ron lầm đường lạc lối với Output Z cực âm (-10.5).
+    let z_te_hai = -10.5;
+    
+    println!("\\n[1] MẠNG DÙNG RELU GỐC:");
+    println!("Output Forward: {}", relu(z_te_hai)); // 0 vĩnh cữu
+    let grad_relu = relu_deriv(z_te_hai);
+    println!("Dòng Gradient Lan Lùi về (Toán Học): {}", grad_relu);
+    if grad_relu == 0.0 {
+        println!(">>> Weight = Weight - (LearningRate * 0) --> WEIGHT ĐÓNG BĂNG! NƠ-RON CHẾT ĐỨNG!");
+    }
+    
+    println!("\\n[2] MẠNG DÙNG LEAKY RELU:");
+    let l_output = leaky_relu(z_te_hai);
+    println!("Output Forward rò rỉ tí khí: {:.3}", l_output);
+    let grad_leaky = leaky_relu_deriv(z_te_hai);
+    println!("Dòng Gradient Lan Lùi về (Toán Học): {:.3}", grad_leaky);
+    if grad_leaky > 0.0 {
+        println!(">>> Gradient vẫn chảy rỉng rỉng được tẹo (0.01). Nơ-ron chưa chết, một ngày nào đó Lực kéo về Dương sẽ vực nó dậy!");
+    }
+}`
+  },
+  {
+    id: 'ch21_03_04',
+    title: '4. Softmax và Activation Thế hệ mới (GELU, Swish)',
+    duration: '60 phút',
+    type: 'theory',
+    content: `
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">flare</span> 4. Cảnh Giới Tối Tân: Softmax, GELU, Swish</h2>
 
-// Đạo hàm của loss theo b: dL/db = -2 * (y_true - y_pred)
-fn d_loss_db(x: f64, y_true: f64, w: f64, b: f64) -> f64 {
-    let y_pred = predict(x, w, b);
-    -2.0 * (y_true - y_pred)
+  <h3>4.1. Hàm Softmax - Trùm cuối lớp Output</h3>
+  <div class="definition-block mb-4">
+    <p>Nếu bạn phân loại chó, mèo, heo (Multi-class Classification), bạn muốn Lớp Output phun ra 3 con số Xác suất mà TỔNG CỦA CHÚNG bắt buộc bằng $1.0$ (100%).</p>
+    <p>Nếu Lớp ra phun bộ điểm $Z = [2.0, 1.0, 0.1]$, Softmax sẽ cường hóa và chuẩn hóa phân cực chúng qua Logarithm số mũ $e$:</p>
+  </div>
+  
+  <div class="formula-block mb-4 text-center">
+    $Softmax(z_i) = \\frac{e^{z_i}}{\\sum_{j} e^{z_j}}$
+  </div>
+  
+  <ul class="text-sm list-disc pl-5">
+    <li>Tại sao bắt buộc xài $e$ (Số Euler)? Do đạo hàm của $e^x$ là chính nó $\to$ dễ tính toán Chain rule mỹ mãn.</li>
+    <li>Thuộc tính "Hard": Phân cực sâu (Khoảng cách điểm số bị phóng đại nồng nặc khi đẩy lên mũ). Điểm 2.0 lớn hơn điểm 1.0 là 2 lần; nhưng lên $e$ sẽ biến thành $\\sim 7.3$, nhét mồm đối thủ.</li>
+  </ul>
+
+  <h3><span class="material-symbols-outlined">robot_2</span> 4.2. Activation của LLM Hiện Đại (GPT/Transformer)</h3>
+  <div class="features-grid mt-4">
+    <div class="feature-card">
+      <h4 class="font-bold text-blue-800">GELU (Gaussian Error Linear Unit)</h4>
+      <p class="text-xs underline mb-1">Mặc định của GPT, BERT.</p>
+      <p class="text-xs">Không băm cụt $0$ gắt gỏng như ReLU. Nó cong mượt dẻo dai ở khúc dốc quanh trục $0$ dựa vào phân phối xác suất hình chuông. Khúc âm không những bị khóa lại mà còn võng âm xuống một tẹo trước khi tiệm cận lên 0.</p>
+      <p class="font-mono mt-2 text-xs bg-gray-100 p-1">$x \cdot \Phi(x)$</p>
+    </div>
+    <div class="feature-card">
+      <h4 class="font-bold text-indigo-800">Swish (SiLU - Sigmoid Linear Unit)</h4>
+      <p class="text-xs underline mb-1">Phát kiến của Google Brain, vua của YOLOv8, Llama-3.</p>
+      <p class="text-xs">Kỳ lạ thay, việc lấy $x$ nhân với độ Sigmoid của chính nó cho ra một đường cong giống in hệt GELU nhưng không cần thuật toán xác suất rườm rà. Thể hiện uy lực đào tạo Mạng Viễn Tưởng.</p>
+      <p class="font-mono mt-2 text-xs bg-gray-100 p-1">$f(x) = x \cdot sigmoid(x)$</p>
+    </div>
+  </div>
+</div>
+    `,
+    defaultCode: `// THÍ NGHIỆM ĐỘ "CỰC ĐOAN" CỦA SOFTMAX FUNCTION
+// (Nhấn mạnh sự kiêu ngạo của Kẻ Thắng Cuộc Takes All)
+// =====================================================
+
+fn softmax(z: &[f64]) -> Vec<f64> {
+    // Để chống tràn số (Numerical Instability - Exploding tới NaN)
+    // Thực tế khoa học phải kéo đỉnh lùi lại chừa mặt max_val
+    let max_val = z.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
+    
+    let mut exp_vals = vec![];
+    let mut sum_exp = 0.0;
+    
+    for &val in z {
+        // Trừ max_val đi để kẹp mũ e khỏi nổ tràn 64-bit float
+        let e = (val - max_val).exp(); 
+        exp_vals.push(e);
+        sum_exp += e;
+    }
+    
+    exp_vals.into_iter().map(|e| e / sum_exp).collect()
 }
 
 fn main() {
     println!("╔══════════════════════════════════════════════════════════════════════╗");
-    println!("║     GRADIENT DESCENT CHO NEURAL NETWORK (LINEAR REGRESSION)          ║");
+    println!("║                   SOFTMAX - KẺ MẠNH ĂN TẤT CẢ                        ║");
     println!("╚══════════════════════════════════════════════════════════════════════╝");
 
-    // =====================================================
-    // DỮ LIỆU HUẤN LUYỆN
-    // =====================================================
-    // Bài toán: Dự đoán giá nhà
-    // Input: Diện tích (x)
-    // Output: Giá nhà (y)
-    // Đáp án: y = 3*x + 5 (cứ mỗi m² thêm 3 triệu, giá cơ bản 5 triệu)
-
-    let x_data = vec![1.0, 2.0, 3.0, 4.0, 5.0];
-    let y_data = vec![8.0, 11.0, 14.0, 17.0, 20.0];
-
-    println!("\\n=== DỮ LIỆU HUẤN LUYỆN ===");
-    println!("Đáp án đúng: y = 3*x + 5");
-    println!("");
-    println!("╔═══════════════════════════════════════╗");
-    println!("║  Diện tích(x)  │  Giá thực (y)   ║");
-    println!("╠═══════════════════════════════════════╣");
-    for i in 0..x_data.len() {
-        println!("║       {:>4.0}       │      {:>5.0}        ║",
-                 x_data[i], y_data[i]);
-    }
-    println════════════════════════════!("╚═══════════╝");
-
-    // =====================================================
-    // KHỞI TẠO WEIGHTS
-    // =====================================================
-    // Bắt đầu với w = 0, b = 0 (hoàn toàn sai!)
-    let mut w = 0.0;
-    let mut b = 0.0;
-    let learning_rate = 0.01;
-
-    println!("\\n=== TRẠNG THÁI BAN ĐẦU ===");
-    println!("w (weight) = {}", w);
-    println!("b (bias) = {}", b);
-    println!("Công thức dự đoán: y = {}*x + {}", w, b);
-    println!("\\nDự đoán ban đầu (TẤT SAI!):");
-    for i in 0..x_data.len() {
-        let y_pred = predict(x_data[i], w, b);
-        println!("  x = {}: dự đoán = {:.1}, thực = {:.1}",
-                 x_data[i], y_pred, y_data[i]);
-    }
-
-    // =====================================================
-    // TRAINING LOOP
-    // =====================================================
-    println!("\\n=== TRAINING LOOP (Gradient Descent) ===\\n");
-
-    let n_epochs = 1000;
-
-    for epoch in 0..n_epochs {
-        // Tính gradient trên toàn bộ dữ liệu
-        let mut dw = 0.0;  // Gradient theo w
-        let mut db = 0.0;  // Gradient theo b
-        let n = x_data.len() as f64;
-
-        // Sum gradients
-        for i in 0..x_data.len() {
-            dw += d_loss_dw(x_data[i], y_data[i], w, b);
-            db += d_loss_db(x_data[i], y_data[i], w, b);
-        }
-
-        // Trung bình gradient
-        dw /= n;
-        db /= n;
-
-        // Cập nhật weights
-        w = w - learning_rate * dw;
-        b = b - learning_rate * db;
-
-        // In loss mỗi 100 epochs
-        if epoch % 200 == 0 || epoch == n_epochs - 1 {
-            // Tính loss trung bình
-            let mut total_loss = 0.0;
-            for i in 0..x_data.len() {
-                let y_pred = predict(x_data[i], w, b);
-                total_loss += loss(y_data[i], y_pred);
-            }
-            let avg_loss = total_loss / n;
-
-            println!("Epoch {:4}: w = {:6.4}, b = {:6.4}, Loss = {:8.4}",
-                     epoch, w, b, avg_loss);
-        }
-    }
-
-    // =====================================================
-    // KẾT QUẢ
-    // =====================================================
-    println!("\\n=== KẾT QUẢ SAU TRAINING ===");
-    println!("w tìm được: {:.4} (đáp án: 3.0)", w);
-    println!("b tìm được: {:.4} (đáp án: 5.0)", b);
-
-    println!("\\n=== KIỂM TRA ===");
-    println!("╔════════════════════════════════════════════════════════╗");
-    println!("║  x  │ Thực │ Dự đoán │ Sai số │                      ║");
-    println!("╠═════╪══════╪═════════╪════════╣");
-    for i in 0..x_data.len() {
-        let y_pred = predict(x_data[i], w, b);
-        let error = (y_data[i] - y_pred).abs();
-        println!("║ {:3} │ {:4} │  {:5.2}  │ {:5.3}║",
-                 x_data[i] as i32,
-                 y_data[i] as i32,
-                 y_pred,
-                 error);
-    }
-    println!("╚════════════════════════════════════════════════════════╝");
-
-    println!("\\n=== GIẢI THÍCH CHI TIẾT TỪNG BƯỚC ===");
-    println!("1. Forward pass: Tính y_pred = w*x + b");
-    println!("2. Tính loss: (y_pred - y_true)²");
-    println!("3. Tính gradient: dL/dw = -2*x*(y_pred-y_true)");
-    println!("4. Cập nhật: w = w - lr * dL/dw");
-    println!("5. Lặp lại cho đến khi loss đủ nhỏ!");
-    println!("\\nĐây là cách Neural Networks HỌC!");
-}`,
-  },
+    let logits = vec![1.0, 2.0, 5.0]; // Điểm đầu ra gốc (Dog: 1, Cat: 2, Máy Bay: 5)
+    let probs = softmax(&logits);
+    
+    println!("Biên độ thô (Logits): {:?}", logits);
+    println!("Xác suất trả về sau Softmax:");
+    println!("- Điểm Dog ({})     -> Tỷ lệ: {:.4}%", logits[0], probs[0]*100.0);
+    println!("- Điểm Cat ({})     -> Tỷ lệ: {:.4}%", logits[1], probs[1]*100.0);
+    println!("- Máy Bay ({})     -> Tỷ lệ: {:.4}%", logits[2], probs[2]*100.0);
+    
+    println!("\\n>>> PHÂN TÍCH QUYỀN LỰC SỐ MŨ (EXPONENTIAL):");
+    println!("Có thể thấy Máy Bay (5.0) không chỉ mạnh gấp 2.5 lần Cat (2.0) như cấp số cộng tuyến tính.");
+    println!("Hàm Softmax (mũ e) đã KHOẾCH ĐẠI Máy Bay lên chiếm tới {:.2}% lãnh địa, đè nát hiềm nghi còn lại!", probs[2]*100.0);
+}`
+  }
 ];
-
-// =====================================================
-// Export Bài 3
-// =====================================================
 
 export const ch21_03: Chapter = {
   id: 'ch21_03',
-  title: '21.3. Gradient Descent',
+  title: '21.3. Activation Functions',
   introduction: `
-    <h2>Gradient Descent - Cách Neural Networks Học</h2>
+    <h2>Tế bào Linh hồn bóp méo Không Gian Tuyến Tính</h2>
     <ul>
-      <li>Vấn đề tìm weights tốt nhất</li>
-      <li>Gradient Descent là gì</li>
-      <li>Áp dụng vào Neural Network</li>
+      <li>Đi sâu vào cốt tủy Đỉnh và Đáy Toán học của Functions.</li>
+      <li>Hiện tượng Triệt tiêu Đạo Hàm (Vanishing) & Xác Nơ-ron (Dead Relu).</li>
+      <li>GELU/Swish làm mưa làm gió trong Transformers/LLM đương đại.</li>
     </ul>
   `,
   lessons: ch21_03_lessons,
