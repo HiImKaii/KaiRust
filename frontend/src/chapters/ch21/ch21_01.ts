@@ -176,7 +176,7 @@ const ch21_01_lessons: Lesson[] = [
       <p>Neural Network (mạng nơ-ron) chủ yếu được dùng trong <strong>Supervised Learning</strong> - ta cho nó dữ liệu và đáp án, nó tự tìm ra quy luật. Tuy nhiên, Neural Network cũng được dùng trong cả 3 nhánh:</p>
       <ul>
         <li><strong>Supervised:</strong> CNN phân loại ảnh, RNN dịch ngôn ngữ</li>
-        <li><strong>Unsupervised:</strong> Autokencoders nén dữ liệu, GANs tạo ảnh giả</li>
+        <li><strong>Unsupervised:</strong> Autoencoders nén dữ liệu, GANs tạo ảnh giả</li>
         <li><strong>Reinforcement:</strong> DQN (Deep Q-Network) chơi game Atari</li>
       </ul>
     </div>
@@ -228,9 +228,9 @@ const ch21_01_lessons: Lesson[] = [
     <span class="material-symbols-outlined">warning</span>
     <div class="callout-content">
       <span class="callout-title">Overfitting vs Underfitting</span>
-      <p><strong>Overfitting (Học vẹt):</strong> Mô hình thuộc lòng dữ liệu training, nhưng gặp dữ liệu mới thì sai be bét. Giống học sinh chỉ thuộc đáp án bài tập, ra đề mới là bó tay.</p>
-      <p><strong>Underfitting (Học kém):</strong> Mô hình quá đơn giản, không nắm được pattern. Giống học sinh đọc qua 1 lần rồi đi thi.</p>
-      <p><strong>Mục tiêu:</strong> Tìm điểm cân bằng - mô hình đủ phức tạp để học pattern, nhưng không quá phức tạp để thuộc lòng noise (nhiễu).</p>
+      <p><strong>Overfitting (Quá khớp):</strong> Mô hình thuộc lòng dữ liệu training, nhưng gặp dữ liệu mới thì dự đoán sai nghiêm trọng. Tương tự học sinh chỉ thuộc đáp án bài tập, gặp đề mới là không giải được.</p>
+      <p><strong>Underfitting (Dưới khớp):</strong> Mô hình quá đơn giản, không nắm bắt được quy luật trong dữ liệu. Tương tự học sinh lướt qua bài một lần rồi đi thi.</p>
+      <p><strong>Mục tiêu:</strong> Tìm điểm cân bằng — mô hình đủ phức tạp để nắm bắt quy luật, nhưng không quá phức tạp đến mức ghi nhớ cả nhiễu (noise) trong dữ liệu.</p>
     </div>
   </div>
 
@@ -659,7 +659,7 @@ fn main() {
     println!("\\n  MSE khi w=3, b=0: {}", mse_tot);
     println!("  MSE giảm từ {} → {} (tuyệt vời!)", mse as i64, mse_tot as i64);
     println!("\\n=== KẾT LUẬN ===");
-    println!("  Model ban đầu (w=0, b=0): DỞ TỆ, MSE khổng lồ");
+    println!("  Model ban đầu (w=0, b=0): Dự đoán hoàn toàn sai, MSE rất lớn");
     println!("  Model thử (w=3, b=0): CHÍNH XÁC HOÀN HẢO, MSE = 0");
     println!("\\n  Vấn đề: Làm sao TỰ ĐỘNG tìm w=3 mà không đoán bừa?");
     println!("  Đáp án: GRADIENT DESCENT → sẽ học ở bài sau!");
@@ -907,16 +907,8 @@ fn main() {
         <td><strong>GELU</strong></td>
         <td>$f(z) = z \\cdot \\Phi(z)$</td>
         <td>(-0.17, ∞)</td>
-        <td>Smooth, kết hợp kết quả tuyến tính và xác suất, siêu vượt trội ở NLP</td>
-        <td>Tính toán hơi phức tạp hơn ReLU</td>
-        <td>Modern Transformers (BERT, GPT), ViT, State-of-the-Art models</td>
-      </tr>
-      <tr>
-        <td><strong>GELU</strong></td>
-        <td>$f(z) = z \\cdot \\Phi(z)$</td>
-        <td>(-0.17, ∞)</td>
-        <td>Smooth, kết hợp kết quả tuyến tính và xác suất, siêu vượt trội ở NLP</td>
-        <td>Tính toán hơi phức tạp hơn ReLU</td>
+        <td>Smooth, kết hợp biến đổi tuyến tính và xác suất, hiệu quả vượt trội trong NLP</td>
+        <td>Chi phí tính toán cao hơn ReLU</td>
         <td>Modern Transformers (BERT, GPT), ViT, State-of-the-Art models</td>
       </tr>
     </tbody>

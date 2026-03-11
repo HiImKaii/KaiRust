@@ -18,13 +18,13 @@ export const ch21_02: Chapter = {
   <h2>1. Các Cột Mốc Quá Khứ Của Perceptron</h2>
   <div class="callout callout-info">
     <div class="callout-content">
-      <span class="callout-title">KHỞI NGUYÊN TỪ PHÒNG THÍ NGHIỆM CORNELL (1943 - 1957)</span>
-      <p>Lịch sử của Mạng Nơ-ron Nhân tạo (Artificial Neural Networks - ANN) bắt đầu từ rất lâu trước khi khái niệm "Trí tuệ Nhân tạo" trở nên phổ biến.</p>
+      <span class="callout-title">KHỞI NGUYÊN TỪ CORNELL (1943 – 1957)</span>
+      <p>Lịch sử của Mạng Nơ-ron Nhân tạo (Artificial Neural Networks – ANN) bắt đầu từ rất lâu trước khi khái niệm "Trí tuệ Nhân tạo" trở nên phổ biến.</p>
       <p><strong>Cột mốc 1943:</strong> Nhà thần kinh học Warren McCulloch và nhà toán học Walter Pitts đã viết bài báo khoa học: "A Logical Calculus of the Ideas Immanent in Nervous Activity". Trong đó, họ chứng minh rằng tập hợp các tế bào thần kinh kết nối với nhau có khả năng thực hiện bất kỳ phép tính logic nào. Mô hình "McCulloch-Pitts Neuron" ra đời, chỉ nhận đầu vào 0 và 1. Tuy là một bước tiến, mô hình này thiếu khả năng <strong>Học Hỏi (Learning)</strong> — trọng số phải được thiết lập thủ công.</p>
       <p><strong>Cột mốc 1957: Sự ra đời của Perceptron:</strong><br/>
-      Năm 1957, tại Phòng Không gian Vật lý Hàng không Cornell, nhà tâm lý học <strong>Frank Rosenblatt</strong> đã tạo ra bước nhảy vọt. Được tài trợ bởi Hải quân Hoa Kỳ, ông chế tạo cỗ máy <strong>Mark I Perceptron</strong>.</p>
+      Năm 1957, tại Phòng thí nghiệm Hàng không Cornell (Cornell Aeronautical Laboratory), nhà tâm lý học <strong>Frank Rosenblatt</strong> đã tạo ra bước đột phá. Được tài trợ bởi Hải quân Hoa Kỳ, ông chế tạo cỗ máy <strong>Mark I Perceptron</strong>.</p>
       <p>Đây là một thiết bị cơ khí nặng 5 tấn, với ma trận các điện trở chiết áp (potentiometers) được điều khiển bằng motor. Đầu vào là 400 tế bào quang điện cadmium sulfide, đóng vai trò như võng mạc. Điều quan trọng nhất: nó có thể <strong>tự động điều chỉnh</strong> các điện trở (tức Trọng số — Weights) để "học" cách phân biệt hình vuông và hình tam giác.<br/>
-      Khái niệm <strong>Machine Learning</strong> chính thức ra đời. Tờ New York Times đã đăng trang bìa: <em>"Hải quân vinh danh cỗ máy có thể nhìn và tự nhận thức!"</em></p>
+      Khái niệm <strong>Machine Learning</strong> chính thức ra đời. Tờ New York Times đã đưa tin trang nhất: <em>"Hải quân công bố cỗ máy có thể nhìn và tự học!"</em></p>
     </div>
   </div>
 
@@ -340,7 +340,7 @@ pub fn main() {
   <!--==========================================================-->
   <h2>2.2. Các Hàm Kích Hoạt Quan Trọng Qua Các Thời Kỳ</h2>
   
-  <p>Mỗi hàm kích hoạt đánh dấu một giai đoạn phát triển của AI. Chúng ta sẽ phân tích từ góc độ Đại số Giải tích (Calculus), vì quá trình <strong>Backpropagation</strong> bắt buộc phải sử dụng đạo hàm của hàm kích hoạt.</p>
+  <p>Mỗi hàm kích hoạt đánh dấu một giai đoạn phát triển của AI. Chúng ta sẽ phân tích từ góc độ Giải tích (Calculus), vì quá trình <strong>Backpropagation</strong> bắt buộc phải sử dụng đạo hàm của hàm kích hoạt.</p>
 
   <div class="image-showcase">
     <img src="/images/ch21/ch21_02_activation_funcs.png" alt="Đồ thị các Hàm Kích Hoạt" />
@@ -383,13 +383,13 @@ pub fn main() {
         <p class="font-mono">$f'(x) = 1 - \tanh^2(x)$</p>
       </div>
       <p><strong>Ưu điểm:</strong> Zero-centered loại bỏ zig-zag. Đạo hàm cực đại là 1.0 (gấp 4 lần Sigmoid).</p>
-      <p><strong>Nhược điểm:</strong> Tại hai đầu của đồ thị (ví dụ x = ±5), gradient vẫn tiến về 0, gây ra Vanishing Gradient trong các mạng quá sâu.</p>
+      <p><strong>Nhược điểm:</strong> Tại hai đầu của đồ thị (ví dụ $x = \pm 5$), gradient vẫn tiến về 0, gây ra hiện tượng triệt tiêu gradient (Vanishing Gradient) trong các mạng quá sâu.</p>
     </div>
 
     <!-- 4. RELU -->
     <div class="concept-card">
       <h4>4. ReLU (Rectified Linear Unit)</h4>
-      <p><strong>Sự trỗi dậy:</strong> Năm 2012, AlexNet dùng ReLU để chiến thắng ImageNet, mở ra kỷ nguyên Deep Learning.</p>
+      <p><strong>Bước ngoặt:</strong> Năm 2012, AlexNet sử dụng ReLU để giành chiến thắng ImageNet, mở ra kỷ nguyên Deep Learning.</p>
       <div class="formula-block my-2 p-3 bg-gray-50 border-gray-300">
         <p class="font-mono">$f(x) = \max(0, x)$</p>
       </div>
@@ -650,7 +650,7 @@ pub fn main() {
         <p class="font-mono text-lg text-indigo-700 font-bold">$\frac{\partial L}{\partial W_k} = \frac{\partial L}{\partial a_n} \prod_{i=k}^{n} \frac{\partial a_i}{\partial z_i} \cdot \frac{\partial z_i}{\partial a_{i-1}} \cdot \frac{\partial z_k}{\partial W_k}$</p>
         <p>Trong đó $a_i = f_i(z_i)$ là output sau activation tại lớp $i$.</p>
       </div>
-      <p>Phát minh này chấm dứt AI Winter. Hệ đa lớp nhiều tầng (MLP) với hàm phi tuyến kích hoạt thực sự đã chứng minh sức mạnh giải quyết XOR trong chớp nhoáng.</p>
+      <p>Phát minh này chấm dứt AI Winter. Mạng đa lớp (MLP — Multi-Layer Perceptron) kết hợp với hàm kích hoạt phi tuyến đã chứng minh khả năng giải quyết bài toán XOR một cách hiệu quả.</p>
     </div>
   </div>
 
@@ -842,7 +842,7 @@ pub fn main() {
     </div>
     <div class="concept-card">
       <h4>(2) Tầng Hidden (Lớp Ẩn)</h4>
-      <p>Bắt buộc phải gắn hàm phi tuyến (ReLU, Sigmoid, Tanh). Tập hợp các tầng này quyết định "độ sâu" (Deep) của mạng. Số lượng ẩn quá nhiều gây ra hiện tượng học vẹt (Overfitting). Quá ít thì không đủ khả năng nhận diện quy luật chìm (Underfitting).</p>
+      <p>Bắt buộc phải gắn hàm phi tuyến (ReLU, Sigmoid, Tanh). Tập hợp các tầng này quyết định "độ sâu" (Deep) của mạng. Số lượng nút ẩn quá nhiều gây ra hiện tượng quá khớp (Overfitting). Quá ít thì không đủ khả năng nắm bắt quy luật ẩn trong dữ liệu (Underfitting).</p>
     </div>
     <div class="concept-card">
       <h4>(3) Tầng Output</h4>
@@ -885,9 +885,9 @@ pub fn main() {
     
     <div class="concept-card">
       <h4>Phân Lớp Đa Lớp (Multi-Class)</h4>
-      <p><strong>Mục tiêu:</strong> Nhận định đối tượng thuộc dòng/lớp nào (VD: Nhận diện chữ số từ 0 đến 9).</p>
-      <p><strong>Số nút Output:</strong> Tùy chọn $N$ (với 10 chữ số thì $N=10$). Mỗi nút thể hiện xác suất của 1 item.</p>
-      <p><strong>Activation Output:</strong> <strong>Softmax</strong> — Đảm bảo tính toán tổng các tỷ lệ = 100%.</p>
+      <p><strong>Mục tiêu:</strong> Xác định đối tượng thuộc lớp nào (VD: Nhận diện chữ số từ 0 đến 9).</p>
+      <p><strong>Số nút Output:</strong> $N$ nút (với 10 chữ số thì $N=10$). Mỗi nút thể hiện xác suất của một lớp.</p>
+      <p><strong>Activation Output:</strong> <strong>Softmax</strong> — Đảm bảo tổng xác suất của tất cả các lớp bằng 1.</p>
       <div class="formula-block my-2 p-3 bg-gray-50 border-gray-300">
         <p class="font-mono"><strong>Loss Function — Categorical Cross-Entropy (CCE):</strong></p>
         <p class="font-mono text-lg">$\text{CCE} = -\sum_{c=1}^{C} y_c \ln(\hat{y}_c)$</p>
@@ -906,9 +906,9 @@ pub fn main() {
       <span class="callout-title">OPTIMIZER</span>
       <p>Sau khi Backprop tính xong gradient, Optimizer quyết định <strong>cách cập nhật</strong> trọng số. Chọn đúng optimizer ảnh hưởng rất lớn đến tốc độ và chất lượng huấn luyện mạng Nơ-ron.</p>
       <ul>
-        <li><strong>SGD (Stochastic Gradient Descent):</strong> Cập nhật đơn giản: $W = W - \alpha \times \nabla W$. Dễ bị mắc kẹt do đạo hàm triệt tiêu theo không gian zig-zag của thuật toán.</li>
-        <li><strong>Momentum (1999):</strong> Thêm "quán tính" giúp vượt qua local minima nhỏ. Giống hệt một viên bi đẩy dốc: dù gặp rãnh hẹp, độ trượt Momentum vẫn giúp bi lăn tuột lên tới điểm đáy global. Công thức quán tính: $V_{new} = \gamma \cdot V_{old} - \alpha \times \nabla W$.</li>
-        <li><strong>Adam (2014 — Kingma & Ba):</strong> Kết hợp cả Momentum và Adaptive Learning Rate. Trọng lượng tính toán thích nghi cá thể đối với mọi nút: Nút ít được kích hoạt $\to$ tự tăng learning rate. Adam hiện tại đại diện cho chuẩn mặc định (Gold Standard) cho các model hiện thời.</li>
+        <li><strong>SGD (Stochastic Gradient Descent):</strong> Cập nhật đơn giản: $W = W - \alpha \times \nabla W$. Dễ bị mắc kẹt tại điểm cực tiểu địa phương (local minima) và hội tụ chậm trong không gian mấp mô.</li>
+        <li><strong>Momentum (1999):</strong> Thêm "quán tính" giúp vượt qua các cực tiểu địa phương nhỏ. Cơ chế tương tự viên bi lăn xuống dốc: dù gặp rãnh nông, động lượng tích lũy vẫn đưa viên bi vượt qua. Công thức: $V_{new} = \gamma \cdot V_{old} - \alpha \times \nabla W$.</li>
+        <li><strong>Adam (2014 — Kingma & Ba):</strong> Kết hợp Momentum và Learning Rate thích ứng (Adaptive Learning Rate). Tự động điều chỉnh tốc độ học cho từng tham số: tham số ít được cập nhật → tăng learning rate; tham số cập nhật thường xuyên → giảm learning rate. Adam hiện là optimizer mặc định (Gold Standard) cho phần lớn mô hình hiện đại.</li>
       </ul>
     </div>
   </div>
@@ -1066,9 +1066,9 @@ pub fn main() {
   <!--==========================================================-->
   <!-- TENSORS LÀ GÌ?                                           -->
   <!--==========================================================-->
-  <h2>5.1. Tensor Trí Tạo — Ngôn Ngữ Hình Học Của Dữ Liệu</h2>
+  <h2>5.1. Tensor — Cấu Trúc Dữ Liệu Cốt Lõi Của Deep Learning</h2>
   
-  <p>Toàn bộ ngành Deep Learning được định nghĩa dựa trên <strong>Tensor</strong> (điều làm nên cái tên TensorFlow của Google). Tensor đơn giản là một cấu trúc dữ liệu đa chiều, được chuẩn hóa để GPU và TPU có thể nhân hàng triệu phép tính cùng lúc.</p>
+  <p>Toàn bộ ngành Deep Learning được xây dựng trên cơ sở <strong>Tensor</strong> (chính là nguồn gốc của tên gọi TensorFlow của Google). Tensor là một cấu trúc dữ liệu đa chiều, được chuẩn hóa để GPU và TPU có thể thực hiện hàng triệu phép tính song song.</p>
 
   <div class="steps-container">
     <div class="step-card">
@@ -1115,28 +1115,28 @@ pub fn main() {
   <div class="callout callout-warning">
     <div class="callout-content">
       <span class="callout-title">TẠI SAO LẠI BẮT BUỘC DÙNG MA TRẬN 2D (TENSORS)?</span>
-      <p>Việc tính toán từng neuron một thông qua vòng lặp <code>for</code> là một thảm họa về tốc độ thời gian chạy trên vi xử lý thông thường. Bằng cách thiết lập Weights thành ma trận 2D $[W_{i j}]$, và biến 1 batch dữ liệu thành 1 khối ma trận, toàn bộ mạng 1 tỷ phép tính được rút gọn thành đúng 1 dòng phương trình:</p>
+      <p>Việc tính toán từng neuron một thông qua vòng lặp <code>for</code> là cực kỳ không hiệu quả về tốc độ. Bằng cách biểu diễn Weights dưới dạng ma trận 2D $[W_{i j}]$ và gộp một batch dữ liệu thành một khối ma trận, toàn bộ phép tính của mạng được rút gọn thành một phương trình duy nhất:</p>
       <div class="formula-block my-2 p-3 bg-gray-50 border-gray-300 font-bold text-center">
         $Z = X \times W^T + B$
       </div>
-      <p>Các thư viện tính toán chuẩn lõi dưới (như BLAS/cuBLAS) chạy hàm Vector Multiplication nhanh gấp <strong>10,000 lần</strong> so với vòng lặp <code>for</code> bình thường.</p>
+      <p>Các thư viện tính toán máy chủ (như BLAS/cuBLAS) thực hiện phép nhân ma trận nhanh hơn vòng lặp <code>for</code> thông thường từ <strong>hàng nghìn đến hàng vạn lần</strong>.</p>
     </div>
   </div>
 
 
   <!--==========================================================-->
-  <!-- SOFTMAX MAX THE BUGS                                     -->
+  <!-- SOFTMAX VÀ ỔN ĐỊNH SỐ HỌC                                     -->
   <!--==========================================================-->
-  <h3>5.2. Sự Quá Độ Của Softmax Và Sự Mất Ổn Định Số Học</h3>
+  <h3>5.2. Softmax Và Vấn Đề Ổn Định Số Học (Numerical Stability)</h3>
   
-  <p>Khi dùng mạng nơ-ron để phân lớp đa danh mục (ví dụ đoán ảnh chó, mèo, ngựa), ta dùng hàm kích hoạt Softmax ở lớp cuối. Gọi là "Soft" Max để phân biệt "Hard" Max. Thay vì chỉ chọn ra 1 điểm lớn nhất thành 1, nó tạo ra phân phối phần trăm cho toàn bộ các tập hợp cộng lại = 1.</p>
+  <p>Khi dùng mạng nơ-ron để phân lớp đa danh mục (ví dụ: phân loại ảnh chó, mèo, ngựa), ta sử dụng hàm kích hoạt Softmax ở lớp cuối. Tên gọi "Soft" Max để phân biệt với "Hard" Max: thay vì chỉ chọn giá trị lớn nhất, Softmax chuyển đổi toàn bộ vector thành phân phối xác suất với tổng bằng 1.</p>
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
     <p>Công thức gốc của Softmax cho lớp thứ $i$:</p>
     <p class="font-mono text-lg text-center">$P(i) = \frac{e^{Z_i}}{\sum e^{Z_j}}$</p>
   </div>
   
-  <p><strong>Hiểm họa (Numerical Stability - Tràn số):</strong> Nếu kết quả dự đoán của mô hình chưa tốt, và $Z_i$ ra giá trị 1000. Lệnh code <code>Math.exp(1000)</code> kết quả $= \infty$ (Infinity). Các số chia Infinity $\to$ lỗi NaN lây lan xé bung sập cả chương trình luyện mô hình!</p>
+  <p><strong>Vấn đề ổn định số học (Numerical Stability):</strong> Nếu giá trị $Z_i$ quá lớn (ví dụ $Z_i = 1000$), phép tính <code>exp(1000)</code> sẽ cho kết quả $\infty$ (Infinity). Khi chia cho Infinity, kết quả trở thành NaN (Not a Number) và lan truyền khắp quá trình huấn luyện, gây sụp đổ toàn bộ mô hình.</p>
   
   <p><strong>Giải pháp Toán Học — Stable Softmax:</strong></p>
   <p>Theo giải tích, khi chia phân thức trên dưới cùng cơ số, nếu ta nhân cả 2 vế với cùng hệ số $e^{-C}$, kết quả Toán Học vĩnh viễn không thay đổi.</p>
@@ -1144,7 +1144,7 @@ pub fn main() {
     <p class="font-mono">$P(i) = \frac{e^{Z_i - C}}{\sum e^{Z_j - C}}$</p>
     <p>Thuật toán <strong>Stable Softmax</strong> chọn $C = \max(Z)$.</p>
     <p>Nếu $Z = [1000, 1001, 1002]$ $\to C = 1002$.</p>
-    <p>Tập giá trị mới: $Z - C = [-2, -1, 0]$. Toán tử <code>exp(0) = 1</code>, hoàn toàn an toàn, dập tắt tận gốc nguyên căn NaN (Not a Number).</p>
+    <p>Tập giá trị mới: $Z - C = [-2, -1, 0]$. Phép tính <code>exp(0) = 1</code> hoàn toàn an toàn, loại bỏ triệt để nguy cơ tràn số và lỗi NaN.</p>
   </div>
 
 </div>
@@ -1185,7 +1185,7 @@ pub mod TensorMath {
             for j in 0..w_cols {      // Duyệt từng neuron ẩn
                 
                 let mut sum = 0.0;
-                for k in 0..x_cols {  // Dòm kết nối (inputs to that neuron)
+                for k in 0..x_cols {  // Duyệt từng kết nối (inputs to that neuron)
                     sum += input_x[i][k] * weights_w[k][j];
                 }
                 
@@ -1243,12 +1243,12 @@ pub fn main() {
     
     let raw_logits = vec![ 1205.0, 1000.0, 750.0 ];
     
-    // [1] CÁCH TÍNH DẠI DỘT (SOFTMAX KHÔNG AN TOÀN)
+    // [1] CÁCH TÍNH KHÔNG AN TOÀN (SOFTMAX KHÔNG STABLE)
     println!(">> TRƯỜNG HỢP 1: SOFTMAX CƠ BẢN (CHƯA STABLE)");
     println!("Tính e^(1205.0)...");
     let dumb_exp: Vec<f64> = raw_logits.iter().map(|z| z.exp()).collect();
     println!("- Mảng e^Z: {:?}", dumb_exp);
-    // Lưu ý: Kết quả Rust in ra "inf" (Infinity), Mất đi quyền kiểm soát!
+    // Lưu ý: Kết quả Rust in ra "inf" (Infinity) — giá trị không hợp lệ!
 
     // [2] CÁCH TÍNH THỰC TẾ (STABLE SOFTMAX CO MAX)
     println!("\\n>> TRƯỜNG HỢP 2: STABLE SOFTMAX TỪ THƯ VIỆN CÔNG NGHIỆP");
@@ -1265,7 +1265,7 @@ pub fn main() {
 },
 {
     id: 'ch21_02_06',
-    title: '6. Tối Ưu Hóa Dataloader & Batching: Không Nấu Soup Bằng Cốc Cà Phê',
+    title: '6. Tối Ưu Hóa Dataloader & Batching',
     duration: '220 phút',
     type: 'theory',
     content: `
@@ -1280,16 +1280,16 @@ pub fn main() {
 
   <div class="callout callout-info">
     <div class="callout-content">
-      <span class="callout-title">KHÁI NIỆM BATCHING (GÓI TẬP)</span>
-      <p>Giải pháp: Thay vì dạy mô hình từng dữ liệu một (1), người kỹ sư ghép 64 bức ảnh chụp chung thành 1 tập Tensor Ma trận. Gọi nó là một mẻ <strong>(Minibatch size = 64)</strong>.</p>
-      <p>Việc tải chung 1 cục 64 file ảnh lên thẻ nhớ V-RAM vào GPU, giúp cho GPU chỉ đọc đúng 1 lệnh IO. Tính toán ra 64 lần error, cộng giá trị Gradient trung bình thành 1 cục, rồi backprop Update đúng một lần. Vừa êm mượt, vừa tăng tốc 10x-50x lần.</p>
+      <span class="callout-title">KHÁI NIỆM BATCHING (Xử LÝ THEO MỎ)</span>
+      <p>Giải pháp: Thay vì đưa dữ liệu vào mô hình từng mẫu một, kỹ sư gộp nhiều mẫu (ví dụ 64 ảnh) thành một Tensor. Đơn vị này được gọi là một mẻ (Minibatch, ví dụ: <strong>batch size = 64</strong>).</p>
+      <p>Việc tải cả một batch lên VRAM của GPU giúp giảm số lần truy xuất I/O. GPU tính toán song song sai số cho toàn bộ batch, lấy trung bình gradient, rồi cập nhật trọng số một lần. Phương pháp này vừa ổn định vừa tăng tốc độ huấn luyện từ 10× đến 50×.</p>
     </div>
   </div>
 
   <!--==========================================================-->
   <!-- BGD vs SGD vs MINI-BATCH                                  -->
   <!--==========================================================-->
-  <h3>6.2. Kì Thư 3 Phiên Bản Gradient Descent</h3>
+  <h3>6.2. Ba Phương Pháp Gradient Descent</h3>
   
   <div class="image-showcase">
     <img src="/images/ch21/gradient_descent_valley_1773153973142.png" alt="Phân tách các dạng Gradient Descent Optimizer" />
@@ -1309,24 +1309,24 @@ pub fn main() {
     <tbody>
       <tr>
         <td><strong>Batch Gradient Descent</strong></td>
-        <td>Nguyên kho DATA</td>
-        <td>Rất mượt, dốc thoai thoải thẳng đích</td>
-        <td>Siêu Lớn (Vượt VRAM là Crash Out of Mem)</td>
-        <td>Cực kì chậm - mất hàng tuần update 1 lệnh</td>
+        <td>Toàn bộ tập dữ liệu</td>
+        <td>Rất mượt, hội tụ ổn định</td>
+        <td>Rất lớn (dễ vượt VRAM gây tràn bộ nhớ)</td>
+        <td>Chậm — mỗi bước cập nhật cần duyệt toàn bộ dữ liệu</td>
       </tr>
       <tr>
         <td><strong>Stochastic GD (SGD)</strong></td>
-        <td>Chỉ 1 mẫu duy nhất</td>
-        <td>Góc cạnh, nảy sinh ngẫu nhiên zig zag (noisy)</td>
-        <td>Nhỏ gọn xíu 1KB RAM</td>
-        <td>Gây loạn trí mạng, cực nhanh nhưng ko chuẩn</td>
+        <td>1 mẫu duy nhất</td>
+        <td>Dao động mạnh, nhiễu cao (noisy)</td>
+        <td>Rất nhỏ</td>
+        <td>Nhanh nhưng không ổn định, dễ dao động quanh điểm tối ưu</td>
       </tr>
       <tr>
         <td><strong>Mini-Batch GD</strong></td>
         <td>Batch Size = [16, 32, 64, 256]</td>
         <td>Mượt Tốt</td>
-        <td>Cân đối cho hệ V-RAM (vài GBs)</td>
-        <td>Gold Standard (Sử dụng 100% hiện nay)</td>
+        <td>Cân đối cho V-RAM (vài GB)</td>
+        <td>Chuẩn mực (Gold Standard) — được sử dụng phổ biến nhất hiện nay</td>
       </tr>
     </tbody>
   </table>
@@ -1334,22 +1334,22 @@ pub fn main() {
   <!--==========================================================-->
   <!-- DATALOADER HOẠT ĐỘNG THẾ NÀO?                            -->
   <!--==========================================================-->
-  <h3>6.3. Giải Phẫu Dataloader Shuffle & Quản Lý Epoch</h3>
+  <h3>6.3. Dataloader: Shuffle Và Quản Lý Epoch</h3>
   
   <div class="steps-container">
     <div class="step-card">
       <div class="step-number">1</div>
       <div class="step-content">
-        <h4>Shuffle (Xào trộn mảng bộ dư liệu)</h4>
-        <p>Nếu không xào trộn, mạng sẽ học 100 ảnh chó, rồi 100 ảnh mèo. Khi nó tới tập lớp mèo, tính năng Backprop "xóa não" các thuộc tính hệ chó vì hàm loss chỉ phạt chó nên thay đổi trọng số chó bằng O. Buộc <strong>bắt buộc phải Shuffle ngẫu nhiên</strong> toàn độ kho data cho mỗi tập Epoch Training ngẫu nhiên.</p>
+        <h4>Shuffle (Xáo trộn dữ liệu)</h4>
+        <p>Nếu không xáo trộn, mạng sẽ học tuần tự 100 ảnh chó, rồi 100 ảnh mèo. Khi chuyển sang tập mèo, quá trình Backpropagation sẽ làm mất dần các đặc trưng đã học được từ tập chó (hiện tượng catastrophic forgetting). Vì vậy, <strong>bắt buộc phải xáo trộn ngẫu nhiên</strong> toàn bộ dữ liệu trước mỗi epoch huấn luyện.</p>
       </div>
     </div>
     
     <div class="step-card">
       <div class="step-number">2</div>
       <div class="step-content">
-        <h4>Epoch Control (Tráo vòng liên hoàn)</h4>
-        <p>1 Epoch là mạng đã nuốt sạch kho data cũ. Cần 1 vòng lệnh vòng ngoài tiếp cận việc cấp nạp theo index. Nó cũng ném phần lẻ không chẵn của batch count vứt bỏ dọn dẹp.</p>
+        <h4>Epoch Control (Quản lý vòng huấn luyện)</h4>
+        <p>Một epoch tương ứng với một lượt duyệt toàn bộ tập dữ liệu. Vòng lặp ngoài (outer loop) quản lý việc cấp dữ liệu theo chỉ số (index). Các mẫu dư thừa không đủ lấp đầy một batch sẽ được loại bỏ (drop_last) hoặc xử lý riêng.</p>
       </div>
     </div>
   </div>
@@ -1461,11 +1461,11 @@ pub fn main() {
     println!("============================================================\\n");
 
     let core_truedata = vec![
-        vec![ 1.0, 1.0 ], // Nước chấm 0
-        vec![ 2.0, 2.0 ], // Nước chấm 1
-        vec![ 3.0, 3.0 ], // Nước chấm 2
-        vec![ 4.0, 4.0 ], // Nước chấm 3
-        vec![ 5.0, 5.0 ], // Nước chấm 4
+        vec![ 1.0, 1.0 ], // Mẫu 0
+        vec![ 2.0, 2.0 ], // Mẫu 1
+        vec![ 3.0, 3.0 ], // Mẫu 2
+        vec![ 4.0, 4.0 ], // Mẫu 3
+        vec![ 5.0, 5.0 ], // Mẫu 4
     ];
     let tag_truedata = vec![ 10.0, 20.0, 30.0, 40.0, 50.0 ];
 

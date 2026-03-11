@@ -1,6 +1,6 @@
 // =====================================================
 // Chương 21: MẠNG NEURAL NETWORK
-// Bài 3: ACTIVATION FUNCTIONS - TẾ BÀO LINH HỒN CỦA AI
+// Bài 3: ACTIVATION FUNCTIONS - THÀNH PHẦN CỐT LÕI CỦA MẠNG NƠ-RON
 //
 // Mục 1: BẢN CHẤT TOÁN HỌC CỦA SỰ PHI TUYẾN TÍNH
 // Phiên bản mở rộng chi tiết - VERBOSE VERSION
@@ -181,14 +181,14 @@ const ch21_03_lessons: Lesson[] = [
   </table>
 
   <!-- ========================================= -->
-  <!-- 1.2. CÔNG DỤNG CỨU RỖI CỦA ACTIVATION FUNCTION -->
+  <!-- 1.2. VAI TRÒ THIẾT YẾU CỦA ACTIVATION FUNCTION -->
   <!-- ========================================= -->
-  <h3>1.2. Công dụng cứu rỗi của Activation Function</h3>
+  <h3>1.2. Vai trò thiết yếu của Activation Function</h3>
 
   <div class="definition-block mb-4">
     <span class="definition-term">Định nghĩa: Activation Function (Hàm kích hoạt)</span>
     <p>Là một <strong>hàm phi tuyến tính</strong> được áp dụng sau mỗi neuron. Nó "bẻ cong" không gian tuyến tính — biến đường thẳng thành đường cong, cho phép mạng mô hình hóa các quan hệ phức tạp.</p>
-    <p class="mt-2">Nó tạo ra <strong>quỹ tích cong</strong> (curved manifold) trong không gian latent, cho phép mạng học được các pattern phức tạp.</p>
+    <p class="mt-2">Nó tạo ra các <strong>đa tạp cong</strong> (curved manifold) trong không gian ẩn (latent space), cho phép mạng nắm bắt được các quy luật phức tạp.</p>
   </div>
 
   <h4>1.2.1. Sơ đồ kiến trúc Neural Network với Activation</h4>
@@ -216,7 +216,7 @@ const ch21_03_lessons: Lesson[] = [
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">change_history</span></div>
       <h4>Công dụng 1: XOR Problem</h4>
-      <p>Chính sự <strong>bẻ gãy</strong> (khuỷu tay của ReLU) hay <strong>uốn lượn</strong> (đường lượn sóng chữ S của Sigmoid) ép không gian Vector cuộn tròn hình vòng cung.</p>
+      <p>Chính tính phi tuyến <strong>gấp khúc</strong> (dạng điểm gãy của ReLU) hay <strong>cong mượt</strong> (đường cong chữ S của Sigmoid) cho phép biến đổi không gian vector, tạo ra các vùng quyết định phi tuyến.</p>
       <p class="mt-2">Nhờ đó đường ranh giới cắt qua XOR (Non-linearly separable) mới được khắc họa.</p>
       <div class="mt-3 p-2 bg-blue-50 rounded">
         <p class="font-bold">Không có Activation:</p>
@@ -444,8 +444,8 @@ const ch21_03_lessons: Lesson[] = [
 </div>
     `,
     defaultCode: `// =====================================================
-// Hệ quả Toán học: Mạng Sâu + Không bẻ lượn = Nông cạn.
-// Phép chứng minh bằng Rust: Giả lập 2 Layer không có Phi tuyến tính.
+// Hệ quả Toán học: Mạng nhiều lớp không có Activation = Mạng 1 lớp.
+// Chứng minh bằng Rust: Giả lập 2 Layer không có hàm phi tuyến.
 // =====================================================
 
 // --- Mạng chỉ có Linear transformation (KHÔNG có activation) ---
@@ -1081,7 +1081,7 @@ fn main() {
     <div class="callout-content">
       <span class="callout-title">Dead ReLU Problem - Khi Neuron "chết" không sống lại được!</span>
       <p>Khi một neuron có output luôn ≤ 0 (do weights/bias không tốt từ đầu), gradient khi truyền qua nó = 0. Kết quả: weights không bao giờ được cập nhật.</p>
-      <p class="mt-2">Neuron đó "chết" vĩnh viễn như thằng mê tín!</p>
+      <p class="mt-2">Neuron đó không bao giờ được cập nhật lại và mất hoàn toàn khả năng học.</p>
       <p class="mt-2 font-bold">→ Còn tệ hơn Sigmoid vì gradient = 0 TUYỆT ĐỐI (không phải nhỏ dần)!</p>
     </div>
   </div>
@@ -1338,7 +1338,7 @@ fn main() {
     <div class="callout-icon"><span class="material-symbols-outlined">warning</span></div>
     <div class="callout-content">
       <span class="callout-title">Lưu ý quan trọng về Softmax!</span>
-      <p>Softmax "khuếch đại" (exaggerate) sự khác biệt giữa các classes: class có giá trị lớn nhất sẽ chiếm xác suất áp đảo. Không nên dùng cho regression hay binary classification — quá thừa thãi!</p>
+      <p>Softmax phóng đại sự chênh lệch giữa các lớp: lớp có giá trị lớn nhất sẽ chiếm xác suất áp đảo. Không phù hợp cho bài toán hồi quy hay phân lớp nhị phân.</p>
     </div>
   </div>
 
