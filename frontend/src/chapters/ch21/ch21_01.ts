@@ -25,7 +25,7 @@ const ch21_01_lessons: Lesson[] = [
   {
     id: 'ch21_01_01',
     title: '1. Machine Learning là gì? Neural Network nằm ở đâu?',
-    duration: '90 phút',
+    duration: '30 phút',
     type: 'theory',
     content: `
 <div class="article-content">
@@ -3633,16 +3633,10 @@ fn main() {
   <!-- ========================================= -->
   <h3><span class="material-symbols-outlined">schema</span> 8.2. Kiến trúc mạng Neural Network</h3>
 
-  <pre>
-  Input Layer (5)     Hidden Layer 1 (4)     Hidden Layer 2 (3)     Output (1)
-  ┌──────────┐        ┌──────────┐           ┌──────────┐          ┌──────────┐
-  │ x₁ (links)│──┐    │ h₁       │──┐        │ h₅       │──┐      │          │
-  │ x₂ (caps) │──┼──→ │ h₂       │──┼──→     │ h₆       │──┼──→   │ ŷ (spam?)│
-  │ x₃ (attach)│─┤    │ h₃       │──┤        │ h₇       │──┘      │ Sigmoid  │
-  │ x₄ (words)│──┤    │ h₄       │──┘        └──────────┘          └──────────┘
-  │ x₅ (known)│──┘    └──────────┘
-  └──────────┘         ReLU                    ReLU                  Sigmoid
-  </pre>
+  <div class="image-showcase">
+    <img src="/images/ch21/spam_nn_architecture.png" alt="Kiến trúc mạng Neural Network phân loại Spam" />
+    <div class="image-caption">Kiến trúc mạng: Input (5) → Hidden 1 (4, ReLU) → Hidden 2 (3, ReLU) → Output (1, Sigmoid)</div>
+  </div>
 
   <p><strong>Tóm tắt kiến trúc:</strong></p>
   <table class="comparison-table">
@@ -4131,46 +4125,9 @@ fn main() {
     </div>
   </div>
 
-  <div class="concept-grid">
-    <div class="concept-card">
-      <div class="concept-icon"><span class="material-symbols-outlined">scatter_plot</span></div>
-      <h4>High Bias (Underfitting)</h4>
-      <pre>
-   y│    /
-    │   /  · · ·
-    │  / · ·
-    │ /· ·      ← đường thẳng fit
-    │/· ·         data phi tuyến
-    └────────── x
-      </pre>
-      <p>Model quá đơn giản (linear) cho data cong</p>
-    </div>
-    <div class="concept-card">
-      <div class="concept-icon"><span class="material-symbols-outlined">show_chart</span></div>
-      <h4>Low Bias, Low Variance (Tốt)</h4>
-      <pre>
-   y│    ·
-    │   ╱·╲
-    │  ╱ · ╲    ← đường cong fit
-    │ ╱·    ╲     data vừa đủ
-    │╱·
-    └────────── x
-      </pre>
-      <p>Model phức tạp vừa đủ</p>
-    </div>
-    <div class="concept-card">
-      <div class="concept-icon"><span class="material-symbols-outlined">ssid_chart</span></div>
-      <h4>High Variance (Overfitting)</h4>
-      <pre>
-   y│ ╱╲  ╱╲ ╱
-    │╱  ╲╱  ╲╱
-    │        ·  ← đường zíc zắc
-    │·   ·       đi qua MỌI điểm
-    │  ·
-    └────────── x
-      </pre>
-      <p>Model quá phức tạp, thuộc từng điểm</p>
-    </div>
+  <div class="image-showcase">
+    <img src="/images/ch21/bias_variance_tradeoff.png" alt="Bias-Variance Tradeoff: Underfitting vs Good Fit vs Overfitting" />
+    <div class="image-caption">Từ trái sang: Underfitting (High Bias) → Good Fit → Overfitting (High Variance)</div>
   </div>
 
   <!-- ========================================= -->
