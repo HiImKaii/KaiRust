@@ -95,7 +95,7 @@ const ch22_01_lessons: Lesson[] = [
         <span>Ví dụ 3: Dịch máy (Machine Translation)</span>
       </div>
       <div class="example-content">
-        <p class="text-lg mb-4">Câu tiếng Việt: <em class="bg-yellow-100 px-2 py-1 rounded">"Tôi đi học"</em></p>
+        <p>Câu tiếng Việt: <strong>"Tôi đi học"</strong></p>
 
         <div class="translation-flow">
           <div class="flow-item">
@@ -107,24 +107,24 @@ const ch22_01_lessons: Lesson[] = [
               <span>→</span>
               <span>"học"</span>
             </div>
-            <p class="text-sm text-gray-600 mt-2">Mỗi từ xử lý riêng biệt, không biết thứ tự</p>
+            <p><em>Mỗi từ xử lý riêng biệt, không biết thứ tự</em></p>
           </div>
         </div>
 
-        <div class="wrong-results mt-4">
-          <p class="font-bold mb-2"> Kết quả có thể sai:</p>
-          <ul class="list-disc pl-6">
+        <div class="wrong-results">
+          <p><strong>Kết quả có thể sai:</strong></p>
+          <ul>
             <li>"I go learn" (thiếu "am")</li>
             <li>"learn go I" (sai hoàn toàn thứ tự)</li>
           </ul>
         </div>
 
-        <div class="callout callout-info mt-4">
+        <div class="callout callout-info">
           <p><strong>FNN không hiểu:</strong></p>
-          <ul class="mt-2">
-            <li>✅ Thứ tự từ có ý nghĩa</li>
-            <li>✅ Cấu trúc ngữ pháp</li>
-            <li>✅ Mối quan hệ giữa các từ</li>
+          <ul>
+            <li>Thứ tự từ có ý nghĩa</li>
+            <li>Cấu trúc ngữ pháp</li>
+            <li>Mối quan hệ giữa các từ</li>
           </ul>
         </div>
       </div>
@@ -136,7 +136,7 @@ const ch22_01_lessons: Lesson[] = [
         <span>Ví dụ 4: Dự đoán giá cổ phiếu</span>
       </div>
       <div class="example-content">
-        <p class="text-lg mb-4">Dự đoán giá Bitcoin ngày mai</p>
+        <p>Dự đoán giá Bitcoin ngày mai</p>
 
         <table class="comparison-table">
           <thead>
@@ -160,7 +160,7 @@ const ch22_01_lessons: Lesson[] = [
           </tbody>
         </table>
 
-        <div class="analysis-box mt-4">
+        <div class="analysis-box">
           <p><strong> Vấn đề:</strong> FNN mất hoàn toàn thông tin về <em>xu hướng</em> (trend) theo thời gian.</p>
         </div>
       </div>
@@ -172,7 +172,7 @@ const ch22_01_lessons: Lesson[] = [
         <span>Ví dụ 5: Phân tích video</span>
       </div>
       <div class="example-content">
-        <p class="text-lg mb-4">Frame hiện tại: một người đang lơ lửng giữa không trung</p>
+        <p>Frame hiện tại: một người đang lơ lửng giữa không trung</p>
 
         <table class="comparison-table">
           <thead>
@@ -196,7 +196,7 @@ const ch22_01_lessons: Lesson[] = [
           </tbody>
         </table>
 
-        <div class="analysis-box mt-4">
+        <div class="analysis-box">
           <p><strong> Vấn đề:</strong> FNN không mô hình hóa được <em>chuyển động</em> (dynamics).</p>
         </div>
       </div>
@@ -206,9 +206,9 @@ const ch22_01_lessons: Lesson[] = [
   <h3>1.3. Bản Chất Toán Học Của Vấn Đề</h3>
 
   <div class="formula-block">
-    <p class="font-mono text-lg">$h_1 = \\sigma(W_1 \\cdot x + b_1)$</p>
-    <p class="font-mono text-lg">$h_2 = \\sigma(W_2 \\cdot h_1 + b_2)$</p>
-    <p class="font-mono text-lg">$y = \\text{softmax}(W_3 \\cdot h_2 + b_3)$</p>
+    <p>$h_1 = \\sigma(W_1 \\cdot x + b_1)$</p>
+    <p>$h_2 = \\sigma(W_2 \\cdot h_1 + b_2)$</p>
+    <p>$y = \\text{softmax}(W_3 \\cdot h_2 + b_3)$</p>
   </div>
 
   <div class="definition-block">
@@ -224,7 +224,7 @@ const ch22_01_lessons: Lesson[] = [
     <div class="callout-content">
       <span class="callout-title">So sánh với hàm có bộ nhớ</span>
       <p>Để so sánh, một hàm <strong>có bộ nhớ</strong> cần:</p>
-      <p class="font-mono text-lg">$y_t = f(x_t, h_{t-1})$</p>
+      <p>$y_t = f(x_t, h_{t-1})$</p>
       <table class="comparison-table">
         <thead>
           <tr>
@@ -391,8 +391,8 @@ const ch22_01_lessons: Lesson[] = [
   </div>
 
   <div class="formula-block">
-    <p class="font-mono text-lg">$h_t = \\tanh(W_{hh} \\cdot h_{t-1} + W_{xh} \\cdot x_t)$</p>
-    <p class="font-mono text-lg">$y_t = \\text{softmax}(W_{hy} \\cdot h_t)$</p>
+    <p>$h_t = \\tanh(W_{hh} \\cdot h_{t-1} + W_{xh} \\cdot x_t)$</p>
+    <p>$y_t = \\text{softmax}(W_{hy} \\cdot h_t)$</p>
   </div>
 
   <div class="definition-block">
@@ -905,12 +905,12 @@ fn main() {
 
   <h3>4.1. Hai công thức cốt lõi của RNN</h3>
 
-  <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
+  <div class="formula-block">
     <h4>Công thức 1: Cập nhật Hidden State</h4>
-    <p class="font-mono text-lg">$h_t = \\\\tanh(W_{hh} \\cdot h_{t-1} + W_{xh} \\cdot x_t + b_h)$</p>
+    <p>$h_t = \\tanh(W_{hh} \\cdot h_{t-1} + W_{xh} \\cdot x_t + b_h)$</p>
     <p>Tại mỗi bước t: lấy hidden state cũ h_(t-1), kết hợp với input mới x_t, qua hàm tanh → tạo hidden state mới h_t.</p>
-    <h4 class="mt-3">Công thức 2: Tính Output</h4>
-    <p class="font-mono text-lg">$y_t = W_{hy} \\cdot h_t + b_y$</p>
+    <h4>Công thức 2: Tính Output</h4>
+    <p>$y_t = W_{hy} \\cdot h_t + b_y$</p>
     <p>Dùng hidden state h_t để tính output y_t (có thể thêm softmax nếu classification).</p>
   </div>
 
@@ -1372,7 +1372,7 @@ fn main() {
       <li><strong>FNN thất bại</strong> với dữ liệu tuần tự vì thiếu bộ nhớ và không xử lý được chuỗi có độ dài biến đổi</li>
       <li><strong>Sequential Data</strong> = dữ liệu mà thứ tự quan trọng: text, time series, audio, video, DNA</li>
       <li><strong>Hidden State (h_t)</strong> = "bộ nhớ" của RNN, mã hóa thông tin tóm tắt từ tất cả input đã thấy</li>
-      <li><strong>Công thức RNN:</strong> $h_t = \\\\tanh(W_{hh} \\\\cdot h_{t-1} + W_{xh} \\\\cdot x_t + b_h)$</li>
+      <li><strong>Công thức RNN:</strong> $h_t = \\tanh(W_{hh} \\\\cdot h_{t-1} + W_{xh} \\\\cdot x_t + b_h)$</li>
       <li><strong>Parameter Sharing:</strong> cùng 1 bộ weights cho mọi bước thời gian → xử lý chuỗi bất kỳ độ dài</li>
       <li><strong>5 kiểu RNN:</strong> One-to-One, One-to-Many, Many-to-One, Many-to-Many (synced), Many-to-Many (encoder-decoder)</li>
       <li><strong>Lịch sử:</strong> 1982 Hopfield → 1986 Elman → 1997 LSTM → 2014 GRU → 2017 Transformer thay thế</li>
