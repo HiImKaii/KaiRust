@@ -10,95 +10,421 @@ const ch22_01_lessons: Lesson[] = [
 <div class="article-content">
   <h2>1. Tại sao Feedforward Neural Network thất bại với dữ liệu tuần tự?</h2>
 
-  <p>Ở Chương 21, ta đã học về <strong>Feedforward Neural Network (FNN)</strong> — mạng truyền thẳng, nơi dữ liệu chỉ đi theo một chiều: Input → Hidden → Output, không có vòng lặp. FNN hoạt động tốt với dữ liệu <strong>tĩnh</strong> (ảnh, bảng số liệu), nhưng hoàn toàn <strong>thất bại</strong> với dữ liệu có <strong>thứ tự và ngữ cảnh</strong>.</p>
+  <div class="definition-block">
+    <span class="definition-term">Giới thiệu</span>
+    <p>Ở Chương 21, ta đã học về <strong>Feedforward Neural Network (FNN)</strong> — mạng truyền thẳng, nơi dữ liệu chỉ đi theo một chiều: <code>Input → Hidden → Output</code>, không có vòng lặp. FNN hoạt động tốt với dữ liệu <strong>tĩnh</strong> (ảnh, bảng số liệu), nhưng hoàn toàn <strong>thất bại</strong> với dữ liệu có <strong>thứ tự và ngữ cảnh</strong>.</p>
+  </div>
 
   <div class="image-showcase">
-    <img src="/images/ch22/rnn_vs_fnn.png" alt="So sánh FNN và RNN" />
+    <img src="/images/ch22/fnn_vs_rnn_comparison.png" alt="So sánh FNN và RNN" />
     <div class="image-caption">So sánh Feedforward Neural Network (không có bộ nhớ) và Recurrent Neural Network (có bộ nhớ)</div>
   </div>
 
-  <h3>1.1. Vấn đề cốt lõi: FNN thiếu "trí nhớ"</h3>
+  <h3>1.1. FNN Hoạt Động Như Thế Nào?</h3>
 
-  <p>FNN xử lý mỗi input <strong>HOÀN TOÀN ĐỘC LẬP</strong>. Nó không biết input trước đó là gì, không biết input sau là gì. Mỗi lần nhận input mới, FNN "quên sạch" mọi thứ trước đó.</p>
+  <div class="definition-block">
+    <span class="definition-term">Định nghĩa FNN</span>
+    <p><strong>Feedforward Neural Network (FNN)</strong> hay còn gọi là <strong>Multilayer Perceptron (MLP)</strong> là kiến trúc neural network cơ bản nhất, nơi dữ liệu chỉ đi theo một chiều từ input đến output mà không có bất kỳ vòng lặp nào.</p>
+  </div>
 
   <div class="concept-grid">
     <div class="concept-card">
-      <h4>Ví dụ 1: Dự đoán từ tiếp theo</h4>
-      <p>Câu: <em>"Mây đen kéo đến, trời sắp ___"</em></p>
-      <ul>
-        <li><strong>Con người:</strong> Đọc cả câu → hiểu ngữ cảnh "mây đen", "kéo đến" → dự đoán <strong>"mưa"</strong></li>
-        <li><strong>FNN:</strong> Chỉ nhìn từ cuối cùng "sắp" → không có context → có thể đoán bất kỳ từ nào: "sáng", "tối", "nổ"...</li>
-      </ul>
-      <p><strong>Vấn đề:</strong> FNN không có cơ chế "nhớ" các từ trước đó trong câu.</p>
+      <h4>1. Input Layer</h4>
+      <p>Nhận dữ liệu đầu vào</p>
     </div>
     <div class="concept-card">
-      <h4>Ví dụ 2: Giá cổ phiếu</h4>
-      <p>Dự đoán giá Bitcoin ngày mai:</p>
-      <ul>
-        <li><strong>Con người:</strong> Nhìn biểu đồ 30 ngày → thấy xu hướng tăng/giảm → dự đoán</li>
-        <li><strong>FNN:</strong> Chỉ nhìn giá hôm nay = 50,000$ → dự đoán. Không biết hôm qua là 45,000$ (đang tăng) hay 55,000$ (đang giảm)</li>
-      </ul>
-      <p><strong>Vấn đề:</strong> FNN mất hoàn toàn thông tin về <em>xu hướng</em> (trend) theo thời gian.</p>
+      <h4>2. Hidden Layers</h4>
+      <p>Xử lý, trích xuất đặc trưng</p>
     </div>
     <div class="concept-card">
-      <h4>Ví dụ 3: Phân tích video</h4>
-      <p>Frame hiện tại: một người đang lơ lửng giữa không trung</p>
-      <ul>
-        <li><strong>Con người:</strong> Xem các frame trước → biết người đó đang nhảy lên hay đang rơi xuống</li>
-        <li><strong>FNN:</strong> Chỉ thấy 1 frame → không thể phân biệt "nhảy lên" vs "rơi xuống"</li>
-      </ul>
-      <p><strong>Vấn đề:</strong> FNN không mô hình hóa được <em>chuyển động</em> (dynamics).</p>
-    </div>
-    <div class="concept-card">
-      <h4>Ví dụ 4: Dịch thuật</h4>
-      <p>Dịch: "I love you" → "Tôi yêu bạn"</p>
-      <ul>
-        <li>Input: 3 từ tiếng Anh. Output: 3 từ tiếng Việt</li>
-        <li>Nhưng: "I am a student" (4 từ) → "Tôi là một sinh viên" (4 từ)</li>
-        <li>"The cat sat on the mat" (6 từ) → "Con mèo ngồi trên chiếc thảm" (6 từ, nhưng trong trường hợp khác có thể khác)</li>
-      </ul>
-      <p><strong>Vấn đề:</strong> FNN có <em>input size cố định</em>. Câu 3 từ và câu 50 từ cần kiến trúc khác nhau.</p>
+      <h4>3. Output Layer</h4>
+      <p>Đưa ra kết quả dự đoán</p>
     </div>
   </div>
 
-  <h3>1.2. Bốn lý do kỹ thuật FNN thất bại</h3>
+  <div class="image-showcase">
+    <img src="/images/ch21/spam_nn_architecture.png" alt="Kiến trúc Neural Network" />
+    <div class="image-caption">Sơ đồ kiến trúc Feedforward Neural Network</div>
+  </div>
 
-  <table class="comparison-table">
-    <thead>
-      <tr>
-        <th>Lý do</th>
-        <th>Giải thích</th>
-        <th>Ví dụ</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>1. Fixed-size input</strong></td>
-        <td>FNN yêu cầu input có kích thước cố định. Không xử lý được chuỗi có độ dài thay đổi.</td>
-        <td>Câu 5 từ và câu 500 từ cần kiến trúc khác nhau</td>
-      </tr>
-      <tr>
-        <td><strong>2. No memory</strong></td>
-        <td>Mỗi input xử lý từ đầu, không "nhớ" gì từ input trước. Không có trạng thái nội bộ (internal state).</td>
-        <td>Đọc từ "bank" — không biết đang nói về ngân hàng hay bờ sông vì quên câu trước</td>
-      </tr>
-      <tr>
-        <td><strong>3. No temporal dynamics</strong></td>
-        <td>Không mô hình hóa được sự thay đổi theo thời gian. Không học được patterns như "tăng rồi giảm".</td>
-        <td>Giá cổ phiếu: FNN không phân biệt được uptrend vs downtrend</td>
-      </tr>
-      <tr>
-        <td><strong>4. No parameter sharing across time</strong></td>
-        <td>Nếu concat toàn bộ chuỗi thành 1 vector rồi ép vào FNN, mỗi vị trí trong chuỗi dùng bộ weights riêng → không tổng quát hóa được.</td>
-        <td>Từ "mèo" ở vị trí thứ 3 và vị trí thứ 30 trong câu dùng weights hoàn toàn khác nhau</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="callout callout-info">
+    <div class="callout-content">
+      <span class="callout-title">Đặc điểm cốt lõi của FNN</span>
+      <ul>
+        <li><strong>One-way:</strong> Dữ liệu chỉ đi một chiều</li>
+        <li><strong>No Loop:</strong> Không có vòng lặp</li>
+        <li><strong>Independent:</strong> Mỗi input xử lý riêng biệt</li>
+      </ul>
+    </div>
+  </div>
 
-  <div class="callout callout-important">
+  <h3>1.2. Vấn đề cốt lõi: FNN thiếu "trí nhớ"</h3>
+
+  <div class="callout callout-warning">
+    <div class="callout-content">
+      <span class="callout-title">Vấn đề cốt lõi</span>
+      <p>FNN xử lý mỗi input <strong>HOÀN TOÀN ĐỘC LẬP</strong>. Nó không biết input trước đó là gì, không biết input sau là gì. Mỗi lần nhận input mới, FNN <strong>"quên sạch"</strong> mọi thứ trước đó.</p>
+    </div>
+  </div>
+
+  <div class="definition-block">
+    <span class="definition-term">Ví dụ 1: Dự đoán từ tiếp theo</span>
+    <p>Câu: <em>"Mây đen kéo đến, trời sắp ___"</em></p>
+    <ul>
+      <li><strong>Con người:</strong> Đọc cả câu → hiểu ngữ cảnh "mây đen", "kéo đến" → dự đoán <strong>"mưa"</strong></li>
+      <li><strong>FNN:</strong> Chỉ nhìn từ "sắp" → không có context → đoán: "sáng", "tối", "nổ"...</li>
+    </ul>
+    <p><strong>Phân tích:</strong> Con người sử dụng <em>trí nhớ ngắn hạn</em> để nhớ "mây đen kéo đến". FNN <strong>thiếu hoàn toàn</strong> cơ chế này. Từ "sắp" <strong>không đủ thông tin</strong> để dự đoán từ tiếp theo.</p>
+  </div>
+
+  <div class="definition-block">
+    <span class="definition-term">Ví dụ 2: Phân tích cảm xúc (Sentiment Analysis)</span>
+    <p>Input: <em>"Phim này hay lắm, nhưng kết thúc hơi chán"</em></p>
+    <ol>
+      <li>"Phim" → positive?</li>
+      <li>"hay" → positive!</li>
+      <li>"nhưng" → ??? (FNN không biết đảo ngược)</li>
+      <li>"chán" → negative! (quá muộn)</li>
+    </ol>
+    <p><strong>Kết quả:</strong> FNN bối rối vì thiếu ngữ cảnh từ đầu câu. <strong>Sai lệch càng lớn khi câu dài.</strong></p>
+  </div>
+
+    <!-- Ví dụ 3: Machine Translation -->
+    <div class="example-box">
+      <div class="example-header">
+        <span>Ví dụ 3: Dịch máy (Machine Translation)</span>
+      </div>
+      <div class="example-content">
+        <p class="text-lg mb-4">Câu tiếng Việt: <em class="bg-yellow-100 px-2 py-1 rounded">"Tôi đi học"</em></p>
+
+        <div class="translation-flow">
+          <div class="flow-item">
+            <span class="flow-label">FNN xử lý</span>
+            <div class="flow-arrows">
+              <span>"Tôi"</span>
+              <span>→</span>
+              <span>"đi"</span>
+              <span>→</span>
+              <span>"học"</span>
+            </div>
+            <p class="text-sm text-gray-600 mt-2">Mỗi từ xử lý riêng biệt, không biết thứ tự</p>
+          </div>
+        </div>
+
+        <div class="wrong-results mt-4">
+          <p class="font-bold mb-2"> Kết quả có thể sai:</p>
+          <ul class="list-disc pl-6">
+            <li>"I go learn" (thiếu "am")</li>
+            <li>"learn go I" (sai hoàn toàn thứ tự)</li>
+          </ul>
+        </div>
+
+        <div class="callout callout-info mt-4">
+          <p><strong>FNN không hiểu:</strong></p>
+          <ul class="mt-2">
+            <li>✅ Thứ tự từ có ý nghĩa</li>
+            <li>✅ Cấu trúc ngữ pháp</li>
+            <li>✅ Mối quan hệ giữa các từ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ví dụ 4: Giá cổ phiếu -->
+    <div class="example-box">
+      <div class="example-header">
+        <span>Ví dụ 4: Dự đoán giá cổ phiếu</span>
+      </div>
+      <div class="example-content">
+        <p class="text-lg mb-4">Dự đoán giá Bitcoin ngày mai</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Đối tượng</th>
+              <th>Cách xử lý</th>
+              <th>Kết quả</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong> Con người</strong></td>
+              <td>Nhìn biểu đồ 30 ngày → thấy xu hướng tăng/giảm → dự đoán</td>
+              <td><span class="badge badge-success">Chính xác</span></td>
+            </tr>
+            <tr>
+              <td><strong> FNN</strong></td>
+              <td>Chỉ nhìn giá hôm nay = 50,000$ → dự đoán</td>
+              <td><span class="badge badge-error">Sai</span> - Không biết hôm qua là 45,000$ (tăng) hay 55,000$ (giảm)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="analysis-box mt-4">
+          <p><strong> Vấn đề:</strong> FNN mất hoàn toàn thông tin về <em>xu hướng</em> (trend) theo thời gian.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ví dụ 5: Phân tích video -->
+    <div class="example-box">
+      <div class="example-header">
+        <span>Ví dụ 5: Phân tích video</span>
+      </div>
+      <div class="example-content">
+        <p class="text-lg mb-4">Frame hiện tại: một người đang lơ lửng giữa không trung</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Đối tượng</th>
+              <th>Cách xử lý</th>
+              <th>Kết quả</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong> Con người</strong></td>
+              <td>Xem các frame trước → biết người đó đang nhảy lên hay đang rơi xuống</td>
+              <td><span class="badge badge-success">Phân biệt được</span></td>
+            </tr>
+            <tr>
+              <td><strong> FNN</strong></td>
+              <td>Chỉ thấy 1 frame → không thể phân biệt</td>
+              <td><span class="badge badge-error">Không phân biệt được</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="analysis-box mt-4">
+          <p><strong> Vấn đề:</strong> FNN không mô hình hóa được <em>chuyển động</em> (dynamics).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>1.3. Bản Chất Toán Học Của Vấn Đề</h3>
+
+  <div class="formula-block">
+    <p class="font-mono text-lg">$h_1 = \\sigma(W_1 \\cdot x + b_1)$</p>
+    <p class="font-mono text-lg">$h_2 = \\sigma(W_2 \\cdot h_1 + b_2)$</p>
+    <p class="font-mono text-lg">$y = \\text{softmax}(W_3 \\cdot h_2 + b_3)$</p>
+  </div>
+
+  <div class="definition-block">
+    <span class="definition-term">Đặc điểm quan trọng</span>
+    <ul>
+      <li>Mỗi input <strong>x</strong> được xử lý qua cùng một weight <strong>W</strong></li>
+      <li><strong>Không có tham số nào</strong> lưu trữ thông tin về input trước đó</li>
+      <li>Output chỉ phụ thuộc vào <strong>input hiện tại</strong></li>
+    </ul>
+  </div>
+
+  <div class="callout callout-info">
+    <div class="callout-content">
+      <span class="callout-title">So sánh với hàm có bộ nhớ</span>
+      <p>Để so sánh, một hàm <strong>có bộ nhớ</strong> cần:</p>
+      <p class="font-mono text-lg">$y_t = f(x_t, h_{t-1})$</p>
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Ký hiệu</th>
+            <th>Ý nghĩa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>$x_t$</td>
+            <td>input tại thời điểm t</td>
+          </tr>
+          <tr>
+            <td>$h_{t-1}$</td>
+            <td>"trạng thái ẩn" (hidden state) từ thời điểm trước</td>
+          </tr>
+          <tr>
+            <td>$y_t$</td>
+            <td>output tại thời điểm t</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>FNN không có tham số nào để lưu $h_{t-1}$</strong></p>
+    </div>
+  </div>
+
+  <h3>1.4. Bốn Lý Do Kỹ Thuật FNN Thất Bại</h3>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>1. Fixed-size Input</h4>
+      <p>FNN yêu cầu input có kích thước cố định. Không xử lý được chuỗi có độ dài thay đổi.</p>
+      <p><em>Ví dụ:</em> Câu 5 từ và câu 500 từ cần kiến trúc khác nhau</p>
+    </div>
+    <div class="concept-card">
+      <h4>2. No Memory</h4>
+      <p>Mỗi input xử lý từ đầu, không "nhớ" gì từ input trước. Không có trạng thái nội bộ.</p>
+      <p><em>Ví dụ:</em> Đọc từ "bank" — không biết đang nói về ngân hàng hay bờ sông</p>
+    </div>
+    <div class="concept-card">
+      <h4>3. No Temporal Dynamics</h4>
+      <p>Không mô hình hóa được sự thay đổi theo thời gian. Không học được patterns.</p>
+      <p><em>Ví dụ:</em> Giá cổ phiếu: FNN không phân biệt được uptrend vs downtrend</p>
+    </div>
+    <div class="concept-card">
+      <h4>4. No Parameter Sharing</h4>
+      <p>Nếu concat toàn bộ chuỗi, mỗi vị trí dùng bộ weights riêng → không tổng quát hóa.</p>
+      <p><em>Ví dụ:</em> Từ "mèo" ở vị trí 3 và 30 dùng weights khác nhau</p>
+    </div>
+  </div>
+
+  <!-- 1.5. Ba cấp độ của vấn đề -->
+  <div class="section-card">
+  <h3>1.5. Ba Cấp Độ Của Vấn Đề</h3>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>Cấp độ 1: Không Biết Quá Khứ</h4>
+      <p><strong>Input:</strong> "quả" (t=5)</p>
+      <p><strong>FNN không biết:</strong></p>
+      <ul>
+        <li>"Tôi" (t=1)</li>
+        <li>"ăn" (t=2)</li>
+        <li>"một" (t=3)</li>
+        <li>"quả" (t=4)</li>
+      </ul>
+      <p>→ Không xác định "quả" gì</p>
+    </div>
+    <div class="concept-card">
+      <h4>Cấp độ 2: Không Biết Tương Lai</h4>
+      <p><strong>Input:</strong> "Tôi đi" (t=2)</p>
+      <p><strong>FNN không biết:</strong></p>
+      <ul>
+        <li>t=3: sẽ là gì? (học, ăn, chơi...)</li>
+      </ul>
+      <p>→ Không xác định hành động</p>
+    </div>
+    <div class="concept-card">
+      <h4>Cấp độ 3: Không Hiểu Mối Quan Hệ</h4>
+      <p><strong>Câu:</strong> "Mỗi ngày tôi đều uống cà phê"</p>
+      <p><strong>FNN xử lý riêng lẻ:</strong></p>
+      <ul>
+        <li>"Mỗi" → ?</li>
+        <li>"ngày" → ?</li>
+        <li>"tôi" → ?</li>
+      </ul>
+      <p>→ Không hiểu thói quen</p>
+    </div>
+  </div>
+  </div>
+
+  <!-- 1.6. Dữ liệu tuần tự -->
+  <div class="section-card">
+  <h3>1.6. Định Nghĩa Dữ Liệu Tuần Tự</h3>
+
+  <div class="definition-block">
+    <span class="definition-term">Sequential Data là gì?</span>
+    <p><strong>Dữ liệu tuần tự</strong> (Sequential Data) là dữ liệu mà <strong>thứ tự của các phần tử mang ý nghĩa quan trọng</strong>. Thay đổi thứ tự → thay đổi ý nghĩa hoặc mất thông tin.</p>
+    <p><em>Ví dụ:</em> "Chó cắn mèo" ≠ "Mèo cắn chó" — cùng 3 từ, khác thứ tự → khác ý nghĩa!</p>
+  </div>
+
+  <h4>Các loại Sequential Data</h4>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>Văn bản (Text)</h4>
+      <p>Câu, đoạn văn, code, email</p>
+      <p><em>Đặc điểm:</em> Phụ thuộc ngữ cảnh xa - từ đầu câu ảnh hưởng cuối câu</p>
+    </div>
+    <div class="concept-card">
+      <h4>Time Series</h4>
+      <p>Giá cổ phiếu, nhiệt độ, ECG tim, lưu lượng xe</p>
+      <p><em>Đặc điểm:</em> Khoảng cách thời gian đều, có xu hướng (trend) + mùa (seasonality)</p>
+    </div>
+    <div class="concept-card">
+      <h4>Audio (Âm thanh)</h4>
+      <p>Giọng nói, nhạc, tiếng ồn</p>
+      <p><em>Đặc điểm:</em> Tần suất rất cao (16,000-44,100 samples/giây)</p>
+    </div>
+    <div class="concept-card">
+      <h4>Video</h4>
+      <p>Phim, camera giám sát, livestream</p>
+      <p><em>Đặc điểm:</em> Mỗi frame là 1 ảnh, chuỗi frames mang thông tin chuyển động</p>
+    </div>
+    <div class="concept-card">
+      <h4>Sinh học</h4>
+      <p>DNA (ATCG...), protein</p>
+      <p><em>Đặc điểm:</em> Chuỗi rất dài (hàng triệu ký tự), có cấu trúc cục bộ + toàn cục</p>
+    </div>
+    <div class="concept-card">
+      <h4>User Behavior</h4>
+      <p>Lịch sử mua hàng, clickstream</p>
+      <p><em>Đặc điểm:</em> Khoảng cách thời gian không đều</p>
+    </div>
+  </div>
+
+  <div class="definition-block">
+    <span class="definition-term">Tại sao FNN không xử lý được?</span>
+    <ul>
+      <li><strong>Thứ tự quan trọng:</strong> FNN xử lý mỗi input độc lập, không biết input trước/sau</li>
+      <li><strong>Độ dài biến đổi:</strong> FNN yêu cầu input cố định, không xử lý được câu 5 từ và 500 từ</li>
+      <li><strong>Phụ thuộc xa:</strong> Từ đầu câu có thể ảnh hưởng đến từ cuối câu (ví dụ: "Tuy...nhưng...")</li>
+    </ul>
+  </div>
+
+  <h3>1.7. Giải Pháp: Recurrent Neural Network (RNN)</h3>
+
+  <div class="definition-block">
+    <span class="definition-term">Ý tưởng cốt lõi</span>
+    <p>Thêm vòng lặp (loop) vào mạng neural để tạo "bộ nhớ". Mỗi bước thời gian, RNN không chỉ xử lý input hiện tại mà còn nhận thêm thông tin từ bước trước đó.</p>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>FNN (Không có bộ nhớ)</h4>
+      <p>x → ○ → y</p>
+      <p><em>Mỗi input xử lý độc lập, không biết gì về quá khứ</em></p>
+    </div>
+    <div class="concept-card">
+      <h4>RNN (Có bộ nhớ)</h4>
+      <p>x → ○ → y</p>
+      <p><em>Có vòng lặp, truyền hidden state từ bước trước</em></p>
+    </div>
+  </div>
+
+  <div class="formula-block">
+    <p class="font-mono text-lg">$h_t = \\tanh(W_{hh} \\cdot h_{t-1} + W_{xh} \\cdot x_t)$</p>
+    <p class="font-mono text-lg">$y_t = \\text{softmax}(W_{hy} \\cdot h_t)$</p>
+  </div>
+
+  <div class="definition-block">
+    <span class="definition-term">Giải thích các ký hiệu</span>
+    <ul>
+      <li>$h_t$ — hidden state tại thời điểm t</li>
+      <li>$h_{t-1}$ — hidden state từ thời điểm trước</li>
+      <li>$W_{hh}$ — weight từ hidden state sang hidden state</li>
+      <li>$W_{xh}$ — weight từ input sang hidden state</li>
+      <li><strong>Thông tin từ quá khứ được "truyền" đến hiện tại qua $h_{t-1}$</strong></li>
+    </ul>
+  </div>
+
+  <div class="definition-block">
+    <span class="definition-term">Minh họa RNN triển khai theo thời gian</span>
+    <ul>
+      <li><strong>t=1:</strong> $x_1$ → RNN → $h_1$ → $y_1$</li>
+      <li><strong>t=2:</strong> $x_2$ + $h_1$ → RNN → $h_2$ → $y_2$ (biết $x_1$)</li>
+      <li><strong>t=3:</strong> $x_3$ + $h_2$ → RNN → $h_3$ → $y_3$ (biết $x_1, x_2$)</li>
+    </ul>
+    <p><strong>→ RNN "nhớ" tất cả input trước đó!</strong></p>
+  </div>
+
+  <div class="callout callout-success">
     <div class="callout-content">
       <span class="callout-title">Kết luận</span>
-      <p>FNN thiếu 2 yếu tố then chốt để xử lý dữ liệu tuần tự: <strong>(1) Bộ nhớ</strong> (memory) để lưu trữ context từ quá khứ, và <strong>(2) Khả năng xử lý chuỗi có độ dài biến đổi</strong>. Recurrent Neural Network (RNN) ra đời chính xác để giải quyết 2 vấn đề này.</p>
+      <p>FNN thiếu 2 yếu tố then chốt để xử lý dữ liệu tuần tự:</p>
+      <ul>
+        <li><strong>Bộ nhớ</strong> (memory) để lưu trữ context từ quá khứ</li>
+        <li><strong>Khả năng xử lý chuỗi có độ dài biến đổi</li>
+      </ul>
+      <p><strong>Recurrent Neural Network (RNN)</strong> ra đời chính xác để giải quyết 2 vấn đề này!</p>
     </div>
   </div>
 </div>
@@ -581,7 +907,7 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
     <h4>Công thức 1: Cập nhật Hidden State</h4>
-    <p class="font-mono text-lg">$h_t = \\tanh(W_{hh} \\cdot h_{t-1} + W_{xh} \\cdot x_t + b_h)$</p>
+    <p class="font-mono text-lg">$h_t = \\\\tanh(W_{hh} \\cdot h_{t-1} + W_{xh} \\cdot x_t + b_h)$</p>
     <p>Tại mỗi bước t: lấy hidden state cũ h_(t-1), kết hợp với input mới x_t, qua hàm tanh → tạo hidden state mới h_t.</p>
     <h4 class="mt-3">Công thức 2: Tính Output</h4>
     <p class="font-mono text-lg">$y_t = W_{hy} \\cdot h_t + b_y$</p>
@@ -655,7 +981,7 @@ fn main() {
 
   <div class="definition-block">
     <span class="definition-term">Recurrent = Có vòng lặp qua thời gian</span>
-    <p>Trong công thức $h_t = f(W_{hh} \\cdot h_{t-1} + ...)$, h_t phụ thuộc vào h_(t-1), mà h_(t-1) phụ thuộc h_(t-2), ... Đây là <strong>vòng lặp ngầm qua thời gian</strong>.</p>
+    <p>Trong công thức $h_t = f(W_{hh} \\cdot h_{t-1} + ...)$, $h_t$ phụ thuộc vào $h_{t-1}$, mà $h_{t-1}$ phụ thuộc $h_{t-2}$, ... Đây là <strong>vòng lặp ngầm qua thời gian</strong>.</p>
     <p>"Recurrent" (hồi quy) nghĩa là output quay lại làm input cho bước tiếp theo. Khác biệt hoàn toàn với Feedforward, nơi dữ liệu chỉ đi 1 chiều.</p>
   </div>
 

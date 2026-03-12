@@ -40,10 +40,9 @@ const ch22_04_lessons: Lesson[] = [
     </div>
   </div>
 
-  <div class="definition-block mb-4">
-    <span class="definition-term">Hình dung về 2 con đường song song</span>
-    <pre><code>c^(1) ═══════════════════════════════→ c^(5)   ← highway, ít bị biến đổi (Tờ giấy)
-h^(1) ──→ h^(2) ──→ h^(3) ──→ h^(4) ──→ h^(5)  ← vẫn đi bộ qua từng bước</code></pre>
+  <div class="image-showcase">
+    <img src="/images/ch22/lstm_highway_concept.png" alt="LSTM Highway Concept" />
+    <div class="image-caption">Hình dung về 2 con đường song song: Cell State (Highway) và Hidden State</div>
   </div>
 
   <h3>2.1. Quản lý tờ giấy ghi chú bằng 4 "Vệ sĩ" (Gates)</h3>
