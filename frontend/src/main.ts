@@ -291,7 +291,21 @@ const selectLesson = (lesson: Lesson, restoreScrollPosition: number | null = nul
     if (contentEl) {
         contentEl.innerHTML = generateCPContent(lesson);
         renderMath(contentEl);
-    } // Handle scroll position (restore if specified, otherwise reset to top)
+
+        // --- Execute inline scripts from lesson content ---
+        const scripts = contentEl.getElementsByTagName('script');
+        Array.from(scripts).forEach(script => {
+            const newScript = document.createElement('script');
+            if (script.src) {
+                newScript.src = script.src;
+            } else {
+                newScript.textContent = script.textContent;
+            }
+            document.body.appendChild(newScript).parentNode?.removeChild(newScript);
+        });
+    } 
+    
+    // Handle scroll position (restore if specified, otherwise reset to top)
     const scrollArea = document.getElementById('panel-scroll-area');
     if (scrollArea) {
         if (restoreScrollPosition !== null && restoreScrollPosition > 0) {

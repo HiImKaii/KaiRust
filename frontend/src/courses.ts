@@ -132,6 +132,7 @@ import { ch18 } from './chapters/ch18/index';
 import { ch19 } from './chapters/ch19/index';
 import { ch20 } from './chapters/ch20/index';
 import { ch21 } from './chapters/ch21/index';
+import { ch22 } from './chapters/ch22/index';
 
 export const courseData: Chapter[] = [
   ch01,
@@ -154,5 +155,6 @@ export const courseData: Chapter[] = [
   ch18,
   ch19,
   ch20,
-  ch21
+  ch21,
+  ch22
 ];

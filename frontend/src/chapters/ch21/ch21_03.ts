@@ -28,8 +28,8 @@ const ch21_03_lessons: Lesson[] = [
   <div class="definition-block mb-4">
     <p class="font-semibold text-lg mb-3">Định nghĩa cơ bản:</p>
     <p>Thuật toán cốt lõi của mỗi Nơ-ron là phép tính:</p>
-    <div class="formula-block my-4 p-4 bg-blue-50 text-center">
-      <p class="text-xl font-mono">$Z = X \\cdot W + b$</p>
+    <div class="formula-block-small my-4 p-4 bg-blue-50 text-center">
+      $$Z = X \cdot W + b$$
     </div>
     <p>Đây là một <strong>phương trình tuyến tính</strong> (Linear) thuần túy:</p>
     <ul class="list-disc pl-6 mt-2">
@@ -56,30 +56,37 @@ const ch21_03_lessons: Lesson[] = [
 
   <p>Giả sử ta có mạng Neural với 3 lớp, mỗi lớp chỉ thực hiện phép nhân ma trận cộng bias (không có activation):</p>
 
-  <div class="formula-block my-6 p-5 bg-red-50 border-l-4 border-red-500">
+  <div class="my-6 p-5 bg-red-50 border-l-4 border-red-500">
     <p class="font-bold text-red-800 mb-3">⚠️ HIỆN TƯỢNG LINEAR COLLAPSE - MẠNG SỤP ĐỔ VỀ TUYẾN TÍNH!</p>
-    <div class="space-y-3 font-mono text-sm">
-      <div class="bg-white p-3 rounded">
-        <p class="text-blue-600 font-bold">Lớp 1 (Hidden Layer 1):</p>
-        <p>$H_1 = X \\cdot W_1 + b_1$</p>
-      </div>
-      <div class="bg-white p-3 rounded">
-        <p class="text-blue-600 font-bold">Lớp 2 (Hidden Layer 2):</p>
-        <p>$H_2 = H_1 \\cdot W_2 + b_2$</p>
-        <p class="text-gray-500 mt-1">$= (X \\cdot W_1 + b_1) \\cdot W_2 + b_2$</p>
-        <p class="text-gray-500">$= X \\cdot (W_1 \\cdot W_2) + (b_1 \\cdot W_2 + b_2)$</p>
-      </div>
-      <div class="bg-white p-3 rounded">
-        <p class="text-blue-600 font-bold">Lớp 3 (Hidden Layer 3):</p>
-        <p>$H_3 = H_2 \\cdot W_3 + b_3$</p>
-        <p class="text-gray-500 mt-1">$= X \\cdot (W_1 \\cdot W_2 \\cdot W_3) + ...$</p>
-      </div>
-      <div class="bg-yellow-100 p-3 rounded border border-yellow-400">
-        <p class="text-yellow-800 font-bold">RÚT GỌN TỔNG QUÁT:</p>
-        <p>$H_n = X \\cdot W_{gop} + b_{gop}$</p>
-        <p class="mt-2">Trong đó: $W_{gop} = W_1 \\cdot W_2 \\cdot ... \\cdot W_n$</p>
-      </div>
+    <p class="text-blue-600 font-bold mb-2">Lớp 1 (Hidden Layer 1):</p>
+    <div class="formula-block-small my-2 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+      $$H_1 = X \cdot W_1 + b_1$$
     </div>
+
+    <p class="text-blue-600 font-bold mb-2 mt-4">Lớp 2 (Hidden Layer 2):</p>
+    <div class="formula-block-small my-2 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+      $$H_2 = H_1 \cdot W_2 + b_2$$
+    </div>
+    <div class="formula-block-small my-2 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+      $$= (X \cdot W_1 + b_1) \cdot W_2 + b_2$$
+    </div>
+    <div class="formula-block-small my-2 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+      $$= X \cdot (W_1 \cdot W_2) + (b_1 \cdot W_2 + b_2)$$
+    </div>
+
+    <p class="text-blue-600 font-bold mb-2 mt-4">Lớp 3 (Hidden Layer 3):</p>
+    <div class="formula-block-small my-2 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+      $$H_3 = H_2 \cdot W_3 + b_3$$
+    </div>
+    <div class="formula-block-small my-2 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+      $$= X \cdot (W_1 \cdot W_2 \cdot W_3) + ...$$
+    </div>
+
+    <p class="text-yellow-800 font-bold mb-2 mt-4">RÚT GỌN TỔNG QUÁT:</p>
+    <div class="formula-block-small my-2 p-3 bg-yellow-100 border border-yellow-400 rounded text-center font-mono">
+      $$H_n = X \cdot W_{gop} + b_{gop}$$
+    </div>
+    <p class="mt-2">Trong đó: $W_{gop} = W_1 \cdot W_2 \cdot ... \cdot W_n$</p>
   </div>
 
   <div class="definition-block mb-4">
@@ -669,6 +676,78 @@ fn main() {
     </div>
   </div>
 
+  <!-- DERIVATIVE DERIVATION FOR SIGMOID -->
+  <div class="derivative-block my-6 p-5 bg-slate-50 border-2 border-slate-300 rounded-lg">
+    <h4 class="font-bold text-slate-800 mb-4">📐 Đạo hàm của Sigmoid - Chi tiết từng bước</h4>
+
+    <div class="space-y-4 text-sm">
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 1: Viết lại hàm số dưới dạng hàm hợp</p>
+        <p class="text-gray-600">Ta viết dưới dạng hàm hợp để áp dụng chain rule:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\sigma(x) = (1 + e^{-x})^{-1}$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 2: Áp dụng Chain Rule</p>
+        <p class="text-gray-600">Chain rule (quy tắc dây chuyền):</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$y = f(g(x))$$
+        </div>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$y' = f'(g(x)) \\cdot g'(x)$$
+        </div>
+        <p class="text-gray-600 mt-2">Áp dụng:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\sigma'(x) = -1 (1 + e^{-x})^{-2} (-e^{-x})$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 3: Tính đạo hàm của mẫu số</p>
+        <p class="text-gray-600">Đạo hàm của $e^u$ với $u = -x$:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\frac{d(e^u)}{dx} = e^u \cdot u' = e^{-x} \cdot (-1) = -e^{-x}$$
+        </div>
+        <p class="text-gray-600 mt-2">Vậy:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\frac{d}{dx}(1 + e^{-x}) = 0 + (-e^{-x}) = -e^{-x}$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 4: Kết hợp các thành phần</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\sigma'(x) = -1 (1 + e^{-x})^{-2} (-e^{-x})$$
+        </div>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\sigma'(x) = e^{-x} (1 + e^{-x})^{-2}$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 5: Biến đổi về dạng gọn hơn</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\sigma'(x) = \frac{e^{-x}}{(1 + e^{-x})^2}$$
+        </div>
+        <p class="text-gray-600 mt-2">Nhân tử và mẫu với $e^x$:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\sigma'(x) = \frac{1 \cdot e^{-x}}{e^x \cdot (1 + e^{-x})^2} = \frac{1}{e^x + 1} \cdot \frac{e^x}{e^x + 1}$$
+        </div>
+        <p class="text-gray-600 mt-2">Vì $\sigma(x) = \frac{1}{1+e^{-x}} = \frac{e^x}{e^x+1}$, ta có:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\sigma'(x) = \sigma(x) \cdot (1 - \sigma(x))$$
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-500">
+      <p class="font-semibold">Ý nghĩa:</p>
+      <p class="text-sm mt-1">Đạo hàm σ'(x) được biểu diễn hoàn toàn qua σ(x), không cần tính riêng. Trong code, ta chỉ cần lưu output σ(x) từ forward pass để tính đạo hàm ở backward pass.</p>
+    </div>
+  </div>
+
   <div class="image-showcase">
     <img src="/images/ch21/act_sigmoid.png" alt="Sigmoid Function" />
     <div class="image-caption">Hình 5: Đồ thị hàm Sigmoid</div>
@@ -764,6 +843,74 @@ fn main() {
       <hr class="my-2"/>
       <p class="text-sm text-gray-600">Quan hệ với Sigmoid:</p>
       <p class="text-center">$\\tanh(x) = 2 \\cdot \\sigma(2x) - 1$</p>
+    </div>
+  </div>
+
+  <!-- DERIVATIVE DERIVATION FOR TANH -->
+  <div class="derivative-block my-6 p-5 bg-slate-50 border-2 border-slate-300 rounded-lg">
+    <h4 class="font-bold text-slate-800 mb-4">📐 Đạo hàm của Tanh - Chi tiết từng bước</h4>
+
+    <div class="space-y-4 text-sm">
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 1: Viết tanh dưới dạng thương</p>
+        <p class="text-gray-600">Tanh là hàm phân thức, áp dụng quotient rule:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\tanh(x) = \frac{u(x)}{v(x)}$$ với $u(x) = e^x - e^{-x}$, $v(x) = e^x + e^{-x}$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 2: Áp dụng Quotient Rule</p>
+        <p class="text-gray-600">Quotient rule (quy tắc thương):</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\frac{d}{dx}\left(\frac{u}{v}\right) = \frac{u'v - uv'}{v^2}$$
+        </div>
+        <p class="text-gray-600 mt-2">Áp dụng vào tanh:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\tanh'(x) = \frac{(e^x + e^{-x})(e^x + e^{-x}) - (e^x - e^{-x})(e^x - e^{-x})}{(e^x + e^{-x})^2}$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 3: Khai triển tử số</p>
+        <p class="text-gray-600">Tử số = $(e^x + e^{-x})^2 - (e^x - e^{-x})^2$</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$= (e^{2x} + 2 + e^{-2x}) - (e^{2x} - 2 + e^{-2x})$$
+        </div>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$= e^{2x} + 2 + e^{-2x} - e^{2x} + 2 - e^{-2x}$$
+        </div>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$= 4$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 4: Rút gọn</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\tanh'(x) = \frac{4}{(e^x + e^{-x})^2}$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 5: Biến đổi về dạng gọn</p>
+        <p class="text-gray-600">Từ định nghĩa $\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$, ta có:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\tanh^2(x) = \left(\frac{e^x - e^{-x}}{e^x + e^{-x}}\right)^2 = \frac{e^{2x} - 2 + e^{-2x}}{e^{2x} + 2 + e^{-2x}}$$
+        </div>
+        <p class="text-gray-600 mt-2">Suy ra:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$1 - \tanh^2(x) = \frac{4}{e^{2x} + 2 + e^{-2x}}$$
+        </div>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\tanh'(x) = 1 - \tanh^2(x)$$
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-500">
+      <p class="font-semibold">Ý nghĩa:</p>
+      <p class="text-sm mt-1">Tương tự Sigmoid, đạo hàm tanh'(x) chỉ cần tanh(x) từ forward pass. Đặc biệt, max của tanh'(x) = 1 tại x = 0, lớn hơn Sigmoid (max = 0.25), nên gradient truyền tốt hơn nhưng vẫn bị vanishing khi |x| lớn.</p>
     </div>
   </div>
 
@@ -1039,6 +1186,63 @@ fn main() {
     </div>
   </div>
 
+  <!-- DERIVATIVE DERIVATION FOR RELU -->
+  <div class="derivative-block my-6 p-5 bg-slate-50 border-2 border-slate-300 rounded-lg">
+    <h4 class="font-bold text-slate-800 mb-4">📐 Đạo hàm của ReLU - Chi tiết từng bước</h4>
+
+    <div class="space-y-4 text-sm">
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 1: Phân tích hàm số</p>
+        <p class="text-gray-600">ReLU là hàm max của hai hàm tuyến tính: g(x) = 0 và h(x) = x</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$f(x) = \max(0, x)$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 2: Xét từng khoảng</p>
+        <p class="text-gray-600">Khi x > 0: f(x) = x</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$f'(x) = \frac{d(x)}{dx} = 1$$
+        </div>
+        <p class="text-gray-600 mt-2">Khi x ≤ 0: f(x) = 0</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$f'(x) = \frac{d(0)}{dx} = 0$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 3: Xét tại x = 0</p>
+        <p class="text-gray-600">Tính giới hạn hai phía:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\lim_{x \to 0^+} f'(x) = \lim_{x \to 0^+} 1 = 1$$
+        </div>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\lim_{x \to 0^-} f'(x) = \lim_{x \to 0^-} 0 = 0$$
+        </div>
+        <p class="text-gray-600 mt-2">Hai giới hạn một phía khác nhau → hàm không khả vi tại x = 0</p>
+        <p class="text-gray-600 mt-2">Trong thực tế, ta quy ước đạo hàm tại x = 0 bằng 0 hoặc 1</p>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 4: Tổng hợp</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$f'(x) = \begin{cases} 1 & x > 0 \\ 0 & x \leq 0 \end{cases}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-500">
+      <p class="font-semibold">Điểm quan trọng:</p>
+      <ul class="text-sm mt-1 list-disc pl-4">
+        <li>ReLU <strong>không khả vi</strong> tại x = 0 (điểm gãy)</li>
+        <li>Trong deep learning, ta thường <strong>quy ướt</strong> f'(0) = 0 hoặc f'(0) = 1 (không ảnh hưởng đáng kể)</li>
+        <li>Đạo hàm = 1 cho x > 0 → <strong>không có vanishing gradient</strong></li>
+        <li>Đạo hàm = 0 cho x ≤ 0 → <strong>gradient bị chặn đứng</strong> (nguyên nhân của Dead ReLU)</li>
+      </ul>
+    </div>
+  </div>
+
   <div class="image-showcase">
     <img src="/images/ch21/act_relu.png" alt="ReLU Function" />
     <div class="image-caption">Hình 8: Đồ thị hàm ReLU</div>
@@ -1305,46 +1509,633 @@ fn main() {
     println!("   - Regression: Use Linear (no activation)");
 }`
   },
+  // =====================================================
+  // BÀI 5: GELU - Hàm Kích Hoạt Của Transformers
+  // =====================================================
   {
     id: 'ch21_03_04',
-    title: '4. Softmax và Activation Thế hệ mới (GELU, Swish)',
-    duration: '60 phút',
+    title: '4. GELU - Hàm Kích Hoạt Của Transformers',
+    duration: '45 phút',
     type: 'theory',
     content: `
 <div class="article-content">
-  <h2><span class="material-symbols-outlined">auto_awesome</span> 4. Softmax và Activation Thế hệ mới (GELU, Swish)</h2>
+  <h2><span class="material-symbols-outlined">auto_awesome</span> 4. GELU - Hàm Kích Hoạt Của Transformers</h2>
 
-  <p>Phần này sẽ khám phá Softmax — hàm activation không thể thiếu ở output layer, cùng các activation function thế hệ mới đang thống trị trong kiến trúc Transformers và LLM.</p>
+  <p>GELU (Gaussian Error Linear Unit) là hàm kích hoạt được sử dụng rộng rãi trong các mô hình Transformer hiện đại như BERT, GPT, RoBERTa. Hàm này có gradient trơn và thường có hiệu suất tốt hơn ReLU trong các tác vụ NLP.</p>
 
   <!-- ========================================= -->
-  <!-- 4.1. SOFTMAX -->
+  <!-- 4.1. ĐỊNH NGHĨA VÀ CÔNG THỨC -->
   <!-- ========================================= -->
-  <h3>4.1. Softmax - King of Output Layer</h3>
+  <h3>4.1. Định nghĩa và Công thức</h3>
 
   <div class="definition-block mb-4">
     <span class="definition-term">Định nghĩa</span>
-    <p>Softmax không phải là activation function thông thường. Nó "chuyển đổi" một vector thành phân phối xác suất - tổng các output = 1. Dùng cho multi-class classification.</p>
+    <p>GELU (Gaussian Error Linear Unit) là hàm kích hoạt kết hợp tính chất của phân phối chuẩn (Gaussian) với đơn vị tuyến tính (Linear Unit). Hàm này trơn tại mọi điểm, không có điểm gãy như ReLU.</p>
+  </div>
+
+  <div class="formula-block my-6 p-5 bg-purple-50 border-l-4 border-purple-500">
+    <p class="font-bold text-purple-800 mb-3">Công thức GELU:</p>
+    <div class="space-y-2 font-mono text-sm">
+      <p class="text-lg">$\\text{GELU}(x) = x \\cdot \\Phi(x)$</p>
+      <p class="text-gray-600">Trong đó Φ(x) là Cumulative Distribution Function (CDF) của phân phối chuẩn tiêu chuẩn</p>
+      <hr class="my-2"/>
+      <p class="text-gray-600">Công thức xấp xỉ (dùng trong code thực tế):</p>
+      <p class="text-lg">$\\text{GELU}(x) \\approx 0.5x(1 + \\tanh(\\sqrt{2/\\pi}(x + 0.044715x^3)))$</p>
+      <hr class="my-2"/>
+      <p class="text-gray-600">Đạo hàm (với công thức xấp xỉ):</p>
+      <p class="text-lg">$\\text{GELU}'(x) \\approx 0.5(1 + \\tanh(u)) + 0.5x(1 - \\tanh^2(u)) \\cdot \\sqrt{\\frac{2}{\\pi}}(1 + 3(0.044715)x^2)$</p>
+      <p class="text-gray-600 text-xs mt-1">với $u = \\sqrt{2/\\pi}(x + 0.044715x^3)$</p>
+    </div>
+  </div>
+
+  <!-- DERIVATIVE DERIVATION FOR GELU -->
+  <div class="derivative-block my-6 p-5 bg-slate-50 border-2 border-slate-300 rounded-lg">
+    <h4 class="font-bold text-slate-800 mb-4">📐 Đạo hàm của GELU - Chi tiết từng bước</h4>
+
+    <div class="space-y-4 text-sm">
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 1: Xác định hàm số</p>
+        <p class="text-gray-600">GELU sử dụng công thức xấp xỉ:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $\text{GELU}(x) \approx 0.5x(1 + \tanh(u))$
+        </div>
+        <p class="text-gray-600 mt-2">với $u = \sqrt{\frac{2}{\pi}}(x + 0.044715x^3)$</p>
+        <p class="text-gray-600">Đây là hàm hợp dạng tích: f(x) = 0.5x · (1 + tanh(u(x)))</p>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 2: Áp dụng Product Rule</p>
+        <p class="text-gray-600">Product rule (quy tắc tích):</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\frac{d}{dx}[f \cdot g] = f' \cdot g + f \cdot g'$$
+        </div>
+        <p class="text-gray-600 mt-2">Đặt: $f(x) = 0.5x$, $g(x) = 1 + \tanh(u)$</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\text{GELU}'(x) = f'(x) \cdot g(x) + f(x) \cdot g'(x)$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 3: Tính f'(x)</p>
+        <p class="text-gray-600">f(x) = 0.5x là hàm tuyến tính:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$f'(x) = 0.5$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 4: Tính g'(x) = (1 + tanh(u))'</p>
+        <p class="text-gray-600">Áp dụng chain rule:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$g'(x) = \tanh'(u) \cdot u'$$
+        </div>
+        <p class="text-gray-600 mt-2">Với đạo hàm tanh: $\tanh'(u) = 1 - \tanh^2(u)$</p>
+        <p class="text-gray-600 mt-2">Tính u': vì d(x³)/dx = 3x²</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$u' = \sqrt{\frac{2}{\pi}} (1 + 3 \cdot 0.044715 x^2)$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 5: Kết hợp</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\text{GELU}'(x) = 0.5(1 + \tanh(u)) + 0.5x(1 - \tanh^2(u)) \sqrt{\frac{2}{\pi}}(1 + 0.134145x^2)$$
+        </div>
+        <p class="text-gray-600 mt-2">với $u = \sqrt{2/\pi}(x + 0.044715x^3)$</p>
+      </div>
+    </div>
+
+    <div class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-500">
+      <p class="font-semibold">Điểm quan trọng:</p>
+      <ul class="text-sm mt-1 list-disc pl-4">
+        <li>GELU <strong>khả vi tại mọi điểm</strong> (trơn hoàn toàn)</li>
+        <li>Đạo hàm tính phức tạp hơn ReLU nhiều (cần tanh, x²)</li>
+        <li>Trong code, ta thường tính GELU và GELU' cùng lúc</li>
+        <li>Với x lớn dương: GELU'(x) → 1; với x lớn âm: GELU'(x) → 0</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>Ý nghĩa toán học</h4>
+      <ul>
+        <li>Φ(x) là xác suất để một biến ngẫu nhiên chuẩn nhỏ hơn x</li>
+        <li>Khi x lớn dương → Φ(x) ≈ 1 → GELU(x) ≈ x</li>
+        <li>Khi x lớn âm → Φ(x) ≈ 0 → GELU(x) ≈ 0</li>
+        <li>Với x gần 0 → GELU(x) ≈ 0.5x (hàm linear)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- 5.2. SO SÁNH VỚI RELU -->
+  <!-- ========================================= -->
+  <h3>4.2. So sánh với ReLU</h3>
+
+  <table class="comparison-table mb-6">
+    <thead>
+      <tr>
+        <th>Tiêu chí</th>
+        <th>ReLU</th>
+        <th>GELU</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Công thức</td>
+        <td>max(0, x)</td>
+        <td>0.5x(1 + tanh(...))</td>
+      </tr>
+      <tr>
+        <td>Đường cong</td>
+        <td>Có điểm gãy tại x=0</td>
+        <td>Mượt mà, khả vi tại mọi điểm</td>
+      </tr>
+      <tr>
+        <td>Giá trị âm</td>
+        <td>Luôn bằng 0</td>
+        <td>Có thể âm nhẹ (≈ -0.17x)</td>
+      </tr>
+      <tr>
+        <td>Tốc độ tính toán</td>
+        <td>Rất nhanh</td>
+        <td>Chậm hơn (cần tanh, exp)</td>
+      </tr>
+      <tr>
+        <td>Hiệu năng NLP</td>
+        <td>Tốt</td>
+        <td>Tốt hơn</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon"><span class="material-symbols-outlined">lightbulb</span></div>
+    <div class="callout-content">
+      <span class="callout-title">Tại sao GELU tốt hơn cho NLP?</span>
+      <p>GELU cho phép một lượng nhỏ tín hiệu âm đi qua ở vùng gần 0. Điều này giúp mô hình học được các pattern tinh tế hơn trong dữ liệu văn bản, nơi sự khác biệt giữa các từ/cụm từ rất nhỏ.</p>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- 5.3. ỨNG DỤNG TRONG THỰC TẾ -->
+  <!-- ========================================= -->
+  <h3>4.3. Ứng dụng trong Thực tế</h3>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>Các Model sử dụng GELU</h4>
+      <ul>
+        <li><strong>BERT</strong> (Google)</li>
+        <li><strong>GPT-2, GPT-3</strong> (OpenAI)</li>
+        <li><strong>RoBERTa</strong> (Facebook)</li>
+        <li><strong>DistilBERT</strong></li>
+        <li><strong>T5</strong> (Text-to-Text)</li>
+        <li><strong>ViT</strong> (Vision Transformer)</li>
+      </ul>
+    </div>
+    <div class="concept-card">
+      <h4>Khi nào dùng GELU?</h4>
+      <ul>
+        <li>Transformer-based models</li>
+        <li>Các bài toán NLP state-of-the-art</li>
+        <li>Khi cần smooth gradient</li>
+        <li>Thay thế ReLU trong hidden layers</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="key-takeaway">
+    <div class="key-takeaway-icon"><span class="material-symbols-outlined">school</span></div>
+    <h3>Key Takeaway</h3>
+    <ol class="list-decimal pl-6 space-y-2">
+      <li><strong>GELU là lựa chọn mặc định</strong> cho các Transformer models hiện đại</li>
+      <li><strong>Đặc điểm:</strong> Gradient trơn, cho phép giá trị âm nhẹ, hiệu suất cao trong NLP</li>
+      <li><strong>Hạn chế:</strong> Tính toán phức tạp hơn ReLU</li>
+      <li><strong>Chỉ dùng trong hidden layers</strong>, không dùng ở output layer</li>
+    </ol>
+  </div>
+</div>
+    `,
+    defaultCode: `// =====================================================
+// Rust Implementation: GELU Activation
+// =====================================================
+
+use ndarray::Array2;
+
+/// GELU: Gaussian Error Linear Unit
+/// GELU(x) = x * Phi(x) ≈ 0.5 * x * (1 + tanh(sqrt(2/π) * (x + 0.044715 * x^3)))
+fn gelu(x: &Array2<f64>) -> Array2<f64> {
+    let sqrt_2_over_pi = (2.0_f64 / std::f64::consts::PI).sqrt();
+
+    x.mapv(|v| {
+        let x3 = v * v * v;
+        let inner = sqrt_2_over_pi * (v + 0.044715 * x3);
+        0.5 * v * (1.0 + inner.tanh())
+    })
+}
+
+fn main() {
+    println!("=== GELU Activation Function Demo ===\\n");
+
+    let x_values = vec![-3.0, -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0, 3.0];
+
+    println!("Input (x)    | ReLU(x)    | GELU(x)");
+    println!("-------------|------------|-------------");
+
+    for &x in &x_values {
+        let relu = x.max(0.0);
+
+        // Calculate GELU manually
+        let sqrt_2_over_pi = (2.0_f64 / std::f64::consts::PI).sqrt();
+        let x3 = x * x * x;
+        let inner = sqrt_2_over_pi * (x + 0.044715 * x3);
+        let gelu = 0.5 * x * (1.0 + inner.tanh());
+
+        println!("{:>10.2}  | {:>10.4} | {:>10.4}", x, relu, gelu);
+    }
+
+    println!("\\n=== Key Observations ===");
+    println!("- GELU(x) ≈ x for large positive x (like ReLU)");
+    println!("- GELU(x) ≈ 0 for large negative x (like ReLU)");
+    println!("- GELU has SMOOTH transition at x=0 (unlike ReLU's hard cut)");
+    println!("- GELU allows small NEGATIVE values for near-zero inputs");
+}
+`
+  },
+  // =====================================================
+  // BÀI 6: Swish/SiLU - Self-Gated Activation
+  // =====================================================
+  {
+    id: 'ch21_03_05',
+    title: '5. Swish/SiLU - Hàm Tự-Điều',
+    duration: '45 phút',
+    type: 'theory',
+    content: `
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">auto_awesome</span> 5. Swish / SiLU - Hàm Tự-Điều Khiển (Self-Gated)</h2>
+
+  <p>Swish được Google Research giới thiệu năm 2017 là hàm kích hoạt sử dụng cơ chế "self-gated" - sử dụng chính giá trị đầu vào để điều khiển mức kích hoạt mà không cần tham số bổ sung.</p>
+
+  <!-- ========================================= -->
+  <!-- 6.1. ĐỊNH NGHĨA -->
+  <!-- ========================================= -->
+  <h3>5.1. Định nghĩa và Công thức</h3>
+
+  <div class="definition-block mb-4">
+    <span class="definition-term">Định nghĩa</span>
+    <p>Swish là hàm "self-gated" sử dụng chính giá trị đầu vào để điều khiển mức kích hoạt, thông qua phép nhân x với sigmoid(x).</p>
+  </div>
+
+  <div class="formula-block my-6 p-5 bg-pink-50 border-l-4 border-pink-500">
+    <p class="font-bold text-pink-800 mb-3">Công thức Swish:</p>
+    <div class="space-y-2 font-mono text-sm">
+      <p class="text-lg">$\\text{Swish}(x) = x \\cdot \\sigma(\\beta x)$</p>
+      <p class="text-gray-600">Trong đó σ là sigmoid: $\\sigma(x) = \\frac{1}{1 + e^{-x}}$</p>
+      <hr class="my-2"/>
+      <p class="text-gray-600">Dạng đơn giản (β = 1) - gọi là SiLU:</p>
+      <p class="text-lg">$\\text{SiLU}(x) = \\frac{x}{1 + e^{-x}}$</p>
+      <hr class="my-2"/>
+      <p class="text-gray-600">Đạo hàm (với β = 1, SiLU):</p>
+      <p class="text-lg">$\\text{SiLU}'(x) = \\sigma(x) + x \\cdot \\sigma(x)(1 - \\sigma(x))$</p>
+      <p class="text-gray-600 text-xs mt-1">hoặc: $\\text{SiLU}'(x) = \\sigma(x)(1 + x(1 - \\sigma(x)))$</p>
+    </div>
+  </div>
+
+  <!-- DERIVATIVE DERIVATION FOR SWISH/SILU -->
+  <div class="derivative-block my-6 p-5 bg-slate-50 border-2 border-slate-300 rounded-lg">
+    <h4 class="font-bold text-slate-800 mb-4">📐 Đạo hàm của SiLU (Swish với β=1) - Chi tiết từng bước</h4>
+
+    <div class="space-y-4 text-sm">
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 1: Xác định hàm số</p>
+        <p class="text-gray-600">SiLU là hàm tích của x và sigmoid:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $\text{SiLU}(x) = x \cdot \sigma(x)$
+        </div>
+        <p class="text-gray-600 mt-2">với $\sigma(x) = \frac{1}{1 + e^{-x}}$ (sigmoid)</p>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 2: Áp dụng Product Rule</p>
+        <p class="text-gray-600">Product rule (quy tắc tích):</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\frac{d}{dx}[f \cdot g] = f' \cdot g + f \cdot g'$$
+        </div>
+        <p class="text-gray-600 mt-2">Đặt: $f(x) = x$, $g(x) = \sigma(x)$</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\text{SiLU}'(x) = f'(x) \cdot g(x) + f(x) \cdot g'(x)$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 3: Tính f'(x) và g'(x)</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$f'(x) = \frac{dx}{dx} = 1$$
+        </div>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$g'(x) = \sigma'(x) = \sigma(x)(1 - \sigma(x))$$ (đạo hàm sigmoid)
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 4: Kết hợp</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\text{SiLU}'(x) = 1 \cdot \sigma(x) + x \cdot \sigma(x)(1 - \sigma(x))$$
+        </div>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\text{SiLU}'(x) = \sigma(x) + x \cdot \sigma(x)(1 - \sigma(x))$$
+        </div>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\text{SiLU}'(x) = \sigma(x)[1 + x(1 - \sigma(x))]$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 5: Phân tích đạo hàm</p>
+        <p class="text-gray-600">Đạo hàm SiLU gồm 2 term:</p>
+        <p class="text-gray-600 mt-2">Term 1: $\sigma(x)$ - luôn dương</p>
+        <p class="text-gray-600">Term 2: $x \cdot \sigma(x)(1 - \sigma(x))$ - có thể âm hoặc dương</p>
+        <p class="text-gray-600 mt-2">Đây là lý do SiLU là <strong>non-monotonic</strong>: derivative có thể âm với x âm</p>
+      </div>
+    </div>
+
+    <div class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-500">
+      <p class="font-semibold">Điểm quan trọng:</p>
+      <ul class="text-sm mt-1 list-disc pl-4">
+        <li>Đạo hàm SiLU phức tạp hơn ReLU nhưng đơn giản hơn GELU</li>
+        <li>Term thứ 2 ($x \cdot \sigma(x)(1-\sigma(x))$) cho phép gradient âm → <strong>non-monotonic</strong></li>
+        <li>Với x = 0: SiLU'(0) = σ(0) + 0 = 0.5</li>
+        <li>Với x lớn dương: SiLU'(x) → 1; với x lớn âm: SiLU'(x) → 0</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon"><span class="material-symbols-outlined">lightbulb</span></div>
+    <div class="callout-content">
+      <span class="callout-title">Swish vs SiLU</span>
+      <p>Khi β = 1 (tham số cố định), Swish trở thành SiLU (Sigmoid Linear Unit). Trong thực tế, SiLU được sử dụng rộng rãi hơn vì hiệu suất tương đương mà không cần học tham số β.</p>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- 6.2. TẠI SAO GỌI LÀ SELF-GATED? -->
+  <!-- ========================================= -->
+  <h3>5.2. Cơ chế "Self-Gated"</h3>
+
+  <p>Thuật ngữ "gated" bắt nguồn từ kiến trúc LSTM/GRU, nơi các "cổng" quyết định lượng thông tin được truyền qua. Với Swish:</p>
+
+  <ul class="steps-container">
+    <li class="step-card">
+      <div class="step-number" style="background-color: var(--primary-blue);">Bước 1</div>
+      <p>Tính σ(x) = sigmoid(x) - giá trị từ 0 đến 1, đóng vai trò như "cổng" (gate)</p>
+    </li>
+    <li class="step-card">
+      <div class="step-number" style="background-color: var(--secondary-blue);">Bước 2</div>
+      <p>Nhân x với σ(x) - "cổng" này tự động điều chỉnh dựa trên x</p>
+    </li>
+    <li class="step-card">
+      <div class="step-number" style="background-color: var(--warning-yellow);">Bước 3</div>
+      <p>Kết quả: x lớn → cổng mở (σ ≈ 1); x nhỏ → cổng đóng (σ ≈ 0)</p>
+    </li>
+  </ul>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>So sánh với các hàm khác</h4>
+      <ul>
+        <li><strong>vs ReLU:</strong> Swish mượt mà hơn, có giá trị âm nhẹ</li>
+        <li><strong>vs GELU:</strong> Công thức đơn giản hơn, hiệu suất tương đương</li>
+        <li><strong>vs Sigmoid:</strong> Không bị vanishing gradient nghiêm trọng</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- 6.3. ỨNG DỤNG -->
+  <!-- ========================================= -->
+  <h3>5.3. Ứng dụng trong Thực tế</h3>
+
+  <div class="concept-grid">
+    <div class="concept-card">
+      <h4>Các Model sử dụng Swish/SiLU</h4>
+      <ul>
+        <li><strong>Swish</strong> (Google, 2017) - nghiên cứu gốc</li>
+        <li><strong>Swin Transformer</strong></li>
+        <li><strong>EfficientNet</strong></li>
+        <li><strong>MobileNetV3</strong></li>
+        <li><strong>Mish</strong> (biến thể của Swish)</li>
+      </ul>
+    </div>
+    <div class="concept-card">
+      <h4>Khi nào dùng Swish/SiLU?</h4>
+      <ul>
+        <li>Thay thế ReLU trong hidden layers</li>
+        <li>Vision models (CNNs)</li>
+        <li>Khi cần smooth non-monotonic activation</li>
+        <li>Mobile/Edge models (MobileNetV3)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ========================================= -->
+  <!-- 6.4. MISH - BIẾN THỂ -->
+  <!-- ========================================= -->
+  <h3>5.4. Biến thể: Mish</h3>
+
+  <div class="formula-block my-6 p-5 bg-orange-50 border-l-4 border-orange-500">
+    <p class="font-bold text-orange-800 mb-3">Mish = Self-Regularizing Swish:</p>
+    <div class="space-y-2 font-mono text-sm">
+      <p class="text-lg">$\\text{Mish}(x) = x \\cdot \\tanh(\\ln(1 + e^x))$</p>
+      <p class="text-gray-600">Đây là biến thể tự-regularize của Swish, đôi khi cho hiệu suất tốt hơn</p>
+    </div>
+  </div>
+
+  <div class="key-takeaway">
+    <div class="key-takeaway-icon"><span class="material-symbols-outlined">school</span></div>
+    <h3>Key Takeaway</h3>
+    <ol class="list-decimal pl-6 space-y-2">
+      <li><strong>Swish/SiLU</strong> là hàm self-gated - tự điều chỉnh không cần tham số</li>
+      <li><strong>Đặc điểm:</strong> Trơn, non-monotonic, hiệu suất tốt</li>
+      <li><strong>Hạn chế:</strong> Tính toán phức tạp hơn ReLU</li>
+      <li><strong>SiLU (β=1)</strong> được sử dụng phổ biến hơn Swish</li>
+      <li><strong>Mish</strong> là biến thể tự-regularize của Swish</li>
+    </ol>
+  </div>
+</div>
+    `,
+    defaultCode: `// =====================================================
+// Rust Implementation: Swish/SiLU Activation
+// =====================================================
+
+use ndarray::Array2;
+
+/// Swish: x * sigmoid(beta * x)
+/// When beta = 1, this is SiLU (Sigmoid Linear Unit)
+fn swish(x: &Array2<f64>, beta: f64) -> Array2<f64> {
+    x.mapv(|v| {
+        v * (beta * v).exp() / (1.0 + (beta * v).exp())
+    })
+}
+
+/// SiLU: Swish with beta = 1 (most common in practice)
+fn silu(x: &Array2<f64>) -> Array2<f64> {
+    x.mapv(|v| {
+        v / (1.0 + (-v).exp())
+    })
+}
+
+/// Mish: x * tanh(softplus(x))
+fn mish(x: &Array2<f64>) -> Array2<f64> {
+    x.mapv(|v| {
+        let softplus = (1.0 + (-v).exp()).ln();
+        v * softplus.tanh()
+    })
+}
+
+fn main() {
+    println!("=== Swish/SiLU/Mish Activation Functions Demo ===\\n");
+
+    let x_values = vec![-3.0, -2.0, -1.0, -0.5, 0.0, 0.5, 1.0, 2.0, 3.0];
+
+    println!("Input(x) |  ReLU  |  SiLU  |  Mish  | Swish(β=2)");
+    println!("---------|--------|--------|--------|------------");
+
+    for &x in &x_values {
+        let relu = x.max(0.0);
+        let silu_val = x / (1.0 + (-x).exp());
+        let softplus = (1.0 + (-x).exp()).ln();
+        let mish_val = x * softplus.tanh();
+        let swish_val = x * (2.0 * x).exp() / (1.0 + (2.0 * x).exp());
+
+        println!("{:>7.2} | {:>6.3} | {:>6.3} | {:>6.3} | {:>9.3}",
+                 x, relu, silu_val, mish_val, swish_val);
+    }
+
+    println!("\\n=== Key Observations ===");
+    println!("- SiLU(x) = Swish(x) with beta = 1 (most common)");
+    println!("- SiLU has SMOOTH curve unlike ReLU's hard cut");
+    println!("- SiLU allows NEGATIVE values for small negative inputs");
+    println!("- Mish is a self-regularizing variant of SiLU");
+    println!("- Swish/SiLU are NON-MONOTONIC (can decrease then increase)");
+}
+`
+  },
+  {
+    id: 'ch21_03_06',
+    title: '6. Softmax - Hàm Kích Hoạt Output Layer',
+    duration: '45 phút',
+    type: 'theory',
+    content: `
+<div class="article-content">
+  <h2><span class="material-symbols-outlined">auto_awesome</span> 6. Softmax - Hàm Kích Hoạt Cho Lớp Xuất (Output Layer)</h2>
+
+  <p>Phần này sẽ khám phá Softmax — hàm activation không thể thiếu ở output layer cho bài toán phân loại đa lớp (multi-class classification).</p>
+
+  <!-- ========================================= -->
+  <!-- 6.1. SOFTMAX -->
+  <!-- ========================================= -->
+  <h3>6.1. Softmax - Hàm kích hoạt cho lớp Output</h3>
+
+  <div class="definition-block mb-4">
+    <span class="definition-term">Định nghĩa</span>
+    <p>Softmax là hàm kích hoạt biến đổi một vector thành phân phối xác suất, trong đó tổng các giá trị output bằng 1. Hàm này được sử dụng chủ yếu cho bài toán phân loại đa lớp (multi-class classification).</p>
   </div>
 
   <div class="formula-block my-6 p-5 bg-blue-50 border-l-4 border-blue-500">
     <p class="font-bold text-blue-800 mb-3">Công thức Softmax:</p>
     <div class="space-y-2 font-mono text-sm">
       <p class="text-lg">$\\text{softmax}(x)_i = \\frac{e^{x_i}}{\\sum_j e^{x_j}}$</p>
-      <p class="text-gray-600 mt-2">Với i chạy qua tất cả các classes. Output nằm trong (0, 1) và tổng = 1.</p>
+      <p class="text-gray-600 mt-2">Với i chạy qua tất cả các lớp. Output nằm trong khoảng (0, 1) và tổng = 1.</p>
+      <hr class="my-2"/>
+      <p class="text-gray-600">Đạo hàm (Jacobian):</p>
+      <p class="text-lg">$\\frac{\\partial \\text{softmax}_i}{\\partial x_j} = \\text{softmax}_i \\cdot (\\delta_{ij} - \\text{softmax}_j)$</p>
+      <p class="text-gray-600 text-xs mt-1">δ_ij = 1 nếu i = j, = 0 nếu i ≠ j</p>
+    </div>
+  </div>
+
+  <!-- DERIVATIVE DERIVATION FOR SOFTMAX -->
+  <div class="derivative-block my-6 p-5 bg-slate-50 border-2 border-slate-300 rounded-lg">
+    <h4 class="font-bold text-slate-800 mb-4">📐 Đạo hàm của Softmax - Chi tiết từng bước</h4>
+
+    <div class="space-y-4 text-sm">
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 1: Xác định đây là hàm vector</p>
+        <p class="text-gray-600">Softmax là hàm từ $\mathbb{R}^n \to \mathbb{R}^n$:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\text{softmax}(x) = [\text{softmax}_1, \text{softmax}_2, ..., \text{softmax}_n]$$
+        </div>
+        <p class="text-gray-600 mt-2">Đạo hàm của hàm vector là <strong>ma trận Jacobian</strong></p>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 2: Xét trường hợp i = j</p>
+        <p class="text-gray-600">Áp dụng Quotient Rule:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\frac{\partial \text{softmax}_i}{\partial x_i} = \frac{e^{x_i} \cdot \sum_j e^{x_j} - e^{x_i} \cdot e^{x_i}}{(\sum_j e^{x_j})^2}$$
+        </div>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$= \frac{e^{x_i}(\sum_j e^{x_j} - e^{x_i})}{(\sum_j e^{x_j})^2}$$
+        </div>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$= \text{softmax}_i \cdot (1 - \text{softmax}_i)$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 3: Xét trường hợp i ≠ j</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\frac{\partial \text{softmax}_i}{\partial x_j} = \frac{0 \cdot \sum - e^{x_i} \cdot e^{x_j}}{(\sum e^{x_j})^2}$$
+        </div>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$= -\frac{e^{x_i} \cdot e^{x_j}}{(\sum_j e^{x_j})^2}$$
+        </div>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$= -\text{softmax}_i \cdot \text{softmax}_j$$
+        </div>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 4: Tổng hợp bằng Kronecker Delta</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$\frac{\partial \text{softmax}_i}{\partial x_j} = \text{softmax}_i \cdot (\delta_{ij} - \text{softmax}_j)$$
+        </div>
+        <p class="text-gray-600 mt-2">với $\delta_{ij} = \begin{cases} 1 & i = j \\ 0 & i \neq j \end{cases}$</p>
+      </div>
+
+      <div class="step-derivation">
+        <p class="font-semibold text-slate-700 mb-2">Bước 5: Ma trận Jacobian</p>
+        <p class="text-gray-600">Ma trận Jacobian có dạng:</p>
+        <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
+          $$J = \begin{pmatrix} \text{softmax}_1(1-\text{softmax}_1) & -\text{softmax}_1\text{softmax}_2 & \cdots \\ -\text{softmax}_2\text{softmax}_1 & \text{softmax}_2(1-\text{softmax}_2) & \cdots \\ \vdots & \vdots & \ddots \end{pmatrix}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-500">
+      <p class="font-semibold">Điểm quan trọng:</p>
+      <ul class="text-sm mt-1 list-disc pl-4">
+        <li>Đạo hàm Softmax phụ thuộc <strong>tất cả các phần tử</strong> trong vector (không như Sigmoid/Tanh)</li>
+        <li>Đường chéo chính: softmax_i(1 - softmax_i) > 0</li>
+        <li>Ngoài đường chéo: -softmax_i · softmax_j < 0</li>
+        <li>Trong code, thường tính kết hợp với Cross-Entropy Loss: đạo hàm = softmax_i - y_i</li>
+      </ul>
     </div>
   </div>
 
   <div class="callout callout-warning">
     <div class="callout-icon"><span class="material-symbols-outlined">warning</span></div>
     <div class="callout-content">
-      <span class="callout-title">Lưu ý quan trọng về Softmax!</span>
-      <p>Softmax phóng đại sự chênh lệch giữa các lớp: lớp có giá trị lớn nhất sẽ chiếm xác suất áp đảo. Không phù hợp cho bài toán hồi quy hay phân lớp nhị phân.</p>
+      <span class="callout-title">Lưu ý quan trọng về Softmax</span>
+      <p>Softmax khuếch đại sự chênh lệch giữa các lớp: lớp có giá trị lớn nhất sẽ có xác suất cao hơn đáng kể. Hàm này không phù hợp cho bài toán hồi quy hay phân loại nhị phân.</p>
     </div>
   </div>
 
   <div class="concept-grid">
     <div class="concept-card">
-      <h4>Khi nào dùng Softmax?</h4>
+      <h4>Ứng dụng</h4>
       <ul>
         <li>Multi-class Classification (C > 2)</li>
         <li>Output Layer duy nhất</li>
@@ -1353,178 +2144,13 @@ fn main() {
       </ul>
     </div>
     <div class="concept-card">
-      <h4>Khi nào KHÔNG dùng?</h4>
+      <h4>Hạn chế</h4>
       <ul>
-        <li>Binary Classification (dùng Sigmoid!)</li>
-        <li>Regression</li>
+        <li>Phân loại nhị phân (nên dùng Sigmoid)</li>
+        <li>Bài toán hồi quy (Regression)</li>
         <li>Hidden Layers</li>
-        <li>Multi-label Classification</li>
+        <li>Phân loại đa nhãn (Multi-label)</li>
       </ul>
-    </div>
-  </div>
-
-  <!-- ========================================= -->
-  <!-- 4.2. GELU -->
-  <!-- ========================================= -->
-  <h3>4.2. GELU - Gaussian Error Linear Unit</h3>
-
-  <p>GELU là activation được sử dụng trong BERT, GPT, và hầu hết các Transformer models hiện đại. Nó có đường cong mượt mà hơn ReLU nhờ tích hợp Gaussian CDF vào công thức.</p>
-
-  <div class="formula-block my-6 p-5 bg-purple-50 border-l-4 border-purple-500">
-    <p class="font-bold text-purple-800 mb-3">Công thức GELU:</p>
-    <div class="space-y-2 font-mono text-sm">
-      <p class="text-lg">$\\text{GELU}(x) = x \\cdot \\Phi(x)$</p>
-      <p class="text-gray-600">Trong đó Φ(x) là Cumulative Distribution Function (CDF) của phân phối chuẩn</p>
-      <hr class="my-2"/>
-      <p class="text-gray-600">Approximation (dùng trong code):</p>
-      <p class="text-lg">$\\text{GELU}(x) \\approx 0.5x(1 + \\tanh(\\sqrt{2/\\pi}(x + 0.044715x^3)))$</p>
-    </div>
-  </div>
-
-  <div class="image-showcase">
-    <img src="/images/ch21/act_gelu.png" alt="GELU Function" />
-    <div class="image-caption">Hình 11: Đồ thị hàm GELU</div>
-  </div>
-
-  <div class="concept-grid">
-    <div class="concept-card">
-      <h4>Ưu điểm của GELU</h4>
-      <ul>
-        <li>Không có chuyển đổi đột ngột như ReLU</li>
-        <li>Thường outperform ReLU trong NLP tasks</li>
-        <li>Được dùng trong BERT, GPT, RoBERTa...</li>
-        <li>Smooth gradient everywhere</li>
-      </ul>
-    </div>
-    <div class="concept-card">
-      <h4>Nhược điểm</h4>
-      <ul>
-        <li>Tính toán chậm hơn ReLU (cần tanh, exp)</li>
-        <li>Không đơn giản như ReLU</li>
-        <li>Chưa có chứng minh lý thuyết rõ ràng về ưu thế</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- ========================================= -->
-  <!-- 4.3. SWISH -->
-  <!-- ========================================= -->
-  <h3>4.3. Swish - Self-Gated Activation</h3>
-
-  <p>Swish được Google Research công bố năm 2017. Đây là hàm "self-gated" — tự điều chỉnh mức kích hoạt dựa trên chính giá trị input, không cần thêm tham số ngoài.</p>
-
-  <div class="formula-block my-6 p-5 bg-pink-50 border-l-4 border-pink-500">
-    <p class="font-bold text-pink-800 mb-3">Công thức Swish:</p>
-    <div class="space-y-2 font-mono text-sm">
-      <p class="text-lg">$\\text{swish}(x) = x \\cdot \\sigma(\\beta x)$</p>
-      <p class="text-gray-600">Trong đó σ là sigmoid, β là tham số học được hoặc cố định = 1</p>
-      <hr class="my-2"/>
-      <p class="text-gray-600">Simplified (β=1):</p>
-      <p class="text-lg">$\\text{swish}(x) = \\frac{x}{1 + e^{-x}}$</p>
-    </div>
-  </div>
-
-  <div class="callout callout-tip">
-    <div class="callout-icon"><span class="material-symbols-outlined">lightbulb</span></div>
-    <div class="callout-content">
-      <span class="callout-title">SiLU (Sigmoid Linear Unit)</span>
-      <p>Swish với β = 1 chính là SiLU (Sigmoid Linear Unit). Hiệu năng gần tương đương GELU, được sử dụng trong Swin Transformer, EfficientNet...</p>
-    </div>
-  </div>
-
-  <div class="image-showcase">
-    <img src="/images/ch21/act_swish.png" alt="Swish Function" />
-    <div class="image-caption">Hình 12: Đồ thị hàm Swish/SiLU</div>
-  </div>
-
-  <!-- ========================================= -->
-  <!-- 4.4. TÓM TẮT -->
-  <!-- ========================================= -->
-  <h3>4.4. Tóm tắt Activation Functions</h3>
-
-  <table class="comparison-table" style="border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
-    <thead>
-      <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-        <th style="padding: 14px 18px; text-align: center; font-size: 0.95rem;">Activation</th>
-        <th style="padding: 14px 18px; text-align: center; font-size: 0.95rem;">Công thức</th>
-        <th style="padding: 14px 18px; text-align: center; font-size: 0.95rem;">Range</th>
-        <th style="padding: 14px 18px; text-align: center; font-size: 0.95rem;">Dùng cho</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr style="background: #f0fdf4;">
-        <td style="padding: 12px 16px; font-weight: 700;">
-          <span style="display: inline-block; background: #22c55e; color: white; padding: 3px 10px; border-radius: 6px; font-size: 0.85rem;">ReLU</span>
-        </td>
-        <td style="padding: 12px 16px; text-align: center;">$f(x) = \\max(0, x)$</td>
-        <td style="padding: 12px 16px; text-align: center; font-family: monospace; font-size: 0.85rem;">$[0, +\\infty)$</td>
-        <td style="padding: 12px 16px;">
-          <span style="background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">Hidden layers (default)</span>
-        </td>
-      </tr>
-      <tr style="background: #fefce8;">
-        <td style="padding: 12px 16px; font-weight: 700;">
-          <span style="display: inline-block; background: #eab308; color: white; padding: 3px 10px; border-radius: 6px; font-size: 0.85rem;">Leaky ReLU</span>
-        </td>
-        <td style="padding: 12px 16px; text-align: center;">$f(x) = \\max(0.01x, x)$</td>
-        <td style="padding: 12px 16px; text-align: center; font-family: monospace; font-size: 0.85rem;">$(-\\infty, +\\infty)$</td>
-        <td style="padding: 12px 16px;">
-          <span style="background: #fef9c3; color: #854d0e; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">Khi có Dead ReLU</span>
-        </td>
-      </tr>
-      <tr style="background: #eff6ff;">
-        <td style="padding: 12px 16px; font-weight: 700;">
-          <span style="display: inline-block; background: #3b82f6; color: white; padding: 3px 10px; border-radius: 6px; font-size: 0.85rem;">GELU</span>
-        </td>
-        <td style="padding: 12px 16px; text-align: center; font-size: 0.9rem;">$0.5x\\bigl(1 + \\tanh\\bigl(\\sqrt{\\tfrac{2}{\\pi}}(x + 0.044715x^3)\\bigr)\\bigr)$</td>
-        <td style="padding: 12px 16px; text-align: center; font-family: monospace; font-size: 0.85rem;">$\\approx(-0.17, +\\infty)$</td>
-        <td style="padding: 12px 16px;">
-          <span style="background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">Transformers, BERT, GPT</span>
-        </td>
-      </tr>
-      <tr style="background: #fdf4ff;">
-        <td style="padding: 12px 16px; font-weight: 700;">
-          <span style="display: inline-block; background: #a855f7; color: white; padding: 3px 10px; border-radius: 6px; font-size: 0.85rem;">Swish/SiLU</span>
-        </td>
-        <td style="padding: 12px 16px; text-align: center;">$f(x) = \\dfrac{x}{1 + e^{-x}}$</td>
-        <td style="padding: 12px 16px; text-align: center; font-family: monospace; font-size: 0.85rem;">$\\approx(-0.28, +\\infty)$</td>
-        <td style="padding: 12px 16px;">
-          <span style="background: #f3e8ff; color: #6b21a8; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">SOTA models</span>
-        </td>
-      </tr>
-      <tr style="background: #fff7ed;">
-        <td style="padding: 12px 16px; font-weight: 700;">
-          <span style="display: inline-block; background: #f97316; color: white; padding: 3px 10px; border-radius: 6px; font-size: 0.85rem;">Sigmoid</span>
-        </td>
-        <td style="padding: 12px 16px; text-align: center;">$\\sigma(x) = \\dfrac{1}{1 + e^{-x}}$</td>
-        <td style="padding: 12px 16px; text-align: center; font-family: monospace; font-size: 0.85rem;">$(0, 1)$</td>
-        <td style="padding: 12px 16px;">
-          <span style="background: #ffedd5; color: #9a3412; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">Binary output</span>
-        </td>
-      </tr>
-      <tr style="background: #fef2f2;">
-        <td style="padding: 12px 16px; font-weight: 700;">
-          <span style="display: inline-block; background: #ef4444; color: white; padding: 3px 10px; border-radius: 6px; font-size: 0.85rem;">Softmax</span>
-        </td>
-        <td style="padding: 12px 16px; text-align: center;">$\\mathrm{softmax}(x)_i = \\dfrac{e^{x_i}}{\\sum_j e^{x_j}}$</td>
-        <td style="padding: 12px 16px; text-align: center; font-family: monospace; font-size: 0.85rem;">$(0, 1),\\ \\sum = 1$</td>
-        <td style="padding: 12px 16px;">
-          <span style="background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">Multi-class output</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="key-takeaway">
-    <div class="key-takeaway-icon"><span class="material-symbols-outlined">school</span></div>
-    <h3>Key Takeaway - Selection Guide</h3>
-    <ol class="list-decimal pl-6 space-y-2">
-      <li><strong>Hidden layers:</strong> ReLU (default) → Leaky ReLU/GELU (nếu có vấn đề) → Swish/SiLU (state-of-the-art)</li>
-      <li><strong>Output layer:</strong> Sigmoid (binary) → Softmax (multi-class) → Linear (regression)</li>
-      <li><strong>Đừng bao giờ dùng ReLU cho output layer!</strong></li>
-      <li><strong>Transformers:</strong> Dùng GELU</li>
-    </ol>
-  </div>
 </div>
     `,
     defaultCode: `// =====================================================
@@ -1651,7 +2277,8 @@ export const ch21_03: Chapter = {
     <ul>
       <li>Bản chất toán học và vai trò cốt lõi của các hàm kích hoạt.</li>
       <li>Hiện tượng Triệt tiêu Gradient (Vanishing) và Neuron chết (Dead ReLU).</li>
-      <li>GELU/Swish — thế hệ activation thống trị trong Transformers và LLM hiện đại.</li>
+      <li>GELU/Swish — thế hệ activation phổ biến trong Transformers và LLM hiện đại.</li>
+      <li>Softmax — hàm kích hoạt chuẩn cho lớp Output trong phân loại đa lớp.</li>
     </ul>
   `,
   lessons: ch21_03_lessons,

@@ -72,6 +72,21 @@ const ch21_04_lessons: Lesson[] = [
     <div class="image-caption">Hình 1: MLE tìm tham số θ để maximize likelihood</div>
   </div>
 
+  <p><strong>Hãy quan sát Hình 1 để hiểu MLE hoạt động như thế nào:</strong></p>
+  <ul>
+    <li><strong>Trục x:</strong> Giá trị tham số θ có thể (ví dụ: xác suất sấp của đồng xu)</li>
+    <li><strong>Trục y:</strong> Giá trị Likelihood - xác suất quan sát được dữ liệu với tham số đó</li>
+    <li><strong>Đỉnh cao nhất:</strong> Tham số θ tốt nhất - giá trị mà tại đó likelihood đạt maximum</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-content">
+      <strong>Ý nghĩa trực quan:</strong>
+      <p>MLE tìm θ sao cho dữ liệu quan sát được có xác suất xuất hiện cao nhất. Tưởng tượng bạn có nhiều đường cong likelihood khác nhau (cho các dataset khác nhau), MLE chọn đỉnh của mỗi đường để tìm θ tối ưu.</p>
+    </div>
+  </div>
+
   <p><strong>Likelihood</strong> (độ hợp lý) đo lường xác suất của việc quan sát được dữ liệu hiện tại khi biết trước bộ tham số θ (trọng số).</p>
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
@@ -103,6 +118,22 @@ const ch21_04_lessons: Lesson[] = [
   <div class="image-showcase">
     <img src="/images/ch21/loss_underflow.png" alt="Underflow Problem" />
     <div class="image-caption">Hình 2: Nhân nhiều xác suất nhỏ gây ra underflow</div>
+  </div>
+
+  <p><strong>Hãy quan sát Hình 2 để hiểu vấn đề underflow:</strong></p>
+  <ul>
+    <li><strong>Trục x:</strong> Số lần nhân (số mẫu dữ liệu)</li>
+    <li><strong>Trục y:</strong> Kết quả sau khi nhân</li>
+    <li><strong>Đường màu đỏ:</strong> Kết quả nhân trực tiếp - nhanh chóng giảm về 0</li>
+    <li><strong>Đường màu xanh:</strong> Kết quả sau khi log - vẫn ổn định</li>
+  </ul>
+
+  <div class="callout callout-warning">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-content">
+      <strong>Vấn đề cốt lõi:</strong>
+      <p>Chỉ cần nhân 0.9 với chính nó 100 lần, kết quả đã là ~2.7×10⁻⁵. Nhân 1000 lần → ~10⁻⁴⁴ (gần như bằng 0). Máy tính không thể lưu trữ những số quá nhỏ này → <strong>UNDERFLOW</strong>.</p>
+    </div>
   </div>
 
   <p>Trong thực tế, Neural Network xử lý hàng triệu mẫu dữ liệu. Mỗi mẫu có xác suất dự đoán đúng thường nhỏ hơn 1 (ví dụ: 0.9). Khi nhân hàng triệu số nhỏ với nhau, kết quả sẽ <strong>tràn số (overflow)</strong> về 0!</p>
@@ -159,6 +190,21 @@ const ch21_04_lessons: Lesson[] = [
   <div class="image-showcase">
     <img src="/images/ch21/loss_mle_vs_nll.png" alt="NLL Transformation" />
     <div class="image-caption">Hình 3: Từ Likelihood → Log-Likelihood → NLL Loss</div>
+  </div>
+
+  <p><strong>Hãy quan sát Hình 3 để hiểu quá trình chuyển đổi:</strong></p>
+  <ul>
+    <li><strong>Đường màu xanh (Likelihood):</strong> Maximum ở θ=0.7 (đỉnh cao nhất). Ta cần TÌM ĐƯỢC đỉnh này.</li>
+    <li><strong>Đường màu cam (Log-Likelihood):</strong> Cùng hình dạng nhưng "nén lại" - không bị underflow!</li>
+    <li><strong>Đường màu đỏ (NLL = -Log):</strong> Lật ngược đỉnh xuống đáy. Từ bài toán MAXIMIZE (tìm đỉnh) → MINIMIZE (tìm đáy).</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-content">
+      <strong>Điểm mấu chốt:</strong>
+      <p>Minimize NLL = Maximize Likelihood. Gradient Descent tìm minimum (đáy), nên ta cần "lật" đồ thị để đỉnh cao nhất trở thành điểm thấp nhất. Đó là lý do có dấu "-" trong NLL.</p>
+    </div>
   </div>
 
   <p>Tuy nhiên, vẫn còn một vấn đề cần giải quyết: <strong>Gradient Descent tìm cực tiểu (minimum)</strong>, trong khi với Likelihood ta cần <strong>cực đại (maximum)</strong>.</p>
@@ -226,6 +272,22 @@ const ch21_04_lessons: Lesson[] = [
     <div class="image-caption">Hình 4: Gradient Descent tìm minimum bằng cách đi theo hướng ngược gradient</div>
   </div>
 
+  <p><strong>Hãy quan sát Hình 4 để hiểu Gradient Descent hoạt động:</strong></p>
+  <ul>
+    <li><strong>Đường cong:</strong> Hàm Loss - một parabol lồi</li>
+    <li><strong>Các chấm đỏ:</strong> Các bước của Gradient Descent từ điểm bắt đầu đến điểm minimum</li>
+    <li><strong>Mũi tên:</strong> Hướng di chuyển - luôn ngược với gradient (đạo hàm)</li>
+    <li><strong>Quan sát:</strong> Mỗi bước, model di chuyển về phía đáy. Các bước đầu lớn (gradient lớn), các bước sau nhỏ dần (gradient giảm khi gần đáy)</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-content">
+      <strong>Tại sao "ngược gradient"?</strong>
+      <p>Gradient chỉ hướng TĂNG (đi lên). Để GIẢM Loss, ta đi ngược lại → trừ đi gradient. Công thức: $w_{new} = w_{old} - \eta \times gradient$</p>
+    </div>
+  </div>
+
   <p><strong>Gradient Descent (Giảm dần Gradient)</strong> là thuật toán tối ưu cốt lõi: từ một điểm bất kỳ trên đồ thị hàm Loss, thuật toán di chuyển dần về phía có gradient âm (hướng đi xuống) cho đến khi tìm được điểm cực tiểu.</p>
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
@@ -284,6 +346,22 @@ const ch21_04_lessons: Lesson[] = [
   <div class="image-showcase">
     <img src="/images/ch21/loss_landscape.png" alt="Loss Landscape" />
     <div class="image-caption">Hình 5: Loss landscape có thể có nhiều local minima</div>
+  </div>
+
+  <p><strong>Hãy quan sát Hình 5 để hiểu về local vs global minimum:</strong></p>
+  <ul>
+    <li><strong>Bề mặt gồ ghề:</strong> Địa hình Loss của Neural Network thực tế - rất phức tạp!</li>
+    <li><strong>Điểm A (Global Minimum):</strong> Điểm thấp nhất - mục tiêu tìm được</li>
+    <li><strong>Điểm B, C (Local Minima):</strong> Các "đáy" cục bộ - nơi Gradient Descent có thể bị kẹt</li>
+    <li><strong>Vấn đề:</strong> Nếu model rơi vào local minimum, nó sẽ dừng lại dù chưa tìm được điểm tốt nhất!</li>
+  </ul>
+
+  <div class="callout callout-warning">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-content">
+      <strong>Thực tế:</strong>
+      <p>May mắn thay, các local minima trong Neural Networks thường không quá "sâu" và gradient vẫn đủ lớn để model vượt qua. Hơn nữa, local minima thường cũng đủ tốt cho ứng dụng thực tế.</p>
+    </div>
   </div>
 
   <div class="concept-grid">
@@ -466,7 +544,33 @@ fn main() {
 
   <div class="image-showcase">
     <img src="/images/ch21/loss_regression_comparison.png" alt="MSE vs MAE Comparison" />
-    <div class="image-caption">Hình 1: So sánh đồ thị MSE (parabol) vs MAE (chữ V)</div>
+    <div class="image-caption">Hình 1: So sánh đồ thị MSE (parabol màu xanh) vs MAE (chữ V màu cam)</div>
+  </div>
+
+  <p><strong>Hãy quan sát Hình 1 để hiểu sự khác biệt cơ bản:</strong></p>
+  <ul>
+    <li><strong>Đường màu xanh (MSE):</strong> Dạng <strong>parabol</strong> - mượt mà, không có điểm gãy
+      <ul>
+        <li>Tại 0 (sai số = 0): Loss = 0</li>
+        <li>Càng xa 0: Loss tăng <strong>nhanh</strong> (bình phương)</li>
+        <li>Ví dụ: Sai 1 → Loss = 1, Sai 2 → Loss = 4, Sai 3 → Loss = 9</li>
+      </ul>
+    </li>
+    <li><strong>Đường màu cam (MAE):</strong> Dạng <strong>chữ V</strong> - có điểm gãy tại 0
+      <ul>
+        <li>Tại 0 (sai số = 0): Loss = 0</li>
+        <li>Càng xa 0: Loss tăng <strong>tuyến tính</strong></li>
+        <li>Ví dụ: Sai 1 → Loss = 1, Sai 2 → Loss = 2, Sai 3 → Loss = 3</li>
+      </ul>
+    </li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-content">
+      <strong>Điểm quan trọng cần nhớ:</strong>
+      <p>MSE phạt nặng các sai số lớn (outliers), trong khi MAE phạt đều nhau. Đây là lý do MSE nhạy cảm với outliers còn MAE thì "miễn nhiễm".</p>
+    </div>
   </div>
 
   <p><strong>MSE</strong> (Mean Squared Error) là hàm Loss phổ biến nhất cho Regression. Nó tính <strong>bình phương</strong> của sai số, nhấn mạnh các ngoại lệ (outliers).</p>
@@ -486,7 +590,28 @@ fn main() {
 
   <div class="image-showcase">
     <img src="/images/ch21/loss_regression_derivatives.png" alt="MSE Derivative Visualization" />
-    <div class="image-caption">Hình 2: Đạo hàm MSE tỷ lệ tuyến tính với sai số</div>
+    <div class="image-caption">Hình 2: Đạo hàm MSE = 2 × (prediction - target)</div>
+  </div>
+
+  <p><strong>Phân tích đạo hàm (Hình 2):</strong></p>
+  <ul>
+    <li><strong>Trục x:</strong> Sai số (prediction - target)</li>
+    <li><strong>Trục y:</strong> Giá trị đạo hàm</li>
+    <li><strong>Đường thẳng đi qua gốc:</strong> Đạo hàm tỷ lệ tuyến tính với sai số</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-content">
+      <strong>Tại sao đạo hàm tuyến tính quan trọng?</strong>
+      <p>Với MSE, gradient tỷ lệ trực tiếp với sai số:
+        <ul>
+          <li>Sai số lớn → Gradient lớn → Cập nhật mạnh</li>
+          <li>Sai số nhỏ → Gradient nhỏ → Cập nhật nhẹ</li>
+        </ul>
+      Model tự động điều chỉnh "sức học" tùy theo mức độ sai! Đây là tính chất rất quan trọng giúp MSE hội tụ nhanh.
+      </p>
+    </div>
   </div>
 
   <div class="concept-grid">
@@ -625,7 +750,27 @@ fn main() {
 
   <div class="image-showcase">
     <img src="/images/ch21/loss_regression_comparison.png" alt="Huber Loss Visualization" />
-    <div class="image-caption">Hình 3: Huber Loss kết hợp MSE (nhỏ) và MAE (lớn)</div>
+    <div class="image-caption">Hình 3: Huber Loss (đường màu xanh lá) kết hợp MSE (trong) và MAE (ngoài)</div>
+  </div>
+
+  <p><strong>Hãy quan sát Hình 3 để hiểu Huber Loss hoạt động:</strong></p>
+  <ul>
+    <li><strong>Đường màu xanh dương (MSE):</strong> Parabol - phạt nặng khi sai số lớn</li>
+    <li><strong>Đường màu cam (MAE):</strong> Chữ V - phạt đều nhưng có điểm gãy</li>
+    <li><strong>Đường màu xanh lá (Huber):</strong>
+      <ul>
+        <li>Gần tâm (sai số nhỏ): Dùng <strong>MSE</strong> → mượt mà, hội tụ nhanh</li>
+        <li>Xa tâm (sai số lớn): Chuyển sang <strong>MAE</strong> → giới hạn phạt tối đa</li>
+      </ul>
+    </li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-content">
+      <strong>Điểm mấu chốt:</strong>
+      <p>Huber Loss dùng một <strong>ngưỡng δ (delta)</strong> để quyết định khi nào chuyển từ MSE sang MAE. Thường δ = 1.0 hoặc 1.5. Điểm chuyển (khoảng [-δ, δ]) thể hiện rõ trên hình.</p>
+    </div>
   </div>
 
   <p><strong>Huber Loss</strong> được thiết kế để <strong>kết hợp ưu điểm</strong> của cả MSE và MAE:</p>
@@ -786,7 +931,33 @@ fn main() {
 
   <div class="image-showcase">
     <img src="/images/ch21/loss_bce.png" alt="BCE Loss Visualization" />
-    <div class="image-caption">Hình 1: BCE Loss cho binary classification</div>
+    <div class="image-caption">Hình 1: BCE Loss cho binary classification - Trục x là prediction, trục y là Loss</div>
+  </div>
+
+  <p><strong>Hãy quan sát Hình 1 để hiểu bản chất của BCE:</strong></p>
+  <ul>
+    <li><strong>Trục hoành (x):</strong> Giá trị dự đoán $\hat{y}$ từ model (từ 0 đến 1)</li>
+    <li><strong>Trục tung (y):</strong> Giá trị Loss tương ứng</li>
+    <li><strong>Đường màu xanh dương (y=1):</strong> Khi nhãn thực tế là <strong>Positive (1)</strong>: Loss = $-\log(\hat{y})$
+      <ul>
+        <li>Nếu $\hat{y}=1$ (đoán chắc chắn đúng) → Loss = 0</li>
+        <li>Nếu $\hat{y}=0$ (đoán hoàn toàn sai) → Loss = $\infty$ (vô cùng)</li>
+      </ul>
+    </li>
+    <li><strong>Đường màu cam (y=0):</strong> Khi nhãn thực tế là <strong>Negative (0)</strong>: Loss = $-\log(1-\hat{y})$
+      <ul>
+        <li>Nếu $\hat{y}=0$ (đoán chắc chắn đúng) → Loss = 0</li>
+        <li>Nếu $\hat{y}=1$ (đoán hoàn toàn sai) → Loss = $\infty$</li>
+      </ul>
+    </li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-content">
+      <strong>Nhận xét quan trọng:</strong>
+      <p>Cả hai đường cong đều có dạng giảm dần. Model càng tự tin (gần 0 hoặc 1 tùy theo nhãn), Loss càng thấp. <strong>Loss bằng 0 chỉ khi model đoán chính xác 100%.</strong></p>
+    </div>
   </div>
 
   <p><strong>Binary Cross-Entropy (BCE)</strong> dùng cho bài toán phân loại nhị phân (2 lớp). Đây chính là <strong>Negative Log-Likelihood của phân phối Bernoulli</strong>.</p>
@@ -837,6 +1008,21 @@ fn main() {
     <div class="image-caption">Hình 2: Đạo hàm BCE = prediction - target</div>
   </div>
 
+  <p><strong>Phân tích đạo hàm (Hình 2):</strong></p>
+  <ul>
+    <li><strong>Đường màu xanh:</strong> Đạo hàm khi y=1 (positive). Gradient dương khi $\hat{y} > 1$ → cần giảm prediction. Gradient âm khi $\hat{y} < 1$ → cần tăng prediction.</li>
+    <li><strong>Đường màu cam:</strong> Đạo hàm khi y=0 (negative). Ngược lại với trường hợp trên.</li>
+    <li><strong>Điểm quan trọng:</strong> Tại $\hat{y}=y$ (đoán đúng), gradient = 0 → Không cập nhật weights!</li>
+  </ul>
+
+  <div class="callout callout-warning">
+    <div class="callout-icon">⚠</div>
+    <div class="callout-content">
+      <strong>Vấn đề Vanishing Gradient:</strong>
+      <p>Khi $\hat{y}$ gần 0 hoặc 1 (model rất tự tin), đạo hàm rất nhỏ → Gradient gần như bằng 0 → Model học rất chậm. Đây là lý do cần initialization tốt và activation functions phù hợp.</p>
+    </div>
+  </div>
+
   <div class="concept-grid">
     <div class="concept-card">
       <div class="concept-icon">✓</div>
@@ -864,7 +1050,23 @@ fn main() {
 
   <div class="image-showcase">
     <img src="/images/ch21/loss_cross_entropy.png" alt="CCE Loss Visualization" />
-    <div class="image-caption">Hình 3: CCE Loss cho multi-class classification</div>
+    <div class="image-caption">Hình 3: CCE Loss cho multi-class classification - Mỗi đường là một class</div>
+  </div>
+
+  <p><strong>Hãy quan sát Hình 3 để hiểu CCE hoạt động như thế nào:</strong></p>
+  <ul>
+    <li><strong>Trục hoành (x):</strong> Xác suất mà model dự đoán cho class đúng</li>
+    <li><strong>Trục tung (y):</strong> Giá trị Loss</li>
+    <li><strong>Mỗi đường cong</strong> tương ứng với một class (Class 0, Class 1, Class 2...)</li>
+    <li><strong>Tương tự BCE:</strong> Loss = 0 khi $\hat{y}=1$ (model chắc chắn đúng), Loss tăng khi model đoán sai</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-content">
+      <strong>Điểm khác biệt với BCE:</strong>
+      <p>Trong CCE, ta không chỉ có 1 prediction mà có N predictions (một cho mỗi class). Tổng của chúng = 1 (nhờ Softmax). Loss chỉ phụ thuộc vào xác suất của class <strong>đúng</strong>.</p>
+    </div>
   </div>
 
   <p><strong>Categorical Cross-Entropy (CCE)</strong> dùng cho bài toán phân loại đa lớp. Kết hợp với <strong>Softmax</strong> để tạo phân phối xác suất.</p>
@@ -962,7 +1164,21 @@ fn main() {
 
   <div class="image-showcase">
     <img src="/images/ch21/loss_focal.png" alt="Focal Loss Visualization" />
-    <div class="image-caption">Hình 4: Focal Loss giảm weight cho "easy examples"</div>
+    <div class="image-caption">Hình 4: So sánh BCE (đường nét đứt) và Focal Loss (đường liền) với γ=2</div>
+  </div>
+
+  <p><strong>Hãy quan sát Hình 4 để hiểu sức mạnh của Focal Loss:</strong></p>
+  <ul>
+    <li><strong>Đường nét đứt (BCE):</strong> Loss cao ngay cả khi model đã "dễ dàng" đoán đúng (p cao)</li>
+    <li><strong>Đường liền (Focal Loss, γ=2):</strong> Loss gần như bằng 0 khi p > 0.5</li>
+  </ul>
+
+  <div class="callout callout-tip">
+    <div class="callout-icon">💡</div>
+    <div class="callout-content">
+      <strong>Ý nghĩa trực quan:</strong>
+      <p>Khi model đã "học tốt" một mẫu (p cao → easy example), BCE vẫn "yêu cầu" model tiếp tục học từ mẫu đó. Focal Loss <strong>giảm weight</strong> xuống gần 0, cho phép model <strong>tập trung</strong> vào các mẫu khó (hard examples) mà nó chưa học tốt.</p>
+    </div>
   </div>
 
   <h4>Vấn đề Class Imbalance:</h4>
