@@ -29,7 +29,7 @@ const ch21_03_lessons: Lesson[] = [
     <p class="font-semibold text-lg mb-3">Định nghĩa cơ bản:</p>
     <p>Thuật toán cốt lõi của mỗi Nơ-ron là phép tính:</p>
     <div class="formula-block-small my-4 p-4 bg-blue-50 text-center">
-      $$Z = X \cdot W + b$$
+      $$Z = X \\cdot W + b$$
     </div>
     <p>Đây là một <strong>phương trình tuyến tính</strong> (Linear) thuần túy:</p>
     <ul class="list-disc pl-6 mt-2">
@@ -57,36 +57,36 @@ const ch21_03_lessons: Lesson[] = [
   <p>Giả sử ta có mạng Neural với 3 lớp, mỗi lớp chỉ thực hiện phép nhân ma trận cộng bias (không có activation):</p>
 
   <div class="my-6 p-5 bg-red-50 border-l-4 border-red-500">
-    <p class="font-bold text-red-800 mb-3">⚠️ HIỆN TƯỢNG LINEAR COLLAPSE - MẠNG SỤP ĐỔ VỀ TUYẾN TÍNH!</p>
+    <p class="font-bold text-red-800 mb-3">HIỆN TƯỢNG LINEAR COLLAPSE - MẠNG SỤP ĐỔ VỀ TUYẾN TÍNH!</p>
     <p class="text-blue-600 font-bold mb-2">Lớp 1 (Hidden Layer 1):</p>
     <div class="formula-block-small my-2 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-      $$H_1 = X \cdot W_1 + b_1$$
+      $$H_1 = X \\cdot W_1 + b_1$$
     </div>
 
     <p class="text-blue-600 font-bold mb-2 mt-4">Lớp 2 (Hidden Layer 2):</p>
     <div class="formula-block-small my-2 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-      $$H_2 = H_1 \cdot W_2 + b_2$$
+      $$H_2 = H_1 \\cdot W_2 + b_2$$
     </div>
     <div class="formula-block-small my-2 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-      $$= (X \cdot W_1 + b_1) \cdot W_2 + b_2$$
+      $$= (X \\cdot W_1 + b_1) \\cdot W_2 + b_2$$
     </div>
     <div class="formula-block-small my-2 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-      $$= X \cdot (W_1 \cdot W_2) + (b_1 \cdot W_2 + b_2)$$
+      $$= X \\cdot (W_1 \\cdot W_2) + (b_1 \\cdot W_2 + b_2)$$
     </div>
 
     <p class="text-blue-600 font-bold mb-2 mt-4">Lớp 3 (Hidden Layer 3):</p>
     <div class="formula-block-small my-2 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-      $$H_3 = H_2 \cdot W_3 + b_3$$
+      $$H_3 = H_2 \\cdot W_3 + b_3$$
     </div>
     <div class="formula-block-small my-2 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-      $$= X \cdot (W_1 \cdot W_2 \cdot W_3) + ...$$
+      $$= X \\cdot (W_1 \\cdot W_2 \\cdot W_3) + ...$$
     </div>
 
     <p class="text-yellow-800 font-bold mb-2 mt-4">RÚT GỌN TỔNG QUÁT:</p>
     <div class="formula-block-small my-2 p-3 bg-yellow-100 border border-yellow-400 rounded text-center font-mono">
-      $$H_n = X \cdot W_{gop} + b_{gop}$$
+      $$H_n = X \\cdot W_{gop} + b_{gop}$$
     </div>
-    <p class="mt-2">Trong đó: $W_{gop} = W_1 \cdot W_2 \cdot ... \cdot W_n$</p>
+    <p class="mt-2">Trong đó: $W_{gop} = W_1 \\cdot W_2 \\cdot ... \\cdot W_n$</p>
   </div>
 
   <div class="definition-block mb-4">
@@ -587,7 +587,7 @@ fn main() {
     println!("   - Output [0,1] = {:.4} (≈ 1 → Lớp 1)", out[[1, 0]]);
     println!("   - Output [1,0] = {:.4} (≈ 1 → Lớp 1)", out[[2, 0]]);
     println!("   - Output [1,1] = {:.4} (≈ 0 → Lớp 0)", out[[3, 0]]);
-    println!("\\n   ✅ Mạng đã HỌC được pattern XOR!");
+    println!("\\n   Mạng đã HỌC được pattern XOR!");
 
     // =========================================================
     // GIẢI THÍCH: TẠI SAO ReLU HOẠT ĐỘNG?
@@ -678,14 +678,14 @@ fn main() {
 
   <!-- DERIVATIVE DERIVATION FOR SIGMOID -->
   <div class="derivative-block my-6 p-5 bg-slate-50 border-2 border-slate-300 rounded-lg">
-    <h4 class="font-bold text-slate-800 mb-4">📐 Đạo hàm của Sigmoid - Chi tiết từng bước</h4>
+    <h4 class="font-bold text-slate-800 mb-4">Đạo hàm của Sigmoid - Chi tiết từng bước</h4>
 
     <div class="space-y-4 text-sm">
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 1: Viết lại hàm số dưới dạng hàm hợp</p>
         <p class="text-gray-600">Ta viết dưới dạng hàm hợp để áp dụng chain rule:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\sigma(x) = (1 + e^{-x})^{-1}$$
+          $$\\sigma(x) = (1 + e^{-x})^{-1}$$
         </div>
       </div>
 
@@ -700,7 +700,7 @@ fn main() {
         </div>
         <p class="text-gray-600 mt-2">Áp dụng:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\sigma'(x) = -1 (1 + e^{-x})^{-2} (-e^{-x})$$
+          $$\\sigma'(x) = -1 (1 + e^{-x})^{-2} (-e^{-x})$$
         </div>
       </div>
 
@@ -708,36 +708,36 @@ fn main() {
         <p class="font-semibold text-slate-700 mb-2">Bước 3: Tính đạo hàm của mẫu số</p>
         <p class="text-gray-600">Đạo hàm của $e^u$ với $u = -x$:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\frac{d(e^u)}{dx} = e^u \cdot u' = e^{-x} \cdot (-1) = -e^{-x}$$
+          $$\\frac{d(e^u)}{dx} = e^u \\cdot u' = e^{-x} \\cdot (-1) = -e^{-x}$$
         </div>
         <p class="text-gray-600 mt-2">Vậy:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\frac{d}{dx}(1 + e^{-x}) = 0 + (-e^{-x}) = -e^{-x}$$
+          $$\\frac{d}{dx}(1 + e^{-x}) = 0 + (-e^{-x}) = -e^{-x}$$
         </div>
       </div>
 
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 4: Kết hợp các thành phần</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\sigma'(x) = -1 (1 + e^{-x})^{-2} (-e^{-x})$$
+          $$\\sigma'(x) = -1 (1 + e^{-x})^{-2} (-e^{-x})$$
         </div>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\sigma'(x) = e^{-x} (1 + e^{-x})^{-2}$$
+          $$\\sigma'(x) = e^{-x} (1 + e^{-x})^{-2}$$
         </div>
       </div>
 
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 5: Biến đổi về dạng gọn hơn</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\sigma'(x) = \frac{e^{-x}}{(1 + e^{-x})^2}$$
+          $$\\sigma'(x) = \\frac{e^{-x}}{(1 + e^{-x})^2}$$
         </div>
         <p class="text-gray-600 mt-2">Nhân tử và mẫu với $e^x$:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\sigma'(x) = \frac{1 \cdot e^{-x}}{e^x \cdot (1 + e^{-x})^2} = \frac{1}{e^x + 1} \cdot \frac{e^x}{e^x + 1}$$
+          $$\\sigma'(x) = \\frac{1 \\cdot e^{-x}}{e^x \\cdot (1 + e^{-x})^2} = \\frac{1}{e^x + 1} \\cdot \\frac{e^x}{e^x + 1}$$
         </div>
-        <p class="text-gray-600 mt-2">Vì $\sigma(x) = \frac{1}{1+e^{-x}} = \frac{e^x}{e^x+1}$, ta có:</p>
+        <p class="text-gray-600 mt-2">Vì $\\sigma(x) = \\frac{1}{1+e^{-x}} = \\frac{e^x}{e^x+1}$, ta có:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\sigma'(x) = \sigma(x) \cdot (1 - \sigma(x))$$
+          $$\\sigma'(x) = \\sigma(x) \\cdot (1 - \\sigma(x))$$
         </div>
       </div>
     </div>
@@ -848,14 +848,14 @@ fn main() {
 
   <!-- DERIVATIVE DERIVATION FOR TANH -->
   <div class="derivative-block my-6 p-5 bg-slate-50 border-2 border-slate-300 rounded-lg">
-    <h4 class="font-bold text-slate-800 mb-4">📐 Đạo hàm của Tanh - Chi tiết từng bước</h4>
+    <h4 class="font-bold text-slate-800 mb-4">Đạo hàm của Tanh - Chi tiết từng bước</h4>
 
     <div class="space-y-4 text-sm">
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 1: Viết tanh dưới dạng thương</p>
         <p class="text-gray-600">Tanh là hàm phân thức, áp dụng quotient rule:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\tanh(x) = \frac{u(x)}{v(x)}$$ với $u(x) = e^x - e^{-x}$, $v(x) = e^x + e^{-x}$
+          $$\\tanh(x) = \\frac{u(x)}{v(x)}$$ với $u(x) = e^x - e^{-x}$, $v(x) = e^x + e^{-x}$
         </div>
       </div>
 
@@ -863,11 +863,11 @@ fn main() {
         <p class="font-semibold text-slate-700 mb-2">Bước 2: Áp dụng Quotient Rule</p>
         <p class="text-gray-600">Quotient rule (quy tắc thương):</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\frac{d}{dx}\left(\frac{u}{v}\right) = \frac{u'v - uv'}{v^2}$$
+          $$\\frac{d}{dx}\\left(\\frac{u}{v}\\right) = \\frac{u'v - uv'}{v^2}$$
         </div>
         <p class="text-gray-600 mt-2">Áp dụng vào tanh:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\tanh'(x) = \frac{(e^x + e^{-x})(e^x + e^{-x}) - (e^x - e^{-x})(e^x - e^{-x})}{(e^x + e^{-x})^2}$$
+          $$\\tanh'(x) = \\frac{(e^x + e^{-x})(e^x + e^{-x}) - (e^x - e^{-x})(e^x - e^{-x})}{(e^x + e^{-x})^2}$$
         </div>
       </div>
 
@@ -888,22 +888,22 @@ fn main() {
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 4: Rút gọn</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\tanh'(x) = \frac{4}{(e^x + e^{-x})^2}$$
+          $$\\tanh'(x) = \\frac{4}{(e^x + e^{-x})^2}$$
         </div>
       </div>
 
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 5: Biến đổi về dạng gọn</p>
-        <p class="text-gray-600">Từ định nghĩa $\tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$, ta có:</p>
+        <p class="text-gray-600">Từ định nghĩa $\\tanh(x) = \\frac{e^x - e^{-x}}{e^x + e^{-x}}$, ta có:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\tanh^2(x) = \left(\frac{e^x - e^{-x}}{e^x + e^{-x}}\right)^2 = \frac{e^{2x} - 2 + e^{-2x}}{e^{2x} + 2 + e^{-2x}}$$
+          $$\\tanh^2(x) = \\left(\\frac{e^x - e^{-x}}{e^x + e^{-x}}\\right)^2 = \\frac{e^{2x} - 2 + e^{-2x}}{e^{2x} + 2 + e^{-2x}}$$
         </div>
         <p class="text-gray-600 mt-2">Suy ra:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$1 - \tanh^2(x) = \frac{4}{e^{2x} + 2 + e^{-2x}}$$
+          $$1 - \\tanh^2(x) = \\frac{4}{e^{2x} + 2 + e^{-2x}}$$
         </div>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\tanh'(x) = 1 - \tanh^2(x)$$
+          $$\\tanh'(x) = 1 - \\tanh^2(x)$$
         </div>
       </div>
     </div>
@@ -1188,14 +1188,14 @@ fn main() {
 
   <!-- DERIVATIVE DERIVATION FOR RELU -->
   <div class="derivative-block my-6 p-5 bg-slate-50 border-2 border-slate-300 rounded-lg">
-    <h4 class="font-bold text-slate-800 mb-4">📐 Đạo hàm của ReLU - Chi tiết từng bước</h4>
+    <h4 class="font-bold text-slate-800 mb-4">Đạo hàm của ReLU - Chi tiết từng bước</h4>
 
     <div class="space-y-4 text-sm">
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 1: Phân tích hàm số</p>
         <p class="text-gray-600">ReLU là hàm max của hai hàm tuyến tính: g(x) = 0 và h(x) = x</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$f(x) = \max(0, x)$$
+          $$f(x) = \\max(0, x)$$
         </div>
       </div>
 
@@ -1203,11 +1203,11 @@ fn main() {
         <p class="font-semibold text-slate-700 mb-2">Bước 2: Xét từng khoảng</p>
         <p class="text-gray-600">Khi x > 0: f(x) = x</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$f'(x) = \frac{d(x)}{dx} = 1$$
+          $$f'(x) = \\frac{d(x)}{dx} = 1$$
         </div>
         <p class="text-gray-600 mt-2">Khi x ≤ 0: f(x) = 0</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$f'(x) = \frac{d(0)}{dx} = 0$$
+          $$f'(x) = \\frac{d(0)}{dx} = 0$$
         </div>
       </div>
 
@@ -1215,10 +1215,10 @@ fn main() {
         <p class="font-semibold text-slate-700 mb-2">Bước 3: Xét tại x = 0</p>
         <p class="text-gray-600">Tính giới hạn hai phía:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\lim_{x \to 0^+} f'(x) = \lim_{x \to 0^+} 1 = 1$$
+          $$\\lim_{x \\to 0^+} f'(x) = \\lim_{x \\to 0^+} 1 = 1$$
         </div>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\lim_{x \to 0^-} f'(x) = \lim_{x \to 0^-} 0 = 0$$
+          $$\\lim_{x \\to 0^-} f'(x) = \\lim_{x \\to 0^-} 0 = 0$$
         </div>
         <p class="text-gray-600 mt-2">Hai giới hạn một phía khác nhau → hàm không khả vi tại x = 0</p>
         <p class="text-gray-600 mt-2">Trong thực tế, ta quy ước đạo hàm tại x = 0 bằng 0 hoặc 1</p>
@@ -1227,7 +1227,7 @@ fn main() {
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 4: Tổng hợp</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$f'(x) = \begin{cases} 1 & x > 0 \\ 0 & x \leq 0 \end{cases}$$
+          $$f'(x) = \\begin{cases} 1 & x > 0 \\\\ 0 & x \\leq 0 \\end{cases}$$
         </div>
       </div>
     </div>
@@ -1343,25 +1343,25 @@ fn main() {
     <tbody>
       <tr>
         <td>ReLU</td>
-        <td>$\max(0,x)$</td>
+        <td>$\\max(0,x)$</td>
         <td>Nhanh, đơn giản</td>
         <td>Dead neurons</td>
       </tr>
       <tr>
         <td>Leaky ReLU</td>
-        <td>$\max(0.01x,x)$</td>
+        <td>$\\max(0.01x,x)$</td>
         <td>Không dead</td>
         <td>Thêm hyperparameter</td>
       </tr>
       <tr>
         <td>PReLU</td>
-        <td>$\max(\alpha x,x)$</td>
+        <td>$\\max(\\alpha x,x)$</td>
         <td>Tự học α</td>
         <td>Dễ overfit</td>
       </tr>
       <tr>
         <td>ELU</td>
-        <td>$x>0?x:\alpha(e^x-1)$</td>
+        <td>$x>0?x:\\alpha(e^x-1)$</td>
         <td>Smooth, near zero</td>
         <td>Chậm (exp)</td>
       </tr>
@@ -1557,9 +1557,9 @@ fn main() {
         <p class="font-semibold text-slate-700 mb-2">Bước 1: Xác định hàm số</p>
         <p class="text-gray-600">GELU sử dụng công thức xấp xỉ:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $\text{GELU}(x) \approx 0.5x(1 + \tanh(u))$
+          $\\text{GELU}(x) \\approx 0.5x(1 + \\tanh(u))$
         </div>
-        <p class="text-gray-600 mt-2">với $u = \sqrt{\frac{2}{\pi}}(x + 0.044715x^3)$</p>
+        <p class="text-gray-600 mt-2">với $u = \\sqrt{\\frac{2}{\\pi}}(x + 0.044715x^3)$</p>
         <p class="text-gray-600">Đây là hàm hợp dạng tích: f(x) = 0.5x · (1 + tanh(u(x)))</p>
       </div>
 
@@ -1567,11 +1567,11 @@ fn main() {
         <p class="font-semibold text-slate-700 mb-2">Bước 2: Áp dụng Product Rule</p>
         <p class="text-gray-600">Product rule (quy tắc tích):</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\frac{d}{dx}[f \cdot g] = f' \cdot g + f \cdot g'$$
+          $$\\frac{d}{dx}[f \\cdot g] = f' \\cdot g + f \\cdot g'$$
         </div>
-        <p class="text-gray-600 mt-2">Đặt: $f(x) = 0.5x$, $g(x) = 1 + \tanh(u)$</p>
+        <p class="text-gray-600 mt-2">Đặt: $f(x) = 0.5x$, $g(x) = 1 + \\tanh(u)$</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\text{GELU}'(x) = f'(x) \cdot g(x) + f(x) \cdot g'(x)$$
+          $$\\text{GELU}'(x) = f'(x) \\cdot g(x) + f(x) \\cdot g'(x)$$
         </div>
       </div>
 
@@ -1587,21 +1587,21 @@ fn main() {
         <p class="font-semibold text-slate-700 mb-2">Bước 4: Tính g'(x) = (1 + tanh(u))'</p>
         <p class="text-gray-600">Áp dụng chain rule:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$g'(x) = \tanh'(u) \cdot u'$$
+          $$g'(x) = \\tanh'(u) \\cdot u'$$
         </div>
-        <p class="text-gray-600 mt-2">Với đạo hàm tanh: $\tanh'(u) = 1 - \tanh^2(u)$</p>
+        <p class="text-gray-600 mt-2">Với đạo hàm tanh: $\\tanh'(u) = 1 - \\tanh^2(u)$</p>
         <p class="text-gray-600 mt-2">Tính u': vì d(x³)/dx = 3x²</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$u' = \sqrt{\frac{2}{\pi}} (1 + 3 \cdot 0.044715 x^2)$$
+          $$u' = \\sqrt{\\frac{2}{\\pi}} (1 + 3 \\cdot 0.044715 x^2)$$
         </div>
       </div>
 
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 5: Kết hợp</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\text{GELU}'(x) = 0.5(1 + \tanh(u)) + 0.5x(1 - \tanh^2(u)) \sqrt{\frac{2}{\pi}}(1 + 0.134145x^2)$$
+          $$\\text{GELU}'(x) = 0.5(1 + \\tanh(u)) + 0.5x(1 - \\tanh^2(u)) \\sqrt{\\frac{2}{\\pi}}(1 + 0.134145x^2)$$
         </div>
-        <p class="text-gray-600 mt-2">với $u = \sqrt{2/\pi}(x + 0.044715x^3)$</p>
+        <p class="text-gray-600 mt-2">với $u = \\sqrt{2/\\pi}(x + 0.044715x^3)$</p>
       </div>
     </div>
 
@@ -1812,51 +1812,51 @@ fn main() {
         <p class="font-semibold text-slate-700 mb-2">Bước 1: Xác định hàm số</p>
         <p class="text-gray-600">SiLU là hàm tích của x và sigmoid:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $\text{SiLU}(x) = x \cdot \sigma(x)$
+          $\\text{SiLU}(x) = x \\cdot \\sigma(x)$
         </div>
-        <p class="text-gray-600 mt-2">với $\sigma(x) = \frac{1}{1 + e^{-x}}$ (sigmoid)</p>
+        <p class="text-gray-600 mt-2">với $\\sigma(x) = \\frac{1}{1 + e^{-x}}$ (sigmoid)</p>
       </div>
 
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 2: Áp dụng Product Rule</p>
         <p class="text-gray-600">Product rule (quy tắc tích):</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\frac{d}{dx}[f \cdot g] = f' \cdot g + f \cdot g'$$
+          $$\\frac{d}{dx}[f \\cdot g] = f' \\cdot g + f \\cdot g'$$
         </div>
-        <p class="text-gray-600 mt-2">Đặt: $f(x) = x$, $g(x) = \sigma(x)$</p>
+        <p class="text-gray-600 mt-2">Đặt: $f(x) = x$, $g(x) = \\sigma(x)$</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\text{SiLU}'(x) = f'(x) \cdot g(x) + f(x) \cdot g'(x)$$
+          $$\\text{SiLU}'(x) = f'(x) \\cdot g(x) + f(x) \\cdot g'(x)$$
         </div>
       </div>
 
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 3: Tính f'(x) và g'(x)</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$f'(x) = \frac{dx}{dx} = 1$$
+          $$f'(x) = \\frac{dx}{dx} = 1$$
         </div>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$g'(x) = \sigma'(x) = \sigma(x)(1 - \sigma(x))$$ (đạo hàm sigmoid)
+          $$g'(x) = \\sigma'(x) = \\sigma(x)(1 - \\sigma(x))$$ (đạo hàm sigmoid)
         </div>
       </div>
 
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 4: Kết hợp</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\text{SiLU}'(x) = 1 \cdot \sigma(x) + x \cdot \sigma(x)(1 - \sigma(x))$$
+          $$\\text{SiLU}'(x) = 1 \\cdot \\sigma(x) + x \\cdot \\sigma(x)(1 - \\sigma(x))$$
         </div>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\text{SiLU}'(x) = \sigma(x) + x \cdot \sigma(x)(1 - \sigma(x))$$
+          $$\\text{SiLU}'(x) = \\sigma(x) + x \\cdot \\sigma(x)(1 - \\sigma(x))$$
         </div>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\text{SiLU}'(x) = \sigma(x)[1 + x(1 - \sigma(x))]$$
+          $$\\text{SiLU}'(x) = \\sigma(x)[1 + x(1 - \\sigma(x))]$$
         </div>
       </div>
 
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 5: Phân tích đạo hàm</p>
         <p class="text-gray-600">Đạo hàm SiLU gồm 2 term:</p>
-        <p class="text-gray-600 mt-2">Term 1: $\sigma(x)$ - luôn dương</p>
-        <p class="text-gray-600">Term 2: $x \cdot \sigma(x)(1 - \sigma(x))$ - có thể âm hoặc dương</p>
+        <p class="text-gray-600 mt-2">Term 1: $\\sigma(x)$ - luôn dương</p>
+        <p class="text-gray-600">Term 2: $x \\cdot \\sigma(x)(1 - \\sigma(x))$ - có thể âm hoặc dương</p>
         <p class="text-gray-600 mt-2">Đây là lý do SiLU là <strong>non-monotonic</strong>: derivative có thể âm với x âm</p>
       </div>
     </div>
@@ -1865,7 +1865,7 @@ fn main() {
       <p class="font-semibold">Điểm quan trọng:</p>
       <ul class="text-sm mt-1 list-disc pl-4">
         <li>Đạo hàm SiLU phức tạp hơn ReLU nhưng đơn giản hơn GELU</li>
-        <li>Term thứ 2 ($x \cdot \sigma(x)(1-\sigma(x))$) cho phép gradient âm → <strong>non-monotonic</strong></li>
+        <li>Term thứ 2 ($x \\cdot \\sigma(x)(1-\\sigma(x))$) cho phép gradient âm → <strong>non-monotonic</strong></li>
         <li>Với x = 0: SiLU'(0) = σ(0) + 0 = 0.5</li>
         <li>Với x lớn dương: SiLU'(x) → 1; với x lớn âm: SiLU'(x) → 0</li>
       </ul>
@@ -2058,14 +2058,14 @@ fn main() {
 
   <!-- DERIVATIVE DERIVATION FOR SOFTMAX -->
   <div class="derivative-block my-6 p-5 bg-slate-50 border-2 border-slate-300 rounded-lg">
-    <h4 class="font-bold text-slate-800 mb-4">📐 Đạo hàm của Softmax - Chi tiết từng bước</h4>
+    <h4 class="font-bold text-slate-800 mb-4">Đạo hàm của Softmax - Chi tiết từng bước</h4>
 
     <div class="space-y-4 text-sm">
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 1: Xác định đây là hàm vector</p>
-        <p class="text-gray-600">Softmax là hàm từ $\mathbb{R}^n \to \mathbb{R}^n$:</p>
+        <p class="text-gray-600">Softmax là hàm từ $\\mathbb{R}^n \\to \\mathbb{R}^n$:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\text{softmax}(x) = [\text{softmax}_1, \text{softmax}_2, ..., \text{softmax}_n]$$
+          $$\\text{softmax}(x) = [\\text{softmax}_1, \\text{softmax}_2, ..., \\text{softmax}_n]$$
         </div>
         <p class="text-gray-600 mt-2">Đạo hàm của hàm vector là <strong>ma trận Jacobian</strong></p>
       </div>
@@ -2074,42 +2074,42 @@ fn main() {
         <p class="font-semibold text-slate-700 mb-2">Bước 2: Xét trường hợp i = j</p>
         <p class="text-gray-600">Áp dụng Quotient Rule:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\frac{\partial \text{softmax}_i}{\partial x_i} = \frac{e^{x_i} \cdot \sum_j e^{x_j} - e^{x_i} \cdot e^{x_i}}{(\sum_j e^{x_j})^2}$$
+          $$\\frac{\\partial \\text{softmax}_i}{\\partial x_i} = \\frac{e^{x_i} \\cdot \\sum_j e^{x_j} - e^{x_i} \\cdot e^{x_i}}{(\\sum_j e^{x_j})^2}$$
         </div>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$= \frac{e^{x_i}(\sum_j e^{x_j} - e^{x_i})}{(\sum_j e^{x_j})^2}$$
+          $$= \\frac{e^{x_i}(\\sum_j e^{x_j} - e^{x_i})}{(\\sum_j e^{x_j})^2}$$
         </div>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$= \text{softmax}_i \cdot (1 - \text{softmax}_i)$$
+          $$= \\text{softmax}_i \\cdot (1 - \\text{softmax}_i)$$
         </div>
       </div>
 
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 3: Xét trường hợp i ≠ j</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\frac{\partial \text{softmax}_i}{\partial x_j} = \frac{0 \cdot \sum - e^{x_i} \cdot e^{x_j}}{(\sum e^{x_j})^2}$$
+          $$\\frac{\\partial \\text{softmax}_i}{\\partial x_j} = \\frac{0 \\cdot \\sum - e^{x_i} \\cdot e^{x_j}}{(\\sum e^{x_j})^2}$$
         </div>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$= -\frac{e^{x_i} \cdot e^{x_j}}{(\sum_j e^{x_j})^2}$$
+          $$= -\\frac{e^{x_i} \\cdot e^{x_j}}{(\\sum_j e^{x_j})^2}$$
         </div>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$= -\text{softmax}_i \cdot \text{softmax}_j$$
+          $$= -\\text{softmax}_i \\cdot \\text{softmax}_j$$
         </div>
       </div>
 
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 4: Tổng hợp bằng Kronecker Delta</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$\frac{\partial \text{softmax}_i}{\partial x_j} = \text{softmax}_i \cdot (\delta_{ij} - \text{softmax}_j)$$
+          $$\\frac{\\partial \\text{softmax}_i}{\\partial x_j} = \\text{softmax}_i \\cdot (\\delta_{ij} - \\text{softmax}_j)$$
         </div>
-        <p class="text-gray-600 mt-2">với $\delta_{ij} = \begin{cases} 1 & i = j \\ 0 & i \neq j \end{cases}$</p>
+        <p class="text-gray-600 mt-2">với $\\delta_{ij} = \\begin{cases} 1 & i = j \\\\ 0 & i \neq j \\end{cases}$</p>
       </div>
 
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 5: Ma trận Jacobian</p>
         <p class="text-gray-600">Ma trận Jacobian có dạng:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
-          $$J = \begin{pmatrix} \text{softmax}_1(1-\text{softmax}_1) & -\text{softmax}_1\text{softmax}_2 & \cdots \\ -\text{softmax}_2\text{softmax}_1 & \text{softmax}_2(1-\text{softmax}_2) & \cdots \\ \vdots & \vdots & \ddots \end{pmatrix}$$
+          $$J = \\begin{pmatrix} \\text{softmax}_1(1-\\text{softmax}_1) & -\\text{softmax}_1\\text{softmax}_2 & \\cdots \\\\ -\\text{softmax}_2\\text{softmax}_1 & \\text{softmax}_2(1-\\text{softmax}_2) & \\cdots \\\\ \\vdots & \\vdots & \\ddots \\end{pmatrix}$$
         </div>
       </div>
     </div>

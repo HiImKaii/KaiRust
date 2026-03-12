@@ -5,8 +5,8 @@ import ch22_03 from './ch22_03';
 import ch22_04 from './ch22_04';
 import ch22_05 from './ch22_05';
 import ch22_06 from './ch22_06';
-// import ch22_07 from './ch22_07';
-// import ch22_08 from './ch22_08';
+import ch22_07 from './ch22_07';
+import ch22_08 from './ch22_08';
 
 /** MUP Transformer: Gộp nhiều tiểu mục lẻ tẻ trong 1 file (Chapter con) thành 1 Mục Menu Lớn Duy Nhất */
 function mergeChapterToSingleLesson(ch: Chapter): Lesson {
@@ -31,8 +31,8 @@ const ch22: Chapter = {
     mergeChapterToSingleLesson(ch22_04),
     mergeChapterToSingleLesson(ch22_05),
     mergeChapterToSingleLesson(ch22_06),
-    // mergeChapterToSingleLesson(ch22_07),
-    // mergeChapterToSingleLesson(ch22_08),
+    mergeChapterToSingleLesson(ch22_07),
+    mergeChapterToSingleLesson(ch22_08),
   ],
 };
 

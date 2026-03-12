@@ -297,7 +297,45 @@ fn main() {
     <div class="image-caption">Hidden state tích lũy thông tin qua các bước thời gian — từ trạng thái ban đầu (h₀) đến biểu diễn ngữ cảnh phong phú (h₄)</div>
   </div>
 
-  <h3>3.1. Hidden State là gì?</h3>
+  <h3>3.1. Từ Perceptron → RNN: Chỉ thêm 1 thứ</h3>
+
+  <p>RNN không phải kiến trúc hoàn toàn mới — nó chỉ là <strong>Perceptron + 1 thứ thêm vào</strong>:</p>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Mô hình</th>
+        <th>Công thức</th>
+        <th>Ký ức?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Perceptron</strong></td>
+        <td>$y = f(W \\cdot x + b)$</td>
+        <td>Không — xử lý từng input độc lập</td>
+      </tr>
+      <tr>
+        <td><strong>FNN (nhiều lớp)</strong></td>
+        <td>$h = f(W_1 \\cdot x + b_1)$, $y = f(W_2 \\cdot h + b_2)$</td>
+        <td>Không — vẫn xử lý từng input độc lập</td>
+      </tr>
+      <tr>
+        <td><strong>RNN</strong></td>
+        <td>$h^{(t)} = f(\\underbrace{U \\cdot x^{(t)}}_{\\text{perceptron cũ}} + \\underbrace{W \\cdot h^{(t-1)}}_{\\text{THÊM MỚI}} + b)$</td>
+        <td><strong>Có</strong> — $W \\cdot h^{(t-1)}$ mang thông tin quá khứ</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-important">
+    <div class="callout-content">
+      <span class="callout-title">RNN = Perceptron + recurrent connection</span>
+      <p>Thành phần $U \\cdot x^{(t)}$ giống hệt perceptron: nhân input với trọng số. Thành phần $W \\cdot h^{(t-1)}$ là <strong>thứ duy nhất được thêm vào</strong> — nó kết nối hidden state bước trước sang bước hiện tại, tạo ra "ký ức". $W$ quyết định bao nhiêu thông tin cũ được <strong>biến đổi</strong> (không chỉ tăng/giảm, mà xoay, nén, mở rộng) rồi cộng với thông tin mới.</p>
+    </div>
+  </div>
+
+  <h3>3.2. Hidden State là gì?</h3>
 
   <div class="definition-block">
     <span class="definition-term">Định nghĩa Hidden State (h_t)</span>

@@ -27,6 +27,11 @@ const ch22_06_lessons: Lesson[] = [
     </ul>
   </div>
 
+  <div class="image-showcase">
+    <img src="/images/ch22/bidirectional_rnn.png" alt="Bidirectional RNN Architecture" />
+    <div class="image-caption">Hình 1: Kiến trúc Bidirectional RNN — Forward và Backward layers</div>
+  </div>
+
   <h3>1.2. Kiến trúc</h3>
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">

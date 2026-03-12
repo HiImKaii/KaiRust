@@ -79,7 +79,84 @@ const ch22_03_lessons: Lesson[] = [
     </div>
   </div>
 
-  <h3>1.3. So sánh Backprop thường vs BPTT</h3>
+  <h3>1.3. diag() — Ma trận đường chéo</h3>
+
+  <p>Trong công thức BPTT, $\text{diag}(1 - h_i^2)$ xuất hiện liên tục. Hãy hiểu rõ nó:</p>
+
+  <div class="definition-block">
+    <span class="definition-term">diag(v) biến 1 vector thành ma trận đường chéo</span>
+    <p>Nếu $v = [a, b, c]$, thì:</p>
+    <p>$\\text{diag}(v) = \\begin{bmatrix} a & 0 & 0 \\\\ 0 & b & 0 \\\\ 0 & 0 & c \\end{bmatrix}$</p>
+    <p>Chỉ có giá trị trên đường chéo chính, tất cả ô khác bằng 0.</p>
+  </div>
+
+  <p>Ví dụ: nếu $h^{(t)} = [0.5, -0.3, 0.8]$:</p>
+
+  <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
+    <p class="font-mono">$1 - h^2 = [1 - 0.25,\\; 1 - 0.09,\\; 1 - 0.64] = [0.75,\\; 0.91,\\; 0.36]$</p>
+    <p class="font-mono">$\\text{diag}(1 - h^2) = \\begin{bmatrix} 0.75 & 0 & 0 \\\\ 0 & 0.91 & 0 \\\\ 0 & 0 & 0.36 \\end{bmatrix}$</p>
+    <p>Tại sao là ma trận đường chéo? Vì mỗi $h_i$ chỉ phụ thuộc $a_i$ (pre-activation) của chính nó — không ảnh hưởng lẫn nhau → các ô ngoài đường chéo = 0.</p>
+  </div>
+
+  <h3>1.4. Gradient của $h^{(t)}$ — Có 2 nguồn!</h3>
+
+  <p>Đây là điểm khác biệt lớn so với Feedforward NN. Gradient tại $h^{(t)}$ đến từ <strong>2 con đường</strong>:</p>
+
+  <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
+    <h4>2 nguồn gradient cho $h^{(t)}$:</h4>
+    <p class="font-mono text-lg">$\\nabla_{h^{(t)}} L = \\underbrace{V^T \\frac{\\partial L^{(t)}}{\\partial o^{(t)}}}_{ \\text{① từ output tại t}} + \\underbrace{W^T \\text{diag}(1 - h^{(t+1)\\,2}) \\nabla_{h^{(t+1)}} L}_{ \\text{② từ bước t+1}}$</p>
+    <p><strong>Nguồn ①:</strong> gradient chảy từ output/loss tại bước t hiện tại.</p>
+    <p><strong>Nguồn ②:</strong> gradient "chảy ngược" từ bước t+1 (recursive — phải tính từ cuối về đầu).</p>
+  </div>
+
+  <p>Tính từ cuối về đầu:</p>
+  <ul>
+    <li><strong>t=T</strong> (bước cuối): chỉ có nguồn ① (không có bước t+1): $\\nabla_{h^{(T)}} L = V^T \\frac{\\partial L^{(T)}}{\\partial o^{(T)}}$</li>
+    <li><strong>t=T-1:</strong> cả ① lẫn ② (dùng $\\nabla_{h^{(T)}}$ vừa tính)</li>
+    <li><strong>...ngược dần về t=1</strong></li>
+  </ul>
+
+  <h3>1.5. Thứ tự tính BPTT — 5 bước</h3>
+
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">①</div>
+      <div class="step-content">
+        <h4>$\\frac{\\partial L^{(t)}}{\\partial o^{(t)}} = \\hat{y}^{(t)} - y^{(t)}$ ← tính trước</h4>
+        <p>Gradient tại output — đơn giản nhất. Ví dụ: $\\hat{y} = [0.66, 0.05, 0.29]$, đáp án đúng $y = [0, 1, 0]$ → gradient = $[0.66, -0.95, 0.29]$.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">②</div>
+      <div class="step-content">
+        <h4>$\\frac{\\partial L}{\\partial V} = \\sum_t \\frac{\\partial L^{(t)}}{\\partial o^{(t)}} \\cdot h^{(t)\\,T}$ ← không phụ thuộc thời gian</h4>
+        <p>V chỉ kết nối h→output, không liên quan đến recurrence.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">③</div>
+      <div class="step-content">
+        <h4>$\\nabla_{h^{(t)}} L$ ← tính từ t=T ngược về t=1</h4>
+        <p>Dùng công thức 2 nguồn ở trên. Đây là bước tốn thời gian nhất.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">④</div>
+      <div class="step-content">
+        <h4>$\\frac{\\partial L}{\\partial W} = \\sum_t \\text{diag}(1 - h^{(t)\\,2}) \\cdot \\nabla_{h^{(t)}} L \\cdot h^{(t-1)\\,T}$ ← gom từ mọi bước</h4>
+        <p>Đạo hàm $W \\cdot h^{(t-1)}$ theo $W$ ra $h^{(t-1)\\,T}$ — tương tự FNN.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">⑤</div>
+      <div class="step-content">
+        <h4>$\\frac{\\partial L}{\\partial U} = \\sum_t \\text{diag}(1 - h^{(t)\\,2}) \\cdot \\nabla_{h^{(t)}} L \\cdot x^{(t)\\,T}$ ← giống W, thay $h^{(t-1)}$ bằng $x^{(t)}$</h4>
+        <p>Vì $U$ nhân với $x^{(t)}$ trong forward pass.</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>1.6. So sánh Backprop thường vs BPTT</h3>
 
   <table class="comparison-table">
     <thead>

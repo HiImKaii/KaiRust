@@ -201,7 +201,126 @@ const ch22_02_lessons: Lesson[] = [
     </div>
   </div>
 
-  <h3>2.2. Tổng Loss qua toàn bộ chuỗi</h3>
+  <h3>2.2. Ký hiệu Goodfellow — Deep Learning Chapter 10</h3>
+
+  <p>Sách <strong>Deep Learning (Goodfellow, Bengio, Courville)</strong> sử dụng ký hiệu hơi khác. Bảng dưới đây ánh xạ giữa 2 hệ ký hiệu:</p>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Equation</th>
+        <th>Goodfellow notation</th>
+        <th>Ký hiệu bài này</th>
+        <th>Ý nghĩa</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>10.8</strong></td>
+        <td>$a^{(t)} = b + Wh^{(t-1)} + Ux^{(t)}$</td>
+        <td>$z_t = b_h + W_{hh} \\cdot h_{t-1} + W_{xh} \\cdot x_t$</td>
+        <td>Pre-activation (tổng tuyến tính thô)</td>
+      </tr>
+      <tr>
+        <td><strong>10.9</strong></td>
+        <td>$h^{(t)} = \\tanh(a^{(t)})$</td>
+        <td>$h_t = \\tanh(z_t)$</td>
+        <td>Hidden state — "bộ nhớ" tại bước t</td>
+      </tr>
+      <tr>
+        <td><strong>10.10</strong></td>
+        <td>$o^{(t)} = c + Vh^{(t)}$</td>
+        <td>$z_t^{out} = b_y + W_{hy} \\cdot h_t$</td>
+        <td>Pre-output (logits, chưa chuẩn hóa)</td>
+      </tr>
+      <tr>
+        <td><strong>10.11</strong></td>
+        <td>$\\hat{y}^{(t)} = \\text{softmax}(o^{(t)})$</td>
+        <td>$\\hat{y}_t = \\text{softmax}(z_t^{out})$</td>
+        <td>Phân phối xác suất output</td>
+      </tr>
+      <tr>
+        <td><strong>10.12</strong></td>
+        <td>$L^{(t)} = -\\log p(y^{(t)} | ...)$</td>
+        <td>$L_t = -\\log(\\hat{y}_t[\\text{target}])$</td>
+        <td>Cross-entropy loss tại bước t</td>
+      </tr>
+      <tr>
+        <td><strong>10.13</strong></td>
+        <td>$L = \\sum_t L^{(t)}$</td>
+        <td>$L = \\frac{1}{T}\\sum_t L_t$</td>
+        <td>Tổng / trung bình loss cả chuỗi</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-tip">
+    <div class="callout-content">
+      <span class="callout-title">3 ma trận cốt lõi theo Goodfellow</span>
+      <ul>
+        <li><strong>U</strong> (= $W_{xh}$): Trọng số input→hidden — "thông tin mới vào"</li>
+        <li><strong>W</strong> (= $W_{hh}$): Trọng số hidden→hidden — "ký ức quá khứ"</li>
+        <li><strong>V</strong> (= $W_{hy}$): Trọng số hidden→output — "xuất kết quả"</li>
+      </ul>
+      <p>Cả 3 ma trận dùng chung qua mọi bước thời gian — đây là <strong>parameter sharing</strong>. Luồng tóm gọn: $x^{(t)} \\xrightarrow{U} a^{(t)} \\xrightarrow{\\tanh} h^{(t)} \\xrightarrow{V} o^{(t)} \\xrightarrow{\\text{softmax}} \\hat{y}^{(t)}$.</p>
+    </div>
+  </div>
+
+  <h3>2.3. Ví dụ step-by-step: "Hôm nay trời đẹp quá"</h3>
+
+  <p>Giả sử $d_x = 4$, $d_h = 3$, $d_{out} = 2$. Mỗi từ được mã hóa one-hot:</p>
+
+  <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
+    <p class="font-mono">"Hôm" → $x^{(1)}$ = [1, 0, 0, 0] &nbsp;&nbsp; "nay" → $x^{(2)}$ = [0, 1, 0, 0]</p>
+    <p class="font-mono">"trời" → $x^{(3)}$ = [0, 0, 1, 0] &nbsp;&nbsp; "đẹp" → $x^{(4)}$ = [0, 0, 0, 1]</p>
+    <p class="font-mono">"quá" → $x^{(5)}$ = [1, 1, 0, 0]</p>
+  </div>
+
+  <div class="steps-container">
+    <div class="step-card">
+      <div class="step-number">t=1</div>
+      <div class="step-content">
+        <h4>"Hôm" đi vào</h4>
+        <p>$x^{(1)} = [1,0,0,0]$, &nbsp; $h^{(0)} = [0,0,0]$ ← khởi tạo bằng 0</p>
+        <p>$h^{(1)} = \\tanh(U \\cdot x^{(1)} + W \\cdot h^{(0)} + b)$ = $[0.3, -0.1, 0.5]$</p>
+        <p>$h^{(1)}$ chứa thông tin: <em>"Đã thấy từ 'Hôm'"</em></p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">t=2</div>
+      <div class="step-content">
+        <h4>"nay" đi vào — kết hợp với ký ức "Hôm"</h4>
+        <p>$x^{(2)} = [0,1,0,0]$, &nbsp; $h^{(1)} = [0.3, -0.1, 0.5]$ ← mang theo "Hôm"</p>
+        <p>$h^{(2)} = \\tanh(\\underbrace{U \\cdot x^{(2)}}_{\\text{"nay"}} + \\underbrace{W \\cdot h^{(1)}}_{\\text{thông tin "Hôm" bị biến đổi qua W}} + b) = [0.6, 0.2, -0.3]$</p>
+        <p>$h^{(2)}$ chứa: <em>"Hôm nay"</em></p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">t=3→4</div>
+      <div class="step-content">
+        <h4>"trời" rồi "đẹp" lần lượt đi vào</h4>
+        <p>$h^{(3)} = \\tanh(U \\cdot x^{(3)} + W \\cdot h^{(2)} + b) = [0.1, 0.7, 0.4]$ ← chứa "Hôm nay trời"</p>
+        <p>$h^{(4)} = \\tanh(U \\cdot x^{(4)} + W \\cdot h^{(3)} + b) = [-0.2, 0.5, 0.8]$ ← chứa "Hôm nay trời đẹp"</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-number">t=5</div>
+      <div class="step-content">
+        <h4>"quá" đi vào → tạo output cuối cùng</h4>
+        <p>$h^{(5)} = \\tanh(U \\cdot x^{(5)} + W \\cdot h^{(4)} + b) = [0.4, 0.9, -0.1]$ ← chứa "Hôm nay trời đẹp quá"</p>
+        <p>$\\hat{y}^{(5)} = \\text{softmax}(V \\cdot h^{(5)} + c) = [0.2, 0.8]$ ← output cuối cùng</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-important">
+    <div class="callout-content">
+      <span class="callout-title">Chỉ có 1 hidden layer chạy lặp lại</span>
+      <p>Sơ đồ trên trông như 5 layer khác nhau — nhưng thực ra là <strong>cùng 1 bộ U, W, V</strong> chạy lặp lại 5 lần. Cái thay đổi qua mỗi bước chỉ là: (1) $x^{(t)}$ — từ mới đưa vào, và (2) $h^{(t)}$ — hidden state tính ra, truyền sang bước sau. Giống như 1 người đọc từng từ một: bộ não (U, W, V) không thay đổi, nhưng "trạng thái tâm trí" ($h_t$) liên tục cập nhật.</p>
+    </div>
+  </div>
+
+  <h3>2.4. Tổng Loss qua toàn bộ chuỗi</h3>
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
     <h4>Total Loss:</h4>
