@@ -1878,6 +1878,12 @@ code {
   margin: 24px 0 12px 0;
   font-weight: 600;
 }
+.article-content h5 {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 20px 0 10px 0;
+  font-weight: 600;
+}
 .article-content ul, .article-content ol {
   margin-bottom: 24px;
   padding-left: 24px;

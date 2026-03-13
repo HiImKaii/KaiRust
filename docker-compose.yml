@@ -13,6 +13,8 @@ services:
       - DATA_DIR=/data
     volumes:
       - backend_data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - sandbox_data:/tmp/kairust_sandbox
 
   # -------------------------
   # FRONTEND SERVICE (VITE/NGINX)
@@ -64,3 +66,7 @@ volumes:
   caddy_data:
   caddy_config:
   backend_data:
+  sandbox_data:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs

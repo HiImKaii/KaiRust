@@ -203,26 +203,25 @@ async fn run_interactive(
     // Lấy timeout từ giới hạn bài tập
     let timeout_secs = get_timeout_secs(&lesson_id);
 
-    // Setup workspace
-    if let Err(e) = tokio::fs::create_dir_all(&work_dir).await {
+    // Setup workspace bằng cách clone từ template đã compile sẵn
+    let template_dir = "/tmp/kairust_template";
+    let status = Command::new("cp")
+        .arg("-a")
+        .arg(format!("{}/.", template_dir))
+        .arg(&work_dir)
+        .status()
+        .await;
+
+    if status.is_err() || !status.unwrap().success() {
         let _ = tx
             .send(WsServerMessage::Error {
-                message: format!("Lỗi tạo workspace: {}", e),
+                message: "Lỗi chạy lệnh cp clone template".to_string(),
             })
             .await;
         return;
     }
 
-    // Tạo thư mục src/ cho cargo project
     let src_dir = work_dir.join("src");
-    if let Err(e) = tokio::fs::create_dir_all(&src_dir).await {
-        let _ = tx
-            .send(WsServerMessage::Error {
-                message: format!("Lỗi tạo thư mục src: {}", e),
-            })
-            .await;
-        return;
-    }
 
     // Nếu là bài kiểm tra và có lesson_id, tự động nối thêm test case từ backend
     if is_test {
@@ -254,23 +253,10 @@ async fn run_interactive(
 
     let _ = tokio::fs::write(src_dir.join("main.rs"), &code).await;
 
-    // Tạo Cargo.toml nếu cần
-    let cargo_toml = r#"
-[package]
-name = "user_code"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-rand = "0.8"
-"#;
-    let _ = tokio::fs::write(work_dir.join("Cargo.toml"), cargo_toml).await;
-
     let start = Instant::now();
 
     // Step 1: Check cache first
     let mut use_cache = false;
-    let binary_path;
 
     if let Some(cached_path) = get_cached_binary(&cache_key).await {
         // Cache hit - copy cached binary to work dir
@@ -281,15 +267,12 @@ rand = "0.8"
 
         if tokio::fs::copy(&cached_path, &target_binary).await.is_ok() {
             use_cache = true;
-            binary_path = target_binary;
             eprintln!("[CACHE] Cache HIT - using cached binary");
         } else {
             use_cache = false;
-            binary_path = target_binary;
         }
     } else {
         // Cache miss - need to compile
-        binary_path = work_dir.join("target").join("release").join("user_code");
     }
 
     // Step 1b: Compile if cache miss
@@ -331,11 +314,30 @@ rand = "0.8"
         }
     }
 
-    // Step 2: Run with streaming output
+    // Step 2: Run with streaming output inside Docker Sandbox
     let _ = tx.send(WsServerMessage::Running).await;
 
-    let mut child = match Command::new(&binary_path)
-        .current_dir(&work_dir)
+    // Lấy session_id từ work_dir
+    let session_id_str = work_dir
+        .file_name()
+        .unwrap_or_default()
+        .to_string_lossy()
+        .to_string();
+    let binary_in_sandbox = format!("/sandbox/{}/target/release/user_code", session_id_str);
+
+    let mut child = match Command::new("docker")
+        .arg("run")
+        .arg("--rm")                           // Tự hủy container khi xong
+        .arg("-i")                             // Cho phép stdin pipe
+        .arg("--read-only")                    // Cấm ghi filesystem
+        .arg("--tmpfs").arg("/tmp:size=16m")   // /tmp nhỏ cho chương trình
+        .arg("--network").arg("none")          // Cấm truy cập mạng
+        .arg("--memory").arg("128m")           // Giới hạn RAM
+        .arg("--cpus").arg("0.5")              // Giới hạn CPU
+        .arg("--pids-limit").arg("64")         // Chặn fork bomb
+        .arg("-v").arg("sandbox_data:/sandbox:ro")  // Mount binary (chỉ đọc)
+        .arg("debian:bookworm-slim")
+        .arg(&binary_in_sandbox)
         .stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())
@@ -345,7 +347,7 @@ rand = "0.8"
         Err(e) => {
             let _ = tx
                 .send(WsServerMessage::Error {
-                    message: format!("Lỗi chạy binary: {}", e),
+                    message: format!("Lỗi khởi tạo sandbox: {}", e),
                 })
                 .await;
             let _ = tokio::fs::remove_dir_all(&work_dir).await;
@@ -409,9 +411,6 @@ rand = "0.8"
         }
     });
 
-    // Lưu PID của process để theo dõi memory
-    let pid = child.id().unwrap_or(0);
-
     // Wait for process to finish or timeout/kill
     let exit_code = tokio::select! {
         result = child.wait() => {
@@ -420,7 +419,7 @@ rand = "0.8"
                 Err(_) => -1,
             }
         }
-        _ = tokio::time::sleep(std::time::Duration::from_secs(timeout_secs)) => {
+        _ = tokio::time::sleep(std::time::Duration::from_secs(timeout_secs + 2)) => {
             let _ = child.kill().await;
             let _ = tx.send(WsServerMessage::Error {
                 message: format!("Chương trình chạy quá thời gian (timeout {}s)", timeout_secs),
@@ -440,58 +439,14 @@ rand = "0.8"
 
     let elapsed = start.elapsed().as_millis() as u64;
 
-    // Lấy memory usage (tổng RSS của process và các process con)
-    let memory_kb = get_memory_usage(pid);
-
     let _ = tx
         .send(WsServerMessage::Exit {
             code: exit_code,
             execution_time_ms: elapsed,
-            memory_usage_kb: memory_kb,
+            memory_usage_kb: 0, // Docker giới hạn memory 128m, tracking riêng nếu cần
         })
         .await;
 
     // Cleanup
     let _ = tokio::fs::remove_dir_all(&work_dir).await;
-}
-
-/// Lấy memory usage (RSS - Resident Set Size) của process và các process con
-/// Trả về memory tính theo KB
-fn get_memory_usage(pid: u32) -> u64 {
-    if pid == 0 {
-        return 0;
-    }
-
-    // Đọc thông tin từ /proc/[pid]/status
-    let status_path = format!("/proc/{}/status", pid);
-
-    match std::fs::read_to_string(&status_path) {
-        Ok(content) => {
-            // Tìm dòng VmRSS (Resident Set Size - thực tế memory sử dụng)
-            for line in content.lines() {
-                if line.starts_with("VmRSS:") {
-                    // Format: "VmRSS:    1234 kB"
-                    let parts: Vec<&str> = line.split_whitespace().collect();
-                    if parts.len() >= 2 {
-                        if let Ok(kb) = parts[1].parse::<u64>() {
-                            return kb;
-                        }
-                    }
-                }
-            }
-            // Nếu không tìm thấy VmRSS, thử VmSize (virtual memory)
-            for line in content.lines() {
-                if line.starts_with("VmSize:") {
-                    let parts: Vec<&str> = line.split_whitespace().collect();
-                    if parts.len() >= 2 {
-                        if let Ok(kb) = parts[1].parse::<u64>() {
-                            return kb;
-                        }
-                    }
-                }
-            }
-            0
-        }
-        Err(_) => 0,
-    }
 }

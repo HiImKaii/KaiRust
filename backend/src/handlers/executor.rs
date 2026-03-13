@@ -120,36 +120,25 @@ pub async fn compile_and_run(code: &str, stdin_input: Option<&str>, is_test: boo
 // ---- Internal Functions ----
 
 async fn setup_workspace(work_dir: &PathBuf, code: &str) -> Result<(), String> {
-    tokio::fs::create_dir_all(work_dir)
+    // Chép toàn bộ project mẫu (đã biên dịch sẵn) sang thư mục làm việc mới bằng lệnh hệ thống
+    let template_dir = "/tmp/kairust_template";
+    let status = Command::new("cp")
+        .arg("-a")
+        .arg(format!("{}/.", template_dir))
+        .arg(work_dir)
+        .status()
         .await
-        .map_err(|e| e.to_string())?;
+        .map_err(|e| format!("Lỗi gọi lệnh cp clone template: {}", e))?;
 
-    // Tạo src directory nếu chưa có (cho cargo)
-    let src_dir = work_dir.join("src");
-    tokio::fs::create_dir_all(&src_dir)
-        .await
-        .map_err(|e| e.to_string())?;
+    if !status.success() {
+        return Err("Copy template project thất bại".to_string());
+    }
 
-    // Viết main.rs vào src/
-    let source_file = src_dir.join("main.rs");
+    // Ghi đè mã nguồn của người dùng vào file main.rs
+    let source_file = work_dir.join("src").join("main.rs");
     tokio::fs::write(&source_file, code)
         .await
-        .map_err(|e| e.to_string())?;
-
-    // Tạo Cargo.toml
-    let cargo_toml = r#"
-[package]
-name = "user_code"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-rand = "0.8"
-"#;
-    let cargo_file = work_dir.join("Cargo.toml");
-    tokio::fs::write(&cargo_file, cargo_toml)
-        .await
-        .map_err(|e| e.to_string())?;
+        .map_err(|e| format!("Lỗi ghi mã nguồn: {}", e))?;
 
     Ok(())
 }
@@ -187,19 +176,41 @@ async fn run_binary(
     _is_test: bool,
     timeout_secs: u64,
 ) -> Result<(String, String, u64), String> {
-    // Chạy binary trực tiếp
-    let binary_path = work_dir.join("target").join("release").join("user_code");
+    // Đường dẫn binary bên trong sandbox volume 
+    // work_dir = /tmp/kairust_sandbox/<session_id>
+    // => binary trong container sandbox sẽ nằm tại /sandbox/<session_id>/target/release/user_code
+    let session_id = work_dir
+        .file_name()
+        .unwrap_or_default()
+        .to_string_lossy()
+        .to_string();
 
-    let mut cmd = Command::new(&binary_path);
-    cmd.current_dir(work_dir);
+    let binary_in_sandbox = format!("/sandbox/{}/target/release/user_code", session_id);
+
+    // Chạy binary trong Docker container cô lập (Sandbox Isolation)
+    let mut cmd = Command::new("docker");
+    cmd.arg("run")
+        .arg("--rm")                           // Tự hủy container khi chạy xong
+        .arg("-i")                             // Cho phép stdin pipe
+        .arg("--read-only")                    // Cấm ghi filesystem
+        .arg("--tmpfs").arg("/tmp:size=16m")   // Cấp /tmp nhỏ cho chương trình nếu cần
+        .arg("--network").arg("none")          // Cấm truy cập mạng
+        .arg("--memory").arg("128m")           // Giới hạn RAM 128MB
+        .arg("--cpus").arg("0.5")              // Giới hạn 0.5 CPU core
+        .arg("--pids-limit").arg("64")         // Chặn fork bomb
+        .arg("-v").arg("sandbox_data:/sandbox:ro")  // Mount volume chứa binary (chỉ đọc)
+        .arg("debian:bookworm-slim")           // Image gọn nhẹ
+        .arg(&binary_in_sandbox);              // Chạy binary
+
+    // Cấu hình stdin/stdout/stderr pipe
+    cmd.stdin(std::process::Stdio::piped());
+    cmd.stdout(std::process::Stdio::piped());
+    cmd.stderr(std::process::Stdio::piped());
 
     let result = tokio::time::timeout(
-        std::time::Duration::from_secs(timeout_secs),
+        std::time::Duration::from_secs(timeout_secs + 2), // +2s cho Docker overhead
         async {
-            let mut child = cmd.spawn().map_err(|e| format!("Lỗi chạy binary: {}", e))?;
-
-            // Lấy PID để theo dõi memory
-            let pid = child.id().unwrap_or(0);
+            let mut child = cmd.spawn().map_err(|e| format!("Lỗi khởi tạo sandbox: {}", e))?;
 
             // Write stdin if provided
             if let Some(input) = stdin_input {
@@ -215,11 +226,10 @@ async fn run_binary(
                 .await
                 .map_err(|e| format!("Lỗi đọc output: {}", e))?;
 
-            // Lấy memory usage sau khi process kết thúc
-            let memory_kb = get_memory_usage(pid);
-
             let stdout = String::from_utf8_lossy(&output.stdout).to_string();
             let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+            // Docker container đã bị giới hạn memory 128m, sử dụng giá trị cố định
+            let memory_kb = 0_u64; // Memory tracking qua Docker stats nếu cần sau này
             Ok((stdout, stderr, memory_kb))
         },
     )
@@ -227,46 +237,10 @@ async fn run_binary(
 
     match result {
         Ok(inner) => inner,
-        Err(_) => Err("Chương trình chạy quá thời gian (timeout 10s)".to_string()),
+        Err(_) => Err(format!("Chương trình chạy quá thời gian (timeout {}s)", timeout_secs)),
     }
 }
 
-/// Lấy memory usage (RSS - Resident Set Size) của process
-/// Trả về memory tính theo KB
-fn get_memory_usage(pid: u32) -> u64 {
-    if pid == 0 {
-        return 0;
-    }
-
-    let status_path = format!("/proc/{}/status", pid);
-
-    match std::fs::read_to_string(&status_path) {
-        Ok(content) => {
-            for line in content.lines() {
-                if line.starts_with("VmRSS:") {
-                    let parts: Vec<&str> = line.split_whitespace().collect();
-                    if parts.len() >= 2 {
-                        if let Ok(kb) = parts[1].parse::<u64>() {
-                            return kb;
-                        }
-                    }
-                }
-            }
-            for line in content.lines() {
-                if line.starts_with("VmSize:") {
-                    let parts: Vec<&str> = line.split_whitespace().collect();
-                    if parts.len() >= 2 {
-                        if let Ok(kb) = parts[1].parse::<u64>() {
-                            return kb;
-                        }
-                    }
-                }
-            }
-            0
-        }
-        Err(_) => 0,
-    }
-}
 
 async fn cleanup(work_dir: &PathBuf) {
     let _ = tokio::fs::remove_dir_all(work_dir).await;

@@ -28,9 +28,12 @@ FROM debian:bookworm-slim
 
 WORKDIR /app
 
-# Install runtime dependencies (rustc for sandbox)
+# Install runtime dependencies
+# - rustc: compiler for user code
+# - docker.io: CLI to spawn sandboxed containers for running user binaries
 RUN apt-get update && apt-get install -y \
     rustc \
+    docker.io \
     && rm -rf /var/lib/apt/lists/*
 
 # Create data directory
