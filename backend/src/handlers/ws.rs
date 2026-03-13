@@ -331,10 +331,20 @@ async fn run_interactive(
     // Step 2: Run with streaming output inside Docker Sandbox
     let _ = tx.send(WsServerMessage::Running).await;
 
-    // Lấy session_id từ work_dir
-    // Với bind mount: work_dir được mount vào /sandbox
-    // Nên binary nằm tại /sandbox/target/release/user_code
-    let binary_in_sandbox = "/sandbox/target/release/user_code";
+    // Cấu hình linh hoạt Docker Volume Mount
+    let is_dood = std::env::var("SANDBOX_VOLUME_NAME").is_ok();
+    
+    let volume_arg = if let Ok(vol_name) = std::env::var("SANDBOX_VOLUME_NAME") {
+        format!("{}:/tmp/kairust_sandbox:ro", vol_name)
+    } else {
+        format!("{}:/sandbox:ro", work_dir.to_string_lossy())
+    };
+
+    let binary_in_sandbox = if is_dood {
+        format!("/tmp/kairust_sandbox/{}/target/release/user_code", session_id)
+    } else {
+        "/sandbox/target/release/user_code".to_string()
+    };
 
     let mut child = match Command::new("docker")
         .arg("run")
@@ -346,9 +356,9 @@ async fn run_interactive(
         .arg("--memory").arg("128m")           // Giới hạn RAM
         .arg("--cpus").arg("0.5")              // Giới hạn CPU
         .arg("--pids-limit").arg("64")         // Chặn fork bomb
-        .arg("-v").arg(format!("{}:/sandbox:ro", work_dir.to_string_lossy()))  // Bind mount work_dir
+        .arg("-v").arg(&volume_arg)            // Bind mount volume
         .arg("debian:bookworm-slim")
-        .arg(binary_in_sandbox)
+        .arg(&binary_in_sandbox)
         .stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())

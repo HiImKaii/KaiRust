@@ -234,9 +234,20 @@ async fn run_play(
         }
     }
 
-    // Run in Docker Sandbox
-    let _ = tx.send(WsServerMessage::Running).await;
-    let binary_in_sandbox = "/sandbox/target/release/user_code";
+    // Cấu hình linh hoạt Docker Volume Mount
+    let is_dood = std::env::var("SANDBOX_VOLUME_NAME").is_ok();
+    
+    let volume_arg = if let Ok(vol_name) = std::env::var("SANDBOX_VOLUME_NAME") {
+        format!("{}:/tmp/kairust_sandbox:ro", vol_name)
+    } else {
+        format!("{}:/sandbox:ro", work_dir.to_string_lossy())
+    };
+
+    let binary_in_sandbox = if is_dood {
+        format!("/tmp/kairust_sandbox/{}/target/release/user_code", session_id)
+    } else {
+        "/sandbox/target/release/user_code".to_string()
+    };
 
     let mut child = match Command::new("docker")
         .arg("run")
@@ -248,9 +259,9 @@ async fn run_play(
         .arg("--memory").arg("128m")
         .arg("--cpus").arg("0.5")
         .arg("--pids-limit").arg("64")
-        .arg("-v").arg(format!("{}:/sandbox:ro", work_dir.to_string_lossy()))
+        .arg("-v").arg(&volume_arg)
         .arg("debian:bookworm-slim")
-        .arg(binary_in_sandbox)
+        .arg(&binary_in_sandbox)
         .stdin(std::process::Stdio::piped())
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())

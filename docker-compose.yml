@@ -11,10 +11,11 @@ services:
     environment:
       - RUST_LOG=info
       - DATA_DIR=/data
+      - SANDBOX_VOLUME_NAME=kairust_sandbox_data
     volumes:
       - backend_data:/data
       - /var/run/docker.sock:/var/run/docker.sock
-      - sandbox_data:/tmp/kairust_sandbox
+      - kairust_sandbox_data:/tmp/kairust_sandbox
       - cache_data:/tmp/kairust_cache
 
   # -------------------------
@@ -67,7 +68,7 @@ volumes:
   caddy_data:
   caddy_config:
   backend_data:
-  sandbox_data:
+  kairust_sandbox_data:
     driver_opts:
       type: tmpfs
       device: tmpfs

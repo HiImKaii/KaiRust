@@ -176,10 +176,26 @@ async fn run_binary(
     _is_test: bool,
     timeout_secs: u64,
 ) -> Result<(String, String, u64), String> {
-    // Đường dẫn binary bên trong sandbox volume 
-    // work_dir = /tmp/kairust_sandbox/<session_id>
-    // => binary trong container sandbox sẽ nằm tại /sandbox/<session_id>/target/release/user_code
-    let binary_in_sandbox = "/sandbox/target/release/user_code";
+    // Cấu hình linh hoạt Docker Volume Mount (Cho cả Local và DooD)
+    let session_id = work_dir
+        .file_name()
+        .unwrap_or_default()
+        .to_string_lossy()
+        .to_string();
+
+    let is_dood = std::env::var("SANDBOX_VOLUME_NAME").is_ok();
+    
+    let volume_arg = if let Ok(vol_name) = std::env::var("SANDBOX_VOLUME_NAME") {
+        format!("{}:/tmp/kairust_sandbox:ro", vol_name)
+    } else {
+        format!("{}:/sandbox:ro", work_dir.to_string_lossy())
+    };
+
+    let binary_in_sandbox = if is_dood {
+        format!("/tmp/kairust_sandbox/{}/target/release/user_code", session_id)
+    } else {
+        "/sandbox/target/release/user_code".to_string()
+    };
 
     // Chạy binary trong Docker container cô lập (Sandbox Isolation)
     let mut cmd = Command::new("docker");
@@ -192,9 +208,9 @@ async fn run_binary(
         .arg("--memory").arg("128m")           // Giới hạn RAM 128MB
         .arg("--cpus").arg("0.5")              // Giới hạn 0.5 CPU core
         .arg("--pids-limit").arg("64")         // Chặn fork bomb
-        .arg("-v").arg(format!("{}:/sandbox:ro", work_dir.to_string_lossy()))  // Bind mount work_dir
+        .arg("-v").arg(&volume_arg)            // Bind mount volume
         .arg("debian:bookworm-slim")           // Image gọn nhẹ
-        .arg(binary_in_sandbox);              // Chạy binary
+        .arg(&binary_in_sandbox);              // Chạy binary
 
     // Cấu hình stdin/stdout/stderr pipe
     cmd.stdin(std::process::Stdio::piped());
