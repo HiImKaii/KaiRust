@@ -37,7 +37,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Create data directory
-RUN mkdir -p /data /tmp/kairust_sandbox
+RUN mkdir -p /data /tmp/kairust_sandbox /tmp/kairust_cache
 
 # Copy binary
 COPY --from=builder /app/target/release/kairust-backend .

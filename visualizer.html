@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inline Visualizer — Đặc tả kỹ thuật</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f7f6f3;
+    --bg3: #f0ede8;
+    --text: #1a1a18;
+    --text2: #5a5a56;
+    --border: #e0ddd6;
+    --accent: #534AB7;
+    --accent2: #0F6E56;
+    --code-bg: #f4f2ee;
+    --code-border: #dbd8d0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a18;
+      --bg2: #242420;
+      --bg3: #2e2e2a;
+      --text: #e8e6de;
+      --text2: #9a9890;
+      --border: #3a3a36;
+      --accent: #AFA9EC;
+      --accent2: #5DCAA5;
+      --code-bg: #242420;
+      --code-border: #3a3a36;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.75;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 32px;
+  }
+  h1 { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
+  h2 { font-size: 20px; font-weight: 600; margin: 48px 0 16px; padding-top: 16px; border-top: 1px solid var(--border); }
+  h3 { font-size: 16px; font-weight: 600; margin: 28px 0 10px; color: var(--accent); }
+  p { margin-bottom: 14px; color: var(--text); }
+  .subtitle { color: var(--text2); font-size: 14px; margin-bottom: 40px; }
+  code {
+    font-family: "Fira Code", "Cascadia Code", monospace;
+    font-size: 13px;
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 4px;
+    padding: 1px 6px;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    margin: 16px 0 24px;
+    font-family: "Fira Code", "Cascadia Code", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  pre code { background: none; border: none; padding: 0; font-size: inherit; }
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--bg2);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+  .callout.green { border-left-color: var(--accent2); }
+  .callout.warn { border-left-color: #BA7517; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 14px;
+  }
+  th {
+    background: var(--bg3);
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: var(--bg2); }
+  .tag {
+    display: inline-block;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-right: 6px;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 4px;
+  }
+  hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+  ul, ol { padding-left: 20px; margin-bottom: 14px; }
+  li { margin-bottom: 6px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .formula {
+    font-family: "Fira Code", monospace;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 14px;
+    margin: 12px 0;
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+
+<div class="section-label">Đặc tả kỹ thuật</div>
+<h1>Inline Visualizer</h1>
+<p class="subtitle">Hệ thống render SVG/HTML trực tiếp trong chat — chi tiết đủ để tự triển khai lại</p>
+
+<h2>1. Tổng quan kiến trúc</h2>
+
+<p>Visualizer là một cơ chế nhúng <strong>widget inline</strong> vào luồng chat. Mỗi widget là một <code>iframe</code> sandbox chứa SVG hoặc HTML fragment, render ngay trong khung chat mà không redirect ra ngoài.</p>
+
+<p>Về bản chất, toàn bộ hệ thống chỉ gồm 3 thành phần:</p>
+
+<table>
+  <tr><th>Thành phần</th><th>Vai trò</th><th>Công nghệ</th></tr>
+  <tr><td><strong>Tool call</strong></td><td>LLM gọi tool để emit widget code</td><td>Function calling API</td></tr>
+  <tr><td><strong>Renderer</strong></td><td>Host nhận code, nhúng vào iframe</td><td>iframe sandbox + postMessage</td></tr>
+  <tr><td><strong>Widget code</strong></td><td>Nội dung thực tế được render</td><td>SVG hoặc HTML + JS + CSS</td></tr>
+</table>
+
+<div class="callout">
+  Không có thư viện đặc biệt nào. Đây thuần túy là SVG spec + HTML spec + CSS spec. Bạn tự implement host là được.
+</div>
+
+<h2>2. Luồng hoạt động chi tiết</h2>
+
+<h3>2.1 Phát hiện mode</h3>
+<p>Host đọc ký tự đầu tiên của <code>widget_code</code> để phân nhánh:</p>
+<pre><code>if widget_code.trimStart().startsWith("&lt;svg") → SVG mode
+else → HTML mode</code></pre>
+
+<h3>2.2 Wrapping vào iframe</h3>
+<p>Host tạo một full HTML document, nhúng widget code vào, rồi đặt vào <code>iframe srcdoc</code>:</p>
+
+<pre><code>// SVG mode
+const doc = `
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;style&gt;
+    /* inject CSS variables + pre-built classes */
+    ${HOST_CSS_VARIABLES}
+    ${PREBUILT_CLASSES}
+    body { margin: 0; background: transparent; }
+    svg { display: block; width: 100%; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;${widget_code}&lt;/body&gt;
+&lt;/html&gt;
+`
+
+// HTML mode — widget_code là fragment, không có &lt;html&gt;/&lt;head&gt;/&lt;body&gt;
+const doc = `
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;style&gt;
+    ${HOST_CSS_VARIABLES}
+    ${PREBUILT_CLASSES}
+    body { margin: 0; padding: 16px; background: transparent; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  ${widget_code}
+  &lt;script&gt;
+    /* inject sendPrompt + openLink bridge */
+    window.sendPrompt = function(text) {
+      window.parent.postMessage({ type: 'sendPrompt', text }, '*');
+    };
+    window.openLink = function(url) {
+      window.parent.postMessage({ type: 'openLink', url }, '*');
+    };
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+`
+
+// Nhúng vào iframe
+const iframe = document.createElement('iframe');
+iframe.srcdoc = doc;
+iframe.sandbox = "allow-scripts allow-same-origin";
+iframe.style.cssText = "width:100%; border:none; overflow:hidden;";
+container.appendChild(iframe);</code></pre>
+
+<h3>2.3 Auto-resize iframe</h3>
+<p>Iframe cần tự báo chiều cao cho host vì nội dung SVG có thể cao bất kỳ:</p>
+
+<pre><code>// Trong iframe — inject vào mỗi document
+const observer = new ResizeObserver(() => {
+  const h = document.body.scrollHeight;
+  window.parent.postMessage({ type: 'resize', height: h }, '*');
+});
+observer.observe(document.body);
+
+// Ở host — lắng nghe
+window.addEventListener('message', (e) => {
+  if (e.data.type === 'resize') {
+    iframe.style.height = e.data.height + 'px';
+  }
+  if (e.data.type === 'sendPrompt') {
+    chatInput.value = e.data.text;
+    chatInput.dispatchEvent(new Event('input'));
+    submitButton.click();
+  }
+});</code></pre>
+
+<h2>3. CSS Variables — hệ thống màu sắc</h2>
+
+<p>Host inject CSS variables vào mỗi iframe để widget tự động thích nghi light/dark mode:</p>
+
+<pre><code>:root {
+  /* Backgrounds */
+  --color-background-primary:   #ffffff;
+  --color-background-secondary: #f7f6f3;
+  --color-background-tertiary:  #f0ede8;
+
+  /* Text */
+  --color-text-primary:   #1a1a18;
+  --color-text-secondary: #5a5a56;
+  --color-text-tertiary:  #9a9890;
+
+  /* Borders (alpha-based) */
+  --color-border-tertiary:  rgba(0,0,0,0.12);
+  --color-border-secondary: rgba(0,0,0,0.22);
+  --color-border-primary:   rgba(0,0,0,0.35);
+
+  /* Semantic */
+  --color-text-info:    #185FA5;
+  --color-text-success: #0F6E56;
+  --color-text-warning: #854F0B;
+  --color-text-danger:  #A32D2D;
+
+  /* Typography */
+  --font-sans:  system-ui, -apple-system, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono:  "Fira Code", monospace;
+
+  /* Layout */
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+
+  /* Short aliases */
+  --p:   var(--color-text-primary);
+  --s:   var(--color-text-secondary);
+  --t:   var(--color-text-tertiary);
+  --bg2: var(--color-background-secondary);
+  --b:   var(--color-border-tertiary);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background-primary:   #1a1a18;
+    --color-background-secondary: #242420;
+    --color-background-tertiary:  #2e2e2a;
+    --color-text-primary:   #e8e6de;
+    --color-text-secondary: #9a9890;
+    --color-text-tertiary:  #6a6a64;
+    --color-border-tertiary:  rgba(255,255,255,0.12);
+    --color-border-secondary: rgba(255,255,255,0.22);
+    /* ... */
+  }
+}</code></pre>
+
+<h2>4. Pre-built CSS Classes</h2>
+
+<p>Host cũng inject sẵn các class dùng chung để SVG/HTML code gọn hơn:</p>
+
+<h3>4.1 SVG text classes</h3>
+<pre><code>/* class="t"  → 14px regular */
+svg .t  { font-family: var(--font-sans); font-size: 14px; font-weight: 400;
+          fill: var(--color-text-primary); }
+
+/* class="ts" → 12px secondary (subtitles, labels) */
+svg .ts { font-family: var(--font-sans); font-size: 12px; font-weight: 400;
+          fill: var(--color-text-secondary); }
+
+/* class="th" → 14px medium/bold (headings) */
+svg .th { font-family: var(--font-sans); font-size: 14px; font-weight: 500;
+          fill: var(--color-text-primary); }</code></pre>
+
+<h3>4.2 SVG shape classes</h3>
+<pre><code>/* class="box" → neutral rounded rect */
+svg .box { fill: var(--color-background-secondary);
+           stroke: var(--color-border-tertiary); }
+
+/* class="arr" → arrow line */
+svg .arr { stroke: var(--color-border-secondary);
+           stroke-width: 1.5; fill: none; }
+
+/* class="leader" → dashed connector */
+svg .leader { stroke: var(--color-text-tertiary);
+              stroke-width: 0.5; stroke-dasharray: 3 3; fill: none; }
+
+/* class="node" → clickable group */
+svg .node { cursor: pointer; }
+svg .node:hover { opacity: 0.82; }</code></pre>
+
+<h3>4.3 Color ramp classes (c-*)</h3>
+<p>Đây là phần quan trọng nhất — 9 ramp màu, mỗi ramp có 7 stops. Class <code>c-{ramp}</code> áp lên <code>&lt;g&gt;</code> hoặc shape element (<code>rect</code>, <code>circle</code>), tự động set fill+stroke+text color cho cả light và dark mode:</p>
+
+<pre><code>/* Định nghĩa ramp (ví dụ c-purple) */
+.c-purple rect, .c-purple circle, .c-purple ellipse {
+  fill:   #EEEDFE;  /* stop 50 — light mode */
+  stroke: #534AB7;  /* stop 600 */
+}
+.c-purple .th { fill: #3C3489; }  /* stop 800 */
+.c-purple .ts { fill: #534AB7; }  /* stop 600 */
+
+@media (prefers-color-scheme: dark) {
+  .c-purple rect, .c-purple circle, .c-purple ellipse {
+    fill:   #3C3489;  /* stop 800 */
+    stroke: #AFA9EC;  /* stop 200 */
+  }
+  .c-purple .th { fill: #CECBF6; }  /* stop 100 */
+  .c-purple .ts { fill: #AFA9EC; }  /* stop 200 */
+}</code></pre>
+
+<p>Bảng 9 ramp màu đầy đủ:</p>
+<table>
+  <tr><th>Class</th><th>Fill (light)</th><th>Stroke (light)</th><th>Fill (dark)</th></tr>
+  <tr><td><code>c-purple</code></td><td>#EEEDFE</td><td>#534AB7</td><td>#3C3489</td></tr>
+  <tr><td><code>c-teal</code></td><td>#E1F5EE</td><td>#0F6E56</td><td>#085041</td></tr>
+  <tr><td><code>c-coral</code></td><td>#FAECE7</td><td>#993C1D</td><td>#712B13</td></tr>
+  <tr><td><code>c-pink</code></td><td>#FBEAF0</td><td>#993556</td><td>#72243E</td></tr>
+  <tr><td><code>c-gray</code></td><td>#F1EFE8</td><td>#5F5E5A</td><td>#444441</td></tr>
+  <tr><td><code>c-blue</code></td><td>#E6F1FB</td><td>#185FA5</td><td>#0C447C</td></tr>
+  <tr><td><code>c-green</code></td><td>#EAF3DE</td><td>#3B6D11</td><td>#27500A</td></tr>
+  <tr><td><code>c-amber</code></td><td>#FAEEDA</td><td>#854F0B</td><td>#633806</td></tr>
+  <tr><td><code>c-red</code></td><td>#FCEBEB</td><td>#A32D2D</td><td>#791F1F</td></tr>
+</table>
+
+<div class="callout warn">
+  Quan trọng: <code>c-*</code> dùng direct-child selector (<code>&gt;</code>). Nếu lồng <code>&lt;g&gt;</code> quá nhiều cấp, class sẽ không ăn xuống cháu. Hãy đặt <code>c-*</code> trực tiếp lên <code>&lt;g&gt;</code> chứa shapes.
+</div>
+
+<h2>5. SVG Coordinate System</h2>
+
+<h3>5.1 ViewBox cố định</h3>
+<pre><code>&lt;svg width="100%" viewBox="0 0 680 H"&gt;</code></pre>
+<p><strong>680 là bắt buộc</strong> — không được thay đổi. Container rộng 680px, <code>width="100%"</code> + <code>viewBox="0 0 680 H"</code> đảm bảo tỷ lệ 1:1 CSS pixel. Nếu dùng viewBox nhỏ hơn (ví dụ 480), toàn bộ content bị scale up 1.42×, text 14px sẽ render thành 20px.</p>
+
+<p>Safe area: <code>x: 40–640</code>, <code>y: 40 đến (H-40)</code>.</p>
+
+<h3>5.2 Tính chiều cao H</h3>
+<div class="formula">
+H = max(y + height của tất cả rect) + 40px buffer
+</div>
+
+<h3>5.3 Công thức layout box</h3>
+<pre><code>/* Box 1 dòng: height = 44px */
+Box 1: y=20,  h=44  → bottom = 64
+Arrow: y1=64, y2=96 (gap = 32px)
+Box 2: y=96,  h=44  → bottom = 140
+Arrow: y1=140, y2=172
+Box 3: y=172, ...
+
+/* Box 2 dòng: height = 56px */
+Title:    y_box + 20  (text-anchor middle, dominant-baseline central)
+Subtitle: y_box + 38</code></pre>
+
+<h3>5.4 Text trong box — quy tắc bắt buộc</h3>
+<pre><code>&lt;!-- Luôn dùng text-anchor + dominant-baseline --&gt;
+&lt;text class="th"
+      x="{x_box + width/2}"
+      y="{y_box + height/2}"
+      text-anchor="middle"
+      dominant-baseline="central"&gt;Label&lt;/text&gt;
+
+&lt;!-- Không có dominant-baseline → text bị lệch lên ~4px --&gt;</code></pre>
+
+<h3>5.5 Ước tính độ rộng text</h3>
+<table>
+  <tr><th>Ký tự</th><th>14px weight 500</th><th>12px weight 400</th></tr>
+  <tr><td>Latin thường (a-z)</td><td>~8px/char</td><td>~7px/char</td></tr>
+  <tr><td>Uppercase (A-Z)</td><td>~10px/char</td><td>~8.5px/char</td></tr>
+  <tr><td>CJK/Unicode rộng</td><td>~15px/char</td><td>~13px/char</td></tr>
+  <tr><td>Ký tự đặc biệt (₁₂₃)</td><td>~7px/char</td><td>~6px/char</td></tr>
+</table>
+<div class="formula">
+rect_width = text_chars × 8 + 24px padding (cả hai bên)
+</div>
+
+<h2>6. Arrow Marker — cấu trúc chuẩn</h2>
+
+<p>Phải có trong <code>&lt;defs&gt;</code> của mọi SVG:</p>
+
+<pre><code>&lt;defs&gt;
+  &lt;marker id="arrow"
+          viewBox="0 0 10 10"
+          refX="8" refY="5"
+          markerWidth="6" markerHeight="6"
+          orient="auto-start-reverse"&gt;
+    &lt;path d="M2 1L8 5L2 9"
+          fill="none"
+          stroke="context-stroke"   &lt;!-- kế thừa màu line --&gt;
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"/&gt;
+  &lt;/marker&gt;
+&lt;/defs&gt;
+
+&lt;!-- Dùng --&gt;
+&lt;line x1="340" y1="72" x2="340" y2="106"
+      stroke="#888" stroke-width="1.5"
+      marker-end="url(#arrow)"/&gt;</code></pre>
+
+<div class="callout green">
+  <code>context-stroke</code> là SVG keyword — mũi tên luôn cùng màu với đường line. Không cần define nhiều marker cho nhiều màu.
+</div>
+
+<h2>7. Template SVG hoàn chỉnh</h2>
+
+<pre><code>&lt;svg width="100%" viewBox="0 0 680 400"&gt;
+  &lt;!-- 1. Arrow marker --&gt;
+  &lt;defs&gt;
+    &lt;marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto-start-reverse"&gt;
+      &lt;path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/&gt;
+    &lt;/marker&gt;
+  &lt;/defs&gt;
+
+  &lt;!-- 2. Node có màu + clickable --&gt;
+  &lt;g class="node c-purple"
+     onclick="sendPrompt('Conv layer hoạt động thế nào?')"&gt;
+    &lt;rect x="215" y="20" width="250" height="56" rx="8" stroke-width="0.5"/&gt;
+    &lt;text class="th" x="340" y="40"
+          text-anchor="middle" dominant-baseline="central"&gt;Conv Layer&lt;/text&gt;
+    &lt;text class="ts" x="340" y="58"
+          text-anchor="middle" dominant-baseline="central"&gt;Feature map 26×26×32&lt;/text&gt;
+  &lt;/g&gt;
+
+  &lt;!-- 3. Arrow --&gt;
+  &lt;line x1="340" y1="76" x2="340" y2="110"
+        class="arr" marker-end="url(#arrow)"/&gt;
+
+  &lt;!-- 4. Label bên cạnh arrow --&gt;
+  &lt;text class="ts" x="420" y="96"
+        dominant-baseline="central"
+        style="fill:var(--color-text-secondary)"&gt;ReLU&lt;/text&gt;
+
+  &lt;!-- 5. Node neutral --&gt;
+  &lt;g class="node c-teal"&gt;
+    &lt;rect x="215" y="110" width="250" height="44" rx="8" stroke-width="0.5"/&gt;
+    &lt;text class="th" x="340" y="132"
+          text-anchor="middle" dominant-baseline="central"&gt;ReLU&lt;/text&gt;
+  &lt;/g&gt;
+&lt;/svg&gt;</code></pre>
+
+<h2>8. Interactive HTML Widget</h2>
+
+<p>Khi cần slider, animation, JS logic — dùng HTML fragment thay vì SVG thuần. SVG vẫn nằm bên trong HTML:</p>
+
+<pre><code>&lt;!-- HTML fragment — không có DOCTYPE, html, head, body --&gt;
+&lt;svg width="100%" viewBox="0 0 680 300"&gt;
+  &lt;defs&gt;...arrow marker...&lt;/defs&gt;
+
+  &lt;rect id="hot-zone" x="180" y="55" width="260" height="120" rx="8"
+        fill="#E8593C" opacity="0.3"/&gt;
+  &lt;rect x="180" y="55" width="260" height="245" rx="14"
+        fill="none" stroke="var(--color-border-secondary)" stroke-width="1"/&gt;
+&lt;/svg&gt;
+
+&lt;!-- Controls bên dưới SVG --&gt;
+&lt;div style="display:flex; gap:16px; align-items:center;
+             padding:12px 0; font-size:13px;
+             color:var(--color-text-secondary)"&gt;
+  &lt;span&gt;Nhiệt độ&lt;/span&gt;
+  &lt;input type="range" min="10" max="90" value="40" id="slider"
+         oninput="update(this.value)"
+         style="flex:1"&gt;
+  &lt;span id="label"&gt;40%&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+function update(val) {
+  document.getElementById('hot-zone').setAttribute('height', val * 2.45);
+  document.getElementById('label').textContent = val + '%';
+}
+&lt;/script&gt;</code></pre>
+
+<h3>CSS Animation trong HTML mode</h3>
+<pre><code>&lt;style&gt;
+  @keyframes flow {
+    to { stroke-dashoffset: -20; }
+  }
+  .stream {
+    stroke-dasharray: 5 5;
+    animation: flow 1.6s linear infinite;
+  }
+  /* Luôn wrap animation trong reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    .stream { animation: none; }
+  }
+&lt;/style&gt;
+
+&lt;path class="stream" d="M 200 100 C 250 80, 300 120, 350 100"
+      fill="none" stroke="#D85A30" stroke-width="1.5"/&gt;</code></pre>
+
+<h2>9. sendPrompt() — bridge về chat</h2>
+
+<p>Host inject hàm này vào mỗi iframe. Widget gọi để gửi message vào chat:</p>
+
+<pre><code>// Trong widget SVG
+&lt;g onclick="sendPrompt('Giải thích MaxPool chi tiết hơn')"&gt;
+  ...
+&lt;/g&gt;
+
+// Trong widget HTML
+&lt;button onclick="sendPrompt('Backprop qua Conv layer thế nào?')"&gt;
+  Tìm hiểu thêm
+&lt;/button&gt;</code></pre>
+
+<p>Phía host implement bridge qua <code>postMessage</code>:</p>
+
+<pre><code>// Inject vào mỗi iframe document
+window.sendPrompt = function(text) {
+  window.parent.postMessage({ type: 'sendPrompt', text }, '*');
+};
+
+// Host lắng nghe
+window.addEventListener('message', (event) => {
+  if (event.data?.type === 'sendPrompt') {
+    // Điền vào chat input và submit
+    setInputValue(event.data.text);
+    submitChat();
+  }
+});</code></pre>
+
+<h2>10. CDN được phép load</h2>
+
+<p>Widget chạy trong sandbox nên chỉ được load external resource từ các domain này:</p>
+
+<table>
+  <tr><th>Domain</th><th>Dùng để</th></tr>
+  <tr><td><code>cdnjs.cloudflare.com</code></td><td>Chart.js, Three.js, D3, Mermaid, ...</td></tr>
+  <tr><td><code>esm.sh</code></td><td>ES Modules (import mermaid from 'esm.sh/mermaid')</td></tr>
+  <tr><td><code>cdn.jsdelivr.net</code></td><td>npm packages qua CDN</td></tr>
+  <tr><td><code>unpkg.com</code></td><td>npm packages qua CDN</td></tr>
+</table>
+
+<pre><code>&lt;!-- Chart.js --&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Three.js r128 --&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Mermaid (ERD, classDiagram) --&gt;
+&lt;script type="module"&gt;
+  import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: false, theme: 'base' });
+&lt;/script&gt;</code></pre>
+
+<h2>11. Iframe Sandbox Settings</h2>
+
+<pre><code>&lt;iframe
+  srcdoc="${escapedHtml}"
+  sandbox="allow-scripts allow-same-origin"
+  style="width:100%; border:none; overflow:hidden; display:block;"
+  scrolling="no"
+&gt;&lt;/iframe&gt;</code></pre>
+
+<div class="callout warn">
+  Không dùng <code>allow-top-navigation</code> hay <code>allow-forms</code> — không cần thiết và tăng attack surface. <code>allow-same-origin</code> cần để postMessage hoạt động.
+</div>
+
+<h2>12. Những gì KHÔNG được làm</h2>
+
+<table>
+  <tr><th>Cấm</th><th>Lý do</th><th>Thay thế</th></tr>
+  <tr><td>viewBox khác 680</td><td>Scale làm sai font size</td><td>Luôn dùng 680, căn giữa content</td></tr>
+  <tr><td>Gradient/shadow/blur</td><td>Flicker khi stream, nặng</td><td>Flat fill</td></tr>
+  <tr><td>position: fixed</td><td>Iframe collapse về min-height</td><td>Normal flow div</td></tr>
+  <tr><td>Text không có class</td><td>Không dark mode</td><td>Luôn dùng .t/.ts/.th</td></tr>
+  <tr><td>Hardcode màu (#333)</td><td>Vô hình trong dark mode</td><td>CSS variables</td></tr>
+  <tr><td>c-* trên &lt;path&gt;</td><td>Path không nhận ramp fill</td><td>Dùng trên rect/circle/ellipse</td></tr>
+  <tr><td>localStorage/sessionStorage</td><td>Không support trong sandbox</td><td>JS state, React useState</td></tr>
+  <tr><td>Emoji trong SVG</td><td>Render không nhất quán</td><td>CSS shapes hoặc SVG paths</td></tr>
+  <tr><td>Rotated text</td><td>Khó đọc, khó debug</td><td>Đổi layout để text nằm ngang</td></tr>
+  <tr><td>Negative x/y</td><td>Bị cắt bởi viewBox</td><td>Tăng offset cho toàn bộ layout</td></tr>
+</table>
+
+<h2>13. Checklist trước khi render</h2>
+
+<ol>
+  <li>ViewBox height = bottom-most element + 40px? ✓</li>
+  <li>Mọi text đều có class (.t / .ts / .th)? ✓</li>
+  <li>Mọi connector path đều có <code>fill="none"</code>? ✓</li>
+  <li>Không có element nào x &lt; 0 hoặc x + width &gt; 680? ✓</li>
+  <li>Arrow không đi xuyên qua box không liên quan? ✓</li>
+  <li>Màu chỉ dùng CSS variables hoặc c-* ramp classes? ✓</li>
+  <li>Tất cả màu đều đọc được ở dark mode? ✓</li>
+  <li><code>&lt;defs&gt;&lt;marker id="arrow"...&gt;</code> đã có chưa? ✓</li>
+</ol>
+
+<h2>14. Ví dụ: Tự build Visualizer host</h2>
+
+<p>Đây là React component tối giản để host một widget:</p>
+
+<pre><code>import { useEffect, useRef } from 'react';
+
+function WidgetHost({ widgetCode, onSendPrompt }) {
+  const iframeRef = useRef(null);
+
+  // Lắng nghe message từ iframe
+  useEffect(() => {
+    function handler(e) {
+      if (e.data?.type === 'resize') {
+        iframeRef.current.style.height = e.data.height + 'px';
+      }
+      if (e.data?.type === 'sendPrompt') {
+        onSendPrompt?.(e.data.text);
+      }
+    }
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
+  const isSvg = widgetCode.trimStart().startsWith('&lt;svg');
+
+  const doc = `&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;
+    &lt;style&gt;
+      ${CSS_VARIABLES}
+      ${PREBUILT_CLASSES}
+      body { margin: 0; ${isSvg ? '' : 'padding: 16px;'} background: transparent; }
+      svg { display: block; width: 100%; }
+    &lt;/style&gt;
+    &lt;/head&gt;&lt;body&gt;
+    ${widgetCode}
+    &lt;script&gt;
+      window.sendPrompt = t => parent.postMessage({type:'sendPrompt',text:t},'*');
+      new ResizeObserver(() =>
+        parent.postMessage({type:'resize',height:document.body.scrollHeight},'*')
+      ).observe(document.body);
+    &lt;/script&gt;
+    &lt;/body&gt;&lt;/html&gt;`;
+
+  return (
+    &lt;div style={{ borderRadius: 12, overflow: 'hidden',
+                   border: '1px solid #e0ddd6', margin: '16px 0' }}&gt;
+      &lt;iframe
+        ref={iframeRef}
+        srcDoc={doc}
+        sandbox="allow-scripts allow-same-origin"
+        style={{ width: '100%', border: 'none',
+                 overflow: 'hidden', display: 'block', minHeight: 80 }}
+        scrolling="no"
+      /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<hr>
+<p style="font-size:13px; color:var(--text2); text-align:center; margin-top:32px">
+  Tài liệu này đủ để tự build lại Visualizer hoàn chỉnh với React, Vue, hoặc Vanilla JS.
+  Stack duy nhất cần: SVG spec + iframe sandbox + postMessage API.
+</p>
+
+</body>
+</html>

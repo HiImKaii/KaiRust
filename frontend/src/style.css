@@ -514,6 +514,20 @@ code {
   font-size: 0.9rem;
 }
 
+/* Practice view - lesson number and title */
+.lesson-number {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  min-width: 28px;
+}
+
+.lesson-title {
+  flex: 1;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
 .lesson-item:hover {
   background: var(--bg-soft);
 }

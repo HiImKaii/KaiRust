@@ -13,7 +13,15 @@ const ch23_02_lessons: Lesson[] = [
 <div class="article-content">
   <h2>1. Token Embedding trong Transformer</h2>
 
-  <p>Transformer xử lý text bằng cách chuyển mỗi token (từ/subword) thành vector số thực. Quá trình này giống Word Embedding trong RNN (Chương 22), nhưng có vài điểm khác biệt quan trọng.</p>
+  <p>Transformer xử lý text bằng cách chuyển mỗi token (từ/subword) thành vector số thực. Quá trình này giống Word Embedding trong RNN (Chương 22), nhưng có vài điểm khác biệt quan trọng:</p>
+  <ul style="margin-top: 8px;">
+    <li><strong>Xử lý song song vs tuần tự:</strong> Transformer xử lý toàn bộ câu cùng lúc (parallel processing), trong khi RNN xử lý tuần tự từng từ một — giúp Transformer train nhanh hơn nhiều lần</li>
+    <li><strong>Positional Encoding:</strong> Transformer cần thêm Positional Encoding để mã hóa thứ tự từ, vì self-attention không tự động biết vị trí. RNN có sẵn thông tin vị trí trong hidden state theo thứ tự xử lý</li>
+    <li><strong>Embedding dimension lớn hơn:</strong> Transformer thường dùng 512-1024 dimensions để capture nhiều relationships phức tạp hơn, trong khi RNN thường dùng 128-256</li>
+    <li><strong>Quy mô tham số:</strong> Transformer có thể scale lên hàng tỷ tham số (như GPT-4, LLaMA), trong khi RNN gặp khó khăn khi scale up do sequential processing</li>
+    <li><strong>Long-range dependencies:</strong> Transformer dùng self-attention (O(1) distance) để capture relationships giữa các từ ở xa, trong khi RNN gặp van- gradient khi xử lý sequence dài</li>
+    <li><strong>Giới hạn sequence length:</strong> Transformer bị giới hạn bởi quadratic complexity của attention (O(n²) với n là độ dài sequence), trong khi RNN xử lý được sequence rất dài nhưng với tốc độ chậm</li>
+  </ul>
 
   <h3>1.1. Quy trình 3 bước</h3>
 
@@ -169,147 +177,61 @@ const ch23_02_lessons: Lesson[] = [
 
   <h4>1.2.2. Các phương pháp Tokenization</h4>
 
-  <p>Có nhiều cách để chia văn bản thành tokens, mỗi cách có ưu nhược điểm riêng:</p>
+  <p>Có nhiều cách để chia văn bản thành tokens, mỗi cách có ưu nhược điểm riêng phù hợp với từng hoàn cảnh.</p>
 
   <h5>a) Word-Level Tokenization — Chia theo từ</h5>
 
-  <p>Phương pháp đơn giản nhất: mỗi từ trong câu trở thành một token.</p>
+  <p>Phương pháp đơn giản nhất: mỗi từ trong câu trở thành một token. Ví dụ, từ "unhappiness" sẽ được giữ nguyên thành một token duy nhất. Cách này dễ hiểu và dễ implement vì mỗi token mang ý nghĩa ngữ nghĩa rõ ràng — người đọc có thể hiểu ngay token đó có nghĩa gì.</p>
 
-  <div class="formula-block-small">
-    <strong>Ví dụ:</strong><br/>
-    Input: <code>"unhappiness"</code><br/>
-    Output: <code>["unhappiness"]</code>
-  </div>
-
-  <div class="concept-grid">
-    <div class="concept-card">
-      <h4>Ưu điểm</h4>
-      <ul>
-        <li>Dễ hiểu, dễ implement</li>
-        <li>Ngữ nghĩa rõ ràng (mỗi token là một từ hoàn chỉnh)</li>
-        <li>Không cần xử lý phức tạp</li>
-      </ul>
-    </div>
-    <div class="concept-card">
-      <h4>Nhược điểm</h4>
-      <ul>
-        <li><strong>Vocab cực lớn:</strong> Tiếng Anh có ~1-5 triệu từ, tiếng Việt còn nhiều hơn</li>
-        <li><strong>OOV nghiêm trọng:</strong> Từ không có trong vocab → thay bằng [UNK]</li>
-        <li><strong>Từ rare:</strong> Từ ít gặp khó học pattern</li>
-        <li><strong>Inflection:</strong> "run", "running", "ran" → 3 tokens khác nhau</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="callout callout-warning">
-    <span class="material-symbols-outlined">warning</span>
-    <div class="callout-content">
-      <span class="callout-title">OOV — Out Of Vocabulary</span>
-      <p>Đây là vấn đề lớn nhất của Word-Level. Khi gặp từ <code>"multimodal"</code> mà không có trong vocab, model phải thay bằng <code>[UNK]</code> — mất hoàn toàn thông tin.</p>
-    </div>
-  </div>
+  <p>Tuy nhiên, Word-Level có nhược điểm nghiêm trọng. Đầu tiên, vocabulary trở nên cực kỳ lớn vì phải chứa mọi từ có trong ngôn ngữ — tiếng Anh có khoảng 1-5 triệu từ, tiếng Việt còn nhiều hơn. Thứ hai, vấn đề OOV (Out-of-Vocabulary) trở nên nghiêm trọng: bất kỳ từ nào không có trong vocabulary sẽ bị thay thế bằng token đặc biệt [UNK], khiến model mất hoàn toàn thông tin về từ đó. Khi gặp từ "multimodal" mà không có trong vocab, model chỉ biết đó là một từ không xác định, không thể phân biệt được với bất kỳ từ lạ nào khác. Thứ ba, các từ có cùng gốc từ như "run", "running", "ran" bị xử lý hoàn toàn riêng biệt, khiến model khó học được mối quan hệ ngữ nghĩa giữa chúng.</p>
 
   <h5>b) Character-Level Tokenization — Chia theo ký tự</h5>
 
-  <p>Mỗi ký tự (chữ cái, số, dấu câu) là một token.</p>
+  <p>Character-Level là phương pháp đối lập hoàn toàn: mỗi ký tự (chữ cái, số, dấu câu) trở thành một token. Ví dụ, từ "hello" được chia thành 5 tokens ["h", "e", "l", "l", "o"].</p>
 
-  <div class="formula-block-small">
-    <strong>Ví dụ:</strong><br/>
-    Input: <code>"hello"</code><br/>
-    Output: <code>["h", "e", "l", "l", "o"]</code>
-  </div>
-
-  <div class="concept-grid">
-    <div class="concept-card">
-      <h4>Ưu điểm</h4>
-      <ul>
-        <li>Vocab cực nhỏ (~50-200 ký tự)</li>
-        <li>Không bao giờ gặp OOV</li>
-        <li>Xử lý được mọi ngôn ngữ</li>
-      </ul>
-    </div>
-    <div class="concept-card">
-      <h4>Nhược điểm</h4>
-      <ul>
-        <li>Sequence rất dài (1 từ → 5-10 tokens)</li>
-        <li>Khó học ngữ nghĩa ở level ký tự</li>
-        <li>Training chậm, tốn memory</li>
-      </ul>
-    </div>
-  </div>
+  <p>Cách này giải quyết được vấn đề OOV vì bất kỳ từ mới nào cũng có thể được biểu diễn bằng các ký tự có sẵn. Vocabulary trở nên cực kỳ nhỏ gọn, chỉ khoảng 50-200 tokens tùy ngôn ngữ. Tuy nhiên, cái giá phải trả là sequence trở nên rất dài — một từ 5 ký tự trở thành 5 tokens, một câu 20 từ có thể trở thành 100 tokens. Điều này khiến việc học các patterns ngữ nghĩa ở level ký tự trở nên khó khăn hơn nhiều, đồng thời tốn kém tài nguyên compute và bộ nhớ trong quá trình training.</p>
 
   <h5>c) Subword-Level Tokenization — Cân bằng giữa từ và ký tự</h5>
 
-  <p>Subword tokenization là giải pháp lai: chia từ thành các đơn vị nhỏ hơn (subwords) nhưng vẫn giữ ngữ nghĩa. Đây là phương pháp <strong>tiêu chuẩn</strong> trong các mô hình Transformer hiện đại.</p>
+  <p>Nhìn vào hai phương pháp trên, ta thấy có một trade-off rõ ràng: Word-Level giữ được ngữ nghĩa nhưng gặp vấn đề OOV và vocabulary quá lớn, trong khi Character-Level giải quyết OOV nhưng sequence quá dài và khó học. Subword-Level Tokenization chính là giải pháp lai, tìm cách cân bằng giữa hai thái cực này.</p>
 
-  <div class="formula-block-small">
-    <strong>Ví dụ:</strong><br/>
-    Input: <code>"unhappiness"</code><br/>
-    Output (BPE): <code>["un", "happi", "ness"]</code><br/>
-    Output (WordPiece): <code>["un", "happi", "##ness"]</code> <span style="color: var(--text-muted); font-size: 0.85em;">(# = continue token)</span>
+  <p>Ý tưởng cốt lõi rất đơn giản: thay vì giữ nguyên từ hoặc chia nhỏ hoàn toàn thành ký tự, ta sẽ tự động tìm ra mức độ chia tối ưu dựa trên tần suất xuất hiện của các đơn vị trong dữ liệu huấn luyện. Những từ phổ biến (xuất hiện nhiều lần) sẽ được giữ nguyên thành một token duy nhất, những từ hiếm sẽ bị tách thành nhiều subwords nhỏ hơn, và những từ hoàn toàn mới có thể được tách đến mức chỉ còn ký tự. Đây là phương pháp tiêu chuẩn trong hầu hết các mô hình Transformer hiện đại như BERT, GPT, T5 hay LLaMA.</p>
+
+  <p>Ví dụ với từ "unhappiness", Word-Level sẽ giữ nguyên nếu có trong vocabulary hoặc thay bằng [UNK] nếu không có, trong khi các thuật toán subword sẽ tách nó thành các đơn vị nhỏ hơn như ["un", "happi", "ness"] với BPE hoặc ["un", "happi", "##ness"] với WordPiece (ký tự ## biểu thị đây là phần tiếp theo của từ trước đó). Cách này vừa giải quyết được OOV — vì bất kỳ từ mới nào cũng có thể được tách từ các subwords đã có trong vocabulary — vừa giữ được sequence ở độ dài hợp lý.</p>
+
+  <!-- So sánh các thuật toán Subword -->
+  <h4>1.2.3. Subword-Level Tokenization</h4>
+
+  <p>Có 3 thuật toán subword phổ biến nhất, mỗi thuật toán có cách tiếp cận khác nhau để tìm ra mức độ chia tối ưu.</p>
+
+  <p><strong>BPE (Byte Pair Encoding)</strong> là thuật toán đơn giản nhất, được phát minh từ năm 1994 như một phương pháp nén dữ liệu. BPE hoạt động bằng cách tìm cặp tokens xuất hiện nhiều nhất trong corpus và gộp chúng thành một token mới, lặp lại cho đến khi đạt vocabulary size mong muốn. Thuật toán này được GPT, GPT-2, GPT-3 và LLaMA sử dụng.</p>
+
+  <p><strong>WordPiece</strong> phức tạp hơn BPE. Thay vì chọn cặp xuất hiện nhiều nhất, nó chọn cặp có likelihood cao nhất dựa trên language model — cách này chính xác hơn nhưng chậm hơn. Đây là lựa chọn của BERT, DistilBERT và Electra.</p>
+
+  <p><strong>SentencePiece</strong> khác biệt ở chỗ nó không cần pre-tokenize (tự xử lý space như ký tự bình thường), đồng thời hỗ trợ subword regularization (thêm noise khi train) — phù hợp với multilingual models như T5, ALBERT, mBERT, XLNet.</p>
+
+  <p>Ví dụ với từ "unhappiness", BPE tách thành ["un", "happi", "ness"], WordPiece tách thành ["un", "happi", "##ness"] (ký tự ## biểu thị đây là phần tiếp theo của từ trước), còn SentencePiece cũng tách thành ["un", "happi", "ness"] như BPE.</p>
+
+  <p>Tổng quan, BPE phù hợp cho text generation vì đơn giản và nhanh, WordPiece phù hợp cho classification vì độ chính cao, còn SentencePiece phù hợp cho multilingual models vì không phụ thuộc vào cách tokenize của từng ngôn ngữ.</p>
+
+  <p>Về ưu nhược điểm, subword tokenization giải quyết được vấn đề OOV — bất kỳ từ mới nào cũng có thể được tách từ các subwords đã có trong vocabulary. Vocabulary size cũng ở mức vừa phải (30-50K tokens) thay vì hàng triệu như word-level. Tuy nhiên, cách này phức tạp hơn word-level và việc tokenization tốn thời gian hơn. Ngoài ra, một số từ bị tách ra có thể mất đi ngữ nghĩa gốc — ví dụ "eating" có thể bị tách thành ["eat", "##ing"], model vẫn hiểu nhưng không còn nguyên vẹn như một từ.</p>
+
+  <p>Để hiểu rõ hơn, xem ví dụ thực tế với corpus gồm các từ "running", "runner", "runs", "unhappiness", "happily" trong hình dưới đây:</p>
+
+  <div class="image-showcase">
+    <img src="/images/ch23/bpe_visualizer.png" alt="BPE Tokenization Example" />
+    <div class="image-caption">Hình: Ví dụ BPE Tokenization — Model học được morphological patterns từ dữ liệu huấn luyện</div>
   </div>
 
-  <h4>1.2.3. Thuật toán Subword phổ biến</h4>
+  <p>Quan sát hình trên cho thấy model có thể học được mối quan hệ giữa các từ cùng gốc — "run" + "##ning", "##ner", "##s" đều liên quan đến hành động chạy, "happi" + "ly", "ness" liên quan đến trạng thái vui vẻ. Đây chính là khả năng học morphological patterns mà word-level và character-level không có được.</p>
 
-  <table class="comparison-table">
-    <thead>
-      <tr>
-        <th>Thuật toán</th>
-        <th>Nguyên lý</th>
-        <th>Ví dụ "unhappiness"</th>
-        <th>Dùng trong</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>BPE</strong><br/><em>Byte Pair Encoding</em></td>
-        <td>Gộp cặp tokens phổ biến nhất</td>
-        <td><code>["un", "happi", "ness"]</code></td>
-        <td>GPT, GPT-2, GPT-3</td>
-      </tr>
-      <tr>
-        <td><strong>WordPiece</strong></td>
-        <td>Chọn cặp có likelihood cao nhất</td>
-        <td><code>["un", "happi", "##ness"]</code></td>
-        <td>BERT, DistilBERT</td>
-      </tr>
-      <tr>
-        <td><strong>SentencePiece</strong></td>
-        <td>Unigram language model</td>
-        <td><code>["un", "happi", "ness"]</code></td>
-        <td>T5, ALBERT, LLaMA, mBERT</td>
-      </tr>
-      <tr>
-        <td><strong>Unigram</strong></td>
-        <td>Loại bỏ tokens ít useful</td>
-        <td><code>["un", "happi", "ness"]</code></td>
-        <td>SentencePiece</td>
-      </tr>
-    </tbody>
-  </table>
+  <h5>c) Chi tiết thuật toán BPE</h5>
 
-  <h4>1.2.4. Chi tiết thuật toán BPE</h4>
+  <p>BPE được phát minh bởi Gage năm 1994 như một thuật toán nén dữ liệu. Ý tưởng rất đơn giản: thay thế cặp ký tự xuất hiện nhiều nhất bằng một ký tự mới, từ đó giảm kích thước file vì các cặp phổ biến được biểu diễn gọn hơn. Đến năm 2016, các nhà nghiên cứu nhận ra ý tưởng này có thể áp dụng cho NLP — thay vì nén text, ta dùng nó để tự động tạo vocabulary tối ưu. Đây là lý do GPT, GPT-2, GPT-3 và LLaMA đều sử dụng BPE.</p>
 
-  <div class="callout callout-info">
-    <span class="material-symbols-outlined">info</span>
-    <div class="callout-content">
-      <span class="callout-title">BPE là gì?</span>
-      <p><strong>Byte Pair Encoding (BPE)</strong> là thuật toán nén dữ liệu từ năm 1994, sau đó được áp dụng cho NLP vào năm 2016 (GPT, GPT-2 dùng BPE). Thuật toán này <strong>tự động tìm ra các subword tokens tối ưu</strong> từ dữ liệu huấn luyện.</p>
-    </div>
-  </div>
+  <p>Về mặt thuật toán, BPE hoạt động theo 3 bước lặp đi lặp lại. Đầu tiên, ta khởi tạo vocabulary với tất cả các ký tự đơn có trong corpus. Tiếp theo, ta đếm tần suất của tất cả các cặp tokens liên tiếp (ví dụ "th", "he", "en" trong từ "then"), tìm cặp xuất hiện nhiều nhất, và gộp chúng thành một token mới được thêm vào vocabulary. Cuối cùng, ta cập nhật corpus bằng cách thay thế cặp cũ bằng token mới vừa tạo. Quá trình này lặp lại cho đến khi vocabulary đạt kích thước mong muốn (thường là 30-50K tokens). Kết quả là những từ xuất hiện nhiều lần như "the" sẽ được ghép thành một token duy nhất, trong khi những từ hiếm như "unhappiness" sẽ bị tách thành "un" + "happi" + "ness" — tự động tìm ra mức độ chia tối ưu dựa trên dữ liệu huấn luyện.</p>
 
-  <div class="definition-block">
-    <span class="definition-term">Ý tưởng chính</span>
-    <p>BPE hoạt động bằng cách:</p>
-    <ol>
-      <li><strong>Đếm tần suất</strong> của tất cả các cặp ký tự/TOKEN liên tiếp trong corpus</li>
-      <li><strong>Tìm cặp phổ biến nhất</strong> và <strong>gộp</strong> chúng thành một token mới</li>
-      <li><strong>Lặp lại</strong> cho đến khi vocabulary đạt kích thước mong muốn</li>
-    </ol>
-    <p>Ví dụ: "the" xuất hiện 10000 lần → được ghép thành 1 token. "unhappiness" chỉ xuất hiện 1 lần → tách thành "un" + "happi" + "ness".</p>
-  </div>
-
-  <h5>1.2.4.1. Pseudocode</h5>
+  <p style="margin: 16px 0 8px 0;"><strong>Pseudocode:</strong></p>
 
   <div class="formula-block-small" style="text-align: left;">
     <strong>Thuật toán BPE (Pseudocode)</strong>
@@ -337,7 +259,7 @@ END WHILE
 RETURN vocabulary</code></pre>
   </div>
 
-  <h5>1.2.4.2. Ví dụ chi tiết với Corpus gồm nhiều từ</h5>
+  <p style="margin: 24px 0 8px 0;"><strong>Ví dụ chi tiết với Corpus gồm nhiều từ:</strong></p>
 
   <p>Giả sử ta có corpus gồm các từ sau (đã được lowercase và tách thành characters):</p>
 
@@ -351,7 +273,7 @@ RETURN vocabulary</code></pre>
 
   <div class="concept-grid">
     <div class="concept-card">
-      <h4>Lần 1: Tìm cặp phổ biến nhất</h4>
+      <p style="font-weight: 600; margin-bottom: 8px;">Lần 1: Tìm cặp phổ biến nhất</p>
       <p style="font-size: 0.9rem;">Đếm tất cả các cặp trong corpus:</p>
       <table style="width: 100%; font-size: 0.8rem; margin-top: 8px;">
         <tr><td>"lo": 6 lần</td><td>"ow": 6 lần</td></tr>
@@ -361,7 +283,7 @@ RETURN vocabulary</code></pre>
       <p style="font-size: 0.85rem; color: var(--color-purple); margin-top: 8px;">→ Cặp phổ biến nhất: "lo" và "ow" (cùng 6 lần)</p>
     </div>
     <div class="concept-card">
-      <h4>Lần 1: Gộp "lo" → "low"</h4>
+      <p style="font-weight: 600; margin-bottom: 8px;">Lần 1: Gộp "lo" → "low"</p>
       <p style="font-size: 0.9rem;">Gộp cặp "lo" thành token mới:</p>
       <p style="font-family: var(--font-mono); font-size: 0.85rem; margin-top: 8px;">"lo" → "low"</p>
       <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">Vocabulary thêm: <strong>"low"</strong></p>
@@ -371,7 +293,7 @@ RETURN vocabulary</code></pre>
 
   <div class="concept-grid">
     <div class="concept-card">
-      <h4>Lần 2: Tiếp tục tìm cặp</h4>
+      <p style="font-weight: 600; margin-bottom: 8px;">Lần 2: Tiếp tục tìm cặp</p>
       <p style="font-size: 0.9rem;">Đếm lại các cặp:</p>
       <table style="width: 100%; font-size: 0.8rem; margin-top: 8px;">
         <tr><td>"ow": 6 lần</td><td>"we": 3 lần</td></tr>
@@ -381,7 +303,7 @@ RETURN vocabulary</code></pre>
       <p style="font-size: 0.85rem; color: var(--color-purple); margin-top: 8px;">→ Cặp phổ biến nhất: "ow" (6 lần)</p>
     </div>
     <div class="concept-card">
-      <h4>Lần 2: Gộp "ow" → "low"</h4>
+      <p style="font-weight: 600; margin-bottom: 8px;">Lần 2: Gộp "ow" → "low"</p>
       <p style="font-size: 0.9rem;">Gộp "ow" thành token mới:</p>
       <p style="font-family: var(--font-mono); font-size: 0.85rem; margin-top: 8px;">"ow" → "low" (gộp vào token "low" đã có!)</p>
       <p style="font-size: 0.85rem; color: var(--color-purple); margin-top: 8px;">→ Từ "low" xuất hiện 6 lần, nên được giữ nguyên!</p>
@@ -401,7 +323,7 @@ RETURN vocabulary</code></pre>
     </div>
   </div>
 
-  <h5>1.2.4.3. Tại sao BPE hiệu quả?</h5>
+  <p style="margin: 24px 0 8px 0;"><strong>Tại sao BPE hiệu quả?</strong></p>
 
   <table class="comparison-table">
     <thead>
@@ -442,79 +364,7 @@ RETURN vocabulary</code></pre>
     </div>
   </div>
 
-  <h4>1.2.5. So sánh chi tiết Word vs Subword</h4>
-
-  <!-- Sơ đồ so sánh các phương pháp -->
-  <div class="image-showcase">
-    <svg width="800" height="200" xmlns="http://www.w3.org/2000/svg">
-      <!-- Word Level -->
-      <rect x="20" y="40" width="240" height="140" rx="8" fill="#1e293b" stroke="#ef4444" stroke-width="2"/>
-      <text x="140" y="65" text-anchor="middle" fill="#fca5a5" font-size="13" font-weight="bold">Word-Level</text>
-      <text x="140" y="95" text-anchor="middle" fill="#fff" font-family="monospace" font-size="11">"unhappiness"</text>
-      <path d="M 140 110 L 140 125" stroke="#ef4444" stroke-width="2" stroke-dasharray="4"/>
-      <text x="140" y="140" text-anchor="middle" fill="#fca5a5" font-size="10">["unhappiness"]</text>
-      <text x="140" y="170" text-anchor="middle" fill="#94a3b8" font-size="9">vocab: 1-5M | OOV: cao</text>
-
-      <!-- Subword Level -->
-      <rect x="280" y="40" width="240" height="140" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
-      <text x="400" y="65" text-anchor="middle" fill="#6ee7b7" font-size="13" font-weight="bold">Subword-Level (BPE)</text>
-      <text x="400" y="95" text-anchor="middle" fill="#fff" font-family="monospace" font-size="11">"unhappiness"</text>
-      <path d="M 400 110 L 400 125" stroke="#10b981" stroke-width="2" stroke-dasharray="4"/>
-      <text x="400" y="140" text-anchor="middle" fill="#6ee7b7" font-size="10">["un", "happi", "ness"]</text>
-      <text x="400" y="170" text-anchor="middle" fill="#94a3b8" font-size="9">vocab: 30-50K | OOV: thấp</text>
-
-      <!-- Character Level -->
-      <rect x="540" y="40" width="240" height="140" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
-      <text x="660" y="65" text-anchor="middle" fill="#93c5fd" font-size="13" font-weight="bold">Character-Level</text>
-      <text x="660" y="95" text-anchor="middle" fill="#fff" font-family="monospace" font-size="11">"hello"</text>
-      <path d="M 660 110 L 660 125" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4"/>
-      <text x="660" y="140" text-anchor="middle" fill="#93c5fd" font-size="10">["h","e","l","l","o"]</text>
-      <text x="660" y="170" text-anchor="middle" fill="#94a3b8" font-size="9">vocab: 50-200 | OOV: không</text>
-
-      <!-- Legend -->
-      <text x="400" y="20" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="bold">So sánh các phương pháp Tokenization</text>
-    </svg>
-    <div class="image-caption">Hình 3: So sánh Word-Level, Subword-Level và Character-Level Tokenization</div>
-  </div>
-
-  <table class="comparison-table">
-    <thead>
-      <tr>
-        <th>Tiêu chí</th>
-        <th>Word-Level</th>
-        <th>Subword-Level</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Vocabulary Size</strong></td>
-        <td>~100K - 5M</td>
-        <td>~30K - 50K</td>
-      </tr>
-      <tr>
-        <td><strong>OOV Handling</strong></td>
-        <td>Thay bằng [UNK]</td>
-        <td>Tách thành subwords quen thuộc</td>
-      </tr>
-      <tr>
-        <td><strong>Sequence Length</strong></td>
-        <td>Ngắn (1-3 tokens/từ)</td>
-        <td>Dài hơn (3-10 tokens/từ)</td>
-      </tr>
-      <tr>
-        <td><strong>Training Data cần</strong></td>
-        <td>Nhiều để cover vocab</td>
-        <td>Ít hơn vì reusable subwords</td>
-      </tr>
-      <tr>
-        <td><strong>Ngữ nghĩa</strong></td>
-        <td>Rõ ràng (từ hoàn chỉnh)</td>
-        <td>Cần suy luận từ subwords</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h4>1.2.6. Vocabulary và Special Tokens</h4>
+  <h5>d) Vocabulary và Special Tokens</h5>
 
   <p>Mỗi model có một <strong>Vocabulary cố định</strong> — danh sách tất cả tokens mà model hiểu. Ngoài các từ thông thường, vocab còn chứa các <strong>special tokens</strong>:</p>
 
@@ -536,22 +386,22 @@ RETURN vocabulary</code></pre>
   <div class="concept-grid">
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">padding</span></div>
-      <h4>[PAD] — Padding</h4>
+      <p style="font-weight: 600; margin-bottom: 8px;">[PAD] — Padding</p>
       <p>Đệm câu ngắn để batch có cùng độ dài. Thường được bỏ qua trong attention.</p>
     </div>
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">help</span></div>
-      <h4>[UNK] — Unknown</h4>
+      <p style="font-weight: 600; margin-bottom: 8px;">[UNK] — Unknown</p>
       <p>Thay thế từ không có trong vocab. Subword giảm thiểu [UNK] đáng kể.</p>
     </div>
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">first_page</span></div>
-      <h4>[BOS] / [SOS]</h4>
+      <p style="font-weight: 600; margin-bottom: 8px;">[BOS] / [SOS]</p>
       <p>Bắt đầu sequence. Cho model biết "bắt đầu từ đây".</p>
     </div>
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">last_page</span></div>
-      <h4>[EOS] / [SEP]</h4>
+      <p style="font-weight: 600; margin-bottom: 8px;">[EOS] / [SEP]</p>
       <p>Kết thúc sequence hoặc phân cách 2 câu (trong pair tasks).</p>
     </div>
   </div>
@@ -619,6 +469,14 @@ RETURN vocabulary</code></pre>
     <span class="definition-term">Embedding được học như thế nào?</span>
     <p>Giống như Word2Vec, embedding matrix $E$ là <strong>learnable parameter</strong>. Trong quá trình training, gradient backpropagation qua toàn bộ network sẽ cập nhật $E$ để embedding reflect ngữ nghĩa (từ相近 có embedding gần nhau trong không gian vector).</p>
   </div>
+
+  <p>Về mặt toán học, embedding layer đơn giản là một <strong>linear transformation</strong> với ma trận trọng số $E \in \mathbb{R}^{|V| \times d_{model}}$. Khi nhận vào token ID, ta thực hiện phép tra cứu (lookup) để lấy hàng tương ứng trong ma trận. Đây là cách implement hiệu quả nhất vì không cần one-hot encode trước — thay vì nhân ma trận $E$ với vector one-hot (toàn số 0 trừ 1 vị trí), ta trực tiếp index vào hàng tương ứng. PyTorch gọi đây là <code>nn.Embedding</code>, TensorFlow gọi là <code>tf.keras.layers.Embedding</code>.</p>
+
+  <p>Việc chọn vocabulary size là một bài toán tối ưu hóa. Nếu vocabulary quá nhỏ (dưới 10,000 tokens), phần lớn từ sẽ bị tách nhỏ thành nhiều subwords, khiến sequence trở nên dài và model khó học các patterns ngữ nghĩa. Ngược lại, vocabulary quá lớn (trên 100,000) sẽ tạo ra nhiều rare tokens xuất hiện rất ít trong dữ liệu huấn luyện, gây lãng phí bộ nhớ và có thể dẫn đến overfitting. Các model hiện đại như BERT dùng 30,522 tokens, GPT-2 dùng 50,257 tokens, LLaMA dùng 32,000 tokens — con số 30-50K được coi là sweet spot cho hầu hết ứng dụng.</p>
+
+  <p>Embedding dimension $d_{model}$ quyết định <strong>model capacity</strong> — khả năng biểu diễn các relationships phức tạp giữa concepts. Dimension nhỏ (128-256) như trong RNN truyền thống limit khả năng capture nuanced relationships, trong khi dimension lớn (512-1024) cho phép model học được nhiều patterns hơn nhưng đòi hỏi nhiều dữ liệu và compute hơn. Transformer "Attention Is All You Need" gốc dùng $d_{model}=512$, các phiên bản "big" dùng 1024. Công thức tính số parameters cho embedding layer là $|V| \times d_{model}$ — với vocab 30K và dim 512, ta có khoảng 15.3 triệu parameters, chiếm khoảng 10-20% tổng số parameters của toàn model.</p>
+
+  <p>Một câu hỏi quan trọng trong thực hành là <strong>fine-tune hay freeze embedding</strong>. Trong nhiều trường hợp, người ta sử dụng pretrained embeddings (Word2Vec, GloVe, FastText) và giữ nguyên (freeze) trong quá trình huấn luyện model mới — cách này tiết kiệm compute và hiệu quả khi dữ liệu huấn luyện hạn chế. Tuy nhiên, nếu domain của task mới khác biệt đáng kể so với dữ liệu pretrained (ví dụ: biomedical text vs general text), việc fine-tune embedding (cho phép cập nhật weights) thường cho kết quả tốt hơn vì model có thể học representations phù hợp với domain mới.</p>
 </div>
     `,
     defaultCode: ''

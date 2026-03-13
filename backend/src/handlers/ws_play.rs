@@ -1,6 +1,6 @@
 // =====================================================
-// WebSocket Handler — Interactive Code Runner
-// Supports: compile, run, stdin streaming, kill
+// WebSocket Handler — Play Mode (Free Run, No Test Cases)
+// Used by Theory page's inline code runners
 // =====================================================
 
 use axum::{
@@ -18,6 +18,7 @@ use crate::models::{WsClientMessage, WsServerMessage};
 
 const SANDBOX_DIR: &str = "/tmp/kairust_sandbox";
 const CACHE_DIR: &str = "/tmp/kairust_cache";
+const DEFAULT_TIMEOUT: u64 = 10;
 
 /// Compute SHA256 hash of code for cache key
 fn compute_code_hash(code: &str) -> String {
@@ -27,12 +28,9 @@ fn compute_code_hash(code: &str) -> String {
 }
 
 /// Check if cached binary exists and is valid
-/// Returns the path to cached binary if hit, None if miss
 async fn get_cached_binary(code_hash: &str) -> Option<PathBuf> {
     let cache_binary = PathBuf::from(CACHE_DIR).join(format!("{}.bin", code_hash));
-
     if cache_binary.exists() {
-        // Verify it's a valid executable
         if let Ok(metadata) = tokio::fs::metadata(&cache_binary).await {
             if metadata.len() > 0 {
                 return Some(cache_binary);
@@ -48,25 +46,20 @@ async fn save_to_cache(code_hash: &str, binary_path: &PathBuf) -> Result<(), Str
     tokio::fs::create_dir_all(&cache_dir)
         .await
         .map_err(|e| e.to_string())?;
-
     let cache_binary = cache_dir.join(format!("{}.bin", code_hash));
     tokio::fs::copy(binary_path, &cache_binary)
         .await
         .map_err(|e| e.to_string())?;
-
     Ok(())
 }
 
-/// Clean old cache entries (keep only last N entries)
+/// Clean old cache entries
 async fn clean_old_cache(max_entries: usize) -> Result<(), String> {
     let cache_dir = PathBuf::from(CACHE_DIR);
-
     let mut entries = tokio::fs::read_dir(&cache_dir)
         .await
         .map_err(|e| e.to_string())?;
-
     let mut files: Vec<(u64, PathBuf)> = Vec::new();
-
     while let Some(entry) = entries.next_entry().await.map_err(|e| e.to_string())? {
         if let Ok(metadata) = entry.metadata().await {
             if let Ok(modified) = metadata.modified() {
@@ -78,41 +71,24 @@ async fn clean_old_cache(max_entries: usize) -> Result<(), String> {
             }
         }
     }
-
-    // Sort by timestamp (oldest first)
     files.sort_by_key(|(t, _)| *t);
-
-    // Delete oldest entries if over limit
     if files.len() > max_entries {
         for (_, path) in files.iter().take(files.len() - max_entries) {
             let _ = tokio::fs::remove_file(path).await;
         }
     }
-
     Ok(())
 }
 
-/// Get timeout in seconds based on exercise limits
-fn get_timeout_secs(lesson_id: &Option<String>) -> u64 {
-    match lesson_id {
-        Some(id) => {
-            let limits = crate::exercises::get_exercise_limits(id);
-            limits.time_limit_secs.ceil() as u64
-        }
-        None => 10, // Default timeout
-    }
+/// Upgrade HTTP request to WebSocket (Play mode)
+pub async fn handle_ws_play_upgrade(ws: WebSocketUpgrade) -> impl IntoResponse {
+    ws.on_upgrade(handle_ws_play_connection)
 }
 
-/// Upgrade HTTP request to WebSocket
-pub async fn handle_ws_upgrade(ws: WebSocketUpgrade) -> impl IntoResponse {
-    ws.on_upgrade(handle_ws_connection)
-}
-
-/// Handle a single WebSocket connection
-async fn handle_ws_connection(socket: WebSocket) {
+/// Handle a single WebSocket connection (Play mode - no test cases)
+async fn handle_ws_play_connection(socket: WebSocket) {
     let (mut sender, mut receiver) = socket.split();
 
-    // Channel for sending messages to the client
     let (tx, mut rx) = tokio::sync::mpsc::channel::<WsServerMessage>(32);
 
     // Task: forward messages from channel to WebSocket
@@ -125,7 +101,6 @@ async fn handle_ws_connection(socket: WebSocket) {
         }
     });
 
-    // Process incoming messages
     let mut stdin_tx_opt: Option<tokio::sync::mpsc::Sender<String>> = None;
     let mut child_kill: Option<tokio::sync::oneshot::Sender<()>> = None;
 
@@ -149,8 +124,8 @@ async fn handle_ws_connection(socket: WebSocket) {
         };
 
         match client_msg {
-            WsClientMessage::Run { code, is_test, lesson_id, stdin } => {
-                // Kill previous process if any
+            WsClientMessage::Run { code, .. } => {
+                // Play mode: ignore is_test, lesson_id — just run the code freely
                 if let Some(kill_tx) = child_kill.take() {
                     let _ = kill_tx.send(());
                 }
@@ -162,9 +137,8 @@ async fn handle_ws_connection(socket: WebSocket) {
                 let (stdin_tx, stdin_rx) = tokio::sync::mpsc::channel::<String>(32);
                 stdin_tx_opt = Some(stdin_tx);
 
-                // Spawn execution task
                 tokio::spawn(async move {
-                    run_interactive(code, is_test.unwrap_or(false), lesson_id, stdin, tx_clone, kill_receiver, stdin_rx).await;
+                    run_play(code, tx_clone, kill_receiver, stdin_rx).await;
                 });
             }
             WsClientMessage::Stdin { data } => {
@@ -180,32 +154,25 @@ async fn handle_ws_connection(socket: WebSocket) {
         }
     }
 
-    // Cleanup
     if let Some(kill_tx) = child_kill.take() {
         let _ = kill_tx.send(());
     }
     send_task.abort();
 }
 
-/// Compile and run code interactively, streaming output via channel
-async fn run_interactive(
-    mut code: String,
-    is_test: bool,
-    lesson_id: Option<String>,
-    initial_stdin: Option<String>,
+/// Compile and run code freely (no test cases, no lesson_id)
+async fn run_play(
+    code: String,
     tx: tokio::sync::mpsc::Sender<WsServerMessage>,
     mut kill_rx: tokio::sync::oneshot::Receiver<()>,
     mut stdin_rx: tokio::sync::mpsc::Receiver<String>,
 ) {
     let session_id = Uuid::new_v4().to_string();
     let work_dir = PathBuf::from(SANDBOX_DIR).join(&session_id);
+    let timeout_secs = DEFAULT_TIMEOUT;
 
-    // Lấy timeout từ giới hạn bài tập
-    let timeout_secs = get_timeout_secs(&lesson_id);
-
-    // Setup workspace bằng cách clone từ template đã compile sẵn
+    // Clone template
     let template_dir = "/tmp/kairust_template";
-    eprintln!("[DEBUG] Copying from {} to {:?}", template_dir, work_dir);
     let status = Command::new("cp")
         .arg("-a")
         .arg(format!("{}/.", template_dir))
@@ -213,91 +180,34 @@ async fn run_interactive(
         .status()
         .await;
 
-    // Debug: list files in work_dir
-    let _ = Command::new("ls")
-        .arg("-la")
-        .arg(&work_dir)
-        .output()
-        .await;
-
     if status.is_err() || !status.unwrap().success() {
-        let _ = tx
-            .send(WsServerMessage::Error {
-                message: "Lỗi chạy lệnh cp clone template".to_string(),
-            })
-            .await;
+        let _ = tx.send(WsServerMessage::Error {
+            message: "Lỗi khởi tạo workspace".to_string(),
+        }).await;
         return;
     }
 
     let src_dir = work_dir.join("src");
-
-    // Nếu là bài kiểm tra và có lesson_id và có stdin từ frontend,
-    // KHÔNG cần test code từ backend (dùng stdin từ frontend)
-    let has_frontend_stdin = initial_stdin.is_some();
-
-    // Nếu là bài kiểm tra và có lesson_id, tự động nối thêm test case từ backend
-    if is_test && !has_frontend_stdin {
-        eprintln!("[DEBUG] is_test=true, lesson_id={:?}", lesson_id);
-        if let Some(ref lid) = lesson_id {
-            eprintln!("[DEBUG] Looking for test code: {}", lid);
-            match crate::exercises::get_test_code(lid) {
-                Some(test_code) => {
-                    eprintln!("[DEBUG] Found test code, appending...");
-                    code.push_str("\n");
-                    code.push_str(test_code);
-                }
-                None => {
-                    eprintln!("[DEBUG] No test code found for: {}", lid);
-                    let _ = tx.send(WsServerMessage::Error {
-                        message: format!("Lỗi: Bài tập '{}' không tồn tại test case trên hệ thống.", lid),
-                    }).await;
-                    let _ = tokio::fs::remove_dir_all(&work_dir).await;
-                    return;
-                }
-            }
-        } else {
-            eprintln!("[DEBUG] No lesson_id provided");
-        }
-    } else if is_test && has_frontend_stdin {
-        eprintln!("[DEBUG] is_test=true with stdin from frontend, skipping backend test code");
-    }
-
-    // Compute hash for caching (use original code without test for cache key)
     let cache_key = compute_code_hash(&code);
-
     let _ = tokio::fs::write(src_dir.join("main.rs"), &code).await;
 
     let start = Instant::now();
 
-    // Step 1: Check cache first
+    // Check cache
     let mut use_cache = false;
-
     if let Some(cached_path) = get_cached_binary(&cache_key).await {
-        // Cache hit - copy cached binary to work dir
         let target_binary = work_dir.join("target").join("release").join("user_code");
-
-        // Create target directory
         let _ = tokio::fs::create_dir_all(work_dir.join("target").join("release")).await;
-
         if tokio::fs::copy(&cached_path, &target_binary).await.is_ok() {
             use_cache = true;
-            eprintln!("[CACHE] Cache HIT - using cached binary");
-        } else {
-            use_cache = false;
         }
-    } else {
-        // Cache miss - need to compile
     }
 
-    // Step 1b: Compile if cache miss
+    // Compile if cache miss
     if !use_cache {
         let _ = tx.send(WsServerMessage::Compiling).await;
-
         let mut cmd_compile = Command::new("cargo");
-        cmd_compile.arg("build")
-            .arg("--release")
-            .current_dir(&work_dir);
-
+        cmd_compile.arg("build").arg("--release").current_dir(&work_dir);
         let compile_result = cmd_compile.output().await;
 
         match compile_result {
@@ -308,45 +218,37 @@ async fn run_interactive(
                 return;
             }
             Err(e) => {
-                let _ = tx
-                    .send(WsServerMessage::Error {
-                        message: format!("Lỗi rustc: {}", e),
-                    })
-                    .await;
+                let _ = tx.send(WsServerMessage::Error {
+                    message: format!("Lỗi rustc: {}", e),
+                }).await;
                 let _ = tokio::fs::remove_dir_all(&work_dir).await;
                 return;
             }
             _ => {
-                // Save successful compile to cache
                 let compiled_binary = work_dir.join("target").join("release").join("user_code");
                 if compiled_binary.exists() {
                     let _ = save_to_cache(&cache_key, &compiled_binary).await;
-                    // Clean old cache entries periodically
                     let _ = clean_old_cache(100).await;
                 }
             }
         }
     }
 
-    // Step 2: Run with streaming output inside Docker Sandbox
+    // Run in Docker Sandbox
     let _ = tx.send(WsServerMessage::Running).await;
-
-    // Lấy session_id từ work_dir
-    // Với bind mount: work_dir được mount vào /sandbox
-    // Nên binary nằm tại /sandbox/target/release/user_code
     let binary_in_sandbox = "/sandbox/target/release/user_code";
 
     let mut child = match Command::new("docker")
         .arg("run")
-        .arg("--rm")                           // Tự hủy container khi xong
-        .arg("-i")                             // Cho phép stdin pipe
-        .arg("--read-only")                    // Cấm ghi filesystem
-        .arg("--tmpfs").arg("/tmp:size=16m")   // /tmp nhỏ cho chương trình
-        .arg("--network").arg("none")          // Cấm truy cập mạng
-        .arg("--memory").arg("128m")           // Giới hạn RAM
-        .arg("--cpus").arg("0.5")              // Giới hạn CPU
-        .arg("--pids-limit").arg("64")         // Chặn fork bomb
-        .arg("-v").arg(format!("{}:/sandbox:ro", work_dir.to_string_lossy()))  // Bind mount work_dir
+        .arg("--rm")
+        .arg("-i")
+        .arg("--read-only")
+        .arg("--tmpfs").arg("/tmp:size=16m")
+        .arg("--network").arg("none")
+        .arg("--memory").arg("128m")
+        .arg("--cpus").arg("0.5")
+        .arg("--pids-limit").arg("64")
+        .arg("-v").arg(format!("{}:/sandbox:ro", work_dir.to_string_lossy()))
         .arg("debian:bookworm-slim")
         .arg(binary_in_sandbox)
         .stdin(std::process::Stdio::piped())
@@ -356,32 +258,21 @@ async fn run_interactive(
     {
         Ok(c) => c,
         Err(e) => {
-            let _ = tx
-                .send(WsServerMessage::Error {
-                    message: format!("Lỗi khởi tạo sandbox: {}", e),
-                })
-                .await;
+            let _ = tx.send(WsServerMessage::Error {
+                message: format!("Lỗi khởi tạo sandbox: {}", e),
+            }).await;
             let _ = tokio::fs::remove_dir_all(&work_dir).await;
             return;
         }
     };
 
-    let mut child_stdin = child.stdin.take();
+    let child_stdin = child.stdin.take();
     let stdout = child.stdout.take();
     let stderr = child.stderr.take();
 
-    // Gửi stdin ban đầu (từ test case)
-    if let Some(initial) = initial_stdin {
-        if let Some(ref mut stdin) = child_stdin {
-            use tokio::io::AsyncWriteExt;
-            let _ = stdin.write_all(initial.as_bytes()).await;
-            let _ = stdin.shutdown().await;
-        }
-    }
-
-    // Stream stdin (từ WebSocket)
+    // Stream stdin from WebSocket
     let stdin_task = tokio::spawn(async move {
-        if let Some(ref mut stdin) = child_stdin {
+        if let Some(mut stdin) = child_stdin {
             use tokio::io::AsyncWriteExt;
             while let Some(data) = stdin_rx.recv().await {
                 let _ = stdin.write_all(data.as_bytes()).await;
@@ -397,11 +288,9 @@ async fn run_interactive(
             use tokio::io::{AsyncBufReadExt, BufReader};
             let mut reader = BufReader::new(stdout).lines();
             while let Ok(Some(line)) = reader.next_line().await {
-                let _ = tx_stdout
-                    .send(WsServerMessage::Stdout {
-                        data: format!("{}\n", line),
-                    })
-                    .await;
+                let _ = tx_stdout.send(WsServerMessage::Stdout {
+                    data: format!("{}\n", line),
+                }).await;
             }
         }
     });
@@ -413,16 +302,14 @@ async fn run_interactive(
             use tokio::io::{AsyncBufReadExt, BufReader};
             let mut reader = BufReader::new(stderr).lines();
             while let Ok(Some(line)) = reader.next_line().await {
-                let _ = tx_stderr
-                    .send(WsServerMessage::Stderr {
-                        data: format!("{}\n", line),
-                    })
-                    .await;
+                let _ = tx_stderr.send(WsServerMessage::Stderr {
+                    data: format!("{}\n", line),
+                }).await;
             }
         }
     });
 
-    // Wait for process to finish or timeout/kill
+    // Wait for process
     let exit_code = tokio::select! {
         result = child.wait() => {
             match result {
@@ -443,21 +330,17 @@ async fn run_interactive(
         }
     };
 
-    // Wait for output tasks to finish
     let _ = stdout_task.await;
     let _ = stderr_task.await;
     stdin_task.abort();
 
     let elapsed = start.elapsed().as_millis() as u64;
 
-    let _ = tx
-        .send(WsServerMessage::Exit {
-            code: exit_code,
-            execution_time_ms: elapsed,
-            memory_usage_kb: 0, // Docker giới hạn memory 128m, tracking riêng nếu cần
-        })
-        .await;
+    let _ = tx.send(WsServerMessage::Exit {
+        code: exit_code,
+        execution_time_ms: elapsed,
+        memory_usage_kb: 0,
+    }).await;
 
-    // Cleanup
     let _ = tokio::fs::remove_dir_all(&work_dir).await;
 }

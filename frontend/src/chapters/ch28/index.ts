@@ -5,6 +5,11 @@
 
 import { Lesson, Chapter } from '../../courses';
 
+const DEFAULT_CODE = `fn main() {
+    // Viết code ở đây
+}
+`;
+
 // =====================================================
 // Buổi 1: KIỂU DỮ LIỆU, TOÁN TỬ, IF ELSE
 // =====================================================
@@ -16,29 +21,22 @@ const buoi1_lessons: Lesson[] = [
     duration: '10 phút',
     type: 'practice',
     content: `
-      <h2>Bài 1: Phần nguyên, phần dư</h2>
-      <p>Tính và in ra phần nguyên và phần dư khi chia a cho b.</p>
+      <h2>Phần nguyên, phần dư</h2>
+      <p>Viết chương trình nhập vào hai số nguyên a và b (b ≠ 0), tính và in ra phần nguyên và phần dư khi chia a cho b, cách nhau một khoảng trắng.</p>
       <h3>Input</h3>
-      <p>Hai số nguyên a và b (b != 0)</p>
+      <p>Một dòng chứa hai số nguyên a và b, cách nhau bởi khoảng trắng (b ≠ 0)</p>
       <h3>Output</h3>
-      <p>Phần nguyên và phần dư, cách nhau một khoảng trắng</p>
+      <p>Một dòng chứa phần nguyên và phần dư, cách nhau một khoảng trắng</p>
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
         <tr><td>100 5</td><td>20 0</td></tr>
       </table>
+      <h3>Giải thích</h3>
+      <p>100 ÷ 5 = 20 dư 0 → In ra: 20 0</p>
     `,
-    defaultCode: `use std::io;
-
-fn main() {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-    let mut parts = input.split_whitespace();
-    let a: i64 = parts.next().unwrap().parse().unwrap();
-    let b: i64 = parts.next().unwrap().parse().unwrap();
-
-    println!("{} {}", a / b, a % b);
-}`,
+    defaultCode: DEFAULT_CODE,
+    testCases: [{ input: '100 5', expectedOutput: '20 0' }],
     isExercise: true,
   },
   {
@@ -47,27 +45,23 @@ fn main() {
     duration: '10 phút',
     type: 'practice',
     content: `
-      <h2>Bài 2: Tính giá trị biểu thức</h2>
-      <p>Cho biểu thức A(x) = x³ + 3x² + x + 1</p>
+      <h2>Tính giá trị biểu thức</h2>
+      <p>Viết chương trình nhập vào một số nguyên x, tính và in ra giá trị của biểu thức:</p>
+      <p style="font-size:1.2rem; font-weight:bold; text-align:center; margin:16px 0;">A(x) = x³ + 3x² + x + 1</p>
       <h3>Input</h3>
-      <p>Số nguyên dương x không quá 10⁵</p>
+      <p>Một dòng chứa số nguyên x (0 ≤ x ≤ 10⁵)</p>
       <h3>Output</h3>
-      <p>Kết quả của biểu thức A(x)</p>
+      <p>Một dòng chứa kết quả của biểu thức A(x)</p>
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
         <tr><td>2</td><td>23</td></tr>
       </table>
+      <h3>Giải thích</h3>
+      <p>A(2) = 2³ + 3×2² + 2 + 1 = 8 + 12 + 2 + 1 = 23</p>
     `,
-    defaultCode: `use std::io;
-
-fn main() {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-    let x: i64 = input.trim().parse().unwrap();
-    let result = x * x * x + 3 * x * x + x + 1;
-    println!("{}", result);
-}`,
+    defaultCode: DEFAULT_CODE,
+    testCases: [{ input: '2', expectedOutput: '23' }],
     isExercise: true,
   },
   {
@@ -76,28 +70,20 @@ fn main() {
     duration: '10 phút',
     type: 'practice',
     content: `
-      <h2>Bài 3: Tính tổng, hiệu, tích, thương</h2>
+      <h2>Tính tổng, hiệu, tích, thương</h2>
+      <p>Viết chương trình nhập vào hai số nguyên a và b (b ≠ 0), tính và in ra lần lượt tổng, hiệu, tích, thương của a và b. Thương lấy 2 chữ số sau dấu phẩy.</p>
       <h3>Input</h3>
-      <p>Hai số nguyên a, b (b ≠ 0)</p>
+      <p>Một dòng chứa hai số nguyên a và b, cách nhau bởi khoảng trắng (b ≠ 0)</p>
       <h3>Output</h3>
-      <p>Tổng, hiệu, tích, thương (lấy 2 decimal)</p>
+      <p>Một dòng chứa 4 giá trị: tổng, hiệu, tích, thương (lấy 2 decimal), cách nhau bởi khoảng trắng</p>
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
         <tr><td>10 2</td><td>12 8 20 5.00</td></tr>
       </table>
     `,
-    defaultCode: `use std::io;
-
-fn main() {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-    let mut parts = input.split_whitespace();
-    let a: i64 = parts.next().unwrap().parse().unwrap();
-    let b: i64 = parts.next().unwrap().parse().unwrap();
-
-    println!("{} {} {} {:.2}", a + b, a - b, a * b, a as f64 / b as f64);
-}`,
+    defaultCode: DEFAULT_CODE,
+    testCases: [{ input: '10 2', expectedOutput: '12 8 20 5.00' }],
     isExercise: true,
   },
   {
@@ -106,25 +92,20 @@ fn main() {
     duration: '10 phút',
     type: 'practice',
     content: `
-      <h2>Bài 4: Tính chu vi, diện tích hình tròn</h2>
+      <h2>Tính chu vi, diện tích hình tròn</h2>
+      <p>Viết chương trình nhập vào bán kính r của hình tròn, tính và in ra chu vi và diện tích của hình tròn đó. Lấy π = 3.14 và lấy 2 chữ số sau dấu phẩy.</p>
       <h3>Input</h3>
-      <p>Bán kính r (số nguyên, 1 ≤ r ≤ 10⁹)</p>
+      <p>Một dòng chứa số nguyên r (1 ≤ r ≤ 10⁹)</p>
       <h3>Output</h3>
-      <p>Chu vi và diện tích (lấy 2 decimal)</p>
+      <p>Một dòng chứa chu vi và diện tích (lấy 2 decimal), cách nhau bởi khoảng trắng</p>
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
         <tr><td>10</td><td>62.80 314.00</td></tr>
       </table>
     `,
-    defaultCode: `use std::io;
-
-fn main() {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-    let r: f64 = input.trim().parse().unwrap();
-    println!("{:.2} {:.2}", 2.0 * 3.14 * r, 3.14 * r * r);
-}`,
+    defaultCode: DEFAULT_CODE,
+    testCases: [{ input: '10', expectedOutput: '62.80 314.00' }],
     isExercise: true,
   },
   {
@@ -133,11 +114,12 @@ fn main() {
     duration: '10 phút',
     type: 'practice',
     content: `
-      <h2>Bài 5: Kiểm tra số chia hết cho 3 và 5</h2>
+      <h2>Kiểm tra số chia hết cho 3 và 5</h2>
+      <p>Viết chương trình nhập vào một số nguyên n, kiểm tra xem n có chia hết cho cả 3 và 5 hay không. In ra 1 nếu đúng, 0 nếu sai.</p>
       <h3>Input</h3>
-      <p>Số nguyên n (-10¹⁸ ≤ n ≤ 10¹⁸)</p>
+      <p>Một dòng chứa số nguyên n (-10¹⁸ ≤ n ≤ 10¹⁸)</p>
       <h3>Output</h3>
-      <p>In 1 nếu chia hết cho cả 3 và 5, ngược lại in 0</p>
+      <p>In ra 1 nếu n chia hết cho cả 3 và 5, ngược lại in 0</p>
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
@@ -145,15 +127,8 @@ fn main() {
         <tr><td>25</td><td>0</td></tr>
       </table>
     `,
-    defaultCode: `use std::io;
-
-fn main() {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-    let n: i64 = input.trim().parse().unwrap();
-    if n % 3 == 0 && n % 5 == 0 { println!("1"); }
-    else { println!("0"); }
-}`,
+    defaultCode: DEFAULT_CODE,
+    testCases: [{ input: '30', expectedOutput: '1' }],
     isExercise: true,
   },
   {
@@ -162,11 +137,18 @@ fn main() {
     duration: '10 phút',
     type: 'practice',
     content: `
-      <h2>Bài 6: Kiểm tra năm nhuận</h2>
+      <h2>Kiểm tra năm nhuận</h2>
+      <p>Viết chương trình nhập vào một số nguyên n là năm, kiểm tra xem năm đó có phải là năm nhuận hay không.</p>
+      <ul>
+        <li>Nếu n ≤ 0: in ra "INVALID"</li>
+        <li>Nếu là năm nhuận: in ra "YES"</li>
+        <li>Nếu không phải năm nhuận: in ra "NO"</li>
+      </ul>
+      <p><em>Năm nhuận là năm chia hết cho 400, hoặc chia hết cho 4 nhưng không chia hết cho 100.</em></p>
       <h3>Input</h3>
-      <p>Số nguyên n là năm</p>
+      <p>Một dòng chứa số nguyên n (năm)</p>
       <h3>Output</h3>
-      <p>"INVALID" nếu n ≤ 0, "YES" nếu năm nhuận, "NO" nếu không</p>
+      <p>"INVALID", "YES", hoặc "NO"</p>
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
@@ -174,16 +156,8 @@ fn main() {
         <tr><td>2021</td><td>NO</td></tr>
       </table>
     `,
-    defaultCode: `use std::io;
-
-fn main() {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-    let n: i64 = input.trim().parse().unwrap();
-    if n <= 0 { println!("INVALID"); return; }
-    let leap = (n % 400 == 0) || (n % 4 == 0 && n % 100 != 0);
-    if leap { println!("YES"); } else { println!("NO"); }
-}`,
+    defaultCode: DEFAULT_CODE,
+    testCases: [{ input: '2020', expectedOutput: 'YES' }],
     isExercise: true,
   },
   {
@@ -192,9 +166,14 @@ fn main() {
     duration: '10 phút',
     type: 'practice',
     content: `
-      <h2>Bài 7: Số ngày trong tháng</h2>
+      <h2>Số ngày trong tháng</h2>
+      <p>Viết chương trình nhập vào tháng t và năm n, tính và in ra số ngày của tháng đó trong năm đó.</p>
+      <ul>
+        <li>Nếu tháng hoặc năm không hợp lệ: in ra "INVALID"</li>
+        <li>Ngược lại: in ra số ngày</li>
+      </ul>
       <h3>Input</h3>
-      <p>Tháng t và năm n</p>
+      <p>Một dòng chứa tháng t (1-12) và năm n, cách nhau bởi khoảng trắng</p>
       <h3>Output</h3>
       <p>"INVALID" nếu không hợp lệ, ngược lại in số ngày</p>
       <h3>Ví dụ</h3>
@@ -204,21 +183,8 @@ fn main() {
         <tr><td>2 2020</td><td>29</td></tr>
       </table>
     `,
-    defaultCode: `use std::io;
-
-fn main() {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-    let mut parts = input.split_whitespace();
-    let t: i32 = parts.next().unwrap().parse().unwrap();
-    let n: i32 = parts.next().unwrap().parse().unwrap();
-    if t < 1 || t > 12 || n <= 0 { println!("INVALID"); return; }
-    let leap = (n % 400 == 0) || (n % 4 == 0 && n % 100 != 0);
-    let days = match t {
-        1|3|5|7|8|10|12 => 31, 4|6|9|11 => 30, 2 => if leap {29} else {28}, _ => 0
-    };
-    println!("{}", days);
-}`,
+    defaultCode: DEFAULT_CODE,
+    testCases: [{ input: '2 2021', expectedOutput: '28' }],
     isExercise: true,
   },
   {
@@ -227,11 +193,12 @@ fn main() {
     duration: '10 phút',
     type: 'practice',
     content: `
-      <h2>Bài 8: Kiểm tra chữ in thường</h2>
+      <h2>Kiểm tra chữ in thường</h2>
+      <p>Viết chương trình nhập vào một ký tự, kiểm tra xem ký tự đó có phải là chữ cái in thường (a-z) hay không.</p>
       <h3>Input</h3>
-      <p>Một ký tự</p>
+      <p>Một dòng chứa một ký tự</p>
       <h3>Output</h3>
-      <p>"YES" nếu là chữ in thường, "NO" nếu không</p>
+      <p>In ra "YES" nếu là chữ in thường, "NO" nếu không</p>
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
@@ -239,14 +206,8 @@ fn main() {
         <tr><td>A</td><td>NO</td></tr>
       </table>
     `,
-    defaultCode: `use std::io;
-
-fn main() {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-    let c: char = input.trim().chars().next().unwrap();
-    if c >= 'a' && c <= 'z' { println!("YES"); } else { println!("NO"); }
-}`,
+    defaultCode: DEFAULT_CODE,
+    testCases: [{ input: 'a', expectedOutput: 'YES' }],
     isExercise: true,
   },
   {
@@ -255,11 +216,12 @@ fn main() {
     duration: '10 phút',
     type: 'practice',
     content: `
-      <h2>Bài 9: Kiểm tra chữ in hoa</h2>
+      <h2>Kiểm tra chữ in hoa</h2>
+      <p>Viết chương trình nhập vào một ký tự, kiểm tra xem ký tự đó có phải là chữ cái in hoa (A-Z) hay không.</p>
       <h3>Input</h3>
-      <p>Một ký tự</p>
+      <p>Một dòng chứa một ký tự</p>
       <h3>Output</h3>
-      <p>"YES" nếu là chữ in hoa, "NO" nếu không</p>
+      <p>In ra "YES" nếu là chữ in hoa, "NO" nếu không</p>
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
@@ -267,14 +229,8 @@ fn main() {
         <tr><td>a</td><td>NO</td></tr>
       </table>
     `,
-    defaultCode: `use std::io;
-
-fn main() {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-    let c: char = input.trim().chars().next().unwrap();
-    if c >= 'A' && c <= 'Z' { println!("YES"); } else { println!("NO"); }
-}`,
+    defaultCode: DEFAULT_CODE,
+    testCases: [{ input: 'A', expectedOutput: 'YES' }],
     isExercise: true,
   },
   {
@@ -283,11 +239,12 @@ fn main() {
     duration: '10 phút',
     type: 'practice',
     content: `
-      <h2>Bài 10: Kiểm tra chữ số</h2>
+      <h2>Kiểm tra chữ số</h2>
+      <p>Viết chương trình nhập vào một ký tự, kiểm tra xem ký tự đó có phải là chữ số (0-9) hay không.</p>
       <h3>Input</h3>
-      <p>Một ký tự</p>
+      <p>Một dòng chứa một ký tự</p>
       <h3>Output</h3>
-      <p>"YES" nếu là chữ số, "NO" nếu không</p>
+      <p>In ra "YES" nếu là chữ số, "NO" nếu không</p>
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
@@ -295,14 +252,8 @@ fn main() {
         <tr><td>a</td><td>NO</td></tr>
       </table>
     `,
-    defaultCode: `use std::io;
-
-fn main() {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-    let c: char = input.trim().chars().next().unwrap();
-    if c >= '0' && c <= '9' { println!("YES"); } else { println!("NO"); }
-}`,
+    defaultCode: DEFAULT_CODE,
+    testCases: [{ input: '5', expectedOutput: 'YES' }],
     isExercise: true,
   },
   {
@@ -311,9 +262,10 @@ fn main() {
     duration: '10 phút',
     type: 'practice',
     content: `
-      <h2>Bài 11: Chuyển chữ hoa thành thường</h2>
+      <h2>Chuyển chữ hoa thành chữ thường</h2>
+      <p>Viết chương trình nhập vào một ký tự. Nếu ký tự đó là chữ in hoa (A-Z), chuyển thành chữ in thường tương ứng. Nếu không phải chữ in hoa, giữ nguyên.</p>
       <h3>Input</h3>
-      <p>Một ký tự</p>
+      <p>Một dòng chứa một ký tự</p>
       <h3>Output</h3>
       <p>Chữ thường tương ứng nếu là chữ hoa, giữ nguyên nếu không</p>
       <h3>Ví dụ</h3>
@@ -323,18 +275,8 @@ fn main() {
         <tr><td>%</td><td>%</td></tr>
       </table>
     `,
-    defaultCode: `use std::io;
-
-fn main() {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-    let c: char = input.trim().chars().next().unwrap();
-    if c >= 'A' && c <= 'Z' {
-        println!("{}", (c as u8 + 32) as char);
-    } else {
-        println!("{}", c);
-    }
-}`,
+    defaultCode: DEFAULT_CODE,
+    testCases: [{ input: 'A', expectedOutput: 'a' }],
     isExercise: true,
   },
   {
@@ -343,11 +285,13 @@ fn main() {
     duration: '10 phút',
     type: 'practice',
     content: `
-      <h2>Bài 12: Tam giác hợp lệ</h2>
+      <h2>Tam giác hợp lệ</h2>
+      <p>Viết chương trình nhập vào 3 số a, b, c là độ dài 3 cạnh của một tam giác. Kiểm tra xem 3 cạnh đó có thể tạo thành một tam giác hợp lệ hay không.</p>
+      <p><em>Điều kiện để 3 cạnh tạo thành tam giác: tổng 2 cạnh bất kỳ lớn hơn cạnh còn lại, và tất cả các cạnh đều dương.</em></p>
       <h3>Input</h3>
-      <p>Ba số a, b, c</p>
+      <p>Một dòng chứa 3 số a, b, c, cách nhau bởi khoảng trắng</p>
       <h3>Output</h3>
-      <p>"YES" nếu hợp lệ, "NO" nếu không</p>
+      <p>In ra "YES" nếu hợp lệ, "NO" nếu không</p>
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
@@ -355,25 +299,14 @@ fn main() {
         <tr><td>1 1 5</td><td>NO</td></tr>
       </table>
     `,
-    defaultCode: `use std::io;
-
-fn main() {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap();
-    let mut parts = input.split_whitespace();
-    let a: i64 = parts.next().unwrap().parse().unwrap();
-    let b: i64 = parts.next().unwrap().parse().unwrap();
-    let c: i64 = parts.next().unwrap().parse().unwrap();
-    if a <= 0 || b <= 0 || c <= 0 { println!("NO"); return; }
-    if a + b > c && a + c > b && b + c > a { println!("YES"); }
-    else { println!("NO"); }
-}`,
+    defaultCode: DEFAULT_CODE,
+    testCases: [{ input: '3 4 5', expectedOutput: 'YES' }],
     isExercise: true,
   },
 ];
 
 // =====================================================
-// Export all chapters
+// Export all chapters - Each session is a chapter with multiple lessons
 // =====================================================
 
 export const ch28_chapters: Chapter[] = [
