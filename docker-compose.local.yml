@@ -1,0 +1,29 @@
+services:
+  # -------------------------
+  # BACKEND SERVICE (RUST)
+  # -------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: kairust_backend_local
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - RUST_LOG=info
+      - DATA_DIR=/data
+      - SANDBOX_VOLUME_NAME=kairust_sandbox_data_local
+    volumes:
+      - backend_data_local:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - kairust_sandbox_data_local:/tmp/kairust_sandbox
+      - cache_data_local:/tmp/kairust_cache
+
+volumes:
+  backend_data_local:
+  kairust_sandbox_data_local:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  cache_data_local:
