@@ -1,6 +1,7 @@
 import { Chapter } from '../../courses';
 import { ch18_01 } from './ch18_01';
 import { ch18_02 } from './ch18_02';
+import { ch18_03 } from './ch18_03';
 
 export const ch18: Chapter = {
   id: 'ch18',
@@ -17,5 +18,5 @@ export const ch18: Chapter = {
       <li>→ <strong>Trade-offs:</strong> So sánh OOP với Rust idioms</li>
     </ul>
   `,
-  lessons: [ch18_01, ch18_02]
+  lessons: [ch18_01, ch18_02, ch18_03]
 };
