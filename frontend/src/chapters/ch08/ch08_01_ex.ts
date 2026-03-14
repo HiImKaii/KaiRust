@@ -33,7 +33,22 @@ export const ch08_01_ex: Lesson = {
         {
             input: 'numbers.iter().sum()',
             expectedOutput: '15',
-            description: 'Tính tổng'
+            description: 'Tính tổng các số từ 1 đến 5 = 15'
+        },
+        {
+            input: 'max',
+            expectedOutput: '5',
+            description: 'Tìm giá trị lớn nhất = 5'
+        },
+        {
+            input: 'push',
+            expectedOutput: 'true',
+            description: 'Thêm phần tử vào vector'
+        },
+        {
+            input: 'pop',
+            expectedOutput: 'true',
+            description: 'Xóa phần tử cuối khỏi vector'
         }
     ]
 };

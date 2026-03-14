@@ -9,7 +9,7 @@ export const ch09_02: Lesson = {
 <p>Hầu hết các lỗi không nghiêm trọng đến mức yêu cầu chương trình phải dừng hoàn toàn. Đôi khi khi một hàm thất bại, đó là vì một lý do mà bạn có thể dễ dàng diễn giải và phản hồi. Ví dụ, nếu bạn cố gắng mở một file và thao tác đó thất bại vì file không tồn tại, bạn có thể muốn tạo file đó thay vì terminate process.</p>
 
 <h3 class="task-heading">Giới thiệu Result Enum</h3>
-<p>Recall from "Handling Potential Failure with Result" in Chapter 2 that the Result enum is defined as having two variants, Ok and Err, as follows:</p>
+<p>Hãy nhớ lại từ phần "Xử lý Lỗi Tiềm Năng với Result" trong Chương 2 rằng enum Result được định nghĩa có hai variants, Ok và Err, như sau:</p>
 
 <div class="code-snippet">
   <span class="code-lang">rust</span>
@@ -291,7 +291,7 @@ fn main() {
 
 <div class="cyber-alert info">
   <strong>Lưu ý:</strong> Bạn có thể sử dụng toán tử ? trên Result trong một hàm trả về Result, và bạn có thể sử dụng toán tử ? trên Option trong một hàm trả về Option, nhưng bạn không thể mix và match. Toán tử ? sẽ không tự động convert Result thành Option hoặc ngược lại; trong những trường hợp đó, bạn có thể sử dụng methods như ok method trên Result hoặc ok_or method trên Option để convert một cách explicit.
-</h3>
+</div>
 
 <h3 class="task-heading">Main Function Trả Về Result</h3>
 <p>Cho đến nay, tất cả các main functions chúng ta đã sử dụng trả về (). Hàm main đặc biệt vì nó là entry point và exit point của một executable program, và có restrictions trên return type của nó để program hoạt động như mong đợi.</p>
