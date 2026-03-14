@@ -47,7 +47,7 @@ export const ch21_02: Chapter = {
         <h4>Neuron Sinh Học</h4>
         <p>Một tế bào thần kinh gồm 4 thành phần chính:</p>
         <ol>
-          <li><strong>Dendrites (Sợi nhánh):</strong> Các nhánh nhận tín hiệu hóa học (neurotransmitters) và xung điện từ các neuron lân cận. Tương ứng với các đầu vào $X_1, X_2, \dots$</li>
+          <li><strong>Dendrites (Sợi nhánh):</strong> Các nhánh nhận tín hiệu hóa học (neurotransmitters) và xung điện từ các neuron lân cận. Tương ứng với các đầu vào $X_1, X_2, \\dots$</li>
           <li><strong>Synapses (Khớp thần kinh):</strong> Mỗi khớp nối có độ dẫn điện khác nhau. Độ dẫn này tương ứng với <strong>Weight (W)</strong> trong toán học.</li>
           <li><strong>Soma (Thân tế bào):</strong> Nơi tổng hợp tất cả tín hiệu từ các nhánh. Đóng vai trò Hàm Tổng (Summing Junction) trong toán.</li>
           <li><strong>Axon (Sợi trục):</strong> Khi điện tích trong Soma vượt ngưỡng (threshold), neuron "phóng điện" (fire action potential) truyền tín hiệu tới neuron tiếp theo. Đây là bước ra quyết định.</li>
@@ -61,10 +61,10 @@ export const ch21_02: Chapter = {
         <h4>Neuron Nhân Tạo (Perceptron)</h4>
         <p>Rosenblatt đã chuyển đổi mô hình sinh học thành đại số tuyến tính:</p>
         <ol>
-          <li><strong>Inputs $[X_1, X_2, \dots X_n]$:</strong> Các đặc trưng (features) của dữ liệu. Ví dụ: diện tích, giá tiền, độ cao.</li>
-          <li><strong>Weights $[W_1, W_2, \dots W_n]$:</strong> Mức độ quan trọng của từng đặc trưng. Weight lớn = ảnh hưởng lớn. Weight âm = ảnh hưởng ngược chiều.</li>
-          <li><strong>Summing Function (Σ):</strong> Tổng tuyến tính $Z = \sum_{i=1}^{n} W_i X_i$.</li>
-          <li><strong>Activation Function $f(Z)$:</strong> Hàm kích hoạt bước nhảy (Step Function). Trong Perceptron gốc: nếu tổng $Z$ vượt ngưỡng $\to$ output = 1, ngược lại $\to$ output = 0.</li>
+          <li><strong>Inputs $[X_1, X_2, \\dots X_n]$:</strong> Các đặc trưng (features) của dữ liệu. Ví dụ: diện tích, giá tiền, độ cao.</li>
+          <li><strong>Weights $[W_1, W_2, \\dots W_n]$:</strong> Mức độ quan trọng của từng đặc trưng. Weight lớn = ảnh hưởng lớn. Weight âm = ảnh hưởng ngược chiều.</li>
+          <li><strong>Summing Function (Σ):</strong> Tổng tuyến tính $Z = \\sum_{i=1}^{n} W_i X_i$.</li>
+          <li><strong>Activation Function $f(Z)$:</strong> Hàm kích hoạt bước nhảy (Step Function). Trong Perceptron gốc: nếu tổng $Z$ vượt ngưỡng $\\to$ output = 1, ngược lại $\\to$ output = 0.</li>
         </ol>
       </div>
     </div>
@@ -74,14 +74,14 @@ export const ch21_02: Chapter = {
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
     <h4>Tại sao dùng Bias thay vì Threshold?</h4>
     <p>Phương trình gốc của Rosenblatt:</p>
-    <p class="font-mono text-lg">$\text{Output} = 1 \text{ NẾU } (W_1 X_1 + W_2 X_2) \geq T$</p>
-    <p class="font-mono text-lg">$\text{Output} = 0 \text{ NẾU } (W_1 X_1 + W_2 X_2) < T$</p>
+    <p class="font-mono text-lg">$\\text{Output} = 1 \\text{ NẾU } (W_1 X_1 + W_2 X_2) \\geq T$</p>
+    <p class="font-mono text-lg">$\\text{Output} = 0 \\text{ NẾU } (W_1 X_1 + W_2 X_2) < T$</p>
     <br/>
     <p>Các nhà toán học chuyển T sang vế trái bằng phép trừ:</p>
-    <p class="font-mono text-lg">$(W_1 X_1 + W_2 X_2) - T \geq 0$</p>
+    <p class="font-mono text-lg">$(W_1 X_1 + W_2 X_2) - T \\geq 0$</p>
     <p>Đặt $B = -T$, gọi là <strong>Bias (Độ lệch)</strong>. Phương trình trở thành dạng quen thuộc:</p>
-    <p class="font-mono text-lg text-indigo-700 font-bold">$Z = W_1 X_1 + W_2 X_2 + B \geq 0$</p>
-    <p>Đây chính là phương trình siêu phẳng (Hyperplane) phân tách không gian tuyến tính: điểm nằm phía dương $\to$ Class 1, phía âm $\to$ Class 0.</p>
+    <p class="font-mono text-lg text-indigo-700 font-bold">$Z = W_1 X_1 + W_2 X_2 + B \\geq 0$</p>
+    <p>Đây chính là phương trình siêu phẳng (Hyperplane) phân tách không gian tuyến tính: điểm nằm phía dương $\\to$ Class 1, phía âm $\\to$ Class 0.</p>
   </div>
 
 
@@ -95,23 +95,23 @@ export const ch21_02: Chapter = {
   <div class="concept-grid">
     <div class="concept-card">
       <h4>Bước 1: Khởi Tạo Ngẫu Nhiên</h4>
-      <p>Ban đầu chưa biết W và B là bao nhiêu, nên khởi tạo ngẫu nhiên: $[0.1, -0.4, 0.2, \dots]$. Mục đích là cho mô hình một điểm xuất phát bất kỳ để bắt đầu học.</p>
+      <p>Ban đầu chưa biết W và B là bao nhiêu, nên khởi tạo ngẫu nhiên: $[0.1, -0.4, 0.2, \\dots]$. Mục đích là cho mô hình một điểm xuất phát bất kỳ để bắt đầu học.</p>
     </div>
     <div class="concept-card">
       <h4>Bước 2: Dự Đoán (Forward Pass)</h4>
-      <p>Đưa vào 1 mẫu dữ liệu đã có sẵn đáp án. Mô hình dựa vào W hiện tại để đưa ra dự đoán $(\hat{Y})$. Sau đó so sánh với đáp án thật $(Y)$.</p>
+      <p>Đưa vào 1 mẫu dữ liệu đã có sẵn đáp án. Mô hình dựa vào W hiện tại để đưa ra dự đoán $(\\hat{Y})$. Sau đó so sánh với đáp án thật $(Y)$.</p>
     </div>
     <div class="concept-card">
       <h4>Bước 3: Tính Sai Số (Error)</h4>
-      <p>$\text{Error} = Y_{true} - \hat{Y}_{pred}$<br/>
-      Nếu đúng: $\to \text{Error} = 0$, không cần cập nhật.<br/>
-      Nếu sai: $Y=1, \hat{Y}=0 \to \text{Error} = 1$. $Y=0, \hat{Y}=1 \to \text{Error} = -1$.</p>
+      <p>$\\text{Error} = Y_{true} - \\hat{Y}_{pred}$<br/>
+      Nếu đúng: $\\to \\text{Error} = 0$, không cần cập nhật.<br/>
+      Nếu sai: $Y=1, \\hat{Y}=0 \\to \\text{Error} = 1$. $Y=0, \\hat{Y}=1 \\to \\text{Error} = -1$.</p>
     </div>
     <div class="concept-card">
       <h4>Bước 4: Cập Nhật Trọng Số</h4>
       <p>Công thức cập nhật:<br/>
-      <span class="font-mono text-lg">$W_{new} = W_{old} + \alpha \times \text{Error} \times X_i$</span><br/>
-      (Với $\alpha$ là Learning Rate rất nhỏ để tránh dao động mạnh).</p>
+      <span class="font-mono text-lg">$W_{new} = W_{old} + \\alpha \\times \\text{Error} \\times X_i$</span><br/>
+      (Với $\\alpha$ là Learning Rate rất nhỏ để tránh dao động mạnh).</p>
     </div>
   </div>
 
@@ -131,8 +131,8 @@ export const ch21_02: Chapter = {
         <li><strong>Kết luận:</strong> Thuật toán Perceptron <strong>chắc chắn sẽ tìm ra</strong> một siêu phẳng phân tách hoàn hảo, trong một số bước hữu hạn $M$.</li>
       </ul>
       <p>Giới hạn số lần cập nhật ($M$):</p>
-      <p class="font-mono text-lg">$M \leq \frac{R^2 \times \|W_{opt}\|^2}{\gamma^2}$</p>
-      <p>Trong đó: $R$ là bán kính chứa toàn bộ dữ liệu, $\gamma$ là khoảng cách biên (margin) giữa hai lớp. Margin lớn $\to$ ít vòng lặp. Nhưng nếu dữ liệu <strong>không phân tách tuyến tính được</strong>, thuật toán sẽ lặp vô hạn và không bao giờ hội tụ.</p>
+      <p class="font-mono text-lg">$M \\leq \\frac{R^2 \\times \\|W_{opt}\\|^2}{\\gamma^2}$</p>
+      <p>Trong đó: $R$ là bán kính chứa toàn bộ dữ liệu, $\\gamma$ là khoảng cách biên (margin) giữa hai lớp. Margin lớn $\\to$ ít vòng lặp. Nhưng nếu dữ liệu <strong>không phân tách tuyến tính được</strong>, thuật toán sẽ lặp vô hạn và không bao giờ hội tụ.</p>
     </div>
   </div>
 
@@ -321,15 +321,15 @@ pub fn main() {
       <p>Nếu bạn tạo một mạng nơ-ron có 1 triệu lớp ẩn nhưng <strong>không sử dụng hàm kích hoạt phi tuyến</strong> xen giữa các lớp, thì toàn bộ mạng chỉ tương đương với <strong>đúng 1 lớp duy nhất</strong>.</p>
       <p>Lý do: <strong>Tính chất nhân ma trận tuyến tính (Linear Matrix Composition)</strong>. Hãy xét một mạng 3 lớp không có activation:</p>
       <ul>
-        <li><strong>Tầng 1:</strong> $H_1 = W_1 \times X + b_1$</li>
-        <li><strong>Tầng 2:</strong> $H_2 = W_2 \times H_1 + b_2$</li>
-        <li><strong>Tầng Output:</strong> $Y = W_3 \times H_2 + b_3$</li>
+        <li><strong>Tầng 1:</strong> $H_1 = W_1 \\times X + b_1$</li>
+        <li><strong>Tầng 2:</strong> $H_2 = W_2 \\times H_1 + b_2$</li>
+        <li><strong>Tầng Output:</strong> $Y = W_3 \\times H_2 + b_3$</li>
       </ul>
       <p>Thay ngược lại, ta có:</p>
       <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
-        <p class="font-mono text-lg">$Y = W_3 \times [ W_2 \times (W_1 \times X + b_1) + b_2 ] + b_3$</p>
-        <p class="font-mono text-lg">$Y = (W_3 \times W_2 \times W_1) \times X + (W_3 W_2 b_1 + W_3 b_2 + b_3)$</p>
-        <p class="font-mono text-lg text-indigo-700 font-bold">$Y = W_{total} \times X + B_{total}$</p>
+        <p class="font-mono text-lg">$Y = W_3 \\times [ W_2 \\times (W_1 \\times X + b_1) + b_2 ] + b_3$</p>
+        <p class="font-mono text-lg">$Y = (W_3 \\times W_2 \\times W_1) \\times X + (W_3 W_2 b_1 + W_3 b_2 + b_3)$</p>
+        <p class="font-mono text-lg text-indigo-700 font-bold">$Y = W_{total} \\times X + B_{total}$</p>
       </div>
       <p><strong>Kết luận:</strong> Dù có bao nhiêu lớp, tích các ma trận W vẫn chỉ cho ra 1 ma trận mới, và tổng các bias cho ra 1 vector bias mới. Kết quả vẫn là <strong>một phép biến đổi tuyến tính</strong> — không thể học được các mẫu hình phi tuyến (đường cong, xoắn ốc...). Vì vậy, <strong>chúng ta cần hàm phi tuyến (Activation Function) xen giữa các lớp</strong>.</p>
     </div>
@@ -353,7 +353,7 @@ pub fn main() {
       <h4>1. Step Function (Hàm Bước Nhảy)</h4>
       <p><strong>Lịch sử:</strong> Được Rosenblatt sử dụng trong Perceptron đầu tiên. Lấy cảm hứng trực tiếp từ cơ chế neuron: hoặc tắt (0) hoặc bật (1).</p>
       <div class="formula-block my-2 p-3 bg-gray-50 border-gray-300">
-        <p class="font-mono">$f(x) = 1$ nếu $x \geq 0$</p>
+        <p class="font-mono">$f(x) = 1$ nếu $x \\geq 0$</p>
         <p class="font-mono">$f(x) = 0$ nếu $x < 0$</p>
       </div>
       <p><strong>Vấn đề chí mạng:</strong> Đạo hàm $f'(x) = 0$ ở mọi nơi (ngoại trừ x=0 không xác định). Do gradient bằng không, quá trình Backpropagation bị chặn đứng (Vanishing Gradient tuyệt đối), mạng sâu không thể truyền gradient để học.</p>
@@ -364,12 +364,12 @@ pub fn main() {
       <h4>2. Sigmoid</h4>
       <p><strong>Bản chất:</strong> Biến đổi hàm nhị phân gãy khúc thành đường cong chữ S, cho phép tính đạo hàm tại mọi điểm.</p>
       <div class="formula-block my-2 p-3 bg-gray-50 border-gray-300">
-        <p class="font-mono">$f(x) = \frac{1}{1 + e^{-x}}$</p>
-        <p class="font-mono">$f'(x) = f(x) \times (1 - f(x))$</p>
+        <p class="font-mono">$f(x) = \\frac{1}{1 + e^{-x}}$</p>
+        <p class="font-mono">$f'(x) = f(x) \\times (1 - f(x))$</p>
       </div>
       <p><strong>Hai nhược điểm nghiêm trọng:</strong></p>
       <ul>
-        <li><strong>Vanishing Gradient:</strong> Đạo hàm cực đại chỉ đạt 0.25. Qua nhiều lớp, gradient giảm nhanh theo hàm mũ (ví dụ: $0.25^{50} \approx 10^{-30}$).</li>
+        <li><strong>Vanishing Gradient:</strong> Đạo hàm cực đại chỉ đạt 0.25. Qua nhiều lớp, gradient giảm nhanh theo hàm mũ (ví dụ: $0.25^{50} \\approx 10^{-30}$).</li>
         <li><strong>Không zero-centered:</strong> Output luôn dương (0 đến 1) khiến quá trình tối ưu bị zig-zag, chậm hội tụ.</li>
       </ul>
     </div>
@@ -379,11 +379,11 @@ pub fn main() {
       <h4>3. Tanh (Hyperbolic Tangent)</h4>
       <p><strong>Bản chất:</strong> Là phiên bản co giãn và dịch chuyển của Sigmoid để đưa output về khoảng [-1, 1], giúp zero-centered.</p>
       <div class="formula-block my-2 p-3 bg-gray-50 border-gray-300">
-        <p class="font-mono">$f(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}$</p>
-        <p class="font-mono">$f'(x) = 1 - \tanh^2(x)$</p>
+        <p class="font-mono">$f(x) = \\frac{e^x - e^{-x}}{e^x + e^{-x}}$</p>
+        <p class="font-mono">$f'(x) = 1 - \\tanh^2(x)$</p>
       </div>
       <p><strong>Ưu điểm:</strong> Zero-centered loại bỏ zig-zag. Đạo hàm cực đại là 1.0 (gấp 4 lần Sigmoid).</p>
-      <p><strong>Nhược điểm:</strong> Tại hai đầu của đồ thị (ví dụ $x = \pm 5$), gradient vẫn tiến về 0, gây ra hiện tượng triệt tiêu gradient (Vanishing Gradient) trong các mạng quá sâu.</p>
+      <p><strong>Nhược điểm:</strong> Tại hai đầu của đồ thị (ví dụ $x = \\pm 5$), gradient vẫn tiến về 0, gây ra hiện tượng triệt tiêu gradient (Vanishing Gradient) trong các mạng quá sâu.</p>
     </div>
 
     <!-- 4. RELU -->
@@ -391,12 +391,12 @@ pub fn main() {
       <h4>4. ReLU (Rectified Linear Unit)</h4>
       <p><strong>Bước ngoặt:</strong> Năm 2012, AlexNet sử dụng ReLU để giành chiến thắng ImageNet, mở ra kỷ nguyên Deep Learning.</p>
       <div class="formula-block my-2 p-3 bg-gray-50 border-gray-300">
-        <p class="font-mono">$f(x) = \max(0, x)$</p>
+        <p class="font-mono">$f(x) = \\max(0, x)$</p>
       </div>
       <p><strong>Tại sao ReLU thống trị:</strong></p>
       <ol>
         <li>Tốc độ tính toán siêu nhanh (chỉ cần lấy max, không dùng hàm exp tốn kém).</li>
-        <li>Khi $x > 0$, đạo hàm $f'(x) = 1$, không bao giờ suy giảm $\to$ giải quyết triệt để Vanishing Gradient cho miền dương.</li>
+        <li>Khi $x > 0$, đạo hàm $f'(x) = 1$, không bao giờ suy giảm $\\to$ giải quyết triệt để Vanishing Gradient cho miền dương.</li>
       </ol>
       <p class="mt-2 text-red-600 font-semibold">Nhược điểm: Dying ReLU</p>
       <p>Nếu $x < 0$, đạo hàm bằng 0 triệt để. Neuron bị đẩy vào vùng âm có thể "chết" vĩnh viễn không bao giờ cập nhật lại trọng số.</p>
@@ -406,7 +406,7 @@ pub fn main() {
   <div class="callout callout-info">
     <div class="callout-content">
       <span class="callout-title">GELU VÀ LEAKY RELU - BẢN NÂNG CẤP TỪ RELU</span>
-      <p><strong>Leaky ReLU:</strong> Khắc phục Dying ReLU bằng cách cho phép một độ dốc vô cùng nhỏ (vd: $\alpha = 0.01$) khi $x < 0$. Công thức: $f(x) = \max(0.01x, x)$. Có giá trị gradient bằng 0.01 ở miền âm, cứu sống neuron.</p>
+      <p><strong>Leaky ReLU:</strong> Khắc phục Dying ReLU bằng cách cho phép một độ dốc vô cùng nhỏ (vd: $\\alpha = 0.01$) khi $x < 0$. Công thức: $f(x) = \\max(0.01x, x)$. Có giá trị gradient bằng 0.01 ở miền âm, cứu sống neuron.</p>
       <p><strong>GELU (Gaussian Error Linear Unit):</strong> Là bản làm trơn (smooth) của ReLU. Nó nhân $x$ với hàm phân bố chuẩn tích lũy. Thường được sử dụng trong các hệ thống xử lý ngôn ngữ NLP lớn như GPT, BERT. Đạo hàm trơn hơn và ít gây sốc cho mạng.</p>
     </div>
   </div>
@@ -629,7 +629,7 @@ pub fn main() {
     <div class="image-caption">Bài toán XOR: Không thể vẽ một đường thẳng chia tách chấm Xanh khỏi chấm Đỏ</div>
   </div>
 
-  <p><strong>Vấn đề hình học:</strong> Perceptron sử dụng phương trình <strong>$W_1 X_1 + W_2 X_2 + B = 0$</strong> (một đường thẳng) để phân tách. Hai điểm Xanh (0,1) và (1,0) nằm đan chéo với hai điểm Đỏ (0,0) và (1,1). Không thể vẽ được <strong>một đường thẳng</strong> nào tách hoàn toàn Xanh khỏi Đỏ. Cần đường cong (phi tuyến) $\to$ mạng 1 lớp bất lực.</p>
+  <p><strong>Vấn đề hình học:</strong> Perceptron sử dụng phương trình <strong>$W_1 X_1 + W_2 X_2 + B = 0$</strong> (một đường thẳng) để phân tách. Hai điểm Xanh (0,1) và (1,0) nằm đan chéo với hai điểm Đỏ (0,0) và (1,1). Không thể vẽ được <strong>một đường thẳng</strong> nào tách hoàn toàn Xanh khỏi Đỏ. Cần đường cong (phi tuyến) $\\to$ mạng 1 lớp bất lực.</p>
 
   <!--==========================================================-->
   <!-- BACKPROPAGATION VÀ MLP                                   -->
@@ -644,10 +644,10 @@ pub fn main() {
       <p>Ý tưởng cốt lõi: Sai số (Error) được tính ở output, sau đó nhân với gradient của hàm kích hoạt, và truyền <strong>ngược về từng lớp</strong> bằng Chain Rule. Mỗi lớp nhận được "phần lỗi" của mình và cập nhật trọng số tương ứng.</p>
       <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
         <h4>Chain Rule — Công thức truyền ngược gradient</h4>
-        <p>Cho hàm hợp $L = L(\hat{y})$ với $\hat{y} = f(z)$ và $z = W \cdot x + b$:</p>
-        <p class="font-mono text-lg">$\frac{\partial L}{\partial W} = \frac{\partial L}{\partial \hat{y}} \times \frac{\partial \hat{y}}{\partial z} \times \frac{\partial z}{\partial W}$</p>
+        <p>Cho hàm hợp $L = L(\\hat{y})$ với $\\hat{y} = f(z)$ và $z = W \\cdot x + b$:</p>
+        <p class="font-mono text-lg">$\\frac{\\partial L}{\\partial W} = \\frac{\\partial L}{\\partial \\hat{y}} \\times \\frac{\\partial \\hat{y}}{\\partial z} \\times \\frac{\\partial z}{\\partial W}$</p>
         <p>Tổng quát cho mạng $n$ lớp:</p>
-        <p class="font-mono text-lg text-indigo-700 font-bold">$\frac{\partial L}{\partial W_k} = \frac{\partial L}{\partial a_n} \prod_{i=k}^{n} \frac{\partial a_i}{\partial z_i} \cdot \frac{\partial z_i}{\partial a_{i-1}} \cdot \frac{\partial z_k}{\partial W_k}$</p>
+        <p class="font-mono text-lg text-indigo-700 font-bold">$\\frac{\\partial L}{\\partial W_k} = \\frac{\\partial L}{\\partial a_n} \\prod_{i=k}^{n} \\frac{\\partial a_i}{\\partial z_i} \\cdot \\frac{\\partial z_i}{\\partial a_{i-1}} \\cdot \\frac{\\partial z_k}{\\partial W_k}$</p>
         <p>Trong đó $a_i = f_i(z_i)$ là output sau activation tại lớp $i$.</p>
       </div>
       <p>Phát minh này chấm dứt AI Winter. Mạng đa lớp (MLP — Multi-Layer Perceptron) kết hợp với hàm kích hoạt phi tuyến đã chứng minh khả năng giải quyết bài toán XOR một cách hiệu quả.</p>
@@ -833,7 +833,7 @@ pub fn main() {
   
   <p>Khi ghép nhiều Perceptron lại, ta được <strong>MLP (Multi-Layer Perceptron)</strong>, còn gọi là <strong>Dense Network</strong> hoặc <strong>Fully-Connected Network</strong>. "Fully connected" nghĩa là: mỗi neuron ở tầng sau kết nối với <strong>tất cả</strong> neuron ở tầng trước.</p>
   
-  <p>Ví dụ: tầng Input có 784 pixels (ảnh 28x28), tầng Hidden có 100 neuron. Số lượng trọng số required cho lớp đó: $784 \times 100 = 78,400$ weights. Đây là kích thước thực tế của ma trận trọng số $W_1$.</p>
+  <p>Ví dụ: tầng Input có 784 pixels (ảnh 28x28), tầng Hidden có 100 neuron. Số lượng trọng số required cho lớp đó: $784 \\times 100 = 78,400$ weights. Đây là kích thước thực tế của ma trận trọng số $W_1$.</p>
 
   <div class="concept-grid">
     <div class="concept-card">
@@ -866,7 +866,7 @@ pub fn main() {
       <p><strong>Activation Output:</strong> Không dùng (Linear, $y = x$). Vì nếu dùng Sigmoid, giá nhà 6.5 tỷ sẽ bị ép về cận 1.0.</p>
       <div class="formula-block my-2 p-3 bg-gray-50 border-gray-300">
         <p class="font-mono"><strong>Loss Function — MSE (Mean Squared Error):</strong></p>
-        <p class="font-mono text-lg">$\text{MSE} = \frac{1}{N} \sum_{i=1}^{N} (Y_{pred}^{(i)} - Y_{true}^{(i)})^2$</p>
+        <p class="font-mono text-lg">$\\text{MSE} = \\frac{1}{N} \\sum_{i=1}^{N} (Y_{pred}^{(i)} - Y_{true}^{(i)})^2$</p>
       </div>
       <p>Sai số càng lớn, hệ thống phạt càng mạnh (bình phương khuếch đại sai lệch).</p>
     </div>
@@ -878,7 +878,7 @@ pub fn main() {
       <p><strong>Activation Output:</strong> <strong>Sigmoid</strong> (Cần thiết ép xác suất về vùng $[0, 1]$).</p>
       <div class="formula-block my-2 p-3 bg-gray-50 border-gray-300">
         <p class="font-mono"><strong>Loss Function — Binary Cross-Entropy (BCE):</strong></p>
-        <p class="font-mono text-lg">$\text{BCE} = -\frac{1}{N} \sum_{i=1}^{N} [y_i \ln(\hat{y}_i) + (1-y_i) \ln(1-\hat{y}_i)]$</p>
+        <p class="font-mono text-lg">$\\text{BCE} = -\\frac{1}{N} \\sum_{i=1}^{N} [y_i \\ln(\\hat{y}_i) + (1-y_i) \\ln(1-\\hat{y}_i)]$</p>
       </div>
       <p>Phạt nặng sai số bằng cấu trúc logarithm khi mạng dự đoán "tự tin" nghiêng về phía sai.</p>
     </div>
@@ -890,8 +890,8 @@ pub fn main() {
       <p><strong>Activation Output:</strong> <strong>Softmax</strong> — Đảm bảo tổng xác suất của tất cả các lớp bằng 1.</p>
       <div class="formula-block my-2 p-3 bg-gray-50 border-gray-300">
         <p class="font-mono"><strong>Loss Function — Categorical Cross-Entropy (CCE):</strong></p>
-        <p class="font-mono text-lg">$\text{CCE} = -\sum_{c=1}^{C} y_c \ln(\hat{y}_c)$</p>
-        <p class="font-mono">Trong đó $C$ là số lớp, $y_c$ là one-hot label, $\hat{y}_c$ là output từ Softmax.</p>
+        <p class="font-mono text-lg">$\\text{CCE} = -\\sum_{c=1}^{C} y_c \\ln(\\hat{y}_c)$</p>
+        <p class="font-mono">Trong đó $C$ là số lớp, $y_c$ là one-hot label, $\\hat{y}_c$ là output từ Softmax.</p>
       </div>
     </div>
   </div>
@@ -906,8 +906,8 @@ pub fn main() {
       <span class="callout-title">OPTIMIZER</span>
       <p>Sau khi Backprop tính xong gradient, Optimizer quyết định <strong>cách cập nhật</strong> trọng số. Chọn đúng optimizer ảnh hưởng rất lớn đến tốc độ và chất lượng huấn luyện mạng Nơ-ron.</p>
       <ul>
-        <li><strong>SGD (Stochastic Gradient Descent):</strong> Cập nhật đơn giản: $W = W - \alpha \times \nabla W$. Dễ bị mắc kẹt tại điểm cực tiểu địa phương (local minima) và hội tụ chậm trong không gian mấp mô.</li>
-        <li><strong>Momentum (1999):</strong> Thêm "quán tính" giúp vượt qua các cực tiểu địa phương nhỏ. Cơ chế tương tự viên bi lăn xuống dốc: dù gặp rãnh nông, động lượng tích lũy vẫn đưa viên bi vượt qua. Công thức: $V_{new} = \gamma \cdot V_{old} - \alpha \times \nabla W$.</li>
+        <li><strong>SGD (Stochastic Gradient Descent):</strong> Cập nhật đơn giản: $W = W - \\alpha \\times \\nabla W$. Dễ bị mắc kẹt tại điểm cực tiểu địa phương (local minima) và hội tụ chậm trong không gian mấp mô.</li>
+        <li><strong>Momentum (1999):</strong> Thêm "quán tính" giúp vượt qua các cực tiểu địa phương nhỏ. Cơ chế tương tự viên bi lăn xuống dốc: dù gặp rãnh nông, động lượng tích lũy vẫn đưa viên bi vượt qua. Công thức: $V_{new} = \\gamma \\cdot V_{old} - \\alpha \\times \\nabla W$.</li>
         <li><strong>Adam (2014 — Kingma & Ba):</strong> Kết hợp Momentum và Learning Rate thích ứng (Adaptive Learning Rate). Tự động điều chỉnh tốc độ học cho từng tham số: tham số ít được cập nhật → tăng learning rate; tham số cập nhật thường xuyên → giảm learning rate. Adam hiện là optimizer mặc định (Gold Standard) cho phần lớn mô hình hiện đại.</li>
       </ul>
     </div>
@@ -1117,7 +1117,7 @@ pub fn main() {
       <span class="callout-title">TẠI SAO LẠI BẮT BUỘC DÙNG MA TRẬN 2D (TENSORS)?</span>
       <p>Việc tính toán từng neuron một thông qua vòng lặp <code>for</code> là cực kỳ không hiệu quả về tốc độ. Bằng cách biểu diễn Weights dưới dạng ma trận 2D $[W_{i j}]$ và gộp một batch dữ liệu thành một khối ma trận, toàn bộ phép tính của mạng được rút gọn thành một phương trình duy nhất:</p>
       <div class="formula-block my-2 p-3 bg-gray-50 border-gray-300 font-bold text-center">
-        $Z = X \times W^T + B$
+        $Z = X \\times W^T + B$
       </div>
       <p>Các thư viện tính toán máy chủ (như BLAS/cuBLAS) thực hiện phép nhân ma trận nhanh hơn vòng lặp <code>for</code> thông thường từ <strong>hàng nghìn đến hàng vạn lần</strong>.</p>
     </div>
@@ -1133,17 +1133,17 @@ pub fn main() {
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
     <p>Công thức gốc của Softmax cho lớp thứ $i$:</p>
-    <p class="font-mono text-lg text-center">$P(i) = \frac{e^{Z_i}}{\sum e^{Z_j}}$</p>
+    <p class="font-mono text-lg text-center">$P(i) = \\frac{e^{Z_i}}{\\sum e^{Z_j}}$</p>
   </div>
   
-  <p><strong>Vấn đề ổn định số học (Numerical Stability):</strong> Nếu giá trị $Z_i$ quá lớn (ví dụ $Z_i = 1000$), phép tính <code>exp(1000)</code> sẽ cho kết quả $\infty$ (Infinity). Khi chia cho Infinity, kết quả trở thành NaN (Not a Number) và lan truyền khắp quá trình huấn luyện, gây sụp đổ toàn bộ mô hình.</p>
+  <p><strong>Vấn đề ổn định số học (Numerical Stability):</strong> Nếu giá trị $Z_i$ quá lớn (ví dụ $Z_i = 1000$), phép tính <code>exp(1000)</code> sẽ cho kết quả $\\infty$ (Infinity). Khi chia cho Infinity, kết quả trở thành NaN (Not a Number) và lan truyền khắp quá trình huấn luyện, gây sụp đổ toàn bộ mô hình.</p>
   
   <p><strong>Giải pháp Toán Học — Stable Softmax:</strong></p>
   <p>Theo giải tích, khi chia phân thức trên dưới cùng cơ số, nếu ta nhân cả 2 vế với cùng hệ số $e^{-C}$, kết quả Toán Học vĩnh viễn không thay đổi.</p>
   <div class="formula-block my-4 p-4 border-indigo-300 bg-gray-50">
-    <p class="font-mono">$P(i) = \frac{e^{Z_i - C}}{\sum e^{Z_j - C}}$</p>
-    <p>Thuật toán <strong>Stable Softmax</strong> chọn $C = \max(Z)$.</p>
-    <p>Nếu $Z = [1000, 1001, 1002]$ $\to C = 1002$.</p>
+    <p class="font-mono">$P(i) = \\frac{e^{Z_i - C}}{\\sum e^{Z_j - C}}$</p>
+    <p>Thuật toán <strong>Stable Softmax</strong> chọn $C = \\max(Z)$.</p>
+    <p>Nếu $Z = [1000, 1001, 1002]$ $\\to C = 1002$.</p>
     <p>Tập giá trị mới: $Z - C = [-2, -1, 0]$. Phép tính <code>exp(0) = 1</code> hoàn toàn an toàn, loại bỏ triệt để nguy cơ tràn số và lỗi NaN.</p>
   </div>
 

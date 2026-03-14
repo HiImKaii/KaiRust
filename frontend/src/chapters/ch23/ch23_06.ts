@@ -202,11 +202,11 @@ const ch23_06_lessons: Lesson[] = [
   <div class="concept-grid">
     <div class="concept-card">
       <h4>1. Sau Attention Weights</h4>
-      <p>$\text{softmax}(QK^T / \sqrt{d_k})$. Trước khi nhân với ma trận Value $V$, ma trận xác suất Attention này được drop 10%. Ép model không tập trung quá mức chỉ vào 1 vài specific token nổi bật.</p>
+      <p>$\\text{softmax}(QK^T / \\sqrt{d_k})$. Trước khi nhân với ma trận Value $V$, ma trận xác suất Attention này được drop 10%. Ép model không tập trung quá mức chỉ vào 1 vài specific token nổi bật.</p>
     </div>
     <div class="concept-card">
       <h4>2. Output của Sub-Layers</h4>
-      <p>Sau mỗi Sub-Layer (Self-Attention, Cross-Attention, FFN) và TRƯỚC khi cộng Add (Residual Connection). Tức là $\text{LayerNorm}(x + \text{Dropout}(\text{SubLayer}(x)))$.</p>
+      <p>Sau mỗi Sub-Layer (Self-Attention, Cross-Attention, FFN) và TRƯỚC khi cộng Add (Residual Connection). Tức là $\\text{LayerNorm}(x + \\text{Dropout}(\\text{SubLayer}(x)))$.</p>
     </div>
     <div class="concept-card">
       <h4>3. Embedding & Positional Encoding</h4>

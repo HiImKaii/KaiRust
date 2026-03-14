@@ -91,7 +91,7 @@ const ch21_04_lessons: Lesson[] = [
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
     <p class="font-bold mb-2 text-center">Công thức Likelihood cho N mẫu dữ liệu:</p>
-    <p class="font-mono text-lg text-center">$L(\theta) = P(data | \theta) = \prod_{i=1}^{N} P(x_i, y_i | \theta)$</p>
+    <p class="font-mono text-lg text-center">$L(\\theta) = P(data | \\theta) = \\prod_{i=1}^{N} P(x_i, y_i | \\theta)$</p>
     <p class="text-sm text-gray-600 mt-2">Trong đó: θ là bộ trọng số của mạng neural</p>
   </div>
 
@@ -152,7 +152,7 @@ const ch21_04_lessons: Lesson[] = [
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
     <p class="font-bold mb-2 text-center">Logarithm biến phép nhân thành phép cộng:</p>
-    <p class="font-mono text-lg text-center">$\log(A \times B \times C) = \log(A) + \log(B) + \log(C)$</p>
+    <p class="font-mono text-lg text-center">$\\log(A \\times B \\times C) = \\log(A) + \\log(B) + \\log(C)$</p>
   </div>
 
   <table class="comparison-table">
@@ -241,19 +241,19 @@ const ch21_04_lessons: Lesson[] = [
     <tbody>
       <tr>
         <td>Likelihood</td>
-        <td>$\prod P(x_i | \theta)$</td>
+        <td>$\\prod P(x_i | \\theta)$</td>
         <td>MAXIMIZE</td>
         <td>Khó (underflow)</td>
       </tr>
       <tr>
         <td>Log-Likelihood</td>
-        <td>$\sum \log P(x_i | \theta)$</td>
+        <td>$\\sum \\log P(x_i | \\theta)$</td>
         <td>MAXIMIZE</td>
         <td>✓</td>
       </tr>
       <tr>
         <td><strong>NLL (Loss)</strong></td>
-        <td><strong>$-\sum \log P(x_i | \theta)$</strong></td>
+        <td><strong>$-\\sum \\log P(x_i | \\theta)$</strong></td>
         <td><strong>MINIMIZE</strong></td>
         <td>✓✓ Rất tốt!</td>
       </tr>
@@ -284,7 +284,7 @@ const ch21_04_lessons: Lesson[] = [
     <div class="callout-icon">💡</div>
     <div class="callout-content">
       <strong>Tại sao "ngược gradient"?</strong>
-      <p>Gradient chỉ hướng TĂNG (đi lên). Để GIẢM Loss, ta đi ngược lại → trừ đi gradient. Công thức: $w_{new} = w_{old} - \eta \times gradient$</p>
+      <p>Gradient chỉ hướng TĂNG (đi lên). Để GIẢM Loss, ta đi ngược lại → trừ đi gradient. Công thức: $w_{new} = w_{old} - \\eta \\times gradient$</p>
     </div>
   </div>
 
@@ -292,7 +292,7 @@ const ch21_04_lessons: Lesson[] = [
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
     <p class="font-bold mb-2 text-center">Công thức cập nhật trọng số:</p>
-    <p class="font-mono text-lg text-center">$w_{new} = w_{old} - \eta \times \frac{\partial L}{\partial w}$</p>
+    <p class="font-mono text-lg text-center">$w_{new} = w_{old} - \\eta \\times \\frac{\\partial L}{\\partial w}$</p>
     <p class="text-sm text-gray-600 mt-2">Trong đó: η (eta) là tốc độ học (learning rate), ∂L/∂w là gradient của Loss theo trọng số w</p>
   </div>
 
@@ -533,7 +533,7 @@ fn main() {
     <div class="callout-icon">i</div>
     <div class="callout-content">
       <strong>Tại sao không dùng Cross-Entropy cho Regression?</strong>
-      <p>Cross-Entropy yêu cầu output là xác suất (tổng = 1). Trong khi Regression dự đoán giá trị thực không giới hạn. Hơn nữa, dự đoán giá nhà \$100k mà thực tế \$99k <strong>không phải là sai hoàn toàn</strong> - đây là "mức độ sai lệch" chứ không phải "đúng/sai".</p>
+      <p>Cross-Entropy yêu cầu output là xác suất (tổng = 1). Trong khi Regression dự đoán giá trị thực không giới hạn. Hơn nữa, dự đoán giá nhà \\$100k mà thực tế \$99k <strong>không phải là sai hoàn toàn</strong> - đây là "mức độ sai lệch" chứ không phải "đúng/sai".</p>
     </div>
   </div>
 
@@ -578,14 +578,14 @@ fn main() {
   <div class="formula-block my-4 p-4 bg-blue-50 border-blue-300">
     <p class="font-bold mb-2 text-center">Công thức MSE:</p>
     <p class="font-mono text-lg text-center">$MSE = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2$</p>
-    <p class="text-sm text-gray-600 mt-2">Trong đó: $y_i$ là giá trị thực tế, $\hat{y}_i$ là dự đoán của model</p>
+    <p class="text-sm text-gray-600 mt-2">Trong đó: $y_i$ là giá trị thực tế, $\\hat{y}_i$ là dự đoán của model</p>
   </div>
 
   <h4>Đạo hàm của MSE:</h4>
 
   <div class="formula-block my-4 p-4 bg-red-50 border-red-300">
-    <p class="font-bold mb-2 text-center">Đạo hàm theo prediction $\hat{y}$:</p>
-    <p class="font-mono text-lg text-center">$\frac{\partial L_{MSE}}{\partial \hat{y}} = \frac{2}{n} \sum_{i=1}^{n} (\hat{y}_i - y_i)$</p>
+    <p class="font-bold mb-2 text-center">Đạo hàm theo prediction $\\hat{y}$:</p>
+    <p class="font-mono text-lg text-center">$\\frac{\\partial L_{MSE}}{\\partial \\hat{y}} = \\frac{2}{n} \\sum_{i=1}^{n} (\\hat{y}_i - y_i)$</p>
   </div>
 
   <div class="image-showcase">
@@ -650,14 +650,14 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-green-50 border-green-300">
     <p class="font-bold mb-2 text-center">Công thức MAE:</p>
-    <p class="font-mono text-lg text-center">$MAE = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|$</p>
+    <p class="font-mono text-lg text-center">$MAE = \\frac{1}{n} \\sum_{i=1}^{n} |y_i - \\hat{y}_i|$</p>
   </div>
 
   <h4>Đạo hàm của MAE:</h4>
 
   <div class="formula-block my-4 p-4 bg-red-50 border-red-300">
-    <p class="font-bold mb-2 text-center">Đạo hàm theo prediction $\hat{y}$:</p>
-    <p class="font-mono text-lg text-center">$\frac{\partial L_{MAE}}{\partial \hat{y}} = \frac{1}{n} \sum_{i=1}^{n} \text{sign}(\hat{y}_i - y_i)$</p>
+    <p class="font-bold mb-2 text-center">Đạo hàm theo prediction $\\hat{y}$:</p>
+    <p class="font-mono text-lg text-center">$\\frac{\\partial L_{MAE}}{\\partial \\hat{y}} = \\frac{1}{n} \\sum_{i=1}^{n} \\text{sign}(\\hat{y}_i - y_i)$</p>
     <p class="text-sm text-gray-600 mt-2">Trong đó: sign(x) = +1 nếu x > 0, -1 nếu x < 0, 0 nếu x = 0</p>
   </div>
 
@@ -712,8 +712,8 @@ fn main() {
     <tbody>
       <tr>
         <td><strong>Công thức</strong></td>
-        <td>$(y - \hat{y})^2$</td>
-        <td>$|y - \hat{y}|$</td>
+        <td>$(y - \\hat{y})^2$</td>
+        <td>$|y - \\hat{y}|$</td>
       </tr>
       <tr>
         <td><strong>Đồ thị</strong></td>
@@ -722,8 +722,8 @@ fn main() {
       </tr>
       <tr>
         <td><strong>Đạo hàm</strong></td>
-        <td>$\partial L/\partial \hat{y} = 2(\hat{y} - y)$</td>
-        <td>$\partial L/\partial \hat{y} = sign(\hat{y} - y)$</td>
+        <td>$\\partial L/\\partial \\hat{y} = 2(\\hat{y} - y)$</td>
+        <td>$\\partial L/\\partial \\hat{y} = sign(\\hat{y} - y)$</td>
       </tr>
       <tr>
         <td><strong>Outliers</strong></td>
@@ -782,9 +782,9 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-purple-50 border-purple-300">
     <p class="font-bold mb-2 text-center">Công thức Huber Loss:</p>
-    <p class="font-mono text-lg text-center">$L_{\delta}(y, \hat{y}) = \frac{1}{n} \sum_{i=1}^{n} L_{\delta}(e_i)$</p>
-    <p class="font-mono text-center mt-2">với $e_i = y_i - \hat{y}_i$</p>
-    <p class="font-mono text-center mt-2">$L_{\delta}(e) = \\begin{cases} \\frac{1}{2}e^2 & \\text{nếu } |e| \\le \delta \\\\ \\delta|e| - \\frac{1}{2}\\delta^2 & \\text{nếu } |e| > \\delta \\end{cases}$</p>
+    <p class="font-mono text-lg text-center">$L_{\\delta}(y, \\hat{y}) = \\frac{1}{n} \\sum_{i=1}^{n} L_{\\delta}(e_i)$</p>
+    <p class="font-mono text-center mt-2">với $e_i = y_i - \\hat{y}_i$</p>
+    <p class="font-mono text-center mt-2">$L_{\\delta}(e) = \\begin{cases} \\frac{1}{2}e^2 & \\text{nếu } |e| \\le \\delta \\\\ \\delta|e| - \\frac{1}{2}\\delta^2 & \\text{nếu } |e| > \\delta \\end{cases}$</p>
   </div>
 
   <div class="concept-grid">
@@ -936,18 +936,18 @@ fn main() {
 
   <p><strong>Hãy quan sát Hình 1 để hiểu bản chất của BCE:</strong></p>
   <ul>
-    <li><strong>Trục hoành (x):</strong> Giá trị dự đoán $\hat{y}$ từ model (từ 0 đến 1)</li>
+    <li><strong>Trục hoành (x):</strong> Giá trị dự đoán $\\hat{y}$ từ model (từ 0 đến 1)</li>
     <li><strong>Trục tung (y):</strong> Giá trị Loss tương ứng</li>
-    <li><strong>Đường màu xanh dương (y=1):</strong> Khi nhãn thực tế là <strong>Positive (1)</strong>: Loss = $-\log(\hat{y})$
+    <li><strong>Đường màu xanh dương (y=1):</strong> Khi nhãn thực tế là <strong>Positive (1)</strong>: Loss = $-\\log(\\hat{y})$
       <ul>
-        <li>Nếu $\hat{y}=1$ (đoán chắc chắn đúng) → Loss = 0</li>
-        <li>Nếu $\hat{y}=0$ (đoán hoàn toàn sai) → Loss = $\infty$ (vô cùng)</li>
+        <li>Nếu $\\hat{y}=1$ (đoán chắc chắn đúng) → Loss = 0</li>
+        <li>Nếu $\\hat{y}=0$ (đoán hoàn toàn sai) → Loss = $\\infty$ (vô cùng)</li>
       </ul>
     </li>
-    <li><strong>Đường màu cam (y=0):</strong> Khi nhãn thực tế là <strong>Negative (0)</strong>: Loss = $-\log(1-\hat{y})$
+    <li><strong>Đường màu cam (y=0):</strong> Khi nhãn thực tế là <strong>Negative (0)</strong>: Loss = $-\\log(1-\\hat{y})$
       <ul>
-        <li>Nếu $\hat{y}=0$ (đoán chắc chắn đúng) → Loss = 0</li>
-        <li>Nếu $\hat{y}=1$ (đoán hoàn toàn sai) → Loss = $\infty$</li>
+        <li>Nếu $\\hat{y}=0$ (đoán chắc chắn đúng) → Loss = 0</li>
+        <li>Nếu $\\hat{y}=1$ (đoán hoàn toàn sai) → Loss = $\\infty$</li>
       </ul>
     </li>
   </ul>
@@ -964,8 +964,8 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
     <p class="font-bold mb-2 text-center">Công thức BCE:</p>
-    <p class="font-mono text-lg text-center">$L_{BCE} = -\frac{1}{n} \sum_{i=1}^{n} [y_i \cdot \log(\hat{y}_i) + (1-y_i) \cdot \log(1-\hat{y}_i)]$</p>
-    <p class="text-sm text-gray-600 mt-2">Trong đó: $y_i \in \{0, 1\}$ là nhãn thực tế, $\hat{y}_i \in [0, 1]$ là xác suất dự đoán</p>
+    <p class="font-mono text-lg text-center">$L_{BCE} = -\\frac{1}{n} \\sum_{i=1}^{n} [y_i \\cdot \\log(\\hat{y}_i) + (1-y_i) \\cdot \\log(1-\\hat{y}_i)]$</p>
+    <p class="text-sm text-gray-600 mt-2">Trong đó: $y_i \\in \\{0, 1\\}$ là nhãn thực tế, $\\hat{y}_i \\in [0, 1]$ là xác suất dự đoán</p>
   </div>
 
   <h4>Giải thích công thức:</h4>
@@ -983,14 +983,14 @@ fn main() {
       <tr>
         <td><strong>Label = 1 (Positive)</strong></td>
         <td>y = 1</td>
-        <td>$-\log(\hat{y})$</td>
-        <td>Muốn $\hat{y}$ càng gần 1 càng tốt</td>
+        <td>$-\\log(\\hat{y})$</td>
+        <td>Muốn $\\hat{y}$ càng gần 1 càng tốt</td>
       </tr>
       <tr>
         <td><strong>Label = 0 (Negative)</strong></td>
         <td>y = 0</td>
-        <td>$-\log(1-\hat{y})$</td>
-        <td>Muốn $\hat{y}$ càng gần 0 càng tốt</td>
+        <td>$-\\log(1-\\hat{y})$</td>
+        <td>Muốn $\\hat{y}$ càng gần 0 càng tốt</td>
       </tr>
     </tbody>
   </table>
@@ -999,7 +999,7 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-red-50 border-red-300">
     <p class="font-bold mb-2 text-center">Đạo hàm theo z (trước sigmoid):</p>
-    <p class="font-mono text-lg text-center">$\frac{\partial L_{BCE}}{\partial z} = \hat{y} - y$</p>
+    <p class="font-mono text-lg text-center">$\\frac{\\partial L_{BCE}}{\\partial z} = \\hat{y} - y$</p>
     <p class="text-sm text-gray-600 mt-2">Đạo hàm rất đẹp! Đơn giản = (prediction - target)</p>
   </div>
 
@@ -1010,16 +1010,16 @@ fn main() {
 
   <p><strong>Phân tích đạo hàm (Hình 2):</strong></p>
   <ul>
-    <li><strong>Đường màu xanh:</strong> Đạo hàm khi y=1 (positive). Gradient dương khi $\hat{y} > 1$ → cần giảm prediction. Gradient âm khi $\hat{y} < 1$ → cần tăng prediction.</li>
+    <li><strong>Đường màu xanh:</strong> Đạo hàm khi y=1 (positive). Gradient dương khi $\\hat{y} > 1$ → cần giảm prediction. Gradient âm khi $\\hat{y} < 1$ → cần tăng prediction.</li>
     <li><strong>Đường màu cam:</strong> Đạo hàm khi y=0 (negative). Ngược lại với trường hợp trên.</li>
-    <li><strong>Điểm quan trọng:</strong> Tại $\hat{y}=y$ (đoán đúng), gradient = 0 → Không cập nhật weights!</li>
+    <li><strong>Điểm quan trọng:</strong> Tại $\\hat{y}=y$ (đoán đúng), gradient = 0 → Không cập nhật weights!</li>
   </ul>
 
   <div class="callout callout-warning">
     <div class="callout-icon">⚠</div>
     <div class="callout-content">
       <strong>Vấn đề Vanishing Gradient:</strong>
-      <p>Khi $\hat{y}$ gần 0 hoặc 1 (model rất tự tin), đạo hàm rất nhỏ → Gradient gần như bằng 0 → Model học rất chậm. Đây là lý do cần initialization tốt và activation functions phù hợp.</p>
+      <p>Khi $\\hat{y}$ gần 0 hoặc 1 (model rất tự tin), đạo hàm rất nhỏ → Gradient gần như bằng 0 → Model học rất chậm. Đây là lý do cần initialization tốt và activation functions phù hợp.</p>
     </div>
   </div>
 
@@ -1028,7 +1028,7 @@ fn main() {
       <div class="concept-icon">✓</div>
       <h4>Ưu điểm</h4>
       <ul>
-        <li><strong>Đạo hàm đẹp:</strong> $\hat{y} - y$ cực kỳ đơn giản!</li>
+        <li><strong>Đạo hàm đẹp:</strong> $\\hat{y} - y$ cực kỳ đơn giản!</li>
         <li><strong>Xác suất:</strong> Output là [0,1] - có ý nghĩa rõ ràng</li>
         <li><strong>Từ MLE:</strong> Có nền tảng toán học vững chắc</li>
       </ul>
@@ -1037,7 +1037,7 @@ fn main() {
       <div class="concept-icon">✗</div>
       <h4>Nhược điểm</h4>
       <ul>
-        <li><strong>Vanishing gradient:</strong> Khi $\hat{y}$ gần 0 hoặc 1, gradient rất nhỏ</li>
+        <li><strong>Vanishing gradient:</strong> Khi $\\hat{y}$ gần 0 hoặc 1, gradient rất nhỏ</li>
         <li><strong>Imbalanced data:</strong> Như Focal Loss sẽ giải quyết</li>
       </ul>
     </div>
@@ -1058,7 +1058,7 @@ fn main() {
     <li><strong>Trục hoành (x):</strong> Xác suất mà model dự đoán cho class đúng</li>
     <li><strong>Trục tung (y):</strong> Giá trị Loss</li>
     <li><strong>Mỗi đường cong</strong> tương ứng với một class (Class 0, Class 1, Class 2...)</li>
-    <li><strong>Tương tự BCE:</strong> Loss = 0 khi $\hat{y}=1$ (model chắc chắn đúng), Loss tăng khi model đoán sai</li>
+    <li><strong>Tương tự BCE:</strong> Loss = 0 khi $\\hat{y}=1$ (model chắc chắn đúng), Loss tăng khi model đoán sai</li>
   </ul>
 
   <div class="callout callout-tip">
@@ -1073,8 +1073,8 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
     <p class="font-bold mb-2 text-center">Công thức CCE:</p>
-    <p class="font-mono text-lg text-center">$L_{CCE} = -\frac{1}{n} \sum_{i=1}^{n} \sum_{c=1}^{C} y_{i,c} \cdot \log(\hat{y}_{i,c})$</p>
-    <p class="text-sm text-gray-600 mt-2">Trong đó: C = số lớp, $y_{i,c} \in \{0, 1\}$ (one-hot), $\hat{y}_{i,c}$ là xác suất dự đoán</p>
+    <p class="font-mono text-lg text-center">$L_{CCE} = -\\frac{1}{n} \\sum_{i=1}^{n} \\sum_{c=1}^{C} y_{i,c} \\cdot \\log(\\hat{y}_{i,c})$</p>
+    <p class="text-sm text-gray-600 mt-2">Trong đó: C = số lớp, $y_{i,c} \\in \\{0, 1\\}$ (one-hot), $\\hat{y}_{i,c}$ là xác suất dự đoán</p>
   </div>
 
   <h4>Tại sao CCE hiệu quả với One-hot?</h4>
@@ -1085,9 +1085,9 @@ fn main() {
       <strong>Magic của One-hot Encoding:</strong>
       <p>Ví dụ với 3 lớp: Chó(0), Mèo(1), Vịt(2)</p>
       <p>Giả sử label thực là <strong>Mèo</strong>: $y = [0, 1, 0]$</p>
-      <p>Model dự đoán: $\hat{y} = [0.1, 0.7, 0.2]$</p>
-      <p class="font-mono mt-2">$L = -[0 \cdot \log(0.1) + 1 \cdot \log(0.7) + 0 \cdot \log(0.2)]$</p>
-      <p class="font-mono">$L = -\log(0.7) \approx 0.357$</p>
+      <p>Model dự đoán: $\\hat{y} = [0.1, 0.7, 0.2]$</p>
+      <p class="font-mono mt-2">$L = -[0 \\cdot \\log(0.1) + 1 \\cdot \\log(0.7) + 0 \\cdot \\log(0.2)]$</p>
+      <p class="font-mono">$L = -\\log(0.7) \\approx 0.357$</p>
       <p class="mt-2"><strong>Chỉ có term của class đúng được tính!</strong> Các term nhân với 0 đều = 0.</p>
     </div>
   </div>
@@ -1096,7 +1096,7 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-blue-50 border-blue-300">
     <p class="font-bold mb-2 text-center">Softmax function:</p>
-    <p class="font-mono text-lg text-center">$\text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{C} e^{z_j}}$</p>
+    <p class="font-mono text-lg text-center">$\\text{Softmax}(z_i) = \\frac{e^{z_i}}{\\sum_{j=1}^{C} e^{z_j}}$</p>
     <p class="text-sm text-gray-600 mt-2">Biến logits thành phân phối xác suất (tổng = 1)</p>
   </div>
 
@@ -1146,7 +1146,7 @@ fn main() {
       </tr>
       <tr>
         <td><strong>Công thức</strong></td>
-        <td>$-\[y\log\hat{y} + (1-y)\log(1-\hat{y})\]</td>
+        <td>$-\\[y\\log\\hat{y} + (1-y)\\log(1-\\hat{y})\\]</td>
         <td>$-\sum y_c \log(\hat{y}_c)$</td>
       </tr>
       <tr>
@@ -1201,7 +1201,7 @@ fn main() {
   <div class="formula-block my-4 p-4 bg-yellow-50 border-yellow-300">
     <p class="font-bold mb-2 text-center">Công thức Focal Loss:</p>
     <p class="font-mono text-lg text-center">$FL(p_t) = -(1 - p_t)^{\gamma} \log(p_t)$</p>
-    <p class="text-sm text-gray-600 mt-2">Trong đó: $p_t$ là xác suất của lớp đúng, $\gamma$ (gamma) là tham số tiêu cự</p>
+    <p class="text-sm text-gray-600 mt-2">Trong đó: $p_t$ là xác suất của lớp đúng, $\\gamma$ (gamma) là tham số tiêu cự</p>
   </div>
 
   <h4>Cơ chế hoạt động:</h4>

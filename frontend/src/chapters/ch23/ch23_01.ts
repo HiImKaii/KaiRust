@@ -128,18 +128,18 @@ const ch23_01_lessons: Lesson[] = [
   </ul>
 
   <div class="formula-block">
-    <p>$\frac{\partial h_t}{\partial h_{t-k}} = \prod_{i=t-k}^{t-1} \frac{\partial h_{i+1}}{\partial h_i}$</p>
+    <p>$\\frac{\\partial h_t}{\\partial h_{t-k}} = \\prod_{i=t-k}^{t-1} \\frac{\\partial h_{i+1}}{\\partial h_i}$</p>
   </div>
 
   <ul>
-    <li>Nếu $\|W\| < 1$: $W^k \to 0$ khi $k \to \infty$ → <strong>vanishing gradient</strong></li>
-    <li>Nếu $\|W\| > 1$: $W^k \to \infty$ khi $k \to \infty$ → <strong>exploding gradient</strong></li>
+    <li>Nếu $\\|W\\| < 1$: $W^k \\to 0$ khi $k \\to \\infty$ → <strong>vanishing gradient</strong></li>
+    <li>Nếu $\\|W\\| > 1$: $W^k \\to \\infty$ khi $k \\to \\infty$ → <strong>exploding gradient</strong></li>
   </ul>
 
-  <p>Ví dụ: với $T=100$ bước và $\|W\| = 0.9$:</p>
+  <p>Ví dụ: với $T=100$ bước và $\\|W\\| = 0.9$:</p>
 
   <div class="formula-block">
-    <p>$\|\frac{\partial h_{100}}{\partial h_1}\| \approx \|W\|^{99} \approx 0.9^{99} \approx 0.00004$</p>
+    <p>$\\|\\frac{\\partial h_{100}}{\\partial h_1}\\| \\approx \\|W\\|^{99} \\approx 0.9^{99} \\approx 0.00004$</p>
   </div>
 
   <div class="callout callout-tip">
@@ -205,13 +205,13 @@ const ch23_01_lessons: Lesson[] = [
   <p><strong>Bước 2: Tính attention weights (softmax)</strong></p>
 
   <div class="formula-block">
-    <p>$\alpha_{ti} = \frac{\exp(e_{ti})}{\sum_{j=1}^{T} \exp(e_{tj})}$</p>
+    <p>$\\alpha_{ti} = \\frac{\\exp(e_{ti})}{\\sum_{j=1}^{T} \\exp(e_{tj})}$</p>
   </div>
 
   <p><strong>Bước 3: Tính context vector</strong></p>
 
   <div class="formula-block">
-    <p>$c_t = \sum_{i=1}^{T} \alpha_{ti} h_i$</p>
+    <p>$c_t = \\sum_{i=1}^{T} \\alpha_{ti} h_i$</p>
   </div>
 
   <div class="image-showcase">
@@ -296,15 +296,15 @@ const ch23_01_lessons: Lesson[] = [
   <p>Self-Attention tính toán 3 vectors cho mỗi token: <strong>Query (Q)</strong>, <strong>Key (K)</strong>, <strong>Value (V)</strong>:</p>
 
   <div class="formula-block">
-    <p>$Q = X W_Q,\quad K = X W_K,\quad V = X W_V$</p>
+    <p>$Q = X W_Q,\\quad K = X W_K,\\quad V = X W_V$</p>
   </div>
 
-  <p>trong đó $X \in \mathbb{R}^{T \times d_{model}}$ là input embeddings, và $W_Q, W_K, W_V \in \mathbb{R}^{d_{model} \times d_k}$ là các ma trận có thể học.</p>
+  <p>trong đó $X \\in \\mathbb{R}^{T \\times d_{model}}$ là input embeddings, và $W_Q, W_K, W_V \\in \\mathbb{R}^{d_{model} \\times d_k}$ là các ma trận có thể học.</p>
 
   <p><strong>Attention output:</strong></p>
 
   <div class="formula-block">
-    <p>$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{Q K^T}{\sqrt{d_k}}\right) V$</p>
+    <p>$\\text{Attention}(Q, K, V) = \\text{softmax}\\left(\\frac{Q K^T}{\\sqrt{d_k}}\\right) V$</p>
   </div>
 
   <h4>Multi-Head Attention</h4>
@@ -312,10 +312,10 @@ const ch23_01_lessons: Lesson[] = [
   <p>Thay vì 1 attention, dùng h heads song song, sau đó concat:</p>
 
   <div class="formula-block">
-    <p>$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h) W^O$</p>
+    <p>$\\text{MultiHead}(Q, K, V) = \\text{Concat}(\\text{head}_1, ..., \\text{head}_h) W^O$</p>
   </div>
 
-  <p>trong đó $\text{head}_i = \text{Attention}(Q W_i^Q, K W_i^K, V W_i^V)$</p>
+  <p>trong đó $\\text{head}_i = \\text{Attention}(Q W_i^Q, K W_i^K, V W_i^V)$</p>
 
   <div class="definition-block">
     <span class="definition-term">Tại sao cần Multi-Head?</span>
@@ -327,14 +327,14 @@ const ch23_01_lessons: Lesson[] = [
   <p>Transformer không có recurrence → cần cách encode vị trí. Paper dùng sin/cos:</p>
 
   <div class="formula-block">
-    <p>$PE_{(pos, 2i)} = \sin(pos / 10000^{2i/d_{model}})$</p>
-    <p>$PE_{(pos, 2i+1)} = \cos(pos / 10000^{2i/d_{model}})$</p>
+    <p>$PE_{(pos, 2i)} = \\sin(pos / 10000^{2i/d_{model}})$</p>
+    <p>$PE_{(pos, 2i+1)} = \\cos(pos / 10000^{2i/d_{model}})$</p>
   </div>
 
   <div class="callout callout-tip">
     <div class="callout-content">
-      <span class="callout-title">Tại sao chia cho $\sqrt{d_k}$?</span>
-      <p>Khi $d_k$ lớn, tích $Q K^T$ có thể rất lớn, làm softmax saturate (gradient nhỏ). Chia cho $\sqrt{d_k}$ giữ giá trị trong khoảng hợp lý, ổn định training.</p>
+      <span class="callout-title">Tại sao chia cho $\\sqrt{d_k}$?</span>
+      <p>Khi $d_k$ lớn, tích $Q K^T$ có thể rất lớn, làm softmax saturate (gradient nhỏ). Chia cho $\\sqrt{d_k}$ giữ giá trị trong khoảng hợp lý, ổn định training.</p>
     </div>
   </div>
 </div>
@@ -432,10 +432,10 @@ const ch23_01_lessons: Lesson[] = [
   <p>Mỗi layer có một Feed-Forward Network:</p>
 
   <div class="formula-block">
-    <p>$\text{FFN}(x) = \max(0, x W_1 + b_1) W_2 + b_2$</p>
+    <p>$\\text{FFN}(x) = \\max(0, x W_1 + b_1) W_2 + b_2$</p>
   </div>
 
-  <p>với $W_1 \in \mathbb{R}^{d_{model} \times d_{ff}}$ và $W_2 \in \mathbb{R}^{d_{ff} \times d_{model}}$. Thông thường $d_{ff} = 4 \times d_{model}$.</p>
+  <p>với $W_1 \\in \\mathbb{R}^{d_{model} \\times d_{ff}}$ và $W_2 \\in \\mathbb{R}^{d_{ff} \\times d_{model}}$. Thông thường $d_{ff} = 4 \\times d_{model}$.</p>
 
   <div class="definition-block">
     <span class="definition-term">Tại sao cần FFN?</span>
@@ -447,7 +447,7 @@ const ch23_01_lessons: Lesson[] = [
   <p>Mỗi sub-layer có residual connection và LayerNorm:</p>
 
   <div class="formula-block">
-    <p>$\text{Output} = \text{LayerNorm}(x + \text{Sublayer}(x))$</p>
+    <p>$\\text{Output} = \\text{LayerNorm}(x + \\text{Sublayer}(x))$</p>
   </div>
 
   <div class="concept-grid">
@@ -457,7 +457,7 @@ const ch23_01_lessons: Lesson[] = [
     </div>
     <div class="concept-card">
       <h4>LayerNorm</h4>
-      <p>Normalize theo feature dimension: $\frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}}$. Ổn định training, giảm dependence vào scale.</p>
+      <p>Normalize theo feature dimension: $\\frac{x - \\mu}{\\sqrt{\\sigma^2 + \\epsilon}}$. Ổn định training, giảm dependence vào scale.</p>
     </div>
   </div>
 
@@ -599,7 +599,7 @@ const ch23_01_lessons: Lesson[] = [
     <span class="definition-term">Warmup Strategy</span>
     <p>Learning rate tăng tuyến tính trong <strong>warmup steps</strong> đầu, sau đó giảm theo công thức:</p>
     <div class="formula-block">
-      <p>$\text{lr} = d_{model}^{-0.5} \cdot \min(step^{-0.5}, step \cdot warmup^{-1.5})$</p>
+      <p>$\\text{lr} = d_{model}^{-0.5} \\cdot \\min(step^{-0.5}, step \\cdot warmup^{-1.5})$</p>
     </div>
     <p>Warmup giúp model ổn định trong giai đoạn đầu khi weights chưa quen.</p>
   </div>

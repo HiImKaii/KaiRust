@@ -48,7 +48,7 @@ const ch21_06_lessons: Lesson[] = [
       <li><strong>Weight (Trọng số):</strong> Tham số của mạng được học từ dữ liệu.</li>
     </ul>
 
-    <p class="font-bold text-red-700 italic mt-4 text-center">"Đạo hàm $\frac{\partial L}{\partial W_1}$ (ảnh hưởng của trọng số lớp 1 lên loss) là bao nhiêu?"</p>
+    <p class="font-bold text-red-700 italic mt-4 text-center">"Đạo hàm $\\frac{\\partial L}{\\partial W_1}$ (ảnh hưởng của trọng số lớp 1 lên loss) là bao nhiêu?"</p>
     <p class="mt-3">Trọng số $W_1$ nằm sâu trong lớp đầu tiên, bị ẩn bởi các lớp tiếp theo. Nó không trực tiếp ảnh hưởng đến Loss mà phải qua nhiều "trạm trung gian": đầu ra của lớp 1 → đầu vào lớp 2 → ... → Loss. Chain Rule cho phép tính đạo hàm qua nhiều lớp bằng cách nhân các đạo hàm cục bộ.</p>
   </div>
 
@@ -66,24 +66,24 @@ const ch21_06_lessons: Lesson[] = [
     </div>
   </div>
 
-  <p>Để tính $\frac{\partial L}{\partial w}$, ta sử dụng Chain Rule:</p>
+  <p>Để tính $\\frac{\\partial L}{\\partial w}$, ta sử dụng Chain Rule:</p>
 
   <div class="formula-block text-lg mt-2 mb-4 p-4 text-center">
-    $\frac{\partial L}{\partial w} = \frac{\partial L}{\partial a} \times \frac{\partial a}{\partial z} \times \frac{\partial z}{\partial w}$
+    $\\frac{\\partial L}{\\partial w} = \\frac{\\partial L}{\\partial a} \\times \\frac{\\partial a}{\\partial z} \\times \\frac{\\partial z}{\\partial w}$
   </div>
 
   <ul class="steps-container">
     <li class="step-card">
       <div class="step-number" style="background-color: var(--danger-red);">Bước 1</div>
-      <p><strong>$\frac{\partial L}{\partial a}$</strong> (Gradient của Output so với Loss): Với MSE Loss $L = (a - y)^2$, đạo hàm là $2(a - y)$. Đạo hàm này cho biết "nếu output tăng thì Loss tăng bao nhiêu".</p>
+      <p><strong>$\\frac{\\partial L}{\\partial a}$</strong> (Gradient của Output so với Loss): Với MSE Loss $L = (a - y)^2$, đạo hàm là $2(a - y)$. Đạo hàm này cho biết "nếu output tăng thì Loss tăng bao nhiêu".</p>
     </li>
     <li class="step-card">
       <div class="step-number" style="background-color: var(--warning-yellow);">Bước 2</div>
-      <p><strong>$\frac{\partial a}{\partial z}$</strong> (Gradient của Activation): Với Sigmoid, đạo hàm là $f'(z) = a(1-a)$. Đạo hàm này cho biết "nếu z tăng thì a (sau activation) tăng bao nhiêu".</p>
+      <p><strong>$\\frac{\\partial a}{\\partial z}$</strong> (Gradient của Activation): Với Sigmoid, đạo hàm là $f'(z) = a(1-a)$. Đạo hàm này cho biết "nếu z tăng thì a (sau activation) tăng bao nhiêu".</p>
     </li>
     <li class="step-card">
       <div class="step-number" style="background-color: var(--secondary-blue);">Bước 3</div>
-      <p><strong>$\frac{\partial z}{\partial w}$</strong> (Gradient của tầng Linear): Với $z = w \cdot x + b$, đạo hàm theo $w$ là $x$. Đạo hàm này cho biết "nếu weight w tăng thì z tăng bao nhiêu lần so với x".</p>
+      <p><strong>$\\frac{\\partial z}{\\partial w}$</strong> (Gradient của tầng Linear): Với $z = w \\cdot x + b$, đạo hàm theo $w$ là $x$. Đạo hàm này cho biết "nếu weight w tăng thì z tăng bao nhiêu lần so với x".</p>
     </li>
   </ul>
 
@@ -231,7 +231,7 @@ fn main() {
 
   <p>Việc lưu cache rất quan trọng vì:</p>
   <ul class="text-sm list-disc pl-5 my-2">
-    <li>Khi đi qua Node Nhân $w_1 \cdot x_1$, đạo hàm theo $x_1$ (= w) và theo $w_1$ (= x₁) được lưu vào cache.</li>
+    <li>Khi đi qua Node Nhân $w_1 \\cdot x_1$, đạo hàm theo $x_1$ (= w) và theo $w_1$ (= x₁) được lưu vào cache.</li>
     <li>Khi đi qua Node Cộng, đạo hàm bằng 1 được lưu vào cache.</li>
     <li>Nếu không lưu cache, ta phải tính lại tất cả từ đầu - rất tốn thời gian!</li>
   </ul>
@@ -373,8 +373,8 @@ fn main() {
     <p>Thay vì $dL / dW = Lỗi \\times X$, giờ đây để Nhân ma trận với kích cỡ khớp lọt lòng với nhau, ta sẽ CẦN ĐẢO NGƯỢC X (Chuyển vị ma trận $X^T$) để cân bằng phép tính.</p>
     
     <div class="font-mono text-center p-4 bg-purple-50 text-purple-900 border border-purple-300 font-bold mb-4 font-lg">
-      $dW = X^T \cdot dZ$ <br/><br/>
-      $dX = dZ \cdot W^T$
+      $dW = X^T \\cdot dZ$ <br/><br/>
+      $dX = dZ \\cdot W^T$
     </div>
   </div>
 
@@ -398,25 +398,25 @@ fn main() {
   <div class="formula-block mb-4">
     <p>Cho một lớp Dense (Fully Connected) với:</p>
     <ul>
-      <li>Input: $A^{[l-1]}$ có kích thước $(batch\_size, n_{in})$</li>
+      <li>Input: $A^{[l-1]}$ có kích thước $(batch\\_size, n_{in})$</li>
       <li>Weight: $W^{[l]}$ có kích thước $(n_{in}, n_{out})$</li>
       <li>Bias: $b^{[l]}$ có kích thước $(1, n_{out})$</li>
-      <li>Output: $Z^{[l]} = A^{[l-1]} \cdot W^{[l]} + b^{[l]}$</li>
+      <li>Output: $Z^{[l]} = A^{[l-1]} \\cdot W^{[l]} + b^{[l]}$</li>
     </ul>
 
     <p><strong>Quá trình Backward Pass tính gradient như sau:</strong></p>
 
     <div class="font-mono text-center p-4 bg-blue-50 text-blue-900 border border-blue-300 font-bold mb-4 font-lg">
       <!-- Bước 1: Đạo hàm theo Weight -->
-      $dW^{[l]} = \frac{\partial L}{\partial W^{[l]}} = (A^{[l-1]})^T \cdot dZ^{[l]}$<br/>
-      <span class="text-sm">Kích thước: $(n_{in}, n_{out}) = (n_{in}, batch) \times (batch, n_{out})$</span><br/><br/>
+      $dW^{[l]} = \\frac{\\partial L}{\\partial W^{[l]}} = (A^{[l-1]})^T \\cdot dZ^{[l]}$<br/>
+      <span class="text-sm">Kích thước: $(n_{in}, n_{out}) = (n_{in}, batch) \\times (batch, n_{out})$</span><br/><br/>
 
       <!-- Bước 2: Đạo hàm theo Bias -->
-      $db^{[l]} = \frac{\partial L}{\partial b^{[l]}} = \sum_{i=1}^{batch} dZ^{[l][i]}$<br/>
+      $db^{[l]} = \\frac{\\partial L}{\\partial b^{[l]}} = \\sum_{i=1}^{batch} dZ^{[l][i]}$<br/>
       <span class="text-sm">Tổng theo chiều batch, giữ nguyên shape của bias</span><br/><br/>
 
       <!-- Bước 3: Đạo hàm theo Input của lớp trước -->
-      $dA^{[l-1]} = \frac{\partial L}{\partial A^{[l-1]}} = dZ^{[l]} \cdot (W^{[l]})^T$<br/>
+      $dA^{[l-1]} = \\frac{\\partial L}{\\partial A^{[l-1]}} = dZ^{[l]} \\cdot (W^{[l]})^T$<br/>
       <span class="text-sm">Lan truyền ngược về lớp trước</span>
     </div>
   </div>
@@ -484,11 +484,11 @@ fn main() {
   <div class="intuition-block mb-4">
     <p><strong>Giải thích trực quan:</strong></p>
     <ul>
-      <li><strong>Forward Pass:</strong> $Z = X \cdot W$ - Input nhân với Weight để tạo Output</li>
+      <li><strong>Forward Pass:</strong> $Z = X \\cdot W$ - Input nhân với Weight để tạo Output</li>
       <li><strong>Backward Pass:</strong> Cần "đảo ngược" phép nhân để tính gradient</li>
     </ul>
 
-    <p>Trong phép nhân ma trận $Z = X \cdot W$:</p>
+    <p>Trong phép nhân ma trận $Z = X \\cdot W$:</p>
     <ul>
       <li>X (batch × n_in) "đóng góp" vào mỗi hàng của Z</li>
       <li>W (n_in × n_out) "đóng góp" vào mỗi cột của Z</li>
@@ -497,7 +497,7 @@ fn main() {
     <p>Để gradient theo X phải "đi ngược" qua W, ta cần nhân với $W^T$. Tương tự, để gradient theo W phải "đi ngược" qua X, ta cần nhân với $X^T$.</p>
 
     <div class="warning-box p-4 bg-yellow-50 border-l-4 border-yellow-500">
-      <p><strong>Lưu ý quan trọng:</strong> Thứ tự nhân ma trận rất quan trọng! $A \cdot B \neq B \cdot A$ trong ma trận. Sai thứ tự sẽ cho kết quả sai hoàn toàn.</p>
+      <p><strong>Lưu ý quan trọng:</strong> Thứ tự nhân ma trận rất quan trọng! $A \\cdot B \\neq B \\cdot A$ trong ma trận. Sai thứ tự sẽ cho kết quả sai hoàn toàn.</p>
     </div>
   </div>
 
@@ -506,9 +506,9 @@ fn main() {
     <p>Sau khi tính $dZ^{[l]}$ từ $dA^{[l]}$ (qua activation derivative), ta tiếp tục quá trình lan truyền ngược:</p>
 
     <div class="font-mono text-center p-4 bg-indigo-50 text-indigo-900 border border-indigo-300 font-bold">
-      $dA^{[l-1]} = dZ^{[l]} \cdot (W^{[l]})^T$<br/>
+      $dA^{[l-1]} = dZ^{[l]} \\cdot (W^{[l]})^T$<br/>
       ↓<br/>
-      $dZ^{[l-1]} = dA^{[l-1]} \odot \sigma' (Z^{[l-1]})$ (nếu dùng Sigmoid)<br/>
+      $dZ^{[l-1]} = dA^{[l-1]} \\odot \\sigma' (Z^{[l-1]})$ (nếu dùng Sigmoid)<br/>
       ↓<br/>
       Tiếp tục với lớp $l-1$
     </div>

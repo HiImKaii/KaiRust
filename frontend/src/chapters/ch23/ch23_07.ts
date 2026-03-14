@@ -220,7 +220,7 @@ const ch23_07_lessons: Lesson[] = [
     <p>Thuật toán này "băm nhỏ" chuỗi đầu vào theo từng Block (như chẻ củi). Nó cất vào SRAM và tính gộp luôn quy trình $QK^T \\to$ Softmax $\\to \\cdot V$. Nó cập nhật dần mẫu số Softmax bằng công thức Online Softmax. Kết quả không cất các ma trận trung gian nhảm nhí về VRAM nữa.</p>
     <ul class="list-disc pl-6 mt-2">
       <li><strong>Thời gian (Time):</strong> Tốc độ gấp $2-4$ lần.</li>
-      <li><strong>Bộ nhớ (Memory):</strong> Giảm từ độ phức tạp $O(T^2)$ rụng cái bịch xuống chỉ còn tĩnh lừ $O(T)$. Khả năng chạy context từ $4k$ nhảy dựng lên $100k - 2 \text{ triệu tokens}$ cho các dòng họ Google Gemini $1.5$ !</li>
+      <li><strong>Bộ nhớ (Memory):</strong> Giảm từ độ phức tạp $O(T^2)$ rụng cái bịch xuống chỉ còn tĩnh lừ $O(T)$. Khả năng chạy context từ $4k$ nhảy dựng lên $100k - 2 \\text{ triệu tokens}$ cho các dòng họ Google Gemini $1.5$ !</li>
     </ul>
   </div>
 

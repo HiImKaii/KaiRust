@@ -2102,7 +2102,7 @@ fn main() {
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
           $$\\frac{\\partial \\text{softmax}_i}{\\partial x_j} = \\text{softmax}_i \\cdot (\\delta_{ij} - \\text{softmax}_j)$$
         </div>
-        <p class="text-gray-600 mt-2">với $\\delta_{ij} = \\begin{cases} 1 & i = j \\\\ 0 & i \neq j \\end{cases}$</p>
+        <p class="text-gray-600 mt-2">với $\\delta_{ij} = \\begin{cases} 1 & i = j \\\\ 0 & i \\neq j \\end{cases}$</p>
       </div>
 
       <div class="step-derivation">

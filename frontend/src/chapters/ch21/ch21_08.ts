@@ -104,11 +104,11 @@ fn main() {
   <div class="definition-block mb-4">
     <p>Nếu bạn đưa vào mạng chữ "Tôi", nó dự đoán chữ "yêu". Đưa tiếp chữ "em", nó đóan chữ "múa". MLP mù tịt khái niệm Chuỗi Dữ Liệu Lịch Sử (Sequence).</p>
     <p><strong>Recurrent Neural Networks (RNN)</strong> thay đổi định mệnh bằng một mũi tên Vòng Lặp Tâm Linh: Nơ-ron không chỉ ăn Input hiện tại, nó còn Tự nhả Ngược Trạng Thái của Mình (Hidden State $h_{t-1}$) cắn lại vào hàm Input cho Bước thứ $t$.</p>
-    <p class="font-mono bg-blue-50 text-center border p-2 text-sm text-blue-800"> $h_t = tanh(W_{xh} \cdot x_t + W_{hh} \cdot h_{t-1} + b)$ </p>
+    <p class="font-mono bg-blue-50 text-center border p-2 text-sm text-blue-800"> $h_t = tanh(W_{xh} \\cdot x_t + W_{hh} \\cdot h_{t-1} + b)$ </p>
   </div>
 
   <h3><span class="material-symbols-outlined">water_drop</span> 2.2. Sự chết đuối Dĩ Vãng: Biến cố Vanishing Gradient</h2>
-  <p>RNN rất đỉnh. Nhưng hãy tưởng tượng đoạn văn dài 100 chữ. Để học sự liên kết giữa chữ 1 và chữ 100, Đạo hàm Chain Rule phải đi xuyên Lùi Qua 100 Vòng Lặp Thời Gian (BPTT - Backprop Through Time). 100 lần nhân với 1 con số $< 1.0$ (Đạo hàm của Tanh/Sigmoid) $\to$ Gradients Rơi Về $0.0$. RNN mắc bệnh bẩm sinh quên cmn đầu câu chuyện!</p>
+  <p>RNN rất đỉnh. Nhưng hãy tưởng tượng đoạn văn dài 100 chữ. Để học sự liên kết giữa chữ 1 và chữ 100, Đạo hàm Chain Rule phải đi xuyên Lùi Qua 100 Vòng Lặp Thời Gian (BPTT - Backprop Through Time). 100 lần nhân với 1 con số $< 1.0$ (Đạo hàm của Tanh/Sigmoid) $\\to$ Gradients Rơi Về $0.0$. RNN mắc bệnh bẩm sinh quên cmn đầu câu chuyện!</p>
   
   <h3><span class="material-symbols-outlined">dns</span> 2.3. Băng qua vết mòn thời gian với LSTM & GRU</h3>
   <p>Long Short-Term Memory (LSTM) và anh em họ GRU ra đời để gỡ quả bom này.</p>
@@ -170,7 +170,7 @@ fn main() {
   <ul class="text-sm list-disc pl-5 mt-2 space-y-2">
     <li><strong>Query ($Q$ - Câu hỏi khát vọng):</strong> "chi nhánh" la lên "Tao cần tính từ thuộc thể chế Tổ Chức!"</li>
     <li><strong>Key ($K$ - Thẻ tên Đặc Cáo):</strong> Chữ "Ngân hàng" móc thẻ tên ra: "Tao đây, danh từ Tổ Chức". Chữ "Bờ Sông" lú thẻ tên ra báo "Tao là địa lý Cát sỏi".</li>
-    <li><strong>Phép chấm Dot-Product Kì Diệu ($Q \cdot K^T$):</strong> Lấy Câu Hỏi Khát Vọng của "chi nhánh" tát mặt (Nhân chập) vào Mọi Thẻ Tên của 100 chữ khác. Cặp ghép $Q_{chi\\,nhánh} \cdot K_{ngân\\,hàng}$ bùng nổ điểm số (Score = Cao nghều). Cặp với $K_{bờ\\,sông}$ tịt mòi.</li>
+    <li><strong>Phép chấm Dot-Product Kì Diệu ($Q \\cdot K^T$):</strong> Lấy Câu Hỏi Khát Vọng của "chi nhánh" tát mặt (Nhân chập) vào Mọi Thẻ Tên của 100 chữ khác. Cặp ghép $Q_{chi\\,nhánh} \\cdot K_{ngân\\,hàng}$ bùng nổ điểm số (Score = Cao nghều). Cặp với $K_{bờ\\,sông}$ tịt mòi.</li>
     <li><strong>Value ($V$ - Sinh khí Lõi):</strong> Hàm Softmax đóng nắp Tỉ lệ Điểm Số này. Cuối cùng đem Xác suất Tỉ lệ khổng lồ của Ngân Hàng ép lấy Value cốt tủy của Ngân hàng châm vào người "chi nhánh". Vậy là "Chi Nhánh Ngân Hàng" quyện hòa Nhận Thức Chéo Lẫn Nhau! <strong>Context is Born!</strong></li>
   </ul>
   

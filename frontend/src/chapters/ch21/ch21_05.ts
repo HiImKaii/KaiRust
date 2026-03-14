@@ -56,7 +56,7 @@ const ch21_05_lessons: Lesson[] = [
 
   <div class="formula-block my-4 p-4 bg-blue-50 border-blue-300">
     <h4 class="font-bold text-blue-900 mb-2">Công thức đạo hàm:</h4>
-    <p class="text-lg font-mono">$$f'(x) = \frac{df}{dx} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$$</p>
+    <p class="text-lg font-mono">$$f'(x) = \\frac{df}{dx} = \\lim_{h \\to 0} \\frac{f(x+h) - f(x)}{h}$$</p>
     <p class="text-sm text-blue-700 mt-2">
       Trực giác: Đạo hàm = "Nếu nhích x lên một chút, y thay đổi bao nhiêu?"
     </p>
@@ -123,7 +123,7 @@ const ch21_05_lessons: Lesson[] = [
 
   <div class="formula-block my-4 p-4 bg-purple-50 border-purple-300">
     <h4 class="font-bold text-purple-900 mb-2">Công thức Gradient:</h4>
-    <p class="text-lg font-mono">$$\nabla L = [\frac{\partial L}{\partial w_1}, \frac{\partial L}{\partial w_2}, ..., \frac{\partial L}{\partial w_n}]$$</p>
+    <p class="text-lg font-mono">$$\\nabla L = [\\frac{\\partial L}{\\partial w_1}, \\frac{\\partial L}{\\partial w_2}, ..., \\frac{\\partial L}{\\partial w_n}]$$</p>
     <p class="text-sm text-purple-700 mt-2">
       Trong đó ∇ (nabla) là ký hiệu toán học cho gradient. Với Neural Network có hàng triệu weights, gradient là một vector hàng triệu chiều!
     </p>
@@ -222,7 +222,7 @@ const ch21_05_lessons: Lesson[] = [
 
   <div class="formula-block my-4 p-4 bg-red-50 border-red-300 text-center">
     <p class="text-xl font-bold text-red-900 mb-2">Công thức Gradient Descent</p>
-    <p class="text-2xl font-mono my-4">$$W_{new} = W_{old} - \eta \times \nabla L$$</p>
+    <p class="text-2xl font-mono my-4">$$W_{new} = W_{old} - \\eta \\times \\nabla L$$</p>
     <div class="text-sm text-red-700 space-y-1">
       <p>Trong đó:</p>
       <ul class="inline-block text-left">
@@ -374,7 +374,7 @@ const ch21_05_lessons: Lesson[] = [
         <p class="font-bold text-blue-800">Bước 1: Định nghĩa đạo hàm (Derivative)</p>
         <p class="mt-2">Theo <strong>định nghĩa đạo hàm bằng giới hạn</strong>:</p>
         <div class="formula-block my-3 p-3 bg-white border border-blue-300">
-          <p class="font-mono text-base text-center">$$f'(x) = \lim_{\Delta x \to 0} \frac{f(x + \Delta x) - f(x)}{\Delta x}$$</p>
+          <p class="font-mono text-base text-center">$$f'(x) = \\lim_{\\Delta x \\to 0} \\frac{f(x + \\Delta x) - f(x)}{\\Delta x}$$</p>
         </div>
         <p>Đạo hàm $f'(x)$ cho biết <strong>tốc độ thay đổi</strong> của hàm số tại điểm $x$.</p>
       </div>
@@ -382,27 +382,27 @@ const ch21_05_lessons: Lesson[] = [
       <!-- Bước 2: Xấp xỉ -->
       <div>
         <p class="font-bold text-blue-800">Bước 2: Xấp xỉ với bước nhỏ</p>
-        <p class="mt-2">Với $\Delta x$ nhỏ, ta có thể xấp xỉ:</p>
+        <p class="mt-2">Với $\\Delta x$ nhỏ, ta có thể xấp xỉ:</p>
         <div class="formula-block my-3 p-3 bg-white border border-blue-300">
-          <p class="font-mono text-base text-center">$$\Delta f = f(x + \Delta x) - f(x) \approx f'(x) \cdot \Delta x$$</p>
+          <p class="font-mono text-base text-center">$$\\Delta f = f(x + \\Delta x) - f(x) \\approx f'(x) \\cdot \\Delta x$$</p>
         </div>
         <p>Trong đó:</p>
         <ul class="list-disc pl-5 mt-1">
-          <li>$\Delta f$ = độ thay đổi của hàm số</li>
-          <li>$\Delta x$ = độ dài bước di chuyển</li>
+          <li>$\\Delta f$ = độ thay đổi của hàm số</li>
+          <li>$\\Delta x$ = độ dài bước di chuyển</li>
           <li>$f'(x)$ = đạo hàm tại điểm $x$</li>
         </ul>
       </div>
 
       <!-- Bước 3: Phân tích dấu -->
       <div>
-        <p class="font-bold text-blue-800">Bước 3: Phân tích dấu của $\Delta f$</p>
-        <p class="mt-2">Ta có: $\Delta f \approx f'(x) \cdot \Delta x$</p>
-        <p class="mt-2">Để hàm số <strong>giảm</strong> ($\Delta f < 0$), cần:</p>
+        <p class="font-bold text-blue-800">Bước 3: Phân tích dấu của $\\Delta f$</p>
+        <p class="mt-2">Ta có: $\\Delta f \\approx f'(x) \\cdot \\Delta x$</p>
+        <p class="mt-2">Để hàm số <strong>giảm</strong> ($\\Delta f < 0$), cần:</p>
         <div class="formula-block my-3 p-3 bg-white border border-blue-300">
-          <p class="font-mono text-base text-center">$$f'(x) \cdot \Delta x < 0$$</p>
+          <p class="font-mono text-base text-center">$$f'(x) \\cdot \\Delta x < 0$$</p>
         </div>
-        <p>Tức là <strong>$f'(x)$ và $\Delta x$ phải trái dấu nhau</strong>.</p>
+        <p>Tức là <strong>$f'(x)$ và $\\Delta x$ phải trái dấu nhau</strong>.</p>
       </div>
 
       <!-- Bước 4: Hai trường hợp -->
@@ -411,12 +411,12 @@ const ch21_05_lessons: Lesson[] = [
         <div class="mt-2 p-3 bg-yellow-50 border border-yellow-300 rounded">
           <p class="font-bold">Trường hợp 1: $f'(x) > 0$ (đang leo lên dốc)</p>
           <p>Đạo hàm dương → hàm đang tăng tại điểm này.</p>
-          <p>Để giảm: cần $\Delta x < 0$ → <strong>đi về bên trái</strong>.</p>
+          <p>Để giảm: cần $\\Delta x < 0$ → <strong>đi về bên trái</strong>.</p>
         </div>
         <div class="mt-2 p-3 bg-blue-50 border border-blue-300 rounded">
           <p class="font-bold">Trường hợp 2: $f'(x) < 0$ (đang xuống dốc)</p>
           <p>Đạo hàm âm → hàm đang giảm tại điểm này.</p>
-          <p>Để giảm: cần $\Delta x > 0$ → <strong>đi về bên phải</strong>.</p>
+          <p>Để giảm: cần $\\Delta x > 0$ → <strong>đi về bên phải</strong>.</p>
         </div>
       </div>
 
@@ -426,14 +426,14 @@ const ch21_05_lessons: Lesson[] = [
         <div class="mt-2 p-3 bg-green-50 border border-green-300 rounded">
           <p class="font-bold">Quy tắc:</p>
           <div class="formula-block my-3 p-3 bg-white border border-green-300">
-            <p class="font-mono text-lg text-center">$$\Delta x = -\eta \cdot f'(x)$$</p>
+            <p class="font-mono text-lg text-center">$$\\Delta x = -\\eta \\cdot f'(x)$$</p>
           </div>
-          <p>với $\eta > 0$ là learning rate.</p>
+          <p>với $\\eta > 0$ là learning rate.</p>
           <p class="mt-2">Khi đó:</p>
           <div class="formula-block my-3 p-3 bg-white border border-green-300">
-            <p class="font-mono text-base text-center">$$\Delta f \approx f'(x) \cdot (-\eta \cdot f'(x)) = -\eta \cdot [f'(x)]^2 \leq 0$$</p>
+            <p class="font-mono text-base text-center">$$\\Delta f \\approx f'(x) \\cdot (-\\eta \\cdot f'(x)) = -\\eta \\cdot [f'(x)]^2 \\leq 0$$</p>
           </div>
-          <p class="font-bold">Vì $[f'(x)]^2 \geq 0$ và $\eta > 0$, nên $\Delta f \leq 0$:</p>
+          <p class="font-bold">Vì $[f'(x)]^2 \\geq 0$ và $\\eta > 0$, nên $\\Delta f \\leq 0$:</p>
           <p><strong>Hàm số LUÔN giảm</strong> khi di chuyển ngược hướng đạo hàm!</p>
         </div>
       </div>
@@ -443,7 +443,7 @@ const ch21_05_lessons: Lesson[] = [
         <p class="font-bold text-orange-800">Trường hợp đặc biệt:</p>
         <ul class="list-disc pl-5 mt-2 space-y-1">
           <li>Khi $f'(x) = 0$: Đạo hàm bằng 0 → Đã đến <strong>điểm dừng</strong> (cực tiểu hoặc yên ngựa)</li>
-          <li>Khi $\eta$ quá lớn: $\Delta x$ quá lớn → có thể "nhảy qua" điểm cực tiểu → <strong>divergence</strong></li>
+          <li>Khi $\\eta$ quá lớn: $\\Delta x$ quá lớn → có thể "nhảy qua" điểm cực tiểu → <strong>divergence</strong></li>
         </ul>
         <p class="text-xs text-orange-700 mt-2"><strong>Thuật ngữ:</strong> <strong>Divergence</strong> (Phân kỳ) là hiện tượng mô hình không hội tụ mà ngược lại, Loss tăng dần đến vô cùng.</p>
       </div>
@@ -495,7 +495,7 @@ const ch21_05_lessons: Lesson[] = [
     <ul class="space-y-2 mt-4">
       <li><strong>Đạo hàm (Derivative)</strong> = độ dốc tại một điểm - cho biết hàm đang tăng (+) hay giảm (-)</li>
       <li><strong>Gradient (∇L)</strong> = vector chứa tất cả đạo hàm riêng phần, luôn chỉ hướng <strong>dốc lên</strong> (làm Loss tăng)</li>
-      <li><strong>Gradient Descent</strong> = dùng dấu trừ để đảo ngược hướng, đi từ đỉnh về cực tiểu: $W_{new} = W_{old} - \eta \times \nabla L$</li>
+      <li><strong>Gradient Descent</strong> = dùng dấu trừ để đảo ngược hướng, đi từ đỉnh về cực tiểu: $W_{new} = W_{old} - \\eta \\times \\nabla L$</li>
       <li><strong>Learning Rate (η)</strong> = độ dài bước đi - siêu tham số quan trọng cần điều chỉnh</li>
     </ul>
   </div>
@@ -603,8 +603,8 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-blue-50 border-blue-300">
     <h4 class="font-bold text-blue-900 mb-2">Công thức Batch GD:</h4>
-    <p class="text-lg font-mono">$\nabla L = \frac{1}{n} \times \sum_{i=1}^{n} \nabla L(x_i, y_i)$</p>
-    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \eta \times \nabla L$</p>
+    <p class="text-lg font-mono">$\\nabla L = \\frac{1}{n} \\times \\sum_{i=1}^{n} \\nabla L(x_i, y_i)$</p>
+    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\eta \\times \\nabla L$</p>
   </div>
 
   <div class="my-4 p-4 bg-yellow-50 border border-yellow-300 rounded">
@@ -651,8 +651,8 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-green-50 border-green-300">
     <h4 class="font-bold text-green-900 mb-2">Công thức SGD:</h4>
-    <p class="text-lg font-mono">$\nabla L_i = \nabla L(x_i, y_i)$</p>
-    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \eta \times \nabla L_i$</p>
+    <p class="text-lg font-mono">$\\nabla L_i = \\nabla L(x_i, y_i)$</p>
+    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\eta \\times \\nabla L_i$</p>
     <p class="text-sm text-green-700 mt-2">Trong đó i là chỉ số của mẫu dữ liệu hiện tại đang được xử lý.</p>
   </div>
 
@@ -695,8 +695,8 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-purple-50 border-purple-300">
     <h4 class="font-bold text-purple-900 mb-2">Công thức Mini-Batch GD:</h4>
-    <p class="text-lg font-mono">$\nabla L_{batch} = \frac{1}{B} \times \sum_{i=1}^{B} \nabla L(x_i, y_i)$</p>
-    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \eta \times \nabla L_{batch}$</p>
+    <p class="text-lg font-mono">$\\nabla L_{batch} = \\frac{1}{B} \\times \\sum_{i=1}^{B} \\nabla L(x_i, y_i)$</p>
+    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\eta \\times \\nabla L_{batch}$</p>
     <p class="text-sm text-purple-700 mt-2">Trong đó B là kích thước batch (batch size), thường là 32, 64, 128 hoặc 256.</p>
   </div>
 
@@ -886,8 +886,8 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-blue-50 border-blue-300">
     <h4 class="font-bold text-blue-900 mb-2">Công thức Momentum:</h4>
-    <p class="text-lg font-mono">$V_t = \beta \times V_{t-1} + \nabla L$</p>
-    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \eta \times V_t$</p>
+    <p class="text-lg font-mono">$V_t = \\beta \\times V_{t-1} + \\nabla L$</p>
+    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\eta \\times V_t$</p>
     <p class="text-sm text-blue-700 mt-2">β (beta) = 0.9: Hệ số momentum, quyết định mức độ "đà" được giữ lại từ bước trước</p>
   </div>
 
@@ -959,8 +959,8 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-yellow-50 border-yellow-300">
     <h4 class="font-bold text-yellow-900 mb-2">Công thức RMSprop:</h4>
-    <p class="text-lg font-mono">$S_t = \beta \times S_{t-1} + (1 - \beta) \times (\nabla L)^2$</p>
-    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \eta \times \nabla L / \sqrt{S_t + \varepsilon}$</p>
+    <p class="text-lg font-mono">$S_t = \\beta \\times S_{t-1} + (1 - \\beta) \\times (\\nabla L)^2$</p>
+    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\eta \\times \\nabla L / \\sqrt{S_t + \\varepsilon}$</p>
     <p class="text-sm text-yellow-700 mt-2">β = 0.99 (thường dùng), ε = 1e-8 (tránh chia cho 0)</p>
   </div>
 
@@ -1026,13 +1026,13 @@ fn main() {
   <div class="formula-block my-4 p-4 bg-green-50 border-green-300">
     <h4 class="font-bold text-green-900 mb-2">Công thức Adam:</h4>
     <p class="text-lg font-mono">// Momentum (first moment)</p>
-    <p class="text-lg font-mono">$V_t = \beta_1 \times V_{t-1} + (1 - \beta_1) \times \nabla L$</p>
+    <p class="text-lg font-mono">$V_t = \\beta_1 \\times V_{t-1} + (1 - \\beta_1) \\times \\nabla L$</p>
     <p class="text-lg font-mono mt-2">// RMSprop (second moment)</p>
-    <p class="text-lg font-mono">$S_t = \beta_2 \times S_{t-1} + (1 - \beta_2) \times (\nabla L)^2$</p>
+    <p class="text-lg font-mono">$S_t = \\beta_2 \\times S_{t-1} + (1 - \\beta_2) \\times (\\nabla L)^2$</p>
     <p class="text-lg font-mono mt-2">// Bias correction</p>
-    <p class="text-lg font-mono">$\hat{V}_t = V_t / (1 - \beta_1^t), \hat{S}_t = S_t / (1 - \beta_2^t)$</p>
+    <p class="text-lg font-mono">$\\hat{V}_t = V_t / (1 - \\beta_1^t), \\hat{S}_t = S_t / (1 - \\beta_2^t)$</p>
     <p class="text-lg font-mono mt-2">// Update weights</p>
-    <p class="text-lg font-mono">$W_{new} = W_{old} - \eta \times \hat{V}_t / (\sqrt{\hat{S}_t + \varepsilon})$</p>
+    <p class="text-lg font-mono">$W_{new} = W_{old} - \\eta \\times \\hat{V}_t / (\\sqrt{\\hat{S}_t + \\varepsilon})$</p>
     <p class="text-sm text-green-700 mt-2">β₁ = 0.9, β₂ = 0.999, ε = 1e-8</p>
   </div>
 
@@ -1345,9 +1345,9 @@ fn main() {
   <div class="formula-block my-4 p-4 bg-red-50 border-red-300">
     <h4 class="font-bold text-red-900 mb-2">Gradient Clipping by Norm:</h4>
     <p class="text-lg font-mono">// Bước 1: Tính norm của gradient</p>
-    <p class="text-lg font-mono">$g_{norm} = ||\nabla L||_2 = \sqrt{\sum_i (\frac{\partial L}{\partial w_i})^2}$</p>
+    <p class="text-lg font-mono">$g_{norm} = ||\\nabla L||_2 = \\sqrt{\\sum_i (\\frac{\\partial L}{\\partial w_i})^2}$</p>
     <p class="text-lg font-mono mt-2">// Bước 2: Nếu norm > threshold, scale gradient</p>
-    <p class="text-lg font-mono">Nếu $g_{norm} > threshold$: $\nabla L_{clipped} = \nabla L \times (threshold / g_{norm})$</p>
+    <p class="text-lg font-mono">Nếu $g_{norm} > threshold$: $\\nabla L_{clipped} = \\nabla L \\times (threshold / g_{norm})$</p>
     <p class="text-sm text-red-700 mt-2">Threshold thường dùng: 1.0, 5.0, 10.0</p>
   </div>
 

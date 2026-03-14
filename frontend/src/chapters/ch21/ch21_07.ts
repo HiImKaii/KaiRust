@@ -39,7 +39,7 @@ const ch21_07_lessons: Lesson[] = [
     <div class="bg-yellow-50 p-4 border rounded">
       <h4 class="font-bold text-yellow-800 border-b pb-2 mb-2"><span class="material-symbols-outlined align-middle mr-1 text-yellow-600">sentiment_very_dissatisfied</span> Overfitting (Học Vẹt / High Variance)</h4>
       <ul class="text-xs list-disc pl-4 mt-2 text-gray-700 space-y-2">
-        <li><strong>Dấu hiệu:</strong> Train Loss ĐỤNG ĐÁY BẰNG $0$, Mọi thứ trên giáo trình thi 100đ. Nhưng Validation Loss ĐẠP TRẦN ĐI LÊN $\to$ Ngu dốt khi ra đời thực.</li>
+        <li><strong>Dấu hiệu:</strong> Train Loss ĐỤNG ĐÁY BẰNG $0$, Mọi thứ trên giáo trình thi 100đ. Nhưng Validation Loss ĐẠP TRẦN ĐI LÊN $\\to$ Ngu dốt khi ra đời thực.</li>
         <li><strong>Biểu hiện mô hình:</strong> Mạng quá Khổng Lồ, chằng chịt Weight đến mức Mạng học mẹo: Nhớ vân mặt của nốt ruồi thay vì nhớ Cấu trúc Gương mặt. Phương sai (Variance) cao chấn động.</li>
         <li><strong>Đơn thuốc:</strong> Gom thêm Hàng Triệu Dữ liệu, Data Augmentation, và đặc biệt: <strong>Regularization (L1/L2, Dropout)</strong>.</li>
       </ul>
@@ -90,7 +90,7 @@ fn main() {
   <h2><span class="material-symbols-outlined">balance</span> 2. L1/L2 Regularization (Hình phạt kìm hãm)</h2>
 
   <h3>2.1. Bản ngã tham lam của các cục Weights</h3>
-  <p>Khi Overfitting, AI có xu hướng đẩy một vài con Weight (ví dụ $w_{nốt\_ruồi}$) lên RẤT RẤT TO (như 300, 500) để cố nhổ ra đáp án Khẩu quyết bắt trúng nhịp cái Nốt Ruồi Nhiễu trên tấm ảnh. Do đó Output bị chao đảo bởi những thay đổi cực bé của Input. Máy tính trở nên Thần Kinh Yếu.</p>
+  <p>Khi Overfitting, AI có xu hướng đẩy một vài con Weight (ví dụ $w_{nốt\\_ruồi}$) lên RẤT RẤT TO (như 300, 500) để cố nhổ ra đáp án Khẩu quyết bắt trúng nhịp cái Nốt Ruồi Nhiễu trên tấm ảnh. Do đó Output bị chao đảo bởi những thay đổi cực bé của Input. Máy tính trở nên Thần Kinh Yếu.</p>
   
   <h3>2.2. L2 Regularization (Phép thanh tẩy Ridge / Weight Decay)</h3>
   <div class="callout callout-warning my-4">
@@ -99,9 +99,9 @@ fn main() {
       <strong>Vỗ mặt Nơ-ron bằng Thước kẻ:</strong>
       <p>Cách ép Weight phải "Khiêm Tốn" lại (Gần bằng 0 trơn tru) là Chèn thêm <strong>Tổng bình phương của tất cả các Weights</strong> vào sau hông của Hàm Loss!</p>
       <div class="font-mono bg-yellow-50 p-2 text-center text-sm border my-2">
-        $L_{Total} = L_{Data} + \lambda \sum_{i=1}^{n} w_i^2$
+        $L_{Total} = L_{Data} + \\lambda \\sum_{i=1}^{n} w_i^2$
       </div>
-      <p>Lúc này để tìm Đáy Thung Lũng Cực Tiểu $L_{Total}$, Gradient Descent BUỘC PHẢI KHUẤT PHỤC ÉP ĐỒNG LOẠT VẠN TỶ $W$ Tụt Ngắn Lại Về Số Không. Chỉ những Feature Mũi Nhọn Cực Kì Quan Trọng Mới Đáng Đồng Tiền $\lambda$ để nhô cái $W$ lên một tí.</p>
+      <p>Lúc này để tìm Đáy Thung Lũng Cực Tiểu $L_{Total}$, Gradient Descent BUỘC PHẢI KHUẤT PHỤC ÉP ĐỒNG LOẠT VẠN TỶ $W$ Tụt Ngắn Lại Về Số Không. Chỉ những Feature Mũi Nhọn Cực Kì Quan Trọng Mới Đáng Đồng Tiền $\\lambda$ để nhô cái $W$ lên một tí.</p>
       <p class="text-xs italic text-red-700 mt-2">Toán Học: $\\lambda$ điều chỉnh "Độ tát bạo lực". Càng to $\\to$ Trọng lượng thun càng chặt. Gọi là Weight Decay vì cập nhật weight lúc nào cũng $w = w - \\eta \\cdot \\lambda \\cdot w$, cứ liên tục bị mục rữa nhỏ lại.</p>
     </div>
   </div>
@@ -110,13 +110,13 @@ fn main() {
   <div class="features-grid">
     <div class="feature-card">
       <h4 class="font-bold text-blue-800">L1 Regularization (Trị Tuyệt Đối)</h4>
-      <p class="font-mono text-xs my-2 bg-gray-100 p-1">Penalty: $\lambda \sum |w_i|$</p>
+      <p class="font-mono text-xs my-2 bg-gray-100 p-1">Penalty: $\\lambda \\sum |w_i|$</p>
       <p class="text-xs">Đạo hàm của Trị Tuyệt Đối là $1$ hoặc $-1$. Nghĩa là nó Đẩy Weight Trực Chĩa Xuống số $0.0$ CHUẨN XÁC luôn. Có tác dụng <strong>Tỉa Lọc Tính Năng (Feature Selection)</strong>, vứt sạch râu ria thừa dọn dẹp RAM.</p>
     </div>
     <div class="feature-card">
       <h4 class="font-bold text-indigo-800">L2 Regularization (Bình Phương)</h4>
-      <p class="font-mono text-xs my-2 bg-gray-100 p-1">Penalty: $\lambda \sum w_i^2$</p>
-      <p class="text-xs">Đạo hàm xéo dần mượt mà ($2w$). Weight chỉ bé rũ rượi lại $\to 0.001$ chứ hiếm khi gãy sụp tận số $0.0$ tròn trĩnh. Được ưa chuộng vô biên trong Deep Learning Đương đại.</p>
+      <p class="font-mono text-xs my-2 bg-gray-100 p-1">Penalty: $\\lambda \\sum w_i^2$</p>
+      <p class="text-xs">Đạo hàm xéo dần mượt mà ($2w$). Weight chỉ bé rũ rượi lại $\\to 0.001$ chứ hiếm khi gãy sụp tận số $0.0$ tròn trĩnh. Được ưa chuộng vô biên trong Deep Learning Đương đại.</p>
     </div>
   </div>
 </div>
@@ -180,9 +180,9 @@ fn main() {
   </div>
   
   <ul class="text-sm list-disc pl-5 my-2">
-    <li><strong>Tại sao nó xịn?</strong> Phá vỡ rễ ăn bám Đồng Cấu (Co-adaptation). Nơ-ron A lúc nào cũng ỷ lại Nơ-ron B bắt mũi, giờ B bị điện giật rớt đài $\to$ A phải tự phồng cánh mũi tự lập bắt đặc trưng.</li>
+    <li><strong>Tại sao nó xịn?</strong> Phá vỡ rễ ăn bám Đồng Cấu (Co-adaptation). Nơ-ron A lúc nào cũng ỷ lại Nơ-ron B bắt mũi, giờ B bị điện giật rớt đài $\\to$ A phải tự phồng cánh mũi tự lập bắt đặc trưng.</li>
     <li><strong>Sự diệu kì Ensemble:</strong> Phá 50% ở mỗi step tương đương bạn đang đi Train TRÔNG TREO Hàng Tỷ Mạng Neural Network gầy còm, rồi lúc đi Thi Test múc hết lên gộp lại lấy trung bình. Quá bá đạo để diệt Overfit!</li>
-    <li><strong>Inverted Dropout (Tuyệt Kỹ Cân Bằng Năng Lượng):</strong> Khi cúp 50% diện tích, tín hiệu Data đứt gánh trôi qua Lớp sẽ bị TỌP ĐI MỘT NỬA. Coder ngày xưa phải bù bù đắp đắp lúc Test $\to$ Nguy hiểm rườm rà. Code mới lúc nén Train <strong>Chia ngay cho tỷ lệ Khép Nhắm (Keep Prob) $(y / 0.5)$</strong>, kéo tụi sống sót giương năng lượng lên Bù đắp cho bọn tử trận ngay lúc đó!</li>
+    <li><strong>Inverted Dropout (Tuyệt Kỹ Cân Bằng Năng Lượng):</strong> Khi cúp 50% diện tích, tín hiệu Data đứt gánh trôi qua Lớp sẽ bị TỌP ĐI MỘT NỬA. Coder ngày xưa phải bù bù đắp đắp lúc Test $\\to$ Nguy hiểm rườm rà. Code mới lúc nén Train <strong>Chia ngay cho tỷ lệ Khép Nhắm (Keep Prob) $(y / 0.5)$</strong>, kéo tụi sống sót giương năng lượng lên Bù đắp cho bọn tử trận ngay lúc đó!</li>
   </ul>
 
   <h3><span class="material-symbols-outlined">layers</span> 3.2. Batch Normalization</h3>
@@ -194,13 +194,13 @@ fn main() {
       
       <p class="font-bold border-t border-green-200 mt-2 pt-2">Thuật Toán Trấn An:</p>
       <div class="font-mono text-center my-2 bg-white border border-green-200 p-2 text-xs md:text-sm">
-        $\mu_B = \frac{1}{m} \sum x_i$ <br/>
-        $\sigma_B^2 = \frac{1}{m} \sum (x_i - \mu_B)^2$ <br/>
-        $\hat{x}_i = \frac{x_i - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}$ <br/>
-        $y_i = \gamma \hat{x}_i + \beta$ 
+        $\\mu_B = \\frac{1}{m} \\sum x_i$ <br/>
+        $\\sigma_B^2 = \\frac{1}{m} \\sum (x_i - \\mu_B)^2$ <br/>
+        $\\hat{x}_i = \\frac{x_i - \\mu_B}{\\sqrt{\\sigma_B^2 + \\epsilon}}$ <br/>
+        $y_i = \\gamma \\hat{x}_i + \\beta$ 
       </div>
-      <p class="text-xs">Chèn 1 lớp Trạm Thu Phí ngáng đúng khúc cuống họng xuất Tín hiệu $Z \to Activation$. Bắt toàn bộ 64 Bức ảnh trong Lô (Mini-batch) xếp hàng Tính Trung Bình Cộng, Phương Sai, Ép lùi dẹt phẳng về Dạng Chuẩn Z-Score $(0, 1)$.</p>
-      <p class="text-xs font-bold mt-1 text-red-700">Điều kinh dị: Trạm thu phí đó CÓ 2 TÊN TÀI XẾ $\gamma$ (Kéo giãn) VÀ $\beta$ (Đẩy Tịnh Tiến) CŨNG TỰ ĐỘNG CẬP NHẬT BẰNG ĐẠO HÀM BACKPROP CÙNG WEIGHT ĐỂ CÓ THỂ MỞ RỘNG VÒNG KIM CÔ CỨU SỐNG NETWORK MỘT CÁCH LINH HOẠT!</p>
+      <p class="text-xs">Chèn 1 lớp Trạm Thu Phí ngáng đúng khúc cuống họng xuất Tín hiệu $Z \\to Activation$. Bắt toàn bộ 64 Bức ảnh trong Lô (Mini-batch) xếp hàng Tính Trung Bình Cộng, Phương Sai, Ép lùi dẹt phẳng về Dạng Chuẩn Z-Score $(0, 1)$.</p>
+      <p class="text-xs font-bold mt-1 text-red-700">Điều kinh dị: Trạm thu phí đó CÓ 2 TÊN TÀI XẾ $\\gamma$ (Kéo giãn) VÀ $\\beta$ (Đẩy Tịnh Tiến) CŨNG TỰ ĐỘNG CẬP NHẬT BẰNG ĐẠO HÀM BACKPROP CÙNG WEIGHT ĐỂ CÓ THỂ MỞ RỘNG VÒNG KIM CÔ CỨU SỐNG NETWORK MỘT CÁCH LINH HOẠT!</p>
     </div>
   </div>
 </div>

@@ -81,7 +81,7 @@ const ch22_03_lessons: Lesson[] = [
 
   <h3>1.3. diag() — Ma trận đường chéo</h3>
 
-  <p>Trong công thức BPTT, $\text{diag}(1 - h_i^2)$ xuất hiện liên tục. Hãy hiểu rõ nó:</p>
+  <p>Trong công thức BPTT, $\\text{diag}(1 - h_i^2)$ xuất hiện liên tục. Hãy hiểu rõ nó:</p>
 
   <div class="definition-block">
     <span class="definition-term">diag(v) biến 1 vector thành ma trận đường chéo</span>

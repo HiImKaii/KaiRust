@@ -470,11 +470,11 @@ RETURN vocabulary</code></pre>
     <p>Giống như Word2Vec, embedding matrix $E$ là <strong>learnable parameter</strong>. Trong quá trình training, gradient backpropagation qua toàn bộ network sẽ cập nhật $E$ để embedding reflect ngữ nghĩa (từ相近 có embedding gần nhau trong không gian vector).</p>
   </div>
 
-  <p>Về mặt toán học, embedding layer đơn giản là một <strong>linear transformation</strong> với ma trận trọng số $E \in \mathbb{R}^{|V| \times d_{model}}$. Khi nhận vào token ID, ta thực hiện phép tra cứu (lookup) để lấy hàng tương ứng trong ma trận. Đây là cách implement hiệu quả nhất vì không cần one-hot encode trước — thay vì nhân ma trận $E$ với vector one-hot (toàn số 0 trừ 1 vị trí), ta trực tiếp index vào hàng tương ứng. PyTorch gọi đây là <code>nn.Embedding</code>, TensorFlow gọi là <code>tf.keras.layers.Embedding</code>.</p>
+  <p>Về mặt toán học, embedding layer đơn giản là một <strong>linear transformation</strong> với ma trận trọng số $E \\in \\mathbb{R}^{|V| \\times d_{model}}$. Khi nhận vào token ID, ta thực hiện phép tra cứu (lookup) để lấy hàng tương ứng trong ma trận. Đây là cách implement hiệu quả nhất vì không cần one-hot encode trước — thay vì nhân ma trận $E$ với vector one-hot (toàn số 0 trừ 1 vị trí), ta trực tiếp index vào hàng tương ứng. PyTorch gọi đây là <code>nn.Embedding</code>, TensorFlow gọi là <code>tf.keras.layers.Embedding</code>.</p>
 
   <p>Việc chọn vocabulary size là một bài toán tối ưu hóa. Nếu vocabulary quá nhỏ (dưới 10,000 tokens), phần lớn từ sẽ bị tách nhỏ thành nhiều subwords, khiến sequence trở nên dài và model khó học các patterns ngữ nghĩa. Ngược lại, vocabulary quá lớn (trên 100,000) sẽ tạo ra nhiều rare tokens xuất hiện rất ít trong dữ liệu huấn luyện, gây lãng phí bộ nhớ và có thể dẫn đến overfitting. Các model hiện đại như BERT dùng 30,522 tokens, GPT-2 dùng 50,257 tokens, LLaMA dùng 32,000 tokens — con số 30-50K được coi là sweet spot cho hầu hết ứng dụng.</p>
 
-  <p>Embedding dimension $d_{model}$ quyết định <strong>model capacity</strong> — khả năng biểu diễn các relationships phức tạp giữa concepts. Dimension nhỏ (128-256) như trong RNN truyền thống limit khả năng capture nuanced relationships, trong khi dimension lớn (512-1024) cho phép model học được nhiều patterns hơn nhưng đòi hỏi nhiều dữ liệu và compute hơn. Transformer "Attention Is All You Need" gốc dùng $d_{model}=512$, các phiên bản "big" dùng 1024. Công thức tính số parameters cho embedding layer là $|V| \times d_{model}$ — với vocab 30K và dim 512, ta có khoảng 15.3 triệu parameters, chiếm khoảng 10-20% tổng số parameters của toàn model.</p>
+  <p>Embedding dimension $d_{model}$ quyết định <strong>model capacity</strong> — khả năng biểu diễn các relationships phức tạp giữa concepts. Dimension nhỏ (128-256) như trong RNN truyền thống limit khả năng capture nuanced relationships, trong khi dimension lớn (512-1024) cho phép model học được nhiều patterns hơn nhưng đòi hỏi nhiều dữ liệu và compute hơn. Transformer "Attention Is All You Need" gốc dùng $d_{model}=512$, các phiên bản "big" dùng 1024. Công thức tính số parameters cho embedding layer là $|V| \\times d_{model}$ — với vocab 30K và dim 512, ta có khoảng 15.3 triệu parameters, chiếm khoảng 10-20% tổng số parameters của toàn model.</p>
 
   <p>Một câu hỏi quan trọng trong thực hành là <strong>fine-tune hay freeze embedding</strong>. Trong nhiều trường hợp, người ta sử dụng pretrained embeddings (Word2Vec, GloVe, FastText) và giữ nguyên (freeze) trong quá trình huấn luyện model mới — cách này tiết kiệm compute và hiệu quả khi dữ liệu huấn luyện hạn chế. Tuy nhiên, nếu domain của task mới khác biệt đáng kể so với dữ liệu pretrained (ví dụ: biomedical text vs general text), việc fine-tune embedding (cho phép cập nhật weights) thường cho kết quả tốt hơn vì model có thể học representations phù hợp với domain mới.</p>
 </div>
@@ -512,7 +512,7 @@ RETURN vocabulary</code></pre>
 
   <div class="formula-block">
     <h4>Final Input:</h4>
-    <p>$\text{Input}_i = \text{TokenEmbed}(x_i) + \text{PE}(\text{pos}_i)$</p>
+    <p>$\\text{Input}_i = \\text{TokenEmbed}(x_i) + \\text{PE}(\\text{pos}_i)$</p>
     <p>Cộng (element-wise addition) giữa embedding và positional encoding. Cả 2 đều có kích thước $d_{model}$.</p>
   </div>
 
