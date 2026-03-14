@@ -2,119 +2,109 @@ import { Lesson } from '../../courses';
 
 export const ch12_02: Lesson = {
             id: 'ch12-02',
-            title: '12.2 Refactor và Error Handling',
-            duration: '20 phút',
+            title: '12.2 Đọc File',
+            duration: '25 phút',
             type: 'theory',
             content: `
-<p>Tách logic từ <code>main</code> ra module riêng, xử lý lỗi đúng cách.</p>
+<p>Bây giờ chúng ta sẽ thêm chức năng đọc file được chỉ định trong argument file_path. Trước tiên, chúng ta cần một file mẫu để test: Chúng ta sẽ sử dụng một file với một lượng nhỏ text trên nhiều dòng với một số từ lặp lại. Listing 12-3 có một bài thơ Emily Dickinson sẽ hoạt động tốt! Tạo một file tên là poem.txt ở root level của project của bạn, và nhập bài thơ "I'm Nobody! Who are you?"</p>
+<p>Filename: poem.txt</p>
 
-<h3 class="task-heading">Tổ chức code</h3>
+<div class="code-snippet">
+  <span class="code-lang">text</span>
+  <pre><code>I'm nobody! Who are you?
+Are you nobody, too?
+Then there's a pair of us - don't tell!
+They'd banish us, you know.
+
+How dreary to be somebody!
+How public, like a frog
+To tell your name the livelong day
+To an admiring bog!</code></pre>
+</div>
+<p><em>Listing 12-3: A poem by Emily Dickinson makes a good test case.</em></p>
+
+<p>Với text đã có, edit src/main.rs và thêm code để đọc file, như được hiển thị trong Listing 12-4.</p>
+<p>Filename: src/main.rs</p>
+
 <div class="code-snippet">
   <span class="code-lang">rust</span>
-  <pre><code>// src/lib.rs
-use std::error::Error;
+  <pre><code>use std::env;
 use std::fs;
 
-pub struct Config {
-    pub query: String,
-    pub file_path: String,
-}
-
-impl Config {
-    pub fn build(args: &[String]) -> Result&lt;Config, &'static str&gt; {
-        if args.len() < 3 {
-            return Err("Cần 2 tham số: query và file_path");
-        }
-        Ok(Config {
-            query: args[1].clone(),
-            file_path: args[2].clone(),
-        })
-    }
-}
-
-pub fn run(config: Config) -> Result&lt;(), Box&lt;dyn Error&gt;&gt; {
-    let contents = fs::read_to_string(config.file_path)?;
-    for line in search(&config.query, &contents) {
-        println!("{line}");
-    }
-    Ok(())
-}</code></pre>
-</div>
-
-<h3 class="task-heading">Sử dụng process::exit</h3>
-<div class="code-snippet">
-  <span class="code-lang">rust</span>
-  <pre><code>use std::process;
-
 fn main() {
-    let config = Config::build(&args).unwrap_or_else(|err| {
-        eprintln!("Lỗi parse arguments: {err}");
-        process::exit(1);
-    });
+    // --snip--
+    println!("In file {file_path}");
 
-    if let Err(e) = run(config) {
-        eprintln!("Lỗi: {e}");
-        process::exit(1);
-    }
+    let contents = fs::read_to_string(file_path)
+        .expect("Should have been able to read the file");
+
+    println!("With text:\n{contents}");
 }</code></pre>
 </div>
+<p><em>Listing 12-4: Reading the contents of the file specified by the second argument</em></p>
+
+<p>Trước tiên, chúng ta đưa một phần relevant của standard library với một use statement: Chúng ta cần std::fs để xử lý files.</p>
+
+<p>Trong main, statement mới fs::read_to_string lấy file_path, mở file đó, và trả về một giá trị kiểu std::io::Result<String> chứa nội dung của file.</p>
+
+<p>Sau đó, chúng ta lại thêm một temporary println! statement in giá trị của contents sau khi file được đọc để chúng ta có thể kiểm tra chương trình đang hoạt động cho đến giờ.</p>
+
+<p>Hãy chạy code này với bất kỳ chuỗi nào làm command line argument đầu tiên (vì chúng ta chưa implement phần tìm kiếm) và file poem.txt làm argument thứ hai:</p>
+
+<div class="code-snippet">
+  <span class="code-lang">bash</span>
+  <pre><code>$ cargo run -- the poem.txt
+   Compiling minigrep v0.1.0 (file:///projects/minigrep)
+    Finished \`dev\` profile [unoptimized + debuginfo] target(s) in 0.0s
+     Running \`target/debug/minigrep the poem.txt\`
+Searching for the
+In file poem.txt
+With text:
+I'm nobody! Who are you?
+Are you nobody, too?
+Then there's a pair of us - don't tell!
+They'd banish us, you know.
+
+How dreary to be somebody!
+How public, like a frog
+To tell your name the livelong day
+To an admiring bog!</code></pre>
+</div>
+
+<p>Tuyệt vời! Code đã đọc và sau đó in nội dung của file. Nhưng code có một vài nhược điểm. Hiện tại, function main có nhiều responsibilities: Nói chung, functions rõ ràng và dễ maintain hơn nếu mỗi function chịu trách nhiệm cho chỉ một ý tưởng. Vấn đề khác là chúng ta không xử lý errors tốt như có thể. Chương trình vẫn còn nhỏ, vì vậy những nhược điểm này không phải là vấn đề lớn, nhưng khi chương trình phát triển, sẽ khó sửa chúng một cách sạch sẽ. Đó là một thực hành tốt để bắt đầu refactoring sớm khi phát triển một chương trình vì nó dễ dàng hơn nhiều để refactor một lượng nhỏ code. Chúng ta sẽ làm điều đó tiếp theo.</p>
 
 <div class="cyber-alert info">
-  <strong>Best practices từ dự án:</strong>
+  <strong>Tóm tắt đọc File:</strong>
   <ul>
-    <li>Tách binary (<code>main.rs</code>) và logic (<code>lib.rs</code>)</li>
-    <li>Dùng <code>eprintln!</code> cho lỗi (stderr), <code>println!</code> cho output (stdout)</li>
-    <li>Trả về <code>Result</code> thay vì <code>panic!</code></li>
+    <li><strong>std::fs::read_to_string(path)</strong> - Đọc toàn bộ file thành String</li>
+    <li><strong>std::io::Result&lt;String&gt;</strong> - Kiểu trả về chứa nội dung file</li>
+    <li><strong>.expect()</strong> - Xử lý lỗi với panic message</li>
+    <li><strong>Refactoring</strong> - Tách main thành nhiều functions nhỏ</li>
   </ul>
 </div>
 `,
-            defaultCode: `use std::error::Error;
+            defaultCode: `use std::fs;
 
-struct Config {
-    query: String,
-    case_insensitive: bool,
-}
+fn main() {
+    let file_path = "poem.txt";
 
-impl Config {
-    fn new(query: &str, case_insensitive: bool) -> Self {
-        Config {
-            query: query.to_string(),
-            case_insensitive,
+    // Đọc nội dung file
+    let contents = fs::read_to_string(file_path)
+        .expect("Khong the doc duoc file");
+
+    println!("=== Noi dung file {} ===", file_path);
+    println!("{}", contents);
+
+    // Tìm kiếm đơn giản
+    let query = "nobody";
+    println!("\\n=== Tim kiem '{}' ===", query);
+
+    for line in contents.lines() {
+        if line.to_lowercase().contains(&query.to_lowercase()) {
+            println!("  > {}", line);
         }
     }
 }
-
-fn search<'a>(query: &str, contents: &'a str, case_insensitive: bool) -> Vec<&'a str> {
-    if case_insensitive {
-        let query = query.to_lowercase();
-        contents.lines()
-            .filter(|line| line.to_lowercase().contains(&query))
-            .collect()
-    } else {
-        contents.lines()
-            .filter(|line| line.contains(query))
-            .collect()
-    }
-}
-
-fn main() {
-    let contents = "Rust is fast
-Trust the compiler
-RUST handles memory safely
-Learning rust is fun";
-
-    let config = Config::new("rust", false);
-    println!("Case sensitive '{}':", config.query);
-    for line in search(&config.query, contents, config.case_insensitive) {
-        println!("  {line}");
-    }
-
-    let config = Config::new("rust", true);
-    println!("\\nCase insensitive '{}':", config.query);
-    for line in search(&config.query, contents, config.case_insensitive) {
-        println!("  {line}");
-    }
-}
 `,
-            expectedOutput: 'Case sensitive \'rust\':\n  Learning rust is fun\n\nCase insensitive \'rust\':\n  Rust is fast\n  Trust the compiler\n  RUST handles memory safely\n  Learning rust is fun'
+            expectedOutput: '=== Noi dung file poem.txt ===\nI\'m nobody! Who are you?\nAre you nobody, too?\nThen there\'s a pair of us - don\'t tell!\nThey\'d banish us, you know.\n\nHow dreary to be somebody!\nHow public, like a frog\nTo tell your name the livelong day\nTo an admiring bog!\n\n=== Tim kiem \'nobody\' ===\n  > I\'m nobody! Who are you?\n  > Are you nobody, too?'
         };
