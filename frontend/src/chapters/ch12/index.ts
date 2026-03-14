@@ -4,6 +4,7 @@ import { ch12_02 } from './ch12_02';
 import { ch12_03 } from './ch12_03';
 import { ch12_04 } from './ch12_04';
 import { ch12_05 } from './ch12_05';
+import { ch12_06 } from './ch12_06';
 
 export const ch12: Chapter = {
   id: 'ch12',
@@ -29,5 +30,5 @@ export const ch12: Chapter = {
 
     <p>Chúng ta cũng sẽ giới thiệu ngắn gọn về closures, iterators, và trait objects, mà Chương 13 và Chương 18 sẽ cover chi tiết.</p>
   `,
-  lessons: [ch12_01, ch12_02, ch12_03, ch12_04, ch12_05]
+  lessons: [ch12_01, ch12_02, ch12_03, ch12_04, ch12_05, ch12_06]
 };
