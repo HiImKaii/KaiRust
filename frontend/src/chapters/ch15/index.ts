@@ -1,6 +1,10 @@
 import { Chapter } from '../../courses';
 import { ch15_01 } from './ch15_01';
 import { ch15_02 } from './ch15_02';
+import { ch15_03 } from './ch15_03';
+import { ch15_04 } from './ch15_04';
+import { ch15_05 } from './ch15_05';
+import { ch15_06 } from './ch15_06';
 
 export const ch15: Chapter = {
   id: 'ch15',
@@ -20,5 +24,5 @@ export const ch15: Chapter = {
     </ul>
     <p>Ngoài ra, chúng ta sẽ cover interior mutability pattern nơi một loại bất biến expose một API để mutate một giá trị interior. Chúng ta cũng sẽ thảo luận về reference cycles: chúng có thể leak memory như thế nào và cách ngăn chặn chúng.</p>
   `,
-  lessons: [ch15_01, ch15_02]
+  lessons: [ch15_01, ch15_02, ch15_03, ch15_04, ch15_05, ch15_06]
 };

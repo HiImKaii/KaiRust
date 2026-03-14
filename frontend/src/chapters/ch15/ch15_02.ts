@@ -25,7 +25,25 @@ export const ch15_02: Lesson = {
 </div>
 <p><em>Listing 15-6: Using the dereference operator to follow a reference to an i32 value</em></p>
 
-<p>Biến x chứa giá trị i32 là 5. Chúng ta đặt y bằng một reference đến x. Chúng ta có thể assert rằng x bằng 5. Tuy nhiên, nếu chúng ta muốn assert về giá trị trong y, chúng ta phải sử dụng *y để theo reference đến giá trị mà nó trỏ đến.</p>
+<p>Biến x chứa giá trị i32 là 5. Chúng ta đặt y bằng một reference đến x. Chúng ta có thể assert rằng x bằng 5. Tuy nhiên, nếu chúng ta muốn assert về giá trị trong y, chúng ta phải sử dụng <code>*y</code> để theo reference đến giá trị mà nó trỏ đến (do đó, gọi là dereference) để compiler có thể so sánh giá trị thực. Sau khi dereference y, chúng ta có quyền truy cập vào giá trị integer mà y trỏ đến để so sánh với 5.</p>
+
+<p>Nếu chúng ta cố viết <code>assert_eq!(5, y);</code> thay vào đó, chúng ta sẽ nhận được lỗi compile như sau:</p>
+
+<pre><code>$ cargo run
+   Compiling deref-example v0.1.0 (file:///projects/deref-example)
+error[E0277]: can&apos;t compare \`{integer}\` with \`&{integer}\`
+ --&gt; src/main.rs:6:5
+  |
+6 |     assert_eq!(5, y);
+  |     ^^^^^^^^^^^^^^^^ no implementation for \`{integer}\` == \`&{integer}\`
+  |
+  = help: the trait \`PartialEq<&{integer}&gt;\` is not implemented for \`{integer}\`
+  = note: this error originates in the macro \`assert_eq\` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try \`rustc --explain E0277\`.
+error: could not compile \`deref-example\` (bin "deref-example") due to 1 previous error</code></pre>
+
+<p>Việc so sánh một số và một reference đến số không được cho phép vì chúng là các kiểu dữ liệu khác nhau. Chúng ta phải sử dụng toán tử dereference để theo reference đến giá trị mà nó trỏ đến.</p>
 
 <h3 class="task-heading">Sử dụng Box<T> Như một Reference</h3>
 <p>Chúng ta có thể viết lại code trong Listing 15-6 để sử dụng Box<T> thay vì reference; toán tử dereference được sử dụng trên Box<T> trong Listing 15-7 hoạt động theo cùng cách với toán tử dereference được sử dụng trên reference trong Listing 15-6.</p>
@@ -82,6 +100,21 @@ fn main() {
 </div>
 <p><em>Listing 15-9: Attempting to use MyBox&lt;T&gt; in the same way we used references and Box&lt;T&gt;</em></p>
 
+<p>Đây là lỗi compile resulting:</p>
+
+<pre><code>$ cargo run
+   Compiling deref-example v0.1.0 (file:///projects/deref-example)
+error[E0614]: type \`MyBox&lt;{integer}&gt;\` cannot be dereferenced
+  --> src/main.rs:14:19
+   |
+14 |     assert_eq!(5, *y);
+   |                   ^^ can't be dereferenced
+
+For more information about this error, try \`rustc --explain E0614\`.
+error: could not compile \`deref-example\` (bin "deref-example") due to 1 previous error</code></pre>
+
+<p>Kiểu MyBox&lt;T&gt; của chúng ta không thể được dereference vì chúng ta chưa implement khả năng đó trên kiểu của mình. Để enable dereferencing với toán tử <code>*</code>, chúng ta implement trait Deref.</p>
+
 <h3 class="task-heading">Implement Trait Deref</h3>
 <p>Để enable dereferencing với toán tử *, chúng ta implement trait Deref.</p>
 
@@ -101,9 +134,22 @@ impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
 </div>
 <p><em>Listing 15-10: Implementing Deref on MyBox&lt;T&gt;</em></p>
 
-<p>Cú pháp type Target = T; định nghĩa một associated type cho trait Deref sử dụng.</p>
+<p>Cú pháp <code>type Target = T;</code> định nghĩa một associated type cho trait Deref sử dụng. Associated types là một cách hơi khác để khai báo một generic parameter, nhưng bạn không cần lo lắng về chúng bây giờ; chúng ta sẽ cover chi tiết hơn trong Chương 20.</p>
 
-<p>Chúng ta fill in body của phương thức deref với &self.0 để deref trả về một reference đến giá trị mà chúng ta muốn truy cập với toán tử *.</p>
+<p>Chúng ta điền vào body của phương thức deref với <code>&self.0</code> để deref trả về một reference đến giá trị mà chúng ta muốn truy cập với toán tử <code>*</code>; nhớ lại từ "Creating Different Types with Tuple Structs" trong Chương 5 rằng <code>.0</code> truy cập giá trị đầu tiên trong một tuple struct. Main function trong Listing 15-9 gọi <code>*</code> trên giá trị MyBox<T> bây giờ sẽ compile, và các assertions đều pass!</p>
+
+<h4 class="task-subheading">Cơ Chế Hoạt Động Của Dereference</h4>
+<p>Không có trait Deref, compiler chỉ có thể dereference các reference <code>&</code>. Phương thức deref cung cấp cho compiler khả năng lấy giá trị của bất kỳ kiểu nào implement Deref và gọi phương thức deref để lấy một reference mà compiler biết cách dereference.</p>
+
+<p>Khi chúng ta nhập <code>*y</code> trong Listing 15-9, đằng sau hậu trường Rust thực ra chạy code này:</p>
+
+<pre><code>*(y.deref())</code></pre>
+
+<p>Rust thay thế toán tử <code>*</code> bằng một lời gọi đến phương thức deref và sau đó là một plain dereference để chúng ta không phải suy nghĩ về việc có cần gọi phương thức deref hay không. Tính năng này của Rust cho phép chúng ta viết code hoạt động giống hệt nhau cho dù chúng ta có một regular reference hay một kiểu implement Deref.</p>
+
+<p>Lý do phương thức deref trả về một reference đến giá trị, và plain dereference bên ngoài dấu ngoặc trong <code>*(y.deref())</code> vẫn cần thiết, có liên quan đến hệ thống ownership. Nếu phương thức deref trả về giá trị trực tiếp thay vì một reference đến giá trị, giá trị sẽ bị di chuyển ra khỏi self. Chúng ta không muốn take ownership của giá trị bên trong MyBox<T> trong trường hợp này hoặc trong hầu hết các trường hợp khi sử dụng toán tử dereference.</p>
+
+<p>Lưu ý rằng toán tử <code>*</code> được thay thế bằng một lời gọi đến phương thức deref và sau đó là một lời gọi đến toán tử <code>*</code> chỉ một lần, mỗi khi chúng ta sử dụng <code>*</code> trong code. Vì sự thay thế của toán tử <code>*</code> không lặp lại vô hạn, chúng ta có được dữ liệu có kiểu i32, khớp với 5 trong assert_eq! trong Listing 15-9.</p>
 
 <h3 class="task-heading">Sử dụng Deref Coercion trong Functions và Methods</h3>
 <p>Deref coercion chuyển đổi một reference đến một loại implement trait Deref thành một reference đến loại khác. Ví dụ, deref coercion có thể chuyển đổi &String thành &str vì String implement trait Deref để nó trả về &str.</p>
@@ -129,9 +175,24 @@ impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
 </div>
 <p><em>Listing 15-12: Calling hello with a reference to a MyBox&lt;String&gt; value</em></p>
 
-<p>Ở đây chúng ta gọi hàm hello với argument &m, đó là một reference đến giá trị MyBox<String>. Bởi vì chúng ta đã implement trait Deref trên MyBox<T>, Rust có thể biến &MyBox<String> thành &String bằng cách gọi deref. Standard library cung cấp implementation của Deref trên String trả về một string slice.</p>
+<p>Ở đây chúng ta gọi hàm hello với argument <code>&m</code>, đó là một reference đến giá trị MyBox<String>. Bởi vì chúng ta đã implement trait Deref trên MyBox<T>, Rust có thể biến <code>&MyBox&lt;String&gt;</code> thành <code>&String</code> bằng cách gọi deref. Standard library cung cấp implementation của Deref trên String trả về một string slice, và điều này có trong tài liệu API cho Deref. Rust gọi deref một lần nữa để biến <code>&String</code> thành <code>&str</code>, khớp với định nghĩa của hàm hello.</p>
 
-<p>Nếu Rust không implement deref coercion, chúng ta sẽ phải viết code khó đọc hơn nhiều.</p>
+<p>Nếu Rust không implement deref coercion, chúng ta sẽ phải viết code như trong Listing 15-13 thay vì code trong Listing 15-12 để gọi hello với giá trị kiểu <code>&MyBox&lt;String&gt;</code>.</p>
+
+<p>Filename: src/main.rs</p>
+
+<div class="code-snippet">
+  <span class="code-lang">rust</span>
+  <pre><code>fn main() {
+    let m = MyBox::new(String::from("Rust"));
+    hello(&(*m)[..]);
+}</code></pre>
+</div>
+<p><em>Listing 15-13: The code we would have to write if Rust didn't have deref coercion</em></p>
+
+<p><code>(*m)</code> dereference MyBox<String> thành String. Sau đó, <code>&</code> và <code>[..]</code> lấy một string slice của String bằng toàn bộ string để khớp với signature của hello. Code này không có deref coercions khó đọc, khó viết và khó hiểu hơn với tất cả các ký hiệu liên quan. Deref coercion cho phép Rust xử lý các chuyển đổi này cho chúng ta một cách tự động.</p>
+
+<p>Khi trait Deref được định nghĩa cho các kiểu liên quan, Rust sẽ phân tích các kiểu và sử dụng Deref::deref bao nhiêu lần tùy thích để lấy reference khớp với kiểu của tham số. Số lần Deref::deref cần được chèn được resolve tại compile time, vì vậy không có runtime penalty khi tận dụng deref coercion!</p>
 
 <h3 class="task-heading">Xử lý Deref Coercion với Mutable References</h3>
 <p>Giống như cách bạn sử dụng trait Deref để override toán tử * trên immutable references, bạn có thể sử dụng trait DerefMut để override toán tử * trên mutable references.</p>
@@ -143,7 +204,9 @@ impl&lt;T&gt; Deref for MyBox&lt;T&gt; {
   <li>Từ &mut T đến &U khi T: Deref<Target=U></li>
 </ul>
 
-<p>Trường hợp thứ ba khó hiểu hơn: Rust cũng sẽ coerce một mutable reference thành một immutable one. Nhưng ngược lại không thể: Immutable references sẽ không bao giờ coerce thành mutable references.</p>
+<p>Trường hợp thứ ba khó hiểu hơn: Rust cũng sẽ coerce một mutable reference thành một immutable one. Nhưng ngược lại không thể: Immutable references sẽ không bao giờ coerce thành mutable references. Bởi vì các borrowing rules, nếu bạn có một mutable reference, mutable reference đó phải là reference duy nhất đến dữ liệu đó (nếu không, chương trình sẽ không compile). Chuyển đổi một mutable reference thành một immutable reference sẽ không bao giờ phá vỡ các borrowing rules. Việc chuyển đổi một immutable reference thành một mutable reference sẽ yêu cầu rằng initial immutable reference là immutable reference duy nhất đến dữ liệu đó, nhưng các borrowing rules không đảm bảo điều đó. Do đó, Rust không thể giả định rằng việc chuyển đổi một immutable reference thành một mutable reference là có thể.</p>
+
+<p>Deref coercion được thêm vào Rust để các lập trình viên viết function và method calls không cần thêm quá nhiều explicit references và dereferences với <code>&</code> và <code>*</code>. Tính năng deref coercion cũng cho phép chúng ta viết nhiều code hơn có thể hoạt động cho cả references hoặc smart pointers.</p>
 
 <div class="cyber-alert info">
   <strong>Tóm tắt Deref Trait:</strong>
