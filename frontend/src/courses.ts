@@ -135,10 +135,6 @@ import { ch21 } from './chapters/ch21/index';
 import { ch22 } from './chapters/ch22/index';
 import { ch23 } from './chapters/ch23/index';
 
-// Import Practice Assignments
-import { basics_assignment } from './assignments/basics';
-import { ownership_structs_assignment } from './assignments/ownership_structs';
-
 export const courseData: Chapter[] = [
   ch01,
   ch02,
@@ -163,9 +159,4 @@ export const courseData: Chapter[] = [
   ch21,
   ch22,
   ch23
-];
-
-export const practiceExams: Chapter[] = [
-  basics_assignment,
-  ownership_structs_assignment
 ];

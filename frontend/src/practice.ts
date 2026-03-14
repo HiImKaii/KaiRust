@@ -1,6 +1,7 @@
 import * as monaco from 'monaco-editor';
-import { type Lesson, generateCPContent, practiceExams } from './courses';
+import { type Lesson, generateCPContent } from './courses';
 import { ProgressManager } from './progress';
+import { ch28_chapters } from './practice_data/index';
 
 // =====================================================
 // KaiRust - Practice Page Logic (Luyện Tập)
@@ -352,7 +353,7 @@ const renderPracticeCurriculum = () => {
     curriculumList.innerHTML = '';
     flatLessons = [];
 
-    practiceExams.forEach((chapter, chapterIndex) => {
+    ch28_chapters.forEach((chapter, chapterIndex) => {
         const chapterDiv = document.createElement('div');
         chapterDiv.className = 'chapter-group';
 

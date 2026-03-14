@@ -3,7 +3,7 @@
 // Structure: Each "Buổi" is a Chapter, containing multiple lessons
 // =====================================================
 
-import { Lesson, Chapter } from '../../courses';
+import { Lesson, Chapter } from '../courses';
 
 const DEFAULT_CODE = `fn main() {
     // Viết code ở đây
