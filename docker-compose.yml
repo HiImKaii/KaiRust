@@ -8,6 +8,7 @@ services:
       dockerfile: Dockerfile
     container_name: kairust_backend
     restart: unless-stopped
+    privileged: true
     environment:
       - RUST_LOG=info
       - DATA_DIR=/data
