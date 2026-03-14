@@ -1,22 +1,28 @@
 import { Chapter } from '../../courses';
 import { ch13_01 } from './ch13_01';
 import { ch13_02 } from './ch13_02';
+import { ch13_03 } from './ch13_03';
+import { ch13_04 } from './ch13_04';
 
 export const ch13: Chapter = {
   id: 'ch13',
-  title: 'Chương 13: Closures và Iterators',
+  title: 'Chương 13: Tính năng ngôn ngữ Functional: Closures và Iterators',
   introduction: `
     <h2>Giới thiệu về Closures và Iterators</h2>
-    <p>Closures và Iterators là hai tính năng lập trình hàm mạnh mẽ trong Rust, cho phép viết code ngắn gọn và hiệu quả.</p>
-    <h3>Bạn sẽ học gì?</h3>
+    <p>Thiết kế của Rust đã lấy cảm hứng từ nhiều ngôn ngữ và kỹ thuật hiện có, và một ảnh hưởng đáng kể là lập trình hàm. Lập trình theo phong cách hàm thường bao gồm việc sử dụng các hàm như các giá trị bằng cách truyền chúng trong các đối số, trả về chúng từ các hàm khác, gán chúng cho các biến để thực thi sau, và vân vân.</p>
+
+    <p>Trong chương này, chúng ta sẽ không tranh luận về vấn đề lập trình hàm là gì hay không phải là gì mà sẽ thảo luận về một số tính năng của Rust tương tự như các tính năng trong nhiều ngôn ngữ thường được gọi là functional.</p>
+
+    <p>Cụ thể, chúng ta sẽ cover:</p>
+
     <ul>
-      <li>→ <strong>Closures:</strong> Hàm ẩn danh có thể capture môi trường</li>
-      <li>→ <strong>Closure types:</strong> Fn, FnMut, FnOnce - hiểu sự khác biệt</li>
-      <li>→ <strong>Iterators:</strong> Duyệt qua collection một cách lazy</li>
-      <li>→ <strong>Iterator adapters:</strong> map, filter, take, skip...</li>
-      <li>→ <strong>Iterator consumers:</strong> collect, fold, sum...</li>
+      <li>→ <strong>Closures</strong>, một cấu trúc giống như hàm bạn có thể lưu trữ trong một biến</li>
+      <li>→ <strong>Iterators</strong>, một cách để xử lý một chuỗi các elements</li>
+      <li>→ <strong>Cách sử dụng closures và iterators</strong> để cải thiện project I/O trong Chương 12</li>
+      <li>→ <strong>Hiệu suất của closures và iterators</strong> (spoiler alert: Chúng nhanh hơn bạn có thể nghĩ!)</li>
     </ul>
-    <p>Những tính năng này giúp code của bạn trở nên functional và declarative hơn.</p>
+
+    <p>Chúng ta đã cover một số tính năng Rust khác, như pattern matching và enums, cũng bị ảnh hưởng bởi phong cách functional. Vì việc thành thạo closures và iterators là một phần quan trọng của việc viết code Rust nhanh, idiomatic, chúng ta sẽ dành toàn bộ chương này cho chúng.</p>
   `,
-  lessons: [ch13_01, ch13_02]
+  lessons: [ch13_01, ch13_02, ch13_03, ch13_04]
 };

@@ -1,22 +1,24 @@
 import { Chapter } from '../../courses';
 import { ch14_01 } from './ch14_01';
 import { ch14_02 } from './ch14_02';
+import { ch14_03 } from './ch14_03';
+import { ch14_04 } from './ch14_04';
+import { ch14_05 } from './ch14_05';
 
 export const ch14: Chapter = {
   id: 'ch14',
   title: 'Chương 14: Cargo và Crates.io',
   introduction: `
     <h2>Giới thiệu về Cargo và Crates.io</h2>
-    <p>Cargo là công cụ quản lý package và build của Rust. Crates.io là registry chứa hàng nghìn thư viện mã nguồn mở.</p>
-    <h3>Bạn sẽ học gì?</h3>
+    <p>Cho đến nay, chúng ta chỉ sử dụng các tính năng cơ bản nhất của Cargo để build, chạy và test code của mình, nhưng nó có thể làm được nhiều hơn thế. Trong chương này, chúng ta sẽ thảo luận về một số tính năng nâng cao khác của nó để chỉ cho bạn cách làm những điều sau đây:</p>
     <ul>
-      <li>→ <strong>Cargo workflow:</strong> Tạo, build, và chạy project</li>
-      <li>→ <strong>Dependencies:</strong> Thêm và quản lý thư viện bên ngoài</li>
-      <li>→ <strong>Publishing:</strong> Đăng package lên crates.io</li>
-      <li>→ <strong>Workspaces:</strong> Quản lý multi-crate projects</li>
-      <li>→ <strong>Release profiles:</strong> Tối ưu build cho production</li>
+      <li>→ <strong>Tùy chỉnh build thông qua release profiles:</strong> Cấu hình tối ưu hóa cho development và production</li>
+      <li>→ <strong>Publish thư viện trên crates.io:</strong> Chia sẻ code của bạn với cộng đồng Rust</li>
+      <li>→ <strong>Tổ chức large projects với workspaces:</strong> Quản lý nhiều crates trong một project</li>
+      <li>→ <strong>Cài đặt binaries từ crates.io:</strong> Sử dụng công cụ từ cộng đồng</li>
+      <li>→ <strong>Mở rộng Cargo với custom commands:</strong> Tự động hóa các tác vụ</li>
     </ul>
-    <p>Biết cách sử dụng Cargo hiệu quả là kỹ năng thiết yếu cho mọi Rust developer.</p>
+    <p>Cargo có thể làm được nhiều hơn nữa so với những gì chúng ta cover trong chương này, vì vậy để có giải thích đầy đủ về tất cả các tính năng của nó, hãy xem tài liệu của Cargo.</p>
   `,
-  lessons: [ch14_01, ch14_02]
+  lessons: [ch14_01, ch14_02, ch14_03, ch14_04, ch14_05]
 };
