@@ -33,7 +33,8 @@ WORKDIR /app
 # - docker.io: CLI to spawn sandboxed containers for running user binaries
 RUN apt-get update && apt-get install -y \
     rustc \
-    docker.io \
+    curl \
+    && curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-27.5.1.tgz | tar -xzC /usr/local/bin --strip-components=1 docker/docker \
     && rm -rf /var/lib/apt/lists/*
 
 # Create data directory

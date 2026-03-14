@@ -8,6 +8,7 @@ services:
       dockerfile: Dockerfile
     container_name: kairust_backend_local
     restart: unless-stopped
+    privileged: true
     ports:
       - "3001:3001"
     environment:
@@ -16,13 +17,14 @@ services:
       - SANDBOX_VOLUME_NAME=kairust_sandbox_data_local
     volumes:
       - backend_data_local:/data
-      - /var/run/docker.sock:/var/run/docker.sock
-      - kairust_sandbox_data_local:/tmp/kairust_sandbox
+      - /var/run/docker.sock:/var/run/docker.sock:z
+      - kairust_sandbox_data_local:/tmp/kairust_sandbox:z
       - cache_data_local:/tmp/kairust_cache
 
 volumes:
   backend_data_local:
   kairust_sandbox_data_local:
+    name: kairust_sandbox_data_local
     driver_opts:
       type: tmpfs
       device: tmpfs
