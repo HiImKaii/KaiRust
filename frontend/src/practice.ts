@@ -497,6 +497,7 @@ const setupResizers = () => {
             if (isResizing) {
                 isResizing = false;
                 resizerSidebar.classList.remove('dragging');
+                saveLayoutSettings();
                 if (editorInstance) editorInstance.layout();
             }
         });
@@ -523,6 +524,7 @@ const setupResizers = () => {
             if (isResizing) {
                 isResizing = false;
                 resizerInstruction.classList.remove('dragging');
+                saveLayoutSettings();
                 if (editorInstance) editorInstance.layout();
             }
         });
@@ -551,10 +553,341 @@ const setupResizers = () => {
             if (isResizing) {
                 isResizing = false;
                 resizerEditorTerminal.classList.remove('dragging');
+                saveLayoutSettings();
                 if (editorInstance) editorInstance.layout();
             }
         });
     }
+};
+
+// =====================================================
+// Layout Settings - Save/Load from localStorage
+// =====================================================
+const LAYOUT_STORAGE_KEY = 'kairust_layout_settings';
+
+interface LayoutSettings {
+    sidebarWidth: number;
+    instructionWidth: number;
+    editorColumnWidth: number;
+    terminalHeight: number;
+}
+
+const saveLayoutSettings = () => {
+    const sidebar = document.getElementById('sidebar-curriculum');
+    const instruction = document.getElementById('instruction-panel');
+    const editorColumn = document.getElementById('editor-column');
+    const terminalPanel = document.getElementById('terminal-panel');
+
+    const settings: LayoutSettings = {
+        sidebarWidth: sidebar?.getBoundingClientRect().width || 240,
+        instructionWidth: instruction?.getBoundingClientRect().width || 400,
+        editorColumnWidth: editorColumn?.getBoundingClientRect().width || 200,
+        terminalHeight: terminalPanel?.getBoundingClientRect().height || 100,
+    };
+
+    localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(settings));
+};
+
+const loadLayoutSettings = () => {
+    const settingsJson = localStorage.getItem(LAYOUT_STORAGE_KEY);
+    if (!settingsJson) return;
+
+    try {
+        const settings: LayoutSettings = JSON.parse(settingsJson);
+
+        const sidebar = document.getElementById('sidebar-curriculum');
+        const instruction = document.getElementById('instruction-panel');
+        const editorColumn = document.getElementById('editor-column');
+        const terminalPanel = document.getElementById('terminal-panel');
+
+        if (sidebar && settings.sidebarWidth >= 180) {
+            sidebar.style.width = `${settings.sidebarWidth}px`;
+            sidebar.style.flex = '0 0 auto';
+        }
+
+        if (instruction && settings.instructionWidth >= 250) {
+            instruction.style.width = `${settings.instructionWidth}px`;
+            instruction.style.flex = '0 0 auto';
+        }
+
+        if (editorColumn && settings.editorColumnWidth >= 100) {
+            editorColumn.style.width = `${settings.editorColumnWidth}px`;
+            editorColumn.style.flex = '0 0 auto';
+        }
+
+        if (terminalPanel && settings.terminalHeight >= 80) {
+            terminalPanel.style.height = `${settings.terminalHeight}px`;
+            terminalPanel.style.flex = '0 0 auto';
+        }
+
+        if (settings.sidebarWidth >= 180) {
+            document.documentElement.style.setProperty('--sidebar-width', `${settings.sidebarWidth}px`);
+        }
+    } catch (e) {
+        console.error('Failed to load layout settings:', e);
+    }
+};
+
+// =====================================================
+// Auth Module
+// =====================================================
+
+interface UserInfo {
+    id: number;
+    username: string;
+    email: string;
+}
+
+interface AuthResponse {
+    success: boolean;
+    message: string;
+    token?: string;
+    user?: UserInfo;
+}
+
+let currentUser: UserInfo | null = null;
+
+const API_BASE = '/api/auth';
+
+async function apiCall<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const response = await fetch(`${API_BASE}${endpoint}`, {
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options.headers,
+        },
+    });
+
+    const data = await response.json().catch(() => ({ success: false, message: 'Lỗi phản hồi từ server' }));
+
+    if (!response.ok) {
+        throw new Error(data.message || `Lỗi ${response.status}: ${response.statusText}`);
+    }
+
+    return data;
+}
+
+function showAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function hideAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function showForm(formId: string) {
+    const forms = ['login-form', 'register-form', 'forgot-password-form'];
+    forms.forEach(id => {
+        const form = document.getElementById(id);
+        if (form) form.classList.toggle('hidden', id !== formId);
+    });
+
+    const titles: Record<string, string> = {
+        'login-form': 'Đăng nhập',
+        'register-form': 'Đăng ký',
+        'forgot-password-form': 'Quên mật khẩu'
+    };
+    const titleEl = document.getElementById('auth-modal-title');
+    if (titleEl) titleEl.textContent = titles[formId] || 'Đăng nhập';
+}
+
+function updateAuthUI() {
+    const settingsBtn = document.getElementById('settings-btn');
+    if (!settingsBtn) return;
+
+    if (currentUser) {
+        settingsBtn.innerHTML = `
+            <div class="user-info">
+                <div class="user-avatar">${currentUser.username.charAt(0).toUpperCase()}</div>
+                <span class="user-name">${currentUser.username}</span>
+            </div>
+        `;
+    } else {
+        settingsBtn.textContent = 'Đăng nhập';
+    }
+}
+
+function saveAuth(token: string, user: UserInfo) {
+    localStorage.setItem('kairust_token', token);
+    localStorage.setItem('kairust_user', JSON.stringify(user));
+    currentUser = user;
+    updateAuthUI();
+    hideAuthModal();
+}
+
+function clearAuth() {
+    localStorage.removeItem('kairust_token');
+    localStorage.removeItem('kairust_user');
+    currentUser = null;
+    updateAuthUI();
+}
+
+function loadAuth() {
+    const token = localStorage.getItem('kairust_token');
+    const userStr = localStorage.getItem('kairust_user');
+    if (token && userStr) {
+        try {
+            currentUser = JSON.parse(userStr);
+            updateAuthUI();
+        } catch {
+            clearAuth();
+        }
+    }
+}
+
+function setupAuthModal() {
+    const settingsBtn = document.getElementById('settings-btn');
+    const modalClose = document.getElementById('auth-modal-close');
+    const modal = document.getElementById('auth-modal');
+
+    settingsBtn?.addEventListener('click', () => {
+        if (currentUser) {
+            if (confirm('Bạn có muốn đăng xuất?')) {
+                clearAuth();
+            }
+        } else {
+            showForm('login-form');
+            showAuthModal();
+        }
+    });
+
+    modalClose?.addEventListener('click', hideAuthModal);
+    modal?.addEventListener('click', (e) => {
+        if (e.target === modal) hideAuthModal();
+    });
+
+    document.getElementById('show-register')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        showForm('register-form');
+    });
+    document.getElementById('show-login')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        showForm('login-form');
+    });
+    document.getElementById('show-forgot-password')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        showForm('forgot-password-form');
+    });
+    document.getElementById('show-login-from-forgot')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        showForm('login-form');
+    });
+
+    document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = (document.getElementById('login-email') as HTMLInputElement).value;
+        const password = (document.getElementById('login-password') as HTMLInputElement).value;
+        const btn = (e.target as HTMLFormElement).querySelector('button[type="submit"]') as HTMLButtonElement;
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Đang đăng nhập...';
+        try {
+            const response = await apiCall<AuthResponse>('/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+            if (response.success && response.token && response.user) {
+                saveAuth(response.token, response.user);
+            } else {
+                alert(response.message || 'Đăng nhập thất bại');
+            }
+        } catch (err: unknown) {
+            alert(err instanceof Error ? err.message : 'Lỗi kết nối');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    });
+
+    document.getElementById('register-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = (document.getElementById('register-username') as HTMLInputElement).value;
+        const email = (document.getElementById('register-email') as HTMLInputElement).value;
+        const password = (document.getElementById('register-password') as HTMLInputElement).value;
+        const confirmPassword = (document.getElementById('register-confirm-password') as HTMLInputElement).value;
+        const btn = (e.target as HTMLFormElement).querySelector('button[type="submit"]') as HTMLButtonElement;
+
+        if (password !== confirmPassword) {
+            alert('Mật khẩu không khớp');
+            return;
+        }
+
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Đang đăng ký...';
+        try {
+            const response = await apiCall<AuthResponse>('/register', {
+                method: 'POST',
+                body: JSON.stringify({ username, email, password })
+            });
+            if (response.success && response.token && response.user) {
+                saveAuth(response.token, response.user);
+            } else {
+                alert(response.message || 'Đăng ký thất bại');
+            }
+        } catch (err: unknown) {
+            alert(err instanceof Error ? err.message : 'Lỗi kết nối');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    });
+
+    document.getElementById('forgot-password-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = (document.getElementById('forgot-email') as HTMLInputElement).value;
+        const btn = (e.target as HTMLFormElement).querySelector('button[type="submit"]') as HTMLButtonElement;
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Đang gửi...';
+        try {
+            const response = await apiCall<AuthResponse>('/forgot-password', {
+                method: 'POST',
+                body: JSON.stringify({ email })
+            });
+            alert(response.message);
+            if (response.success) showForm('login-form');
+        } catch (err: unknown) {
+            alert(err instanceof Error ? err.message : 'Lỗi kết nối');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    });
+
+    loadAuth();
+}
+
+// ---- Cookie Banner Setup ----
+const setupCookieBanner = () => {
+    const banner = document.getElementById('cookie-banner');
+    const btnAccept = document.getElementById('btn-accept-cookie');
+    const btnReject = document.getElementById('btn-reject-cookie');
+
+    if (!banner || !btnAccept || !btnReject) return;
+
+    const consent = localStorage.getItem('kairust_cookie_consent');
+    if (!consent) {
+        setTimeout(() => {
+            banner.classList.remove('hidden');
+        }, 500);
+    }
+
+    const hideBanner = () => {
+        banner.classList.add('hidden');
+    };
+
+    btnAccept.addEventListener('click', () => {
+        localStorage.setItem('kairust_cookie_consent', 'accepted');
+        hideBanner();
+    });
+
+    btnReject.addEventListener('click', () => {
+        localStorage.setItem('kairust_cookie_consent', 'rejected');
+        hideBanner();
+    });
 };
 
 // =====================================================
@@ -573,6 +906,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupClearButton();
     setupThemeToggle();
     setupResizers();
+    setupCookieBanner();
+    setupAuthModal();
 
     // Show submit button by default on practice page
     const submitBtn = document.getElementById('submit-btn');
@@ -582,6 +917,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (flatLessons.length > 0) {
         selectLesson(flatLessons[0]);
     }
+
+    // Load saved layout settings from localStorage
+    loadLayoutSettings();
 
     // Monaco editor layout after everything is initialized
     setTimeout(() => {
