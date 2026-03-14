@@ -4,6 +4,7 @@ import { ch17_02 } from './ch17_02';
 import { ch17_03 } from './ch17_03';
 import { ch17_04 } from './ch17_04';
 import { ch17_05 } from './ch17_05';
+import { ch17_06 } from './ch17_06';
 
 export const ch17: Chapter = {
   id: 'ch17',
@@ -31,5 +32,5 @@ export const ch17: Chapter = {
     <p>Khi team chia nhóm các tasks bằng cách mỗi member take một task và làm việc một mình, đây là parallelism. Mỗi người trong team có thể tiến triển cùng một lúc chính xác.</p>
     <p>Chạy async code trong Rust thường xảy ra concurrently. Tùy thuộc vào hardware, operating system, và async runtime chúng ta đang sử dụng, concurrency đó cũng có thể sử dụng parallelism bên dưới.</p>
   `,
-  lessons: [ch17_01, ch17_02, ch17_03, ch17_04, ch17_05]
+  lessons: [ch17_01, ch17_02, ch17_03, ch17_04, ch17_05, ch17_06]
 };
