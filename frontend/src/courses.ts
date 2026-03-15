@@ -131,6 +131,8 @@ import { ch17 } from './chapters/ch17/index';
 import { ch18 } from './chapters/ch18/index';
 import { ch19 } from './chapters/ch19/index';
 import { ch20 } from './chapters/ch20/index';
+import { finalProject } from './chapters/final_project/index';
+import { appendix } from './chapters/appendix/index';
 import { ch21 } from './chapters/ch21/index';
 import { ch22 } from './chapters/ch22/index';
 import { ch23 } from './chapters/ch23/index';
@@ -156,6 +158,8 @@ export const courseData: Chapter[] = [
   ch18,
   ch19,
   ch20,
+  finalProject,
+  appendix,
   ch21,
   ch22,
   ch23

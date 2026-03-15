@@ -2,6 +2,8 @@ import { Chapter } from '../../courses';
 import { ch20_01 } from './ch20_01';
 import { ch20_02 } from './ch20_02';
 import { ch20_03 } from './ch20_03';
+import { ch20_04 } from './ch20_04';
+import { ch20_05 } from './ch20_05';
 
 export const ch20: Chapter = {
   id: 'ch20',
@@ -19,5 +21,5 @@ export const ch20: Chapter = {
     </ul>
     <p>Đây là một loạt các tính năng của Rust có gì đó cho mọi người! Hãy đi sâu vào!</p>
   `,
-  lessons: [ch20_01, ch20_02, ch20_03]
+  lessons: [ch20_01, ch20_02, ch20_03, ch20_04, ch20_05]
 };
