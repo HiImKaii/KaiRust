@@ -1,3 +1,8 @@
+pub mod ch03_01;
+pub mod ch03_02;
+pub mod ch03_03;
+pub mod ch03_04;
+pub mod ch03_05;
 pub mod ch03_01_ex;
 pub mod ch03_01_ex2;
 pub mod ch03_01_ex3;
