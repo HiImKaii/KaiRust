@@ -7,6 +7,7 @@ import { ch07_03 } from './ch07_03';
 import { ch07_03_ex } from './ch07_03_ex';
 import { ch07_04 } from './ch07_04';
 import { ch07_04_ex } from './ch07_04_ex';
+import { ch07_05 } from './ch07_05';
 import { ch07_05_ex } from './ch07_05_ex';
 
 export const ch07: Chapter = {
@@ -36,6 +37,7 @@ export const ch07: Chapter = {
     ch07_03_ex,        // Bài tập: use và Paths
     ch07_04,           // Lý thuyết: use Keyword
     ch07_04_ex,        // Bài tập: Tổ chức Library
+    ch07_05,           // Lý thuyết: Tách Modules
     ch07_05_ex,        // Bài tập: Xây dựng Library hoàn chỉnh
   ]
 };
