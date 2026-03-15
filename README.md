@@ -1,61 +1,61 @@
 # KaiRust - Học Lập Trình Rust Trực Tuyến
 
-KaiRust la mot nen tang hoc Rust truc tuyen voi giao dien bai tap theo phong cach LeetCode, cho phep nguoi dung viet code Rust truc tiep tren trinh duyet va nop bai de kiem tra.
+KaiRust là một nền tảng học Rust trực tuyến với giao diện bài tập theo phong cách LeetCode, cho phép người dùng viết code Rust trực tiếp trên trình duyệt và nộp bài để kiểm tra.
 
-## Muc Luc
+## Mục Lục
 
-1. [Gioi Thieu](#gioi-thieu)
-2. [Tinh Nang](#tinh-nang)
-3. [Kien Truc He Thong](#kien-truc-he-thong)
-4. [Cau Truc Du An](#cau-truc-du-an)
-5. [Cong Nghe Su Dung](#cong-nghe-su-dung)
-6. [Cai Dat](#cai-dat)
-   - [Yeu Cau He Thong](#yeu-cau-he-thong)
-   - [Cai Dat Moi Truong Phat Trien](#cai-dat-moi-truong-phat-trien)
-   - [Chay Tren May Ao (Docker)](#chay-tren-may-ao-docker)
-7. [Huong Dan Su Dung](#huong-dan-su-dung)
-   - [Dang Nhap](#dang-nhap)
-   - [Hoc Ly Thuyet](#hoc-ly-thuyet)
-   - [Lam Bai Tap Thuc Hanh](#lam-bai-tap-thuc-hanh)
-   - [Nop Bai Va Cham Diem](#nop-bai-va-cham-diem)
-8. [Cau Truc Bai Tap](#cau-truc-bai-tap)
-9. [Quy Trinh Cham Bai](#quy-trinh-cham-bai)
-10. [Trien Khai San Xuat](#trien-khai-san-xuat)
-11. [Dong Gop](#dong-gop)
+1. [Giới Thiệu](#giới-thiệu)
+2. [Tính Năng](#tính-năng)
+3. [Kiến Trúc Hệ Thống](#kiến-trúc-hệ-thống)
+4. [Cấu Trúc Dự Án](#cấu-trúc-dự-án)
+5. [Công Nghệ Sử Dụng](#công-nghệ-sử-dụng)
+6. [Cài Đặt](#cài-đặt)
+   - [Yêu Cầu Hệ Thống](#yêu-cầu-hệ-thống)
+   - [Cài Đặt Môi Trường Phát Triển](#cài-đặt-môi-trường-phát-triển)
+   - [Chạy Trên Máy Ảo (Docker)](#chạy-trên-máy-ảo-docker)
+7. [Hướng Dẫn Sử Dụng](#hướng-dẫn-sử-dụng)
+   - [Đăng Nhập](#đăng-nhập)
+   - [Học Lý Thuyết](#học-lý-thuyết)
+   - [Làm Bài Tập Thực Hành](#làm-bài-tập-thực-hành)
+   - [Nộp Bài Và Chấm Điểm](#nộp-bài-và-chấm-điểm)
+8. [Cấu Trúc Bài Tập](#cấu-trúc-bài-tập)
+9. [Quy Trình Chấm Bài](#quy-trình-chấm-bài)
+10. [Triển Khai Sản Xuất](#triển-khai-sản-xuất)
+11. [Đóng Góp](#đóng-góp)
 12. [License](#license)
 
 ---
 
-## Gioi Thieu
+## Giới Thiệu
 
-KaiRust la mot ung dung web full-stack cho phep nguoi dung hoc lap trinh Rust tu co ban den nang cao. Duoc thiet ke theo phong cac nền tảng như LeetCode, HackerRank, hay Codeforces, KaiRust cung cap:
+KaiRust là một ứng dụng web full-stack cho phép người dùng học lập trình Rust từ cơ bản đến nâng cao. Được thiết kế theo phong cách các nền tảng như LeetCode, HackerRank, hay Codeforces, KaiRust cung cấp:
 
-- **23 chuong hoc** duoc to chuc theo loai (ly thuyet, bai tap, quiz)
-- **Trinh biên dich Rust** hoat dong truc tuyen thong qua WebSocket
-- **He thong cham diem tu dong** voi test case linh hoat
-- **Giao dien Monaco Editor** voi syntax highlighting va theme tuy chon
-- **Tien trinh hoan thanh** duoc luu vao localStorage
+- **23 chương học** được tổ chức theo loại (lý thuyết, bài tập, quiz)
+- **Trình biên dịch Rust** hoạt động trực tuyến thông qua WebSocket
+- **Hệ thống chấm điểm tự động** với test case linh hoạt
+- **Giao diện Monaco Editor** với syntax highlighting và theme tùy chọn
+- **Tiến trình hoàn thành** được lưu vào localStorage
 
 Dự án nhắm đến việc giúp người học tiếp cận Rust một cách thực hành, với các bài tập được chia theo từng chương từ sách "The Rust Programming Language".
 
 ---
 
-## Tinh Nang
+## Tính Năng
 
-### Tinh Nang Chinh
+### Tính Năng Chính
 
-- **Editor Rust truc tuyen**: Monaco Editor với đầy đủ tính năng syntax highlighting, auto-completion, và dark/light theme
-- **Bien dich va chay real-time**: Code được biên dịch và chạy trực tiếp trên server thông qua WebSocket
-- **He thong bai tap**: Cấu trúc bài tập theo format LeetCode (problem description, input format, output format, constraints, examples)
-- **Cham diem tu dong**: So sanh output voi expected output cua test case
-- **Tien trinh hoan thanh**: Theo doi bai hoc da hoan thanh, luu vao localStorage
-- **Tai lai trang thai hoc**: Luu vi tri bai hoc cuoi cung de tiep tuc lai sau
-- **Xac thực nguoi dung**: Dang ky, dang nhap, doi mat khau voi JWT token
-- **Sandbox an toan**: Thuc thi code trong Docker container cô lập với giới hạn tài nguyên
+- **Editor Rust trực tuyến**: Monaco Editor với đầy đủ tính năng syntax highlighting, auto-completion, và dark/light theme
+- **Biên dịch và chạy real-time**: Code được biên dịch và chạy trực tiếp trên server thông qua WebSocket
+- **Hệ thống bài tập**: Cấu trúc bài tập theo format LeetCode (problem description, input format, output format, constraints, examples)
+- **Chấm điểm tự động**: So sánh output với expected output của test case
+- **Tiến trình hoàn thành**: Theo dõi bài học đã hoàn thành, lưu vào localStorage
+- **Tải lại trạng thái học**: Lưu vị trí bài học cuối cùng để tiếp tục lại sau
+- **Xác thực người dùng**: Đăng ký, đăng nhập, đổi mật khẩu với JWT token
+- **Sandbox an toàn**: Thực thi code trong Docker container cô lập với giới hạn tài nguyên
 
-### Tinh Nang Phu
+### Tính Năng Phụ
 
-- **Chạy code nội dòng**: Cho phep chạy code mẫu ngay trong nội dung bài học
+- **Chạy code nội dòng**: Cho phép chạy code mẫu ngay trong nội dung bài học
 - **Terminal tương tác**: Nhập stdin cho chương trình khi chạy
 - **Giới hạn thời gian/bộ nhớ**: Từng bài tập có giới hạn riêng
 - **Hỗ trợ toán học**: Hiển thị công thức toán LaTeX với KaTeX
@@ -63,7 +63,7 @@ Dự án nhắm đến việc giúp người học tiếp cận Rust một cách
 
 ---
 
-## Kien Truc He Thong
+## Kiến Trúc Hệ Thống
 
 ```
                               Internet
@@ -101,9 +101,9 @@ Dự án nhắm đến việc giúp người học tiếp cận Rust một cách
                               +------------------+
 ```
 
-### Thanh Phan Chinh
+### Thành Phần Chính
 
-| Thanh Phan | Mo Ta |
+| Thành Phần | Mô Tả |
 |------------|-------|
 | **Frontend** | Giao diện người dùng với Monaco Editor, sử dụng Vite build và Nginx serve |
 | **Backend** | API server viết bằng Rust với Axum framework, xử lý WebSocket và authentication |
@@ -113,7 +113,7 @@ Dự án nhắm đến việc giúp người học tiếp cận Rust một cách
 
 ---
 
-## Cau Truc Du An
+## Cấu Trúc Dự Án
 
 ```
 KaiRust/
@@ -155,11 +155,11 @@ KaiRust/
 
 ---
 
-## Cong Nghe Su Dung
+## Công Nghệ Sử Dụng
 
 ### Backend
 
-| Cong Nghe | Phien Ban | Muc Dich |
+| Công Nghệ | Phiên Bản | Mục Đích |
 |-----------|-----------|----------|
 | Rust | 1.85 | Ngôn ngữ lập trình chính |
 | Axum | 0.8 | Web framework với WebSocket support |
@@ -173,7 +173,7 @@ KaiRust/
 
 ### Frontend
 
-| Cong Nghe | Phien Ban | Muc Dich |
+| Công Nghệ | Phiên Bản | Mục Đích |
 |-----------|-----------|----------|
 | TypeScript | 5.x | Ngôn ngữ lập trình |
 | Vite | 5.x | Build tool |
@@ -182,7 +182,7 @@ KaiRust/
 
 ### Infrastructure
 
-| Cong Nghe | Muc Dich |
+| Công Nghệ | Mục Đích |
 |-----------|----------|
 | Docker | Container hóa ứng dụng |
 | Docker Compose | Điều phối multi-container |
@@ -192,9 +192,9 @@ KaiRust/
 
 ---
 
-## Cai Dat
+## Cài Đặt
 
-### Yeu Cau He Thong
+### Yêu Cầu Hệ Thống
 
 - **Docker** phiên bản 20.10 trở lên
 - **Docker Compose** phiên bản 2.0 trở lên
@@ -202,7 +202,7 @@ KaiRust/
 - **Disk**: Tối thiểu 10GB trống
 - **CPU**: 2 cores trở lên
 
-### Cai Dat Moi Truong Phat Trien
+### Cài Đặt Môi Trường Phát Triển
 
 #### 1. Clone Repository
 
@@ -211,12 +211,12 @@ git clone https://github.com/KaiRust/kairust.git
 cd kairust
 ```
 
-#### 2. Cau Hinh Moi Truong
+#### 2. Cấu Hình Môi Trường
 
 Tạo file `.env` trong thư mục gốc:
 
 ```bash
-# Domain cho production (neu co)
+# Domain cho production (nếu có)
 DOMAIN=your-domain.duckdns.org
 DUCKDNS_TOKEN=your-duckdns-token
 
@@ -224,7 +224,7 @@ DUCKDNS_TOKEN=your-duckdns-token
 JWT_SECRET=your-super-secret-key-change-in-production
 ```
 
-#### 3. Khoi Dong Docker Compose
+#### 3. Khởi Động Docker Compose
 
 ```bash
 # Chạy với cấu hình mặc định
@@ -234,115 +234,115 @@ docker-compose up -d
 docker-compose -f docker-compose.local.yml up -d
 ```
 
-#### 4. Truy Cap Ung Dung
+#### 4. Truy Cập Ứng Dụng
 
 - Frontend: http://localhost:80
 - Backend API: http://localhost:3001
 - WebSocket: ws://localhost:3001/ws/play
 
-### Chay Tren May Ao (Docker)
+### Chạy Trên Máy Ảo (Docker)
 
-Neu khong muon cai dat Docker locally, co the su dung VPS voi cac buoc sau:
+Nếu không muốn cài đặt Docker locally, có thể sử dụng VPS với các bước sau:
 
 ```bash
-# 1. SSH vao server
+# 1. SSH vào server
 ssh your-server
 
-# 2. Cai dat Docker
+# 2. Cài đặt Docker
 curl -fsSL https://get.docker.com | sh
 sudo usermod -aG docker $USER
 
-# 3. Clone va chay
+# 3. Clone và chạy
 git clone https://github.com/KaiRust/kairust.git
 cd kairust
 
-# 4. Chinh sua Caddyfile voi domain cua ban
+# 4. Chỉnh sửa Caddyfile với domain của bạn
 nano Caddyfile
 
-# 5. Chay Docker Compose
+# 5. Chạy Docker Compose
 docker-compose up -d
 ```
 
 ---
 
-## Huong Dan Su Dung
+## Hướng Dẫn Sử Dụng
 
-### Dang Nhap
+### Đăng Nhập
 
-1. Nhap dia chi email va mat khau
-2. Neu chua co tai khoan, bam "Dang ky" de tao moi
-3. Thong tin dang nhap duoc luu trong JWT token
+1. Nhập địa chỉ email và mật khẩu
+2. Nếu chưa có tài khoản, bấm "Đăng ký" để tạo mới
+3. Thông tin đăng nhập được lưu trong JWT token
 
-### Hoc Ly Thuyet
+### Học Lý Thuyết
 
-1. Chon chuong hoc tu sidebar ben trai
-2. Noi dung ly thuyet hien thi o panel ben phai
-3. Cuon xuong de doc het noi dung
-4. Bai hoc duoc danh dau hoan thanh khi cuon den cuoi
+1. Chọn chương học từ sidebar bên trái
+2. Nội dung lý thuyết hiển thị ở panel bên phải
+3. Cuộn xuống để đọc hết nội dung
+4. Bài học được đánh dấu hoàn thành khi cuộn đến cuối
 
-### Lam Bai Tap Thuc Hanh
+### Làm Bài Tập Thực Hành
 
-1. Chon bai tap tu danh sach (co icon "code")
-2. Doc ky de bai, input format, va vi du
-3. Viet code trong Monaco Editor
-4. Bam "Run" de chay thu voi stdin neu can
-5. Bam "Nop bai" de nop va cham diem
+1. Chọn bài tập từ danh sách (có icon "code")
+2. Đọc kỹ đề bài, input format, và ví dụ
+3. Viết code trong Monaco Editor
+4. Bấm "Run" để chạy thử với stdin nếu cần
+5. Bấm "Nộp bài" để nộp và chấm điểm
 
-### Nop Bai Va Cham Diem
+### Nộp Bài Và Chấm Điểm
 
-Khi nop bai, he thong se:
+Khi nộp bài, hệ thống sẽ:
 
-1. Bien dich code cua ban (neu co loi, hien thi loi biên dịch)
-2. Chạy voi tat ca test case (bat ki dong nao cung duoc chạy)
-3. So sanh output voi expected output
-4. Hien thi ket qua:
-   - **Accepted**: Tat ca test case deu dung
-   - **Wrong Answer**: Co test case sai
-   - **Time Limit Exceeded**: Chay qua thoi gian cho phep
-   - **Compilation Error**: Loi biên dịch
+1. Biên dịch code của bạn (nếu có lỗi, hiển thị lỗi biên dịch)
+2. Chạy với tất cả test case (bất kỳ dòng nào cũng được chạy)
+3. So sánh output với expected output
+4. Hiển thị kết quả:
+   - **Accepted**: Tất cả test case đều đúng
+   - **Wrong Answer**: Có test case sai
+   - **Time Limit Exceeded**: Chạy quá thời gian cho phép
+   - **Compilation Error**: Lỗi biên dịch
 
 ---
 
-## Cau Truc Bai Tap
+## Cấu Trúc Bài Tập
 
-Moi bai tap duoc dinh nghia voi cac truong sau:
+Mỗi bài tập được định nghĩa với các trường sau:
 
-| Truong | Kieu | Mo Ta |
+| Trường | Kiểu | Mô Tả |
 |--------|------|-------|
-| `title` | String | Tieu de hien thi trong danh sach |
-| `problemTitle` | String | Ten bai toan ngan gon |
-| `problemDescription` | String | Mo ta chi tiet yeu cau bai toan |
-| `inputFormat` | String | Mo ta dinh dang du lieu dau vao |
-| `outputFormat` | String | Mo ta dinh dang ket qua dau ra |
-| `constraints` | Array | Cac rang buoc (vd: 1 <= n <= 10^6) |
-| `examples` | Array | Cac vi du minh hoa |
-| `defaultCode` | String | Code mac dinh trong editor |
-| `testCases` | Array | Tat ca test case dung de cham |
-| `timeLimit` | String | Gioi han thoi gian (vd: "1s") |
-| `memoryLimit` | String | Gioi han bo nho (vd: "256MB") |
+| `title` | String | Tiêu đề hiển thị trong danh sách |
+| `problemTitle` | String | Tên bài toán ngắn gọn |
+| `problemDescription` | String | Mô tả chi tiết yêu cầu bài toán |
+| `inputFormat` | String | Mô tả định dạng dữ liệu đầu vào |
+| `outputFormat` | String | Mô tả định dạng kết quả đầu ra |
+| `constraints` | Array | Các ràng buộc (vd: 1 <= n <= 10^6) |
+| `examples` | Array | Các ví dụ minh họa |
+| `defaultCode` | String | Code mặc định trong editor |
+| `testCases` | Array | Tất cả test case dùng để chấm |
+| `timeLimit` | String | Giới hạn thời gian (vd: "1s") |
+| `memoryLimit` | String | Giới hạn bộ nhớ (vd: "256MB") |
 
-### Vi Du Cau Truc Bai Tap
+### Ví Dụ Cấu Trúc Bài Tập
 
 ```typescript
 {
   id: "ch02_01_ex",
-  title: "Bai tap 2.1: Tao bien String",
+  title: "Bài tập 2.1: Tạo biến String",
   type: "practice",
-  problemTitle: "Tao bien String",
-  problemDescription: "Khai bao bien guess kieu String, gan gia tri 'test', in ra man hinh",
-  inputFormat: "Khong co input",
-  outputFormat: "In ra mot dong duy nhat: test",
+  problemTitle: "Tạo biến String",
+  problemDescription: "Khai báo biến guess kiểu String, gán giá trị 'test', in ra màn hình",
+  inputFormat: "Không có input",
+  outputFormat: "In ra một dòng duy nhất: test",
   constraints: [
-    { field: "Type", condition: "Phai su dung kieu String, khong dung &str" }
+    { field: "Type", condition: "Phải sử dụng kiểu String, không dùng &str" }
   ],
   examples: [
     {
       input: "",
       output: "test",
-      explanation: "Khai bao String voi gia tri 'test' roi in ra"
+      explanation: "Khai báo String với giá trị 'test' rồi in ra"
     }
   ],
-  defaultCode: `fn main() {\n    // TODO: Khai bao bien String\n}`,
+  defaultCode: `fn main() {\n    // TODO: Khai báo biến String\n}`,
   timeLimit: "1s",
   memoryLimit: "256MB",
   testCases: [
@@ -353,31 +353,31 @@ Moi bai tap duoc dinh nghia voi cac truong sau:
 
 ---
 
-## Quy Trinh Cham Bai
+## Quy Trình Chấm Bài
 
 ```
-Nguoi dung bam "Nop bai"
+Người dùng bấm "Nộp bài"
            |
            v
-Frontend gui WebSocket message
+Frontend gửi WebSocket message
 (type="run", code, lesson_id, is_test=true)
            |
            v
-Backend nhan duoc yeu cau
+Backend nhận được yêu cầu
            |
     +------v-------+
-    | Tao workspace |
-    | tam (session) |
+    | Tạo workspace |
+    | tạm (session) |
     +------v-------+
            |
     +------v-------+
-    | Ghi code vao |
+    | Ghi code vào |
     | src/main.rs  |
     +------v-------+
            |
     +------v-------+
-    | Them test    |
-    | code (neu co)|
+    | Thêm test    |
+    | code (nếu có)|
     +------v-------+
            |
     +------v-------+
@@ -392,9 +392,9 @@ Backend nhan duoc yeu cau
       Yes |  No
           v
     +------v-------+
-    | Backend tra |
-    | ve loi bien |
-    | dich (stderr)|
+    | Backend trả |
+    | về lỗi biên |
+    | dịch (stderr)|
     +------v-------+
            |
     +------v-------+
@@ -404,8 +404,8 @@ Backend nhan duoc yeu cau
     +------v-------+
            |
     +------v-------+
-    | So sanh      |
-    | output voi   |
+    | So sánh      |
+    | output với   |
     | expected     |
     +------+-------+
            |
@@ -417,11 +417,11 @@ Backend nhan duoc yeu cau
     Accepted   Wrong Answer
 ```
 
-### Gioi Han Sandbox
+### Giới Hạn Sandbox
 
 Container Docker chạy code người dùng với các giới hạn:
 
-| Tham So | Gia Tri |
+| Tham Số | Giá Trị |
 |---------|---------|
 | Memory | 128 MB |
 | CPU | 0.5 cores |
@@ -433,17 +433,17 @@ Container Docker chạy code người dùng với các giới hạn:
 
 ---
 
-## Trien Khai San Xuat
+## Triển Khai Sản Xuất
 
-### Cau Hinh Domain
+### Cấu Hình Domain
 
-1. **Su dung DuckDNS** (mien phi):
-   - Tao tai khoan tai https://www.duckdns.org
-   - Tao subdomain (vd: kairust.duckdns.org)
-   - Lay token API
+1. **Sử dụng DuckDNS** (miễn phí):
+   - Tạo tài khoản tại https://www.duckdns.org
+   - Tạo subdomain (vd: kairust.duckdns.org)
+   - Lấy token API
 
-2. **Cau Hinh Caddy**:
-   Chinh sua `Caddyfile`:
+2. **Cấu Hình Caddy**:
+   Chỉnh sửa `Caddyfile`:
    ```
    :8080 {
        reverse_proxy frontend:80
@@ -451,15 +451,15 @@ Container Docker chạy code người dùng với các giới hạn:
    }
    ```
 
-3. **Cau Hinh Cloudflare Tunnel**:
-   Neu khong co domain, co the su dung Cloudflare Tunnel:
+3. **Cấu Hình Cloudflare Tunnel**:
+   Nếu không có domain, có thể sử dụng Cloudflare Tunnel:
    ```bash
    cloudflared tunnel --url http://caddy:8080
    ```
 
-### Cau Hinh SSL/TLS
+### Cấu Hình SSL/TLS
 
-Caddy tu dong cap certificate Let's Encrypt. Khong can cau hinh them.
+Caddy tự động cấp certificate Let's Encrypt. Không cần cấu hình thêm.
 
 ### Backup Data
 
@@ -467,28 +467,28 @@ Caddy tu dong cap certificate Let's Encrypt. Khong can cau hinh them.
 # Backup SQLite database
 docker exec kairust_backend cp /data/kairust.db /data/kairust_backup.db
 
-# Copy ra ngoai
+# Copy ra ngoài
 docker cp kairust_backend:/data/kairust_backup.db ./backup.db
 ```
 
 ---
 
-## Dong Gop
+## Đóng Góp
 
-Moi dong gop deu duoc welcome! Vui long tao issue hoac pull request neu:
+Mọi đóng góp đều được welcome! Vui lòng tạo issue hoặc pull request nếu:
 
-- Tim thay bug
-- Muon them bai tap moi
-- Co yeu cau tinh nang
-- Muon sua doi documentation
+- Tìm thấy bug
+- Muốn thêm bài tập mới
+- Có yêu cầu tính năng
+- Muốn sửa đổi documentation
 
-### Quy Trinh Dong Gop
+### Quy Trình Đóng Góp
 
 1. Fork repository
-2. Tao branch moi (`git checkout -b feature/amazing-feature`)
-3. Commit thay doi (`git commit -m 'Add amazing feature'`)
-4. Push len branch (`git push origin feature/amazing-feature`)
-5. Tao Pull Request
+2. Tạo branch mới (`git checkout -b feature/amazing-feature`)
+3. Commit thay đổi (`git commit -m 'Add amazing feature'`)
+4. Push lên branch (`git push origin feature/amazing-feature`)
+5. Tạo Pull Request
 
 ---
 
@@ -498,9 +498,9 @@ Distributed under the MIT License.
 
 ---
 
-## Lien He
+## Liên Hệ
 
 - Website: https://kairust.duckdns.org
-- Email: contact@kairust.dev
+- Email: quanvuvan201@gmail.com
 
-Neu co bat ky cau hoi nao, vui long tao issue tren GitHub.
+Nếu có bất kỳ câu hỏi nào, vui lòng tạo issue trên GitHub.
