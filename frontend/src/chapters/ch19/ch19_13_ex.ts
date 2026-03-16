@@ -1,0 +1,38 @@
+import { Lesson } from '../../courses';
+
+export const ch19_13_ex: Lesson = {
+    id: 'ch19-13-ex',
+    title: 'Bài tập 19.13',
+    duration: '15 phút',
+    type: 'practice',
+    isExercise: true,
+    content: '<p>@ binding</p>',
+    defaultCode: `fn main() { let x = 3; match x { n @ 1..=5 => println!("{}", n), _ => println!("Other") } }`,
+    expectedOutput: '3',
+    testCases: [{ input: 'n', expectedOutput: '3' }]
+};
+
+export const ch19_14_ex: Lesson = {
+    id: 'ch19-14-ex',
+    title: 'Bài tập 19.14',
+    duration: '15 phút',
+    type: 'practice',
+    isExercise: true,
+    content: '<p>Struct binding</p>',
+    defaultCode: `struct Point { x: i32, y: i32 }
+fn main() { let p = Point { x: 5, y: 10 }; match p { Point { x, y: 10 } => println!("{}", x), _ => println!("Other") } }`,
+    expectedOutput: '5',
+    testCases: [{ input: 'x', expectedOutput: '5' }]
+};
+
+export const ch19_15_ex: Lesson = {
+    id: 'ch19-15-ex',
+    title: 'Bài tập 19.15',
+    duration: '15 phút',
+    type: 'practice',
+    isExercise: true,
+    content: '<p>Match returns</p>',
+    defaultCode: `fn main() { let x = 5; let r = match x { 1 => "One", _ => "Other" }; println!("{}", r); }`,
+    expectedOutput: 'Other',
+    testCases: [{ input: 'r', expectedOutput: 'Other' }]
+};

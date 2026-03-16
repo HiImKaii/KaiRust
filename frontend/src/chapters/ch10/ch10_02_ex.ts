@@ -4,7 +4,7 @@ export const ch10_02_ex: Lesson = {
     id: 'ch10-02-ex',
     title: '10.2 Thực hành: Generic Structs',
     duration: '20 phút',
-    type: 'exercise',
+    type: 'practice',
     content: `
 <h2>Thực hành Generic Structs</h2>
 <p>Định nghĩa một struct generic để lưu trữ cặp key-value.</p>

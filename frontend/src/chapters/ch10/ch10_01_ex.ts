@@ -4,7 +4,7 @@ export const ch10_01_ex: Lesson = {
     id: 'ch10-01-ex',
     title: '10.1 Thực hành: Generic Functions',
     duration: '20 phút',
-    type: 'exercise',
+    type: 'practice',
     content: `
 <h2>Thực hành Generic Functions</h2>
 <p>Viết một function generic để tìm giá trị lớn nhất trong một slice.</p>

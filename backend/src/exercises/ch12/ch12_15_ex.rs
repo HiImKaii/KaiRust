@@ -26,7 +26,7 @@ fn main() {
                 return;
             }
             let content = &args[2..].join(" ");
-            let mut file = fs::OpenOptions::new(true, true)
+            let mut file = fs::OpenOptions::new()
                 .create(true)
                 .append(true)
                 .open(notes_file)

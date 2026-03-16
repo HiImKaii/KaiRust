@@ -4,7 +4,7 @@ export const ch10_05_ex: Lesson = {
     id: 'ch10-05-ex',
     title: '10.5 Thực hành: Lifetimes',
     duration: '25 phút',
-    type: 'exercise',
+    type: 'practice',
     content: `
 <h2>Thực hành Lifetimes</h2>
 <p>Sử dụng lifetimes để đảm bảo tham chiếu luôn hợp lệ.</p>

@@ -4,7 +4,7 @@ export const ch10_04_ex: Lesson = {
     id: 'ch10-04-ex',
     title: '10.4 Thực hành: Trait Bounds',
     duration: '20 phút',
-    type: 'exercise',
+    type: 'practice',
     content: `
 <h2>Thực hành Trait Bounds</h2>
 <p>Sử dụng trait bounds để giới hạn generic types.</p>

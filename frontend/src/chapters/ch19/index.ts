@@ -2,23 +2,31 @@ import { Chapter } from '../../courses';
 import { ch19_01 } from './ch19_01';
 import { ch19_02 } from './ch19_02';
 import { ch19_03 } from './ch19_03';
+import { ch19_01_ex } from './ch19_01_ex';
+import { ch19_02_ex } from './ch19_02_ex';
+import { ch19_03_ex } from './ch19_03_ex';
+import { ch19_04_ex } from './ch19_04_ex';
+import { ch19_05_ex } from './ch19_05_ex';
+import { ch19_06_ex } from './ch19_06_ex';
+import { ch19_07_ex } from './ch19_07_ex';
+import { ch19_08_ex, ch19_09_ex, ch19_14_ex, ch19_15_ex } from './ch19_08_ex';
+import { ch19_10_ex } from './ch19_10_ex';
+import { ch19_11_ex } from './ch19_11_ex';
+import { ch19_12_ex } from './ch19_12_ex';
+import { ch19_13_ex } from './ch19_13_ex';
 
 export const ch19: Chapter = {
   id: 'ch19',
   title: 'Chương 19: Patterns và Matching',
   introduction: `
     <h2>Patterns và Matching</h2>
-    <p>Patterns là một cú pháp đặc biệt trong Rust để so khớp (matching) với cấu trúc của các kiểu dữ liệu, cả phức tạp và đơn giản. Việc sử dụng patterns kết hợp với các biểu thức match và các cấu trúc khác cho phép bạn kiểm soát nhiều hơn luồng điều khiển của chương trình. Một pattern bao gồm sự kết hợp của các thành phần sau:</p>
-    <ul>
-      <li>→ <strong>Literals:</strong> Các giá trị literal (hằng số)</li>
-      <li>→ <strong>Destructured:</strong> Arrays, enums, structs, hoặc tuples được destructure</li>
-      <li>→ <strong>Variables:</strong> Các biến</li>
-      <li>→ <strong>Wildcards:</strong> Ký tự đại diện (_)</li>
-      <li>→ <strong>Placeholders:</strong> Các placeholder</li>
-    </ul>
-    <p>Một số ví dụ về patterns bao gồm <code>x</code>, <code>(a, 3)</code>, và <code>Some(Color::Red)</code>. Trong ngữ cảnh mà patterns có hiệu lực, các thành phần này mô tả hình dạng (shape) của dữ liệu. Chương trình của chúng ta sau đó so khớp các giá trị với patterns để xác định xem liệu nó có đúng hình dạng dữ liệu để tiếp tục chạy một đoạn code cụ thể hay không.</p>
-    <p>Để sử dụng một pattern, chúng ta so sánh nó với một giá trị. Nếu pattern khớp với giá trị, chúng ta sử dụng các phần của giá trị đó trong code của mình. Hãy nhớ lại các biểu thức match trong Chương 6 sử dụng patterns, chẳng hạn như ví dụ về máy phân loại tiền xu. Nếu giá trị phù hợp với hình dạng của pattern, chúng ta có thể sử dụng các phần đã được đặt tên. Nếu không, code liên quan đến pattern đó sẽ không được thực thi.</p>
-    <p>Chương này là tài liệu tham khảo về mọi thứ liên quan đến patterns. Chúng ta sẽ tìm hiểu các vị trí hợp lệ để sử dụng patterns, sự khác biệt giữa refutable và irrefutable patterns, cũng như các loại cú pháp pattern khác nhau mà bạn có thể gặp. Đến cuối chương, bạn sẽ biết cách sử dụng patterns để thể hiện nhiều khái niệm một cách rõ ràng.</p>
+    <p>Patterns là một cú pháp đặc biệt trong Rust để so khớp với cấu trúc của các kiểu dữ liệu.</p>
   `,
-  lessons: [ch19_01, ch19_02, ch19_03]
+  lessons: [
+    ch19_01, ch19_01_ex, ch19_02, ch19_02_ex,
+    ch19_03, ch19_03_ex, ch19_04_ex, ch19_05_ex,
+    ch19_06_ex, ch19_07_ex, ch19_08_ex, ch19_09_ex,
+    ch19_10_ex, ch19_11_ex, ch19_12_ex, ch19_13_ex,
+    ch19_14_ex, ch19_15_ex,
+  ]
 };

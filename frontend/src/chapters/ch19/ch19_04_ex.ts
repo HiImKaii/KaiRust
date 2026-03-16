@@ -1,0 +1,2 @@
+import { Lesson } from '../../courses';
+export const ch19_04_ex: Lesson = { id: 'ch19-04-ex', title: 'Bài tập 19.4', duration: '15 phút', type: 'practice', isExercise: true, content: '<p>Enum data</p>', defaultCode: `enum Message { Quit, Move { x: i32, y: i32 } }\nfn main() { let msg = Message::Move { x: 10, y: 20 }; match msg { Message::Move { x, y } => println!("{} {}", x, y), _ => println!("Other") } }`, expectedOutput: '10 20', testCases: [{ input: 'msg', expectedOutput: '10 20' }] };

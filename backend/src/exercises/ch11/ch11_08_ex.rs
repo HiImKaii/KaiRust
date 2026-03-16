@@ -23,7 +23,7 @@ fn main() {
     assert!(!scores.contains_key("David"));
 
     // Test update
-    scores.insert("Alice", 110);
+    scores.insert("Alice".to_string(), 110);
     assert_eq!(scores.get("Alice"), Some(&110));
 
     // Test remove

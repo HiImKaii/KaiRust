@@ -2,21 +2,34 @@ import { Chapter } from '../../courses';
 import { ch18_01 } from './ch18_01';
 import { ch18_02 } from './ch18_02';
 import { ch18_03 } from './ch18_03';
+import { ch18_01_ex } from './ch18_01_ex';
+import { ch18_02_ex } from './ch18_02_ex';
+import { ch18_03_ex } from './ch18_03_ex';
+import { ch18_04_ex } from './ch18_04_ex';
+import { ch18_05_ex } from './ch18_05_ex';
+import { ch18_06_ex } from './ch18_06_ex';
+import { ch18_07_ex } from './ch18_07_ex';
+import { ch18_08_ex } from './ch18_08_ex';
+import { ch18_09_ex } from './ch18_09_ex';
+import { ch18_10_ex } from './ch18_10_ex';
+import { ch18_11_ex } from './ch18_11_ex';
+import { ch18_12_ex } from './ch18_12_ex';
+import { ch18_13_ex } from './ch18_13_ex';
+import { ch18_14_ex } from './ch18_14_ex';
+import { ch18_15_ex } from './ch18_15_ex';
 
 export const ch18: Chapter = {
   id: 'ch18',
   title: 'Chương 18: Các Tính Năng Lập Trình Hướng Đối Tượng',
   introduction: `
     <h2>Các Tính Năng Lập Trình Hướng Đối Tượng</h2>
-    <p>Lập trình hướng đối tượng (OOP) là một cách mô hình hóa các chương trình. Các đối tượng như một khái niệm lập trình đã được giới thiệu trong ngôn ngữ lập trình Simula vào những năm 1960. Những đối tượng đó đã ảnh hưởng đến kiến trúc lập trình của Alan Kay trong đó các đối tượng truyền tin nhắn cho nhau. Để mô tả kiến trúc này, ông đã tạo ra thuật ngữ lập trình hướng đối tượng vào năm 1967. Nhiều định nghĩa cạnh tranh mô tả OOP là gì, và theo một số định nghĩa này Rust là hướng đối tượng nhưng theo những định nghĩa khác thì không. Trong chương này, chúng ta sẽ khám phá một số đặc điểm thường được coi là hướng đối tượng và cách những đặc điểm đó chuyển đổi sang Rust idiomatic. Sau đó, chúng tôi sẽ chỉ cho bạn cách triển khai một design pattern hướng đối tượng trong Rust và thảo luận về trade-offs của việc đó so với việc triển khai một giải pháp sử dụng một số điểm mạnh của Rust thay vào đó.</p>
-    <h3>Các chủ đề trong chương này:</h3>
-    <ul>
-      <li>→ <strong>Traits như Interfaces:</strong> Định nghĩa behavior chung</li>
-      <li>→ <strong>Trait Objects:</strong> Dynamic dispatch với dyn Trait</li>
-      <li>→ <strong>State Pattern:</strong> Triển khai state machine</li>
-      <li>→ <strong>Object-Oriented Patterns trong Rust:</strong> Áp dụng OOP patterns</li>
-      <li>→ <strong>Trade-offs:</strong> So sánh OOP với Rust idioms</li>
-    </ul>
+    <p>Lập trình hướng đối tượng (OOP) là một cách mô hình hóa các chương trình. Các đối tượng như một khái niệm lập trình đã được giới thiệu trong ngôn ngữ lập trình Simula vào những năm 1960.</p>
   `,
-  lessons: [ch18_01, ch18_02, ch18_03]
+  lessons: [
+    ch18_01, ch18_01_ex, ch18_02, ch18_02_ex,
+    ch18_03, ch18_03_ex, ch18_04_ex, ch18_05_ex,
+    ch18_06_ex, ch18_07_ex, ch18_08_ex, ch18_09_ex,
+    ch18_10_ex, ch18_11_ex, ch18_12_ex, ch18_13_ex,
+    ch18_14_ex, ch18_15_ex,
+  ]
 };

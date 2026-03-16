@@ -1,0 +1,2 @@
+import { Lesson } from '../../courses';
+export const ch19_03_ex: Lesson = { id: 'ch19-03-ex', title: 'Bài tập 19.3', duration: '15 phút', type: 'practice', isExercise: true, content: '<p>Enum</p>', defaultCode: `enum Direction { North, South, East, West }\nfn main() { let dir = Direction::North; match dir { Direction::North => println!("North"), _ => println!("Other") } }`, expectedOutput: 'North', testCases: [{ input: 'dir', expectedOutput: 'North' }] };

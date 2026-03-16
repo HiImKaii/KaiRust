@@ -1,10 +1,10 @@
 // Exercise - ch09_04_ex: unwrap và expect
 
-fn get_first_element(v: &[i32]) -> i32 {
+fn get_first_element(v: &[i32]) -> &i32 {
     v.first().unwrap()
 }
 
-fn safe_get_element(v: &[i32], index: usize) -> i32 {
+fn safe_get_element(v: &[i32], index: usize) -> &i32 {
     v.get(index).expect(&format!("Index {} out of bounds", index))
 }
 

@@ -3,6 +3,21 @@ import { ch16_01 } from './ch16_01';
 import { ch16_02 } from './ch16_02';
 import { ch16_03 } from './ch16_03';
 import { ch16_04 } from './ch16_04';
+import { ch16_01_ex } from './ch16_01_ex';
+import { ch16_02_ex } from './ch16_02_ex';
+import { ch16_03_ex } from './ch16_03_ex';
+import { ch16_04_ex } from './ch16_04_ex';
+import { ch16_05_ex } from './ch16_05_ex';
+import { ch16_06_ex } from './ch16_06_ex';
+import { ch16_07_ex } from './ch16_07_ex';
+import { ch16_08_ex } from './ch16_08_ex';
+import { ch16_09_ex } from './ch16_09_ex';
+import { ch16_10_ex } from './ch16_10_ex';
+import { ch16_11_ex } from './ch16_11_ex';
+import { ch16_12_ex } from './ch16_12_ex';
+import { ch16_13_ex } from './ch16_13_ex';
+import { ch16_14_ex } from './ch16_14_ex';
+import { ch16_15_ex } from './ch16_15_ex';
 
 export const ch16: Chapter = {
   id: 'ch16',
@@ -27,5 +42,11 @@ export const ch16: Chapter = {
     <p>Nhiều languages có quan điểm cứng nhắc về các giải pháp họ cung cấp để xử lý các vấn đề concurrent. Ví dụ, Erlang có chức năng message-passing concurrency thanh lịch nhưng chỉ có những cách obscure để share state giữa các threads.</p>
     <p>Rust cung cấp nhiều công cụ khác nhau để modeling problems theo bất kỳ cách nào phù hợp với situation và requirements của bạn.</p>
   `,
-  lessons: [ch16_01, ch16_02, ch16_03, ch16_04]
+  lessons: [
+    ch16_01, ch16_01_ex, ch16_02, ch16_02_ex,
+    ch16_03, ch16_03_ex, ch16_04, ch16_04_ex,
+    ch16_05_ex, ch16_06_ex, ch16_07_ex, ch16_08_ex,
+    ch16_09_ex, ch16_10_ex, ch16_11_ex, ch16_12_ex,
+    ch16_13_ex, ch16_14_ex, ch16_15_ex,
+  ]
 };

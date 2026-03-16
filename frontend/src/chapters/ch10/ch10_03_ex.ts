@@ -4,7 +4,7 @@ export const ch10_03_ex: Lesson = {
     id: 'ch10-03-ex',
     title: '10.3 Thực hành: Traits',
     duration: '25 phút',
-    type: 'exercise',
+    type: 'practice',
     content: `
 <h2>Thực hành Traits</h2>
 <p>Định nghĩa và implement traits cho các kiểu dữ liệu.</p>

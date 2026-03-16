@@ -5,20 +5,7 @@ import { ch14_03 } from './ch14_03';
 import { ch14_04 } from './ch14_04';
 import { ch14_05 } from './ch14_05';
 import { ch14_01_ex } from './ch14_01_ex';
-import { ch14_02_ex } from './ch14_02_ex';
-import { ch14_03_ex } from './ch14_03_ex';
-import { ch14_04_ex } from './ch14_04_ex';
-import { ch14_05_ex } from './ch14_05_ex';
-import { ch14_06_ex } from './ch14_06_ex';
-import { ch14_07_ex } from './ch14_07_ex';
-import { ch14_08_ex } from './ch14_08_ex';
-import { ch14_09_ex } from './ch14_09_ex';
-import { ch14_10_ex } from './ch14_10_ex';
-import { ch14_11_ex } from './ch14_11_ex';
-import { ch14_12_ex } from './ch14_12_ex';
-import { ch14_13_ex } from './ch14_13_ex';
-import { ch14_14_ex } from './ch14_14_ex';
-import { ch14_15_ex } from './ch14_15_ex';
+import { ch14_02_ex, ch14_03_ex, ch14_04_ex, ch14_05_ex, ch14_06_ex, ch14_07_ex, ch14_08_ex, ch14_09_ex, ch14_10_ex, ch14_11_ex, ch14_12_ex, ch14_13_ex, ch14_14_ex, ch14_15_ex } from './ch14_exercises';
 
 export const ch14: Chapter = {
   id: 'ch14',

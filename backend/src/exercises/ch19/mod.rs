@@ -1,0 +1,15 @@
+pub mod ch19_01_ex;
+pub mod ch19_02_ex;
+pub mod ch19_03_ex;
+pub mod ch19_04_ex;
+pub mod ch19_05_ex;
+pub mod ch19_06_ex;
+pub mod ch19_07_ex;
+pub mod ch19_08_ex;
+pub mod ch19_09_ex;
+pub mod ch19_10_ex;
+pub mod ch19_11_ex;
+pub mod ch19_12_ex;
+pub mod ch19_13_ex;
+pub mod ch19_14_ex;
+pub mod ch19_15_ex;
