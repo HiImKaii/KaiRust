@@ -2,6 +2,21 @@ import { Chapter } from '../../courses';
 import { ch11_01 } from './ch11_01';
 import { ch11_02 } from './ch11_02';
 import { ch11_03 } from './ch11_03';
+import { ch11_01_ex } from './ch11_01_ex';
+import { ch11_02_ex } from './ch11_02_ex';
+import { ch11_03_ex } from './ch11_03_ex';
+import { ch11_04_ex } from './ch11_04_ex';
+import { ch11_05_ex } from './ch11_05_ex';
+import { ch11_06_ex } from './ch11_06_ex';
+import { ch11_07_ex } from './ch11_07_ex';
+import { ch11_08_ex } from './ch11_08_ex';
+import { ch11_09_ex } from './ch11_09_ex';
+import { ch11_10_ex } from './ch11_10_ex';
+import { ch11_11_ex } from './ch11_11_ex';
+import { ch11_12_ex } from './ch11_12_ex';
+import { ch11_13_ex } from './ch11_13_ex';
+import { ch11_14_ex } from './ch11_14_ex';
+import { ch11_15_ex } from './ch11_15_ex';
 
 export const ch11: Chapter = {
   id: 'ch11',
@@ -29,5 +44,24 @@ export const ch11: Chapter = {
 
     <p>Viết test giúp code của bạn đáng tin cậy và dễ refactor hơn.</p>
   `,
-  lessons: [ch11_01, ch11_02, ch11_03]
+  lessons: [
+    ch11_01,
+    ch11_01_ex,
+    ch11_02,
+    ch11_02_ex,
+    ch11_03,
+    ch11_03_ex,
+    ch11_04_ex,
+    ch11_05_ex,
+    ch11_06_ex,
+    ch11_07_ex,
+    ch11_08_ex,
+    ch11_09_ex,
+    ch11_10_ex,
+    ch11_11_ex,
+    ch11_12_ex,
+    ch11_13_ex,
+    ch11_14_ex,
+    ch11_15_ex,
+  ]
 };

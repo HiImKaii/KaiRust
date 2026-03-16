@@ -3,6 +3,21 @@ import { ch13_01 } from './ch13_01';
 import { ch13_02 } from './ch13_02';
 import { ch13_03 } from './ch13_03';
 import { ch13_04 } from './ch13_04';
+import { ch13_01_ex } from './ch13_01_ex';
+import { ch13_02_ex } from './ch13_02_ex';
+import { ch13_03_ex } from './ch13_03_ex';
+import { ch13_04_ex } from './ch13_04_ex';
+import { ch13_05_ex } from './ch13_05_ex';
+import { ch13_06_ex } from './ch13_06_ex';
+import { ch13_07_ex } from './ch13_07_ex';
+import { ch13_08_ex } from './ch13_08_ex';
+import { ch13_09_ex } from './ch13_09_ex';
+import { ch13_10_ex } from './ch13_10_ex';
+import { ch13_11_ex } from './ch13_11_ex';
+import { ch13_12_ex } from './ch13_12_ex';
+import { ch13_13_ex } from './ch13_13_ex';
+import { ch13_14_ex } from './ch13_14_ex';
+import { ch13_15_ex } from './ch13_15_ex';
 
 export const ch13: Chapter = {
   id: 'ch13',
@@ -24,5 +39,11 @@ export const ch13: Chapter = {
 
     <p>Chúng ta đã cover một số tính năng Rust khác, như pattern matching và enums, cũng bị ảnh hưởng bởi phong cách functional. Vì việc thành thạo closures và iterators là một phần quan trọng của việc viết code Rust nhanh, idiomatic, chúng ta sẽ dành toàn bộ chương này cho chúng.</p>
   `,
-  lessons: [ch13_01, ch13_02, ch13_03, ch13_04]
+  lessons: [
+    ch13_01, ch13_01_ex, ch13_02, ch13_02_ex,
+    ch13_03, ch13_03_ex, ch13_04, ch13_04_ex,
+    ch13_05_ex, ch13_06_ex, ch13_07_ex, ch13_08_ex,
+    ch13_09_ex, ch13_10_ex, ch13_11_ex, ch13_12_ex,
+    ch13_13_ex, ch13_14_ex, ch13_15_ex,
+  ]
 };

@@ -2,6 +2,11 @@ import { Chapter } from '../../courses';
 import { ch10_01 } from './ch10_01';
 import { ch10_02 } from './ch10_02';
 import { ch10_03 } from './ch10_03';
+import { ch10_01_ex } from './ch10_01_ex';
+import { ch10_02_ex } from './ch10_02_ex';
+import { ch10_03_ex } from './ch10_03_ex';
+import { ch10_04_ex } from './ch10_04_ex';
+import { ch10_05_ex } from './ch10_05_ex';
 
 export const ch10: Chapter = {
   id: 'ch10',
@@ -35,5 +40,14 @@ export const ch10: Chapter = {
     <h3>Kết luận</h3>
     <p>Nắm vững những khái niệm này sẽ giúp bạn viết code Rust chuyên nghiệp, linh hoạt và có thể tái sử dụng cao.</p>
   `,
-  lessons: [ch10_01, ch10_02, ch10_03]
+  lessons: [
+    ch10_01,
+    ch10_01_ex,
+    ch10_02,
+    ch10_02_ex,
+    ch10_03,
+    ch10_03_ex,
+    ch10_04_ex,
+    ch10_05_ex,
+  ]
 };

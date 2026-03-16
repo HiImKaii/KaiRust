@@ -2,6 +2,21 @@ import { Chapter } from '../../courses';
 import { ch09_01 } from './ch09_01';
 import { ch09_02 } from './ch09_02';
 import { ch09_03 } from './ch09_03';
+import { ch09_01_ex } from './ch09_01_ex';
+import { ch09_02_ex } from './ch09_02_ex';
+import { ch09_03_ex } from './ch09_03_ex';
+import { ch09_04_ex } from './ch09_04_ex';
+import { ch09_05_ex } from './ch09_05_ex';
+import { ch09_06_ex } from './ch09_06_ex';
+import { ch09_07_ex } from './ch09_07_ex';
+import { ch09_08_ex } from './ch09_08_ex';
+import { ch09_09_ex } from './ch09_09_ex';
+import { ch09_10_ex } from './ch09_10_ex';
+import { ch09_11_ex } from './ch09_11_ex';
+import { ch09_12_ex } from './ch09_12_ex';
+import { ch09_13_ex } from './ch09_13_ex';
+import { ch09_14_ex } from './ch09_14_ex';
+import { ch09_15_ex } from './ch09_15_ex';
 
 export const ch09: Chapter = {
   id: 'ch09',
@@ -24,5 +39,24 @@ export const ch09: Chapter = {
     </ul>
     <p>Xử lý lỗi tốt giúp ứng dụng của bạn trở nên đáng tin cậy và dễ debug hơn.</p>
   `,
-  lessons: [ch09_01, ch09_02, ch09_03]
+  lessons: [
+    ch09_01,
+    ch09_01_ex,
+    ch09_02,
+    ch09_02_ex,
+    ch09_03,
+    ch09_03_ex,
+    ch09_04_ex,
+    ch09_05_ex,
+    ch09_06_ex,
+    ch09_07_ex,
+    ch09_08_ex,
+    ch09_09_ex,
+    ch09_10_ex,
+    ch09_11_ex,
+    ch09_12_ex,
+    ch09_13_ex,
+    ch09_14_ex,
+    ch09_15_ex,
+  ]
 };

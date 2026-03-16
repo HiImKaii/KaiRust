@@ -5,6 +5,21 @@ import { ch12_03 } from './ch12_03';
 import { ch12_04 } from './ch12_04';
 import { ch12_05 } from './ch12_05';
 import { ch12_06 } from './ch12_06';
+import { ch12_01_ex } from './ch12_01_ex';
+import { ch12_02_ex } from './ch12_02_ex';
+import { ch12_03_ex } from './ch12_03_ex';
+import { ch12_04_ex } from './ch12_04_ex';
+import { ch12_05_ex } from './ch12_05_ex';
+import { ch12_06_ex } from './ch12_06_ex';
+import { ch12_07_ex } from './ch12_07_ex';
+import { ch12_08_ex } from './ch12_08_ex';
+import { ch12_09_ex } from './ch12_09_ex';
+import { ch12_10_ex } from './ch12_10_ex';
+import { ch12_11_ex } from './ch12_11_ex';
+import { ch12_12_ex } from './ch12_12_ex';
+import { ch12_13_ex } from './ch12_13_ex';
+import { ch12_14_ex } from './ch12_14_ex';
+import { ch12_15_ex } from './ch12_15_ex';
 
 export const ch12: Chapter = {
   id: 'ch12',
@@ -30,5 +45,27 @@ export const ch12: Chapter = {
 
     <p>Chúng ta cũng sẽ giới thiệu ngắn gọn về closures, iterators, và trait objects, mà Chương 13 và Chương 18 sẽ cover chi tiết.</p>
   `,
-  lessons: [ch12_01, ch12_02, ch12_03, ch12_04, ch12_05, ch12_06]
+  lessons: [
+    ch12_01,
+    ch12_01_ex,
+    ch12_02,
+    ch12_02_ex,
+    ch12_03,
+    ch12_03_ex,
+    ch12_04,
+    ch12_04_ex,
+    ch12_05,
+    ch12_05_ex,
+    ch12_06,
+    ch12_06_ex,
+    ch12_07_ex,
+    ch12_08_ex,
+    ch12_09_ex,
+    ch12_10_ex,
+    ch12_11_ex,
+    ch12_12_ex,
+    ch12_13_ex,
+    ch12_14_ex,
+    ch12_15_ex,
+  ]
 };
