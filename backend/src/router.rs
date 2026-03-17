@@ -9,6 +9,7 @@ use crate::handlers::ws;
 use crate::handlers::ws_play;
 use crate::handlers::code;
 use crate::handlers::admin;
+use crate::handlers::progress;
 
 pub fn create_router(db: DbPool) -> Router {
     // Admin path configurable via env var
@@ -32,6 +33,8 @@ pub fn create_router(db: DbPool) -> Router {
         .route("/admin/users/{user_id}", delete(admin::delete_user))
         // Admin Stats API
         .route("/admin/stats", get(admin::get_stats))
+        // Progress API
+        .route("/progress/save", post(progress::save_progress))
         .with_state(db);
 
     Router::new()

@@ -1,0 +1,54 @@
+// =====================================================
+// Progress Handler — User learning progress tracking
+// =====================================================
+
+use crate::db::{self, DbPool };
+use crate::auth::get_user_id_from_token;
+use axum::{
+    extract::State,
+    http::StatusCode,
+    response::Json,
+};
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Deserialize)]
+pub struct SaveProgressRequest {
+    pub token: String,
+    pub lesson_id: String,
+    pub time_spent_seconds: i64,
+}
+
+#[derive(Debug, Serialize)]
+pub struct SaveProgressResponse {
+    pub success: bool,
+    pub message: String,
+}
+
+/// Save user progress for a lesson
+pub async fn save_progress(
+    State(db): State<DbPool>,
+    Json(payload): Json<SaveProgressRequest>,
+) -> Result<Json<SaveProgressResponse>, (StatusCode, String)> {
+    // Get user_id from token
+    let user_id = get_user_id_from_token(&db, &payload.token)
+        .await
+        .map_err(|e| (StatusCode::UNAUTHORIZED, e.to_string()))?;
+
+    let db_clone = (*db).clone();
+    let lesson_id = payload.lesson_id.clone();
+    let time_spent = payload.time_spent_seconds;
+
+    tokio::task::spawn_blocking(move || {
+        let conn = rusqlite::Connection::open(&db_clone)?;
+        db::save_user_progress(&conn, user_id, &lesson_id, time_spent)?;
+        Ok::<(), rusqlite::Error>(())
+    })
+    .await
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+
+    Ok(Json(SaveProgressResponse {
+        success: true,
+        message: "Progress saved successfully".to_string(),
+    }))
+}

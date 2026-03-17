@@ -278,3 +278,21 @@ pub fn get_user_progress(conn: &Connection, user_id: i64) -> SqliteResult<Vec<Us
 
     rows.collect()
 }
+
+/// Save or update user progress for a lesson
+pub fn save_user_progress(
+    conn: &Connection,
+    user_id: i64,
+    lesson_id: &str,
+    time_spent_seconds: i64,
+) -> SqliteResult<()> {
+    conn.execute(
+        "INSERT INTO user_progress (user_id, lesson_id, time_spent_seconds, completed_at)
+         VALUES (?1, ?2, ?3, CURRENT_TIMESTAMP)
+         ON CONFLICT(user_id, lesson_id) DO UPDATE SET
+         time_spent_seconds = time_spent_seconds + excluded.time_spent_seconds,
+         completed_at = CURRENT_TIMESTAMP",
+        params![user_id, lesson_id, time_spent_seconds],
+    )?;
+    Ok(())
+}

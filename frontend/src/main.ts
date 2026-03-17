@@ -501,9 +501,10 @@ const startCodeExecution = (is_test: boolean) => {
                             const testPassed = msg.code === 0 && expectedOutput && testOutput.trim() === expectedOutput.trim();
 
                             if (testPassed) {
-                                appendTerminal(`<br><span class="log-success" style="font-weight:bold; font-size:1.1rem">CHÚC MỪNG BẠN ĐÃ VƯỢT QUA BÀI TẬP!</span>`);
+                                appendTerminal(`<br><span class="log-success" style="font-weight:bold; font-size:1.1rem">CHÚC MỪNG BẠN ĐÃ TRẢ LỜI ĐÚNG!</span>`);
                                 appendTerminal(`<span class="log-info">Bạn đã xuất sắc hoàn thành tất cả các Testcase. Tiếp tục phát huy nhé!</span>`);
-                                ProgressManager.markCompleted(lesson.id);
+                                const timeSpent = Math.floor((Date.now() - lessonStartTime) / 1000);
+                                ProgressManager.markCompleted(lesson.id, timeSpent);
                                 const activeEl = document.querySelector(`[data-lesson-id="${lesson.id}"]`);
                                 if (activeEl) {
                                     activeEl.classList.add('passed');
@@ -821,7 +822,8 @@ const checkUnlockNext = () => {
         const timeSpent = Date.now() - lessonStartTime;
 
         if (timeSpent >= reqTimeMs) {
-            ProgressManager.markCompleted(currentLesson.id);
+            const finalTimeSpent = Math.floor((Date.now() - lessonStartTime) / 1000);
+            ProgressManager.markCompleted(currentLesson.id, finalTimeSpent);
             const activeEl = document.querySelector(`[data-lesson-id="${currentLesson.id}"]`);
             if (activeEl) {
                 activeEl.classList.add('completed');
@@ -834,7 +836,8 @@ const checkUnlockNext = () => {
                 if (currentLessonIndex !== -1 && flatLessons[currentLessonIndex].id === currentLesson.id) {
                     const latestIsAtBottom = scrollArea.scrollHeight - scrollArea.scrollTop - scrollArea.clientHeight <= 10;
                     if (latestIsAtBottom) {
-                        ProgressManager.markCompleted(currentLesson.id);
+                        const finalTimeSpent = Math.floor((Date.now() - lessonStartTime) / 1000);
+                        ProgressManager.markCompleted(currentLesson.id, finalTimeSpent);
                         const activeEl = document.querySelector(`[data-lesson-id="${currentLesson.id}"]`);
                         if (activeEl) {
                             activeEl.classList.add('completed');

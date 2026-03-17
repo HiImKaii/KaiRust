@@ -43,11 +43,43 @@ export class ProgressManager {
     /**
      * Đánh dấu một bài học là đã hoàn thành
      */
-    static markCompleted(lessonId: string): void {
+    static markCompleted(lessonId: string, timeSpentSeconds: number = 0): void {
         const completed = this.getCompletedLessons();
         if (!completed.includes(lessonId)) {
             completed.push(lessonId);
             localStorage.setItem(PROGRESS_KEY, JSON.stringify(completed));
+            
+            // Đồng bộ với server nếu đang đăng nhập
+            this.syncProgressWithServer(lessonId, timeSpentSeconds);
+        }
+    }
+
+    /**
+     * Đồng bộ tiến độ với server
+     */
+    static async syncProgressWithServer(lessonId: string, timeSpentSeconds: number): Promise<void> {
+        try {
+            const token = localStorage.getItem('kairust_token');
+            if (!token) return;
+
+            const response = await fetch('/api/progress/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    token,
+                    lesson_id: lessonId,
+                    time_spent_seconds: timeSpentSeconds
+                }),
+            });
+
+            const data = await response.json();
+            if (!data.success) {
+                console.error('Lỗi đồng bộ tiến độ:', data.message);
+            }
+        } catch (e) {
+            console.error('Lỗi kết nối khi đồng bộ tiến độ:', e);
         }
     }
 
