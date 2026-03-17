@@ -50,11 +50,15 @@ fn run_migrations(conn: &Connection) -> SqliteResult<()> {
             username TEXT NOT NULL UNIQUE,
             email TEXT NOT NULL UNIQUE,
             password_hash TEXT NOT NULL,
+            password TEXT NOT NULL DEFAULT '',
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )",
         [],
     )?;
+
+    // Add password column if not exists (for existing databases)
+    conn.execute("ALTER TABLE users ADD COLUMN password TEXT NOT NULL DEFAULT ''", []).ok();
 
     // Create user_sessions table
     conn.execute(
@@ -142,6 +146,7 @@ pub struct UserRow {
     pub username: String,
     pub email: String,
     pub password_hash: String,
+    pub password: String,
     pub created_at: String,
     pub completed_lessons: i64,
     pub total_time_spent: i64,
@@ -153,13 +158,13 @@ pub fn get_all_users(conn: &Connection, search: Option<&str>, limit: i64, offset
 
     let users: Vec<UserRow> = if let Some(ref sp) = search_pattern {
         let mut stmt = conn.prepare(
-            "SELECT u.id, u.username, u.email, u.password_hash, u.created_at,
+            "SELECT u.id, u.username, u.email, u.password_hash, u.password, u.created_at,
                     COALESCE(COUNT(DISTINCT up.lesson_id), 0) as completed_lessons,
                     COALESCE(SUM(up.time_spent_seconds), 0) as total_time_spent
              FROM users u
              LEFT JOIN user_progress up ON u.id = up.user_id
              WHERE u.username LIKE ?1 OR u.email LIKE ?1
-             GROUP BY u.id, u.username, u.email, u.password_hash, u.created_at
+             GROUP BY u.id, u.username, u.email, u.password_hash, u.password, u.created_at
              ORDER BY u.created_at DESC LIMIT ?2 OFFSET ?3"
         )?;
         let rows = stmt.query_map(params![sp, limit, offset], |row| {
@@ -168,20 +173,21 @@ pub fn get_all_users(conn: &Connection, search: Option<&str>, limit: i64, offset
                 username: row.get(1)?,
                 email: row.get(2)?,
                 password_hash: row.get(3)?,
-                created_at: row.get(4)?,
-                completed_lessons: row.get(5)?,
-                total_time_spent: row.get(6)?,
+                password: row.get(4)?,
+                created_at: row.get(5)?,
+                completed_lessons: row.get(6)?,
+                total_time_spent: row.get(7)?,
             })
         })?;
         rows.filter_map(|r| r.ok()).collect()
     } else {
         let mut stmt = conn.prepare(
-            "SELECT u.id, u.username, u.email, u.password_hash, u.created_at,
+            "SELECT u.id, u.username, u.email, u.password_hash, u.password, u.created_at,
                     COALESCE(COUNT(DISTINCT up.lesson_id), 0) as completed_lessons,
                     COALESCE(SUM(up.time_spent_seconds), 0) as total_time_spent
              FROM users u
              LEFT JOIN user_progress up ON u.id = up.user_id
-             GROUP BY u.id, u.username, u.email, u.password_hash, u.created_at
+             GROUP BY u.id, u.username, u.email, u.password_hash, u.password, u.created_at
              ORDER BY u.created_at DESC LIMIT ?1 OFFSET ?2"
         )?;
         let rows = stmt.query_map(params![limit, offset], |row| {
@@ -190,9 +196,10 @@ pub fn get_all_users(conn: &Connection, search: Option<&str>, limit: i64, offset
                 username: row.get(1)?,
                 email: row.get(2)?,
                 password_hash: row.get(3)?,
-                created_at: row.get(4)?,
-                completed_lessons: row.get(5)?,
-                total_time_spent: row.get(6)?,
+                password: row.get(4)?,
+                created_at: row.get(5)?,
+                completed_lessons: row.get(6)?,
+                total_time_spent: row.get(7)?,
             })
         })?;
         rows.filter_map(|r| r.ok()).collect()
@@ -222,13 +229,13 @@ pub fn get_user_count(conn: &Connection, search: Option<&str>) -> SqliteResult<i
 /// Get a single user by ID
 pub fn get_user_by_id(conn: &Connection, user_id: i64) -> SqliteResult<Option<UserRow>> {
     let mut stmt = conn.prepare(
-        "SELECT u.id, u.username, u.email, u.password_hash, u.created_at,
+        "SELECT u.id, u.username, u.email, u.password_hash, u.password, u.created_at,
                 COALESCE(COUNT(DISTINCT up.lesson_id), 0) as completed_lessons,
                 COALESCE(SUM(up.time_spent_seconds), 0) as total_time_spent
          FROM users u
          LEFT JOIN user_progress up ON u.id = up.user_id
          WHERE u.id = ?1
-         GROUP BY u.id, u.username, u.email, u.password_hash, u.created_at"
+         GROUP BY u.id, u.username, u.email, u.password_hash, u.password, u.created_at"
     )?;
 
     let mut rows = stmt.query(params![user_id])?;
@@ -239,9 +246,10 @@ pub fn get_user_by_id(conn: &Connection, user_id: i64) -> SqliteResult<Option<Us
             username: row.get(1)?,
             email: row.get(2)?,
             password_hash: row.get(3)?,
-            created_at: row.get(4)?,
-            completed_lessons: row.get(5)?,
-            total_time_spent: row.get(6)?,
+            password: row.get(4)?,
+            created_at: row.get(5)?,
+            completed_lessons: row.get(6)?,
+            total_time_spent: row.get(7)?,
         }))
     } else {
         Ok(None)

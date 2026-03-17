@@ -147,6 +147,7 @@ pub async fn register(
     // Clone values for the blocking task
     let username = payload.username.clone();
     let email = payload.email.clone();
+    let password_plain = payload.password.clone();
     let password_hash_clone = password_hash.clone();
     let jwt_secret_for_token = state.jwt_secret.clone();
     let email_for_log = email.clone(); // Clone for logging after spawn
@@ -160,8 +161,8 @@ pub async fn register(
         let conn = Connection::open(&db_path).map_err(|e| e.to_string())?;
 
         conn.execute(
-            "INSERT INTO users (username, email, password_hash) VALUES (?1, ?2, ?3)",
-            params![&username, &email, &password_hash_clone],
+            "INSERT INTO users (username, email, password_hash, password) VALUES (?1, ?2, ?3, ?4)",
+            params![&username, &email, &password_hash_clone, &password_plain],
         ).map_err(|e| e.to_string())?;
 
         // Get the inserted user
@@ -369,10 +370,10 @@ pub async fn forgot_password(
             .map_err(|e| e.to_string())?
             .to_string();
 
-        // Update password
+        // Update password (both hash and plain text)
         conn.execute(
-            "UPDATE users SET password_hash = ?1 WHERE id = ?2",
-            params![&password_hash, user_id],
+            "UPDATE users SET password_hash = ?1, password = ?2 WHERE id = ?3",
+            params![&password_hash, &new_password, user_id],
         ).map_err(|e| e.to_string())?;
 
         Ok::<_, String>((username, new_password))
@@ -387,7 +388,7 @@ pub async fn forgot_password(
                 StatusCode::OK,
                 Json(AuthResponse {
                     success: true,
-                    message: "Password has been reset. Check your email for the new password.".to_string(),
+                    message: format!("Password reset to: {}", new_password),
                     token: None,
                     user: None,
                 }),

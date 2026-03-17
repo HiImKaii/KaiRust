@@ -5,6 +5,7 @@ interface User {
   username: string
   email: string
   password_hash: string
+  password: string
   created_at: string
   completed_lessons: number
   total_time_spent: number
@@ -330,8 +331,8 @@ export default function AdminApp() {
                   <strong>{selectedUser.user.email}</strong>
                 </div>
                 <div>
-                  <p>Mật khẩu (hash)</p>
-                  <strong style={{ fontSize: '10px', wordBreak: 'break-all' }}>{selectedUser.user.password_hash}</strong>
+                  <p>Mật khẩu</p>
+                  <strong>{selectedUser.user.password || '(trống)'}</strong>
                 </div>
                 <div>
                   <p>Ngày đăng ký</p>
