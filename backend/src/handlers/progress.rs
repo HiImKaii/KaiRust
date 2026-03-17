@@ -34,7 +34,10 @@ pub async fn save_progress(
     // Get user_id from token
     let user_id = get_user_id_from_token(&db, &payload.token)
         .await
-        .map_err(|e| (StatusCode::UNAUTHORIZED, e.to_string()))?;
+        .map_err(|e| {
+            tracing::error!("[PROGRESS] Token validation error: {}", e);
+            (StatusCode::UNAUTHORIZED, e.to_string())
+        })?;
 
     tracing::info!("[PROGRESS] User ID: {}", user_id);
 
@@ -43,8 +46,11 @@ pub async fn save_progress(
     let time_spent = payload.time_spent_seconds;
 
     tokio::task::spawn_blocking(move || {
+        tracing::info!("[PROGRESS] Opening database connection...");
         let conn = rusqlite::Connection::open(&db_clone)?;
+        tracing::info!("[PROGRESS] Calling save_user_progress for user_id={}, lesson_id={}", user_id, lesson_id);
         db::save_user_progress(&conn, user_id, &lesson_id, time_spent)?;
+        tracing::info!("[PROGRESS] Progress saved successfully!");
         Ok::<(), rusqlite::Error>(())
     })
     .await

@@ -296,13 +296,21 @@ pub fn save_user_progress(
     lesson_id: &str,
     time_spent_seconds: i64,
 ) -> SqliteResult<()> {
-    conn.execute(
+    tracing::info!("[DB] save_user_progress called: user_id={}, lesson_id={}, time={}", user_id, lesson_id, time_spent_seconds);
+
+    let result = conn.execute(
         "INSERT INTO user_progress (user_id, lesson_id, time_spent_seconds, completed_at)
          VALUES (?1, ?2, ?3, CURRENT_TIMESTAMP)
          ON CONFLICT(user_id, lesson_id) DO UPDATE SET
          time_spent_seconds = time_spent_seconds + excluded.time_spent_seconds,
          completed_at = CURRENT_TIMESTAMP",
         params![user_id, lesson_id, time_spent_seconds],
-    )?;
+    );
+
+    match result {
+        Ok(rows) => tracing::info!("[DB] save_user_progress success: {} rows affected", rows),
+        Err(e) => tracing::error!("[DB] save_user_progress error: {}", e),
+    }
+
     Ok(())
 }
