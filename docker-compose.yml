@@ -17,7 +17,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
     volumes:
-      - backend_data:/data
+      - ./backend/data:/data
       - /var/run/docker.sock:/var/run/docker.sock:z
       - kairust_sandbox_data:/tmp/kairust_sandbox:z
       - cache_data:/tmp/kairust_cache

@@ -37,10 +37,8 @@ pub async fn init_database() -> Result<DbPool, Box<dyn std::error::Error + Send 
 
 /// Get database file path
 fn get_db_path() -> PathBuf {
-    // Get absolute path to current directory
-    let current_dir = std::env::current_dir()
-        .unwrap_or_else(|_| PathBuf::from("."));
-    current_dir.join("data").join("kairust.db")
+    let db_dir = std::env::var("DATA_DIR").unwrap_or_else(|_| "data".to_string());
+    PathBuf::from(db_dir).join("kairust.db")
 }
 
 /// Run database migrations
