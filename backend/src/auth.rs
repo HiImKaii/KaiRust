@@ -246,7 +246,7 @@ pub async fn login(
         let db_path = current_dir.join("data").join("kairust.db");
         let conn = Connection::open(&db_path).map_err(|e| e.to_string())?;
 
-        let mut stmt = conn.prepare("SELECT id, username, email, password_hash FROM users WHERE email = ?1")
+        let mut stmt = conn.prepare("SELECT id, username, email, password_hash FROM users WHERE email = ?1 OR username = ?1")
             .map_err(|e| e.to_string())?;
         let user = stmt.query_row(params![&email], |row| {
             Ok((
@@ -352,8 +352,8 @@ pub async fn forgot_password(
         let db_path = current_dir.join("data").join("kairust.db");
         let conn = Connection::open(&db_path).map_err(|e| e.to_string())?;
 
-        // Find user
-        let mut stmt = conn.prepare("SELECT id, username FROM users WHERE email = ?1")
+        // Find user by email or username
+        let mut stmt = conn.prepare("SELECT id, username FROM users WHERE email = ?1 OR username = ?1")
             .map_err(|e| e.to_string())?;
         let (user_id, username): (i64, String) = stmt.query_row(params![&email], |row| {
             Ok((row.get(0)?, row.get(1)?))
