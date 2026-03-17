@@ -345,6 +345,14 @@ const selectLesson = async (lesson: Lesson) => {
     document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('active'));
     const activeEl = document.querySelector(`[data-lesson-id="${lesson.id}"]`);
     if (activeEl) activeEl.classList.add('active');
+
+    // Save learning state
+    const currentChapter = ch28_chapters.find(ch => 
+        ch.lessons.some(l => l.id === lesson.id)
+    );
+    if (currentChapter) {
+        ProgressManager.saveLearningState(lesson.id, currentChapter.id, 0);
+    }
 };
 
 // ---- Render Practice Curriculum ----
@@ -1036,8 +1044,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.getElementById('submit-btn');
     if (submitBtn) submitBtn.classList.remove('hidden');
 
-    // Select first practice lesson
-    if (flatLessons.length > 0) {
+    // Restore last visited lesson or select first one
+    const savedState = ProgressManager.getLearningState();
+    if (savedState && savedState.currentLessonId) {
+        const savedLesson = flatLessons.find(l => l.id === savedState.currentLessonId);
+        if (savedLesson) {
+            selectLesson(savedLesson);
+            
+            // Open the chapter containing the saved lesson
+            const parentChapter = ch28_chapters.find(ch => 
+                ch.lessons.some(l => l.id === savedLesson.id)
+            );
+            if (parentChapter) {
+                const headers = document.querySelectorAll('.chapter-header');
+                headers.forEach(h => {
+                    if (h.querySelector('.chapter-title')?.textContent === parentChapter.title) {
+                        h.classList.add('open');
+                        h.nextElementSibling?.classList.add('open');
+                    }
+                });
+            }
+        } else if (flatLessons.length > 0) {
+            selectLesson(flatLessons[0]);
+        }
+    } else if (flatLessons.length > 0) {
         selectLesson(flatLessons[0]);
     }
 
