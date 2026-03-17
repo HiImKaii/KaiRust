@@ -241,9 +241,9 @@ pub async fn login(
     // Find user by email using blocking
     let result = tokio::task::spawn_blocking(move || {
         use rusqlite::Connection;
-        let current_dir = std::env::current_dir()
-            .unwrap_or_else(|_| std::path::PathBuf::from("."));
-        let db_path = current_dir.join("data").join("kairust.db");
+        let db_dir = std::env::var("DATA_DIR")
+            .unwrap_or_else(|_| "data".to_string());
+        let db_path = std::path::PathBuf::from(db_dir).join("kairust.db");
         let conn = Connection::open(&db_path).map_err(|e| e.to_string())?;
 
         let mut stmt = conn.prepare("SELECT id, username, email, password_hash FROM users WHERE email = ?1 OR username = ?1")
@@ -347,9 +347,9 @@ pub async fn forgot_password(
     // Find user and reset password using blocking
     let result = tokio::task::spawn_blocking(move || {
         use rusqlite::Connection;
-        let current_dir = std::env::current_dir()
-            .unwrap_or_else(|_| std::path::PathBuf::from("."));
-        let db_path = current_dir.join("data").join("kairust.db");
+        let db_dir = std::env::var("DATA_DIR")
+            .unwrap_or_else(|_| "data".to_string());
+        let db_path = std::path::PathBuf::from(db_dir).join("kairust.db");
         let conn = Connection::open(&db_path).map_err(|e| e.to_string())?;
 
         // Find user by email or username
