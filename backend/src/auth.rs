@@ -23,6 +23,8 @@ pub struct Claims {
     pub exp: usize,         // expiration timestamp
 }
 
+const DEFAULT_JWT_SECRET: &str = "kairust_default_secret_key_change_in_production";
+
 // ============== Request/Response Models ==============
 #[derive(Debug, Deserialize)]
 pub struct RegisterRequest {
@@ -567,7 +569,7 @@ pub async fn get_user_id_from_token(
 ) -> Result<i64, String> {
     // Get JWT secret from environment or use default
     let secret = std::env::var("JWT_SECRET")
-        .unwrap_or_else(|_| "kairust_default_secret_key_change_in_production".to_string());
+        .unwrap_or_else(|_| DEFAULT_JWT_SECRET.to_string());
 
     let claims = decode::<Claims>(
         token,

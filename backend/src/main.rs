@@ -90,7 +90,7 @@ async fn main() {
 
     // Initialize JWT secret
     let jwt_secret = std::env::var("JWT_SECRET")
-        .unwrap_or_else(|_| "kairust-default-secret-change-in-production".to_string());
+        .unwrap_or_else(|_| "kairust_default_secret_key_change_in_production".to_string());
     let jwt_secret = JwtSecret::new(jwt_secret);
 
     // Create auth state
