@@ -29,10 +29,14 @@ pub async fn save_progress(
     State(db): State<DbPool>,
     Json(payload): Json<SaveProgressRequest>,
 ) -> Result<Json<SaveProgressResponse>, (StatusCode, String)> {
+    tracing::info!("[PROGRESS] Saving progress - lesson_id: {}, time_spent: {}s", payload.lesson_id, payload.time_spent_seconds);
+
     // Get user_id from token
     let user_id = get_user_id_from_token(&db, &payload.token)
         .await
         .map_err(|e| (StatusCode::UNAUTHORIZED, e.to_string()))?;
+
+    tracing::info!("[PROGRESS] User ID: {}", user_id);
 
     let db_clone = (*db).clone();
     let lesson_id = payload.lesson_id.clone();

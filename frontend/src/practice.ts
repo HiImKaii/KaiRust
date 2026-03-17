@@ -11,6 +11,7 @@ let editorInstance: monaco.editor.IStandaloneCodeEditor | null = null;
 let flatLessons: Lesson[] = [];
 let currentLessonIndex = -1;
 let isSubmitting = false;
+let lessonStartTime = 0; // Track when user started the lesson
 
 // ---- Helper: Render Math ----
 const renderMath = (el: HTMLElement) => {
@@ -242,7 +243,8 @@ const startCodeExecution = (is_test: boolean) => {
 
                             if (testPassed) {
                                 appendTerminal(`<br><span style="color:#22c55e;font-weight:bold">✓ Đạt</span>`);
-                                ProgressManager.markCompleted(lesson.id);
+                                const timeSpent = lessonStartTime > 0 ? Math.floor((Date.now() - lessonStartTime) / 1000) : 0;
+                                ProgressManager.markCompleted(lesson.id, timeSpent);
                                 const activeEl = document.querySelector(`[data-lesson-id="${lesson.id}"]`);
                                 if (activeEl) {
                                     activeEl.classList.add('passed');
@@ -300,6 +302,7 @@ const selectLesson = async (lesson: Lesson) => {
     }
 
     currentLessonIndex = flatLessons.findIndex(l => l.id === lesson.id);
+    lessonStartTime = Date.now(); // Record start time for tracking study duration
 
     // Update title
     const titleEl = document.getElementById('lesson-title');
