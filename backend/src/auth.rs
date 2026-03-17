@@ -559,3 +559,27 @@ fn generate_random_password() -> String {
         .collect();
     password
 }
+
+/// Get user_id from JWT token
+pub async fn get_user_id_from_token(
+    db: &DbPool,
+    token: &str,
+) -> Result<i64, String> {
+    // Get JWT secret from environment or use default
+    let secret = std::env::var("JWT_SECRET")
+        .unwrap_or_else(|_| "kairust_default_secret_key_change_in_production".to_string());
+
+    let claims = decode::<Claims>(
+        token,
+        &DecodingKey::from_secret(secret.as_bytes()),
+        &Validation::default(),
+    )
+    .map_err(|e| format!("Invalid token: {}", e))?
+    .claims;
+
+    let user_id: i64 = claims.sub
+        .parse()
+        .map_err(|_| "Invalid user ID in token".to_string())?;
+
+    Ok(user_id)
+}

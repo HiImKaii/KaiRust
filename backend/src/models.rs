@@ -79,3 +79,26 @@ pub enum WsServerMessage {
     #[serde(rename = "error")]
     Error { message: String },
 }
+
+/// Request body for POST /api/code/save
+#[derive(Debug, Deserialize)]
+pub struct SaveCodeRequest {
+    pub token: String,
+    pub lesson_id: String,
+    pub code: String,
+}
+
+/// Response body for POST /api/code/save and GET /api/code/:lesson_id
+#[derive(Debug, Serialize)]
+pub struct SaveCodeResponse {
+    pub success: bool,
+    pub message: String,
+}
+
+/// Response body for GET /api/code/:lesson_id (returns code)
+#[derive(Debug, Serialize)]
+pub struct GetCodeResponse {
+    pub success: bool,
+    pub code: Option<String>,
+    pub lesson_id: String,
+}

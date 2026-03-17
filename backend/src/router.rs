@@ -7,13 +7,21 @@ use crate::db::DbPool;
 use crate::handlers::executor;
 use crate::handlers::ws;
 use crate::handlers::ws_play;
+use crate::handlers::code;
 
-pub fn create_router(_db: DbPool) -> Router {
-    Router::new()
+pub fn create_router(db: DbPool) -> Router {
+    let api_router = Router::new()
         // Health check
-        .route("/api/health", get(health))
+        .route("/health", get(health))
         // REST endpoint: compile & run (simple, no stdin streaming)
-        .route("/api/run", post(executor::handle_run))
+        .route("/run", post(executor::handle_run))
+        // Code save/load endpoints
+        .route("/code/save", post(code::save_code))
+        .route("/code/:lesson_id", get(code::get_code))
+        .with_state(db);
+
+    Router::new()
+        .nest("/api", api_router)
         // WebSocket endpoint: interactive run WITH test cases (Practice/Luyện tập)
         .route("/ws/run", get(ws::handle_ws_upgrade))
         // WebSocket endpoint: free run WITHOUT test cases (Theory/Lý thuyết)

@@ -286,7 +286,7 @@ const startCodeExecution = (is_test: boolean) => {
 };
 
 // ---- Lesson Selection (Practice) ----
-const selectLesson = (lesson: Lesson) => {
+const selectLesson = async (lesson: Lesson) => {
     const submitBtn = document.getElementById('submit-btn');
     const stdinInput = document.getElementById('terminal-stdin') as HTMLInputElement | null;
 
@@ -327,9 +327,11 @@ const selectLesson = (lesson: Lesson) => {
     const scrollArea = document.getElementById('panel-scroll-area');
     if (scrollArea) scrollArea.scrollTop = 0;
 
-    // Update editor
+    // Update editor - load saved code or use default
     if (editorInstance && lesson.defaultCode) {
-        editorInstance.setValue(lesson.defaultCode);
+        const savedCode = await loadSavedCode(lesson.id, lesson.defaultCode);
+        editorInstance.setValue(savedCode);
+        currentSavingLessonId = lesson.id;
     }
 
     // Clear terminal and reset stats
@@ -648,6 +650,126 @@ interface AuthResponse {
 let currentUser: UserInfo | null = null;
 
 const API_BASE = '/api/auth';
+const CODE_API_BASE = '/api';
+
+// =====================================================
+// Code Save/Load Module
+// =====================================================
+const SAVED_CODES_KEY = 'kairust_saved_codes';
+let saveTimeout: ReturnType<typeof setTimeout> | null = null;
+let currentSavingLessonId: string | null = null;
+
+// ---- localStorage for non-logged-in users ----
+const getSavedCodesFromLocalStorage = (): Record<string, string> => {
+    try {
+        const saved = localStorage.getItem(SAVED_CODES_KEY);
+        return saved ? JSON.parse(saved) : {};
+    } catch {
+        return {};
+    }
+};
+
+const saveCodeToLocalStorage = (lessonId: string, code: string) => {
+    const saved = getSavedCodesFromLocalStorage();
+    saved[lessonId] = code;
+    localStorage.setItem(SAVED_CODES_KEY, JSON.stringify(saved));
+};
+
+const getCodeFromLocalStorage = (lessonId: string): string | null => {
+    const saved = getSavedCodesFromLocalStorage();
+    return saved[lessonId] || null;
+};
+
+// ---- API for logged-in users ----
+const saveCodeToApi = async (lessonId: string, code: string): Promise<boolean> => {
+    const token = localStorage.getItem('kairust_token');
+    if (!token) return false;
+
+    try {
+        const response = await fetch(`${CODE_API_BASE}/code/save`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, lesson_id: lessonId, code })
+        });
+        const data = await response.json();
+        return data.success === true;
+    } catch (e) {
+        console.error('Failed to save code to API:', e);
+        return false;
+    }
+};
+
+const getCodeFromApi = async (lessonId: string): Promise<string | null> => {
+    const token = localStorage.getItem('kairust_token');
+    if (!token) return null;
+
+    try {
+        const response = await fetch(`${CODE_API_BASE}/code/${encodeURIComponent(lessonId)}?token=${token}`);
+        const data = await response.json();
+        return data.code || null;
+    } catch (e) {
+        console.error('Failed to get code from API:', e);
+        return null;
+    }
+};
+
+// ---- Main save/load functions ----
+const loadSavedCode = async (lessonId: string, defaultCode: string): Promise<string> => {
+    // Priority: API (logged in) > localStorage (backup)
+    const apiCode = await getCodeFromApi(lessonId);
+    if (apiCode) {
+        // Also update localStorage as backup
+        saveCodeToLocalStorage(lessonId, apiCode);
+        return apiCode;
+    }
+
+    // Fallback to localStorage
+    const localCode = getCodeFromLocalStorage(lessonId);
+    if (localCode) return localCode;
+
+    return defaultCode;
+};
+
+const saveCode = async (lessonId: string, code: string) => {
+    // Always save to localStorage as backup
+    saveCodeToLocalStorage(lessonId, code);
+
+    // Also save to API if logged in
+    if (localStorage.getItem('kairust_token')) {
+        await saveCodeToApi(lessonId, code);
+    }
+};
+
+// ---- Debounced auto-save ----
+const debouncedSaveCode = (lessonId: string, code: string) => {
+    // Clear previous timeout
+    if (saveTimeout) {
+        clearTimeout(saveTimeout);
+    }
+
+    // Set new timeout (2 seconds)
+    saveTimeout = setTimeout(() => {
+        saveCode(lessonId, code);
+        saveTimeout = null;
+    }, 2000);
+};
+
+// ---- Get current code from editor ----
+const getCurrentCode = (): string => {
+    return editorInstance?.getValue() || '';
+};
+
+// ---- Setup auto-save on editor change ----
+const setupAutoSave = () => {
+    if (!editorInstance) return;
+
+    editorInstance.onDidChangeModelContent(() => {
+        if (currentSavingLessonId) {
+            const code = getCurrentCode();
+            debouncedSaveCode(currentSavingLessonId, code);
+        }
+    });
+};
 
 async function apiCall<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const response = await fetch(`${API_BASE}${endpoint}`, {
@@ -908,6 +1030,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupResizers();
     setupCookieBanner();
     setupAuthModal();
+    setupAutoSave();
 
     // Show submit button by default on practice page
     const submitBtn = document.getElementById('submit-btn');

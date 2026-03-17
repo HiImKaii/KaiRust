@@ -9,6 +9,7 @@ use std::time::Instant;
 use tokio::process::Command;
 use uuid::Uuid;
 
+use crate::db::DbPool;
 use crate::models::{RunRequest, RunResponse};
 
 /// Sandbox directory for temporary code files
@@ -31,7 +32,7 @@ const MAX_OUTPUT_BYTES: usize = 1024 * 64; // 64KB
 // ---- REST API Handler ----
 
 pub async fn handle_run(
-    axum::extract::State(_state): axum::extract::State<()>,
+    axum::extract::State(_state): axum::extract::State<DbPool>,
     Json(req): Json<RunRequest>,
 ) -> Json<RunResponse> {
     let is_test = req.is_test.unwrap_or(false);

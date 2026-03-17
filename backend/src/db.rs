@@ -4,7 +4,7 @@
 // Each handler opens its own connection inside spawn_blocking
 // =====================================================
 
-use rusqlite::{Connection, Result as SqliteResult};
+use rusqlite::{params, Connection, Result as SqliteResult};
 use std::path::PathBuf;
 use std::sync::Arc;
 
@@ -85,7 +85,51 @@ fn run_migrations(conn: &Connection) -> SqliteResult<()> {
         [],
     )?;
 
+    // Create user_code_saves table
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS user_code_saves (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            lesson_id TEXT NOT NULL,
+            code TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            UNIQUE(user_id, lesson_id)
+        )",
+        [],
+    )?;
+
     tracing::info!("Database migrations completed");
 
     Ok(())
+}
+
+/// Save or update user code for a lesson
+pub fn save_user_code(conn: &Connection, user_id: i64, lesson_id: &str, code: &str) -> SqliteResult<()> {
+    conn.execute(
+        "INSERT INTO user_code_saves (user_id, lesson_id, code, updated_at)
+         VALUES (?1, ?2, ?3, CURRENT_TIMESTAMP)
+         ON CONFLICT(user_id, lesson_id) DO UPDATE SET
+         code = excluded.code,
+         updated_at = CURRENT_TIMESTAMP",
+        [user_id.to_string(), lesson_id.to_string(), code.to_string()],
+    )?;
+    Ok(())
+}
+
+/// Get saved code for a user and lesson
+pub fn get_user_code(conn: &Connection, user_id: i64, lesson_id: &str) -> SqliteResult<Option<String>> {
+    let mut stmt = conn.prepare(
+        "SELECT code FROM user_code_saves WHERE user_id = ?1 AND lesson_id = ?2"
+    )?;
+
+    let mut rows = stmt.query(params![user_id, lesson_id])?;
+
+    if let Some(row) = rows.next()? {
+        let code: String = row.get(0)?;
+        Ok(Some(code))
+    } else {
+        Ok(None)
+    }
 }
