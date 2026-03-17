@@ -14,31 +14,21 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Cache dependencies
-COPY backend/Cargo.toml backend/Cargo.lock ./
+COPY Cargo.toml Cargo.lock ./
 RUN mkdir src && echo "fn main() {}" > src/main.rs
 RUN cargo build --release
 RUN rm -rf src
 
 # Build actual source
-COPY backend/src ./src
+COPY src ./src
 RUN touch src/main.rs && cargo build --release
 
-# Stage 2: Build Admin SPA
-FROM node:20-alpine AS admin-builder
-WORKDIR /app
-COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci
-COPY frontend/ .
-RUN npm run build:admin
-
-# Stage 3: Runtime
+# Stage 2: Runtime
 FROM debian:bookworm-slim
 
 WORKDIR /app
 
 # Install runtime dependencies
-# - rustc: compiler for user code
-# - docker.io: CLI to spawn sandboxed containers for running user binaries
 RUN apt-get update && apt-get install -y \
     rustc \
     curl \
@@ -46,13 +36,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Create data directory
-RUN mkdir -p /data /tmp/kairust_sandbox /tmp/kairust_cache /app/dist-admin
+RUN mkdir -p /data /tmp/kairust_sandbox /tmp/kairust_cache
 
 # Copy binary
 COPY --from=builder /app/target/release/kairust-backend .
-
-# Copy Admin SPA
-COPY --from=admin-builder /app/dist-admin /app/dist-admin
 
 EXPOSE 3001
 

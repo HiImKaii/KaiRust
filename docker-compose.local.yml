@@ -1,33 +1,27 @@
 services:
-  # -------------------------
-  # BACKEND SERVICE (RUST)
-  # -------------------------
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: kairust_backend_local
-    restart: unless-stopped
-    privileged: true
     ports:
       - "3001:3001"
-    environment:
-      - RUST_LOG=info
-      - DATA_DIR=/data
-      - ADMIN_DIST_DIR=/app/dist-admin
-      - SANDBOX_VOLUME_NAME=kairust_sandbox_data_local
     volumes:
-      - backend_data_local:/data
+      - ./data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock:z
-      - kairust_sandbox_data_local:/tmp/kairust_sandbox:z
-      - cache_data_local:/tmp/kairust_cache
-      - ./frontend/dist-admin:/app/dist-admin:ro,bind
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=sqlite:///app/data/kairust.db
+      - RUST_LOG=info
+    restart: unless-stopped
 
 volumes:
   backend_data_local:
+    name: kairust_backend_data_local
   kairust_sandbox_data_local:
     name: kairust_sandbox_data_local
     driver_opts:
       type: tmpfs
-      device: tmpfs
   cache_data_local:
+    name: kairust_cache_data_local

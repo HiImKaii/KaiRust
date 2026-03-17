@@ -3,9 +3,9 @@
 }
 
 {$DOMAIN} {
-    # Admin routes - must be before catch-all
+    # Admin routes - served by frontend nginx
     handle /admin* {
-        reverse_proxy backend:3001
+        reverse_proxy frontend:80
     }
 
     # WebSocket route phải khai báo trước (handle ưu tiên cao hơn)
@@ -26,9 +26,9 @@
 
 # Internal HTTP listener for Cloudflare Tunnel (no TLS needed)
 :8080 {
-    # Admin routes - must be before catch-all
+    # Admin routes - served by frontend nginx
     handle /admin* {
-        reverse_proxy backend:3001
+        reverse_proxy frontend:80
     }
 
     # WebSocket route phải khai báo trước
