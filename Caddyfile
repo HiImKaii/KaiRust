@@ -4,6 +4,7 @@
 
 {$DOMAIN} {
     # Admin routes - served by frontend nginx
+    redir /admin /admin/
     handle /admin* {
         reverse_proxy frontend:80
     }
@@ -27,6 +28,7 @@
 # Internal HTTP listener for Cloudflare Tunnel (no TLS needed)
 :8080 {
     # Admin routes - served by frontend nginx
+    redir /admin /admin/
     handle /admin* {
         reverse_proxy frontend:80
     }
