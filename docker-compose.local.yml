@@ -14,12 +14,14 @@ services:
     environment:
       - RUST_LOG=info
       - DATA_DIR=/data
+      - ADMIN_DIST_DIR=/app/dist-admin
       - SANDBOX_VOLUME_NAME=kairust_sandbox_data_local
     volumes:
       - backend_data_local:/data
       - /var/run/docker.sock:/var/run/docker.sock:z
       - kairust_sandbox_data_local:/tmp/kairust_sandbox:z
       - cache_data_local:/tmp/kairust_cache
+      - ./frontend/dist-admin:/app/dist-admin:ro,bind
 
 volumes:
   backend_data_local:
