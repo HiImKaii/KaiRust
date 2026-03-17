@@ -10,6 +10,7 @@ use crate::handlers::ws_play;
 use crate::handlers::code;
 use crate::handlers::admin;
 use crate::handlers::progress;
+use crate::handlers::achievements;
 
 pub fn create_router(db: DbPool) -> Router {
     // Admin path configurable via env var
@@ -35,6 +36,12 @@ pub fn create_router(db: DbPool) -> Router {
         .route("/admin/stats", get(admin::get_stats))
         // Progress API
         .route("/progress/save", post(progress::save_progress))
+        // Achievements API
+        .route("/achievements", get(achievements::get_achievements))
+        .route("/achievements/stats", get(achievements::get_achievement_stats))
+        .route("/achievements/check", post(achievements::check_achievements))
+        .route("/rank", get(achievements::get_user_rank))
+        .route("/streak", get(achievements::get_user_streak))
         .with_state(db);
 
     Router::new()

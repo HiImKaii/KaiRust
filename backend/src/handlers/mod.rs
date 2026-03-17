@@ -4,3 +4,4 @@ pub mod executor;
 pub mod code;
 pub mod admin;
 pub mod progress;
+pub mod achievements;

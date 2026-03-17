@@ -51,6 +51,16 @@ pub async fn save_progress(
         tracing::info!("[PROGRESS] Calling save_user_progress for user_id={}, lesson_id={}", user_id, lesson_id);
         db::save_user_progress(&conn, user_id, &lesson_id, time_spent)?;
         tracing::info!("[PROGRESS] Progress saved successfully!");
+
+        // Update streak
+        let _streak = db::update_user_streak(&conn, user_id);
+
+        // Check and award achievements
+        let new_achievements = db::check_and_award_achievements(&conn, user_id)?;
+        if !new_achievements.is_empty() {
+            tracing::info!("[ACHIEVEMENTS] User {} earned {} new achievements: {:?}", user_id, new_achievements.len(), new_achievements);
+        }
+
         Ok::<(), rusqlite::Error>(())
     })
     .await

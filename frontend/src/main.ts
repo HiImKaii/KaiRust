@@ -1,6 +1,7 @@
 import * as monaco from 'monaco-editor';
 import { courseData, type Lesson, type Chapter, generateCPContent } from './courses';
 import { ProgressManager } from './progress';
+import './achievements';
 // ch28_chapters moved to practice.ts
 
 // =====================================================
@@ -1445,9 +1446,12 @@ function updateAuthUI() {
     if (!settingsBtn) return;
 
     if (currentUser) {
-        // User is logged in - show user info
+        // User is logged in - show user info with achievements button
         settingsBtn.innerHTML = `
             <div class="user-info">
+                <button class="achievements-btn" onclick="loadAndShowAchievements()" title="Thành tựu">
+                    <span class="material-symbols-outlined">emoji_events</span>
+                </button>
                 <div class="user-avatar">${currentUser.username.charAt(0).toUpperCase()}</div>
                 <span class="user-name">${currentUser.username}</span>
             </div>

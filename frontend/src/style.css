@@ -1517,6 +1517,29 @@ code {
   gap: 0.75rem;
 }
 
+/* Achievements button */
+.achievements-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: var(--text-secondary);
+}
+
+.achievements-btn:hover {
+  background: var(--bg-tertiary);
+  color: #ffd700;
+}
+
+.achievements-btn .material-symbols-outlined {
+  font-size: 24px;
+}
+
 .user-avatar {
   width: 36px;
   height: 36px;
