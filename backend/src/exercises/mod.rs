@@ -19,13 +19,6 @@ pub mod ch18;
 pub mod ch19;
 pub mod ch20;
 
-pub mod ch24;
-pub mod ch25;
-pub mod ch26;
-pub mod ch27;
-pub mod ch28;
-pub mod ch29;
-
 /// Giới hạn của bài tập
 #[derive(Debug, Clone, Copy)]
 #[allow(dead_code)]

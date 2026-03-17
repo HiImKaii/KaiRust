@@ -136,12 +136,6 @@ import { appendix } from './chapters/appendix/index';
 import { ch21 } from './chapters/ch21/index';
 import { ch22 } from './chapters/ch22/index';
 import { ch23 } from './chapters/ch23/index';
-import { ch24 } from './chapters/ch24/index';
-import { ch25 } from './chapters/ch25/index';
-import { ch26 } from './chapters/ch26/index';
-import { ch27 } from './chapters/ch27/index';
-import { ch28 } from './chapters/ch28/index';
-import { ch29 } from './chapters/ch29/index';
 
 export const courseData: Chapter[] = [
   ch01,
@@ -168,11 +162,5 @@ export const courseData: Chapter[] = [
   appendix,
   ch21,
   ch22,
-  ch23,
-  ch24,
-  ch25,
-  ch26,
-  ch27,
-  ch28,
-  ch29
+  ch23
 ];
