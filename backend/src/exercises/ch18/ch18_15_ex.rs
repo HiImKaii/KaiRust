@@ -1,6 +1,5 @@
 // Exercise - ch18_15_ex: Volatile Memory Access
 
-use std::ptr;
 
 fn main() {
     let data = vec![1i32, 2, 3, 4, 5];

@@ -133,3 +133,148 @@ pub fn get_user_code(conn: &Connection, user_id: i64, lesson_id: &str) -> Sqlite
         Ok(None)
     }
 }
+
+// =====================================================
+// Admin User Management
+// =====================================================
+
+#[derive(Debug, serde::Serialize)]
+pub struct UserRow {
+    pub id: i64,
+    pub username: String,
+    pub email: String,
+    pub created_at: String,
+    pub completed_lessons: i64,
+    pub total_time_spent: i64,
+}
+
+/// Get all users with progress stats
+pub fn get_all_users(conn: &Connection, search: Option<&str>, limit: i64, offset: i64) -> SqliteResult<Vec<UserRow>> {
+    let search_pattern = search.map(|s| format!("%{}%", s));
+
+    let users: Vec<UserRow> = if let Some(ref sp) = search_pattern {
+        let mut stmt = conn.prepare(
+            "SELECT u.id, u.username, u.email, u.created_at,
+                    COALESCE(COUNT(DISTINCT up.lesson_id), 0) as completed_lessons,
+                    COALESCE(SUM(up.time_spent_seconds), 0) as total_time_spent
+             FROM users u
+             LEFT JOIN user_progress up ON u.id = up.user_id
+             WHERE u.username LIKE ?1 OR u.email LIKE ?1
+             GROUP BY u.id, u.username, u.email, u.created_at
+             ORDER BY u.created_at DESC LIMIT ?2 OFFSET ?3"
+        )?;
+        let rows = stmt.query_map(params![sp, limit, offset], |row| {
+            Ok(UserRow {
+                id: row.get(0)?,
+                username: row.get(1)?,
+                email: row.get(2)?,
+                created_at: row.get(3)?,
+                completed_lessons: row.get(4)?,
+                total_time_spent: row.get(5)?,
+            })
+        })?;
+        rows.filter_map(|r| r.ok()).collect()
+    } else {
+        let mut stmt = conn.prepare(
+            "SELECT u.id, u.username, u.email, u.created_at,
+                    COALESCE(COUNT(DISTINCT up.lesson_id), 0) as completed_lessons,
+                    COALESCE(SUM(up.time_spent_seconds), 0) as total_time_spent
+             FROM users u
+             LEFT JOIN user_progress up ON u.id = up.user_id
+             GROUP BY u.id, u.username, u.email, u.created_at
+             ORDER BY u.created_at DESC LIMIT ?1 OFFSET ?2"
+        )?;
+        let rows = stmt.query_map(params![limit, offset], |row| {
+            Ok(UserRow {
+                id: row.get(0)?,
+                username: row.get(1)?,
+                email: row.get(2)?,
+                created_at: row.get(3)?,
+                completed_lessons: row.get(4)?,
+                total_time_spent: row.get(5)?,
+            })
+        })?;
+        rows.filter_map(|r| r.ok()).collect()
+    };
+
+    Ok(users)
+}
+
+/// Get total user count
+pub fn get_user_count(conn: &Connection, search: Option<&str>) -> SqliteResult<i64> {
+    let query = if search.is_some() {
+        "SELECT COUNT(*) FROM users WHERE username LIKE ?1 OR email LIKE ?1"
+    } else {
+        "SELECT COUNT(*) FROM users"
+    };
+
+    let mut stmt = conn.prepare(query)?;
+
+    if let Some(s) = search {
+        let search_pattern = format!("%{}%", s);
+        stmt.query_row(params![search_pattern], |row| row.get(0))
+    } else {
+        stmt.query_row([], |row| row.get(0))
+    }
+}
+
+/// Get a single user by ID
+pub fn get_user_by_id(conn: &Connection, user_id: i64) -> SqliteResult<Option<UserRow>> {
+    let mut stmt = conn.prepare(
+        "SELECT u.id, u.username, u.email, u.created_at,
+                COALESCE(COUNT(DISTINCT up.lesson_id), 0) as completed_lessons,
+                COALESCE(SUM(up.time_spent_seconds), 0) as total_time_spent
+         FROM users u
+         LEFT JOIN user_progress up ON u.id = up.user_id
+         WHERE u.id = ?1
+         GROUP BY u.id, u.username, u.email, u.created_at"
+    )?;
+
+    let mut rows = stmt.query(params![user_id])?;
+
+    if let Some(row) = rows.next()? {
+        Ok(Some(UserRow {
+            id: row.get(0)?,
+            username: row.get(1)?,
+            email: row.get(2)?,
+            created_at: row.get(3)?,
+            completed_lessons: row.get(4)?,
+            total_time_spent: row.get(5)?,
+        }))
+    } else {
+        Ok(None)
+    }
+}
+
+/// Delete a user
+pub fn delete_user(conn: &Connection, user_id: i64) -> SqliteResult<()> {
+    conn.execute("DELETE FROM user_code_saves WHERE user_id = ?1", params![user_id])?;
+    conn.execute("DELETE FROM user_progress WHERE user_id = ?1", params![user_id])?;
+    conn.execute("DELETE FROM user_sessions WHERE user_id = ?1", params![user_id])?;
+    conn.execute("DELETE FROM users WHERE id = ?1", params![user_id])?;
+    Ok(())
+}
+
+/// Get user progress details
+#[derive(Debug, serde::Serialize)]
+pub struct UserProgressRow {
+    pub lesson_id: String,
+    pub completed_at: String,
+    pub time_spent_seconds: i64,
+}
+
+pub fn get_user_progress(conn: &Connection, user_id: i64) -> SqliteResult<Vec<UserProgressRow>> {
+    let mut stmt = conn.prepare(
+        "SELECT lesson_id, completed_at, time_spent_seconds FROM user_progress WHERE user_id = ?1 ORDER BY completed_at DESC"
+    )?;
+
+    let rows = stmt.query_map(params![user_id], |row| {
+        Ok(UserProgressRow {
+            lesson_id: row.get(0)?,
+            completed_at: row.get(1)?,
+            time_spent_seconds: row.get(2)?,
+        })
+    })?;
+
+    rows.collect()
+}

@@ -1,6 +1,5 @@
 // Exercise - ch09_12_ex: Chaining Multiple Operations
 
-use std::num::ParseIntError;
 
 fn parse_positive(s: &str) -> Result<i32, String> {
     let n: i32 = s.parse().map_err(|_| "Parse error")?;

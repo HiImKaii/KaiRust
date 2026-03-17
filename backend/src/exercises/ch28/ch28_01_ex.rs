@@ -12,7 +12,7 @@ fn main() {
     io::stdin().read_line(&mut input).unwrap();
     let n: i32 = input.trim().parse().unwrap();
 
-    for i in 1..=n {
+    for _i in 1..=n {
         input = String::new();
         io::stdin().read_line(&mut input).unwrap();
         let ma: i32 = input.trim().parse().unwrap();

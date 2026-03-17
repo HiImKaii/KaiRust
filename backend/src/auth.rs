@@ -562,7 +562,7 @@ fn generate_random_password() -> String {
 
 /// Get user_id from JWT token
 pub async fn get_user_id_from_token(
-    db: &DbPool,
+    _db: &DbPool,
     token: &str,
 ) -> Result<i64, String> {
     // Get JWT secret from environment or use default
