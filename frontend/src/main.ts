@@ -1636,7 +1636,7 @@ function setupAuthModal() {
 const setupPracticeButton = () => {
     const practiceBtn = document.getElementById('btn-luyen-tap');
     practiceBtn?.addEventListener('click', () => {
-        window.location.href = '/practice.html';
+        window.location.href = '/practice';
     });
 };
 

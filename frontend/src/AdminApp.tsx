@@ -170,7 +170,7 @@ export default function AdminApp() {
     return (
       <div className="admin-login">
         <div className="login-card">
-          <div className="login-logo">⚙️</div>
+          <div className="login-logo-blob">⚙️</div>
           <h1>KaiRust Admin</h1>
           <p>Quản lý hệ thống học tập</p>
           {error && <div className="login-error">{error}</div>}
@@ -195,7 +195,7 @@ export default function AdminApp() {
     <div className="admin-layout">
       <header className="admin-header">
         <div className="admin-brand">
-          <span className="brand-icon">⚙️</span>
+          <div className="brand-blob">⚙️</div>
           <span className="brand-text">KaiRust Admin</span>
         </div>
         <nav className="admin-nav">
@@ -220,19 +220,19 @@ export default function AdminApp() {
       <main className="admin-main">
         {activeTab === 'dashboard' && (
           <div className="dashboard">
-            <h2>Tổng quan</h2>
+            <h2>Tổng quan hệ thống</h2>
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-value">{stats?.total_users || 0}</div>
-                <div className="stat-label">Tổng Users</div>
+                <div className="stat-label">Tổng số học viên</div>
               </div>
               <div className="stat-card">
                 <div className="stat-value">{stats?.total_lessons || 0}</div>
-                <div className="stat-label">Lessons Đã Học</div>
+                <div className="stat-label">Bài học đã tiếp cận</div>
               </div>
               <div className="stat-card">
                 <div className="stat-value">{stats?.total_completions || 0}</div>
-                <div className="stat-label">Tổng Lần Hoàn Thành</div>
+                <div className="stat-label">Tổng lượt hoàn thành</div>
               </div>
             </div>
           </div>
@@ -241,11 +241,11 @@ export default function AdminApp() {
         {activeTab === 'users' && (
           <div className="users-page">
             <div className="users-header">
-              <h2>Quản lý Users</h2>
+              <h2>Quản lý người dùng</h2>
               <div className="users-toolbar">
                 <input
                   type="text"
-                  placeholder="Tìm kiếm username hoặc email..."
+                  placeholder="Tìm kiếm theo tên hoặc email..."
                   value={search}
                   onChange={(e) => {
                     setSearch(e.target.value)
@@ -260,29 +260,29 @@ export default function AdminApp() {
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Username</th>
+                    <th>Người dùng</th>
                     <th>Email</th>
-                    <th>Ngày đăng ký</th>
-                    <th>Bài đã làm</th>
-                    <th>Thời gian</th>
+                    <th>Ngày tham gia</th>
+                    <th>Số bài tập</th>
+                    <th>Thời gian học</th>
                     <th>Thao tác</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((user) => (
                     <tr key={user.id}>
-                      <td>{user.id}</td>
-                      <td>{user.username}</td>
+                      <td style={{ fontWeight: 700, opacity: 0.5 }}>#{user.id}</td>
+                      <td style={{ fontWeight: 700 }}>{user.username}</td>
                       <td>{user.email}</td>
                       <td>{new Date(user.created_at).toLocaleDateString('vi-VN')}</td>
-                      <td>{user.completed_lessons}</td>
+                      <td style={{ fontWeight: 700, color: '#7c3aed' }}>{user.completed_lessons}</td>
                       <td>{formatTime(user.total_time_spent)}</td>
                       <td>
                         <button
                           className="action-btn view"
                           onClick={() => loadUserDetail(user.id)}
                         >
-                          Xem
+                          Chi tiết
                         </button>
                         <button
                           className="action-btn delete"
@@ -299,7 +299,7 @@ export default function AdminApp() {
 
             <div className="pagination">
               <button disabled={page === 0} onClick={() => setPage(page - 1)}>
-                Trang trước
+                Trước
               </button>
               <span>
                 Trang {page + 1} / {Math.ceil(totalUsers / 20) || 1}
@@ -308,7 +308,7 @@ export default function AdminApp() {
                 disabled={(page + 1) * 20 >= totalUsers}
                 onClick={() => setPage(page + 1)}
               >
-                Trang sau
+                Sau
               </button>
             </div>
           </div>
@@ -319,32 +319,34 @@ export default function AdminApp() {
         <div className="modal-overlay" onClick={() => setSelectedUser(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>User: {selectedUser.user.username}</h3>
+              <h3>Hồ sơ: {selectedUser.user.username}</h3>
               <button className="modal-close" onClick={() => setSelectedUser(null)}>
                 ×
               </button>
             </div>
             <div className="modal-body">
               <div className="user-info">
-                <p>
-                  <strong>Email:</strong> {selectedUser.user.email}
-                </p>
-                <p>
-                  <strong>Ngày đăng ký:</strong>{' '}
-                  {new Date(selectedUser.user.created_at).toLocaleString('vi-VN')}
-                </p>
-                <p>
-                  <strong>Bài đã hoàn thành:</strong> {selectedUser.user.completed_lessons}
-                </p>
-                <p>
-                  <strong>Tổng thời gian học:</strong>{' '}
-                  {formatTime(selectedUser.user.total_time_spent)}
-                </p>
+                <div>
+                  <p>Email liên hệ</p>
+                  <strong>{selectedUser.user.email}</strong>
+                </div>
+                <div>
+                  <p>Ngày đăng ký</p>
+                  <strong>{new Date(selectedUser.user.created_at).toLocaleDateString('vi-VN')}</strong>
+                </div>
+                <div>
+                  <p>Bài tập đã xong</p>
+                  <strong>{selectedUser.user.completed_lessons} bài</strong>
+                </div>
+                <div>
+                  <p>Thời gian tích lũy</p>
+                  <strong>{formatTime(selectedUser.user.total_time_spent)}</strong>
+                </div>
               </div>
-              <h4>Lịch sử học tập</h4>
+              <h4>Tiến trình chi tiết</h4>
               <div className="progress-list">
                 {selectedUser.progress.length === 0 ? (
-                  <p className="no-data">Chưa có tiến trình</p>
+                  <p className="no-data">Chưa có dữ liệu tiến trình</p>
                 ) : (
                   selectedUser.progress.map((p, i) => (
                     <div key={i} className="progress-item">
