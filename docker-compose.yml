@@ -4,8 +4,8 @@ services:
   # -------------------------
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
     container_name: kairust_backend
     restart: unless-stopped
     privileged: true
@@ -19,7 +19,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:z
       - kairust_sandbox_data:/tmp/kairust_sandbox:z
       - cache_data:/tmp/kairust_cache
-      - ./frontend/dist-admin:/app/dist-admin:ro
 
   # -------------------------
   # FRONTEND SERVICE (VITE/NGINX)
