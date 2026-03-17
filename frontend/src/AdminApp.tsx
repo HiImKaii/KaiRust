@@ -170,7 +170,6 @@ export default function AdminApp() {
     return (
       <div className="admin-login">
         <div className="login-card">
-          <div className="login-logo-blob">⚙️</div>
           <h1>KaiRust Admin</h1>
           <p>Quản lý hệ thống học tập</p>
           {error && <div className="login-error">{error}</div>}
@@ -195,7 +194,6 @@ export default function AdminApp() {
     <div className="admin-layout">
       <header className="admin-header">
         <div className="admin-brand">
-          <div className="brand-blob">⚙️</div>
           <span className="brand-text">KaiRust Admin</span>
         </div>
         <nav className="admin-nav">
