@@ -30,3 +30,6 @@ yarn-error.log*
 
 28tech/
 frontend/dist-admin/
+
+# Local dev scripts
+dev.sh

@@ -15,6 +15,8 @@ use tower_http::cors::{Any, CorsLayer};
 use tracing_subscriber;
 
 async fn init_template_project() {
+    let run_local = std::env::var("RUN_LOCAL").map(|v| v == "1").unwrap_or(false);
+
     tracing::info!("Khởi tạo bản mẫu Sandbox Base Template (Cold Start Optimization)...");
     let template_dir = std::path::PathBuf::from("/tmp/kairust_template");
     let _ = tokio::fs::create_dir_all(&template_dir).await;
@@ -52,6 +54,12 @@ rand = "0.8"
         Err(e) => {
             tracing::error!("Failed to run cargo build on template: {}", e);
         }
+    }
+
+    // Skip Docker pull if running locally without Docker
+    if run_local {
+        tracing::info!("RUN_LOCAL=1: Skipping Docker sandbox image pull (running directly)");
+        return;
     }
 
     tracing::info!("Pre-pulling Docker sandbox image...");

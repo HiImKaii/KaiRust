@@ -15,6 +15,20 @@ use crate::models::{RunRequest, RunResponse};
 /// Sandbox directory for temporary code files
 const SANDBOX_DIR: &str = "/tmp/kairust_sandbox";
 
+/// Check if we should use Docker sandbox or run directly (for local dev without Docker)
+fn use_docker_sandbox() -> bool {
+    // Use Docker by default, but can be disabled with RUN_LOCAL=1 for local dev
+    std::env::var("RUN_LOCAL").map(|v| v != "1").unwrap_or(true)
+}
+
+/// Ensure sandbox directory exists
+async fn ensure_sandbox_dir() -> Result<(), String> {
+    let sandbox_path = std::path::PathBuf::from(SANDBOX_DIR);
+    tokio::fs::create_dir_all(&sandbox_path)
+        .await
+        .map_err(|e| format!("Lỗi tạo thư mục sandbox: {}", e))
+}
+
 /// Get timeout in seconds based on exercise limits
 fn get_timeout_secs(lesson_id: &Option<String>) -> u64 {
     match lesson_id {
@@ -63,6 +77,17 @@ pub async fn compile_and_run(code: &str, stdin_input: Option<&str>, is_test: boo
 
     // Lấy timeout từ giới hạn bài tập
     let timeout_secs = get_timeout_secs(&lesson_id);
+
+    // Ensure sandbox directory exists
+    if let Err(e) = ensure_sandbox_dir().await {
+        return RunResponse {
+            success: false,
+            stdout: String::new(),
+            stderr: format!("Lỗi tạo workspace: {}", e),
+            execution_time_ms: 0,
+            memory_usage_kb: 0,
+        };
+    }
 
     // Setup workspace
     if let Err(e) = setup_workspace(&work_dir, code).await {
@@ -177,6 +202,20 @@ async fn run_binary(
     _is_test: bool,
     timeout_secs: u64,
 ) -> Result<(String, String, u64), String> {
+    // Check if we should use Docker or run directly (for local dev)
+    if use_docker_sandbox() {
+        run_with_docker(work_dir, stdin_input, timeout_secs).await
+    } else {
+        run_directly(work_dir, stdin_input, timeout_secs).await
+    }
+}
+
+/// Run binary in Docker sandbox (production mode)
+async fn run_with_docker(
+    work_dir: &PathBuf,
+    stdin_input: Option<&str>,
+    timeout_secs: u64,
+) -> Result<(String, String, u64), String> {
     // Cấu hình linh hoạt Docker Volume Mount (Cho cả Local và DooD)
     let session_id = work_dir
         .file_name()
@@ -185,7 +224,7 @@ async fn run_binary(
         .to_string();
 
     let is_dood = std::env::var("SANDBOX_VOLUME_NAME").is_ok();
-    
+
     let volume_arg = if let Ok(vol_name) = std::env::var("SANDBOX_VOLUME_NAME") {
         format!("{}:/tmp/kairust_sandbox:ro", vol_name)
     } else {
@@ -241,6 +280,52 @@ async fn run_binary(
             let stderr = String::from_utf8_lossy(&output.stderr).to_string();
             // Docker container đã bị giới hạn memory 128m, sử dụng giá trị cố định
             let memory_kb = 0_u64; // Memory tracking qua Docker stats nếu cần sau này
+            Ok((stdout, stderr, memory_kb))
+        },
+    )
+    .await;
+
+    match result {
+        Ok(inner) => inner,
+        Err(_) => Err(format!("Chương trình chạy quá thời gian (timeout {}s)", timeout_secs)),
+    }
+}
+
+/// Run binary directly without Docker (local dev mode with RUN_LOCAL=1)
+async fn run_directly(
+    work_dir: &PathBuf,
+    stdin_input: Option<&str>,
+    timeout_secs: u64,
+) -> Result<(String, String, u64), String> {
+    let binary_path = work_dir.join("target/release/user_code");
+
+    let mut cmd = Command::new(&binary_path);
+    cmd.stdin(std::process::Stdio::piped());
+    cmd.stdout(std::process::Stdio::piped());
+    cmd.stderr(std::process::Stdio::piped());
+
+    let result = tokio::time::timeout(
+        std::time::Duration::from_secs(timeout_secs),
+        async {
+            let mut child = cmd.spawn().map_err(|e| format!("Lỗi khởi tạo process: {}", e))?;
+
+            // Write stdin if provided
+            if let Some(input) = stdin_input {
+                use tokio::io::AsyncWriteExt;
+                if let Some(mut stdin) = child.stdin.take() {
+                    let _ = stdin.write_all(input.as_bytes()).await;
+                    let _ = stdin.shutdown().await;
+                }
+            }
+
+            let output = child
+                .wait_with_output()
+                .await
+                .map_err(|e| format!("Lỗi đọc output: {}", e))?;
+
+            let stdout = String::from_utf8_lossy(&output.stdout).to_string();
+            let stderr = String::from_utf8_lossy(&output.stderr).to_string();
+            let memory_kb = 0_u64;
             Ok((stdout, stderr, memory_kb))
         },
     )
