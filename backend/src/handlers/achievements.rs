@@ -6,6 +6,7 @@ use crate::db::{self, DbPool, Achievement, UserAchievement, AchievementStats, Us
 use crate::auth::get_user_id_from_token;
 use axum::{
     extract::State,
+    extract::Query,
     http::StatusCode,
     response::Json,
 };
@@ -14,6 +15,11 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
 pub struct GetAchievementsRequest {
+    pub token: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct TokenQuery {
     pub token: String,
 }
 
@@ -73,9 +79,9 @@ pub fn create_achievements_router(state: DbPool) -> axum::Router {
 /// Get all achievements with user's earned status
 pub async fn get_achievements(
     State(db): State<DbPool>,
-    token: String,
+    Query(query): Query<TokenQuery>,
 ) -> Result<Json<AchievementsResponse>, (StatusCode, String)> {
-    let user_id = get_user_id_from_token(&db, &token)
+    let user_id = get_user_id_from_token(&db, &query.token)
         .await
         .map_err(|e| (StatusCode::UNAUTHORIZED, e.to_string()))?;
 
@@ -136,9 +142,9 @@ pub async fn get_achievements(
 /// Get user achievement stats only
 pub async fn get_achievement_stats(
     State(db): State<DbPool>,
-    token: String,
+    Query(query): Query<TokenQuery>,
 ) -> Result<Json<AchievementStats>, (StatusCode, String)> {
-    let user_id = get_user_id_from_token(&db, &token)
+    let user_id = get_user_id_from_token(&db, &query.token)
         .await
         .map_err(|e| (StatusCode::UNAUTHORIZED, e.to_string()))?;
 
@@ -228,9 +234,9 @@ pub async fn check_achievements(
 /// Get user rank
 pub async fn get_user_rank(
     State(db): State<DbPool>,
-    token: String,
+    Query(query): Query<TokenQuery>,
 ) -> Result<Json<RankResponse>, (StatusCode, String)> {
-    let user_id = get_user_id_from_token(&db, &token)
+    let user_id = get_user_id_from_token(&db, &query.token)
         .await
         .map_err(|e| (StatusCode::UNAUTHORIZED, e.to_string()))?;
 
@@ -253,9 +259,9 @@ pub async fn get_user_rank(
 /// Get user streak
 pub async fn get_user_streak(
     State(db): State<DbPool>,
-    token: String,
+    Query(query): Query<TokenQuery>,
 ) -> Result<Json<StreakResponse>, (StatusCode, String)> {
-    let user_id = get_user_id_from_token(&db, &token)
+    let user_id = get_user_id_from_token(&db, &query.token)
         .await
         .map_err(|e| (StatusCode::UNAUTHORIZED, e.to_string()))?;
 

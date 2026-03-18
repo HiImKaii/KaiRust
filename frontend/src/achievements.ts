@@ -1,5 +1,5 @@
 // =====================================================
-// Achievements UI - Badge display and management
+// Achievements UI - New Design (Clean SaaS / Minimal Corporate)
 // =====================================================
 
 interface Achievement {
@@ -63,7 +63,6 @@ async function fetchAchievements(token: string): Promise<{ achievements: Achieve
         if (!response.ok) return null;
         const data = await response.json();
         if (data.success) {
-            // Cache the data
             localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(data.achievements));
             localStorage.setItem(ACHIEVEMENTS_STATS_KEY, JSON.stringify(data.stats));
             return { achievements: data.achievements, stats: data.stats };
@@ -92,16 +91,16 @@ function getCachedAchievements(): { achievements: AchievementWithStatus[], stats
 }
 
 // =====================================================
-// UI Rendering
+// Design System - Clean SaaS Style
 // =====================================================
 
 function getRarityColor(rarity: string): string {
     switch (rarity) {
         case 'bronze': return '#cd7f32';
-        case 'silver': return '#c0c0c0';
-        case 'gold': return '#ffd700';
-        case 'platinum': return '#e5e4e2';
-        default: return '#888';
+        case 'silver': return '#94a3b8';
+        case 'gold': return '#eab308';
+        case 'platinum': return '#a78bfa';
+        default: return '#94a3b8';
     }
 }
 
@@ -116,21 +115,34 @@ function getCategoryName(category: string): string {
     }
 }
 
-function formatTime(seconds: number): string {
-    if (seconds < 60) return seconds + 's';
-    if (seconds < 3600) return Math.floor(seconds / 60) + 'm';
-    if (seconds < 86400) return Math.floor(seconds / 3600) + 'h';
-    return Math.floor(seconds / 86400) + 'd';
+function getCategoryIcon(category: string): string {
+    switch (category) {
+        case 'problem': return 'quiz';
+        case 'streak': return 'local_fire_department';
+        case 'time': return 'schedule';
+        case 'chapter': return 'menu_book';
+        case 'special': return 'star';
+        default: return 'emoji_events';
+    }
 }
+
+function formatNumber(num: number): string {
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+    return num.toString();
+}
+
+// =====================================================
+// UI Rendering - New Clean Design
+// =====================================================
 
 function renderAchievementCard(a: AchievementWithStatus): string {
     const rarityColor = getRarityColor(a.achievement.rarity);
-    const opacity = a.earned ? '1' : '0.4';
+    const opacity = a.earned ? '1' : '0.35';
     const earnedClass = a.earned ? 'earned' : 'locked';
 
     return `
         <div class="achievement-card ${earnedClass}" data-id="${a.achievement.id}" style="opacity: ${opacity}">
-            <div class="achievement-icon" style="background: linear-gradient(135deg, ${rarityColor}, ${rarityColor}88)">
+            <div class="achievement-icon" style="background: ${a.earned ? `linear-gradient(135deg, ${rarityColor}, ${rarityColor}dd)` : '#e2e8f0'}">
                 <span class="material-symbols-outlined">${a.achievement.icon}</span>
             </div>
             <div class="achievement-info">
@@ -141,7 +153,9 @@ function renderAchievementCard(a: AchievementWithStatus): string {
                     <span class="achievement-rarity" style="color: ${rarityColor}">${a.achievement.rarity}</span>
                 </div>
             </div>
-            ${a.earned ? `<div class="achievement-check">✓</div>` : ''}
+            ${a.earned ? `<div class="achievement-check">
+                <span class="material-symbols-outlined">check</span>
+            </div>` : ''}
         </div>
     `;
 }
@@ -149,7 +163,6 @@ function renderAchievementCard(a: AchievementWithStatus): string {
 function renderAchievementsPanel(data: { achievements: AchievementWithStatus[], stats: AchievementStats }): string {
     const { achievements, stats } = data;
 
-    // Group by category
     const categories = ['problem', 'streak', 'time', 'chapter', 'special'];
     const grouped: Record<string, AchievementWithStatus[]> = {};
 
@@ -157,242 +170,528 @@ function renderAchievementsPanel(data: { achievements: AchievementWithStatus[], 
         grouped[c] = achievements.filter(a => a.achievement.category === c);
     }
 
+    const progressPercent = stats.total_achievements > 0
+        ? Math.round((stats.earned_achievements / stats.total_achievements) * 100)
+        : 0;
+
     return `
         <div class="achievements-container">
             <div class="achievements-header">
-                <h2>Thành Tựu</h2>
-                <button class="achievements-close" onclick="closeAchievementsModal()">×</button>
+                <div class="header-left">
+                    <h2>Thành Tựu</h2>
+                    <p class="header-subtitle">Theo dõi tiến độ học tập của bạn</p>
+                </div>
+                <button class="achievements-close" onclick="closeAchievementsModal()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
             </div>
 
+            <!-- Stats Row -->
             <div class="achievements-stats">
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <span class="material-symbols-outlined">emoji_events</span>
+                    <div class="stat-header">
+                        <span class="stat-icon" style="background: #dbeafe; color: #3b82f6;">
+                            <span class="material-symbols-outlined">emoji_events</span>
+                        </span>
+                        <span class="stat-label">Thành tựu</span>
                     </div>
-                    <div class="stat-value">${stats.earned_achievements}/${stats.total_achievements}</div>
-                    <div class="stat-label">Thành Tựu</div>
+                    <div class="stat-value">${stats.earned_achievements}<span class="stat-total">/${stats.total_achievements}</span></div>
+                    <div class="stat-progress">
+                        <div class="stat-progress-bar" style="width: ${progressPercent}%; background: linear-gradient(90deg, #3b82f6, #8b5cf6);"></div>
+                    </div>
                 </div>
+
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <span class="material-symbols-outlined">star</span>
+                    <div class="stat-header">
+                        <span class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
+                            <span class="material-symbols-outlined">star</span>
+                        </span>
+                        <span class="stat-label">Điểm</span>
                     </div>
-                    <div class="stat-value">${stats.total_points}</div>
-                    <div class="stat-label">Điểm</div>
+                    <div class="stat-value">${formatNumber(stats.total_points)}</div>
+                    <div class="stat-subtitle">tổng cộng</div>
                 </div>
+
                 <div class="stat-card">
-                    <div class="stat-icon">
-                        <span class="material-symbols-outlined">local_fire_department</span>
+                    <div class="stat-header">
+                        <span class="stat-icon" style="background: #d1fae5; color: #10b981;">
+                            <span class="material-symbols-outlined">local_fire_department</span>
+                        </span>
+                        <span class="stat-label">Streak</span>
                     </div>
-                    <div class="stat-value">${stats.streak.current_streak}</div>
-                    <div class="stat-label">Ngày Streak</div>
+                    <div class="stat-value">${stats.streak.current_streak}<span class="stat-unit">ngày</span></div>
+                    <div class="stat-subtitle">dài nhất: ${stats.streak.longest_streak}</div>
                 </div>
+
                 <div class="stat-card rank-card">
-                    <div class="stat-icon rank-icon">
-                        <span class="material-symbols-outlined">${stats.rank.rank_icon}</span>
+                    <div class="stat-header">
+                        <span class="stat-icon" style="background: #ede9fe; color: #8b5cf6;">
+                            <span class="material-symbols-outlined">${stats.rank.rank_icon || 'military_tech'}</span>
+                        </span>
+                        <span class="stat-label">Rank</span>
                     </div>
-                    <div class="stat-value">${stats.rank.rank_name_vi}</div>
-                    <div class="stat-label">Rank</div>
+                    <div class="stat-value">${stats.rank.rank_name_vi || 'Newbie'}</div>
                     ${stats.rank.next_rank && stats.rank.next_rank_points ? `
                         <div class="rank-progress">
-                            <div class="rank-progress-bar" style="width: ${stats.rank.progress_percent}%"></div>
+                            <div class="rank-progress-info">
+                                <span>${stats.rank.next_rank_points - stats.rank.total_points} pts đến ${stats.rank.next_rank_name}</span>
+                            </div>
+                            <div class="rank-progress-bar">
+                                <div class="rank-progress-fill" style="width: ${Math.min(stats.rank.progress_percent, 100)}%"></div>
+                            </div>
                         </div>
-                        <div class="rank-next">${stats.rank.next_rank_points - stats.rank.total_points} pts đến ${stats.rank.next_rank_name}</div>
                     ` : ''}
                 </div>
             </div>
 
+            <!-- Tabs -->
             <div class="achievements-tabs">
                 ${categories.map(c => `
                     <button class="achievement-tab" data-category="${c}" onclick="switchAchievementTab('${c}')">
+                        <span class="material-symbols-outlined">${getCategoryIcon(c)}</span>
                         ${getCategoryName(c)}
+                        <span class="tab-count">${grouped[c]?.filter(a => a.earned).length || 0}/${grouped[c]?.length || 0}</span>
                     </button>
                 `).join('')}
             </div>
 
+            <!-- Achievement List -->
             <div class="achievements-list">
                 ${categories.map(c => `
                     <div class="achievements-category" id="category-${c}">
-                        ${grouped[c] ? grouped[c].map(a => renderAchievementCard(a)).join('') : ''}
+                        <div class="category-header">
+                            <span class="category-icon" style="background: ${getCategoryBg(c)}">
+                                <span class="material-symbols-outlined">${getCategoryIcon(c)}</span>
+                            </span>
+                            <span class="category-title">${getCategoryName(c)}</span>
+                            <span class="category-count">${grouped[c]?.filter(a => a.earned).length || 0} / ${grouped[c]?.length || 0}</span>
+                        </div>
+                        <div class="achievements-grid">
+                            ${grouped[c] ? grouped[c].map(a => renderAchievementCard(a)).join('') : '<div class="no-achievements">Chưa có thành tựu</div>'}
+                        </div>
                     </div>
                 `).join('')}
             </div>
         </div>
 
         <style>
+            /* Achievements Container */
             .achievements-container {
                 max-width: 900px;
                 max-height: 90vh;
                 overflow-y: auto;
-                background: var(--bg-secondary, #1a1a2e);
-                border-radius: 16px;
-                padding: 24px;
+                background: #ffffff;
+                border-radius: 20px;
+                padding: 0;
+                font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             }
+
+            /* Header */
             .achievements-header {
                 display: flex;
                 justify-content: space-between;
-                align-items: center;
-                margin-bottom: 24px;
+                align-items: flex-start;
+                padding: 32px 32px 24px;
+                border-bottom: 1px solid #f1f5f9;
+                position: sticky;
+                top: 0;
+                background: #fff;
+                z-index: 10;
             }
-            .achievements-header h2 {
+
+            .header-left h2 {
+                margin: 0 0 4px;
+                font-size: 28px;
+                font-weight: 700;
+                color: #0f172a;
+                letter-spacing: -0.02em;
+            }
+
+            .header-subtitle {
                 margin: 0;
-                color: var(--text-primary, #fff);
+                font-size: 14px;
+                color: #64748b;
             }
+
             .achievements-close {
-                background: none;
+                background: #f8fafc;
                 border: none;
-                font-size: 32px;
-                color: var(--text-secondary, #aaa);
+                width: 40px;
+                height: 40px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 cursor: pointer;
-                padding: 0 8px;
+                color: #64748b;
+                transition: all 0.2s;
             }
+
+            .achievements-close:hover {
+                background: #f1f5f9;
+                color: #0f172a;
+            }
+
+            /* Stats Row */
             .achievements-stats {
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
                 gap: 16px;
-                margin-bottom: 24px;
+                padding: 24px 32px;
+                background: #f8fafc;
+                border-bottom: 1px solid #f1f5f9;
             }
+
             .stat-card {
-                background: var(--bg-tertiary, #16213e);
-                border-radius: 12px;
-                padding: 16px;
-                text-align: center;
+                background: #fff;
+                border-radius: 16px;
+                padding: 20px;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+                transition: all 0.2s;
             }
+
+            .stat-card:hover {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                transform: translateY(-2px);
+            }
+
+            .stat-header {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+
             .stat-icon {
-                font-size: 32px;
-                margin-bottom: 8px;
+                width: 32px;
+                height: 32px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
-            .stat-value {
-                font-size: 24px;
-                font-weight: bold;
-                color: var(--text-primary, #fff);
+
+            .stat-icon .material-symbols-outlined {
+                font-size: 18px;
             }
+
             .stat-label {
-                font-size: 12px;
-                color: var(--text-secondary, #aaa);
+                font-size: 13px;
+                font-weight: 500;
+                color: #64748b;
                 text-transform: uppercase;
+                letter-spacing: 0.05em;
             }
-            .rank-card {
-                border: 2px solid var(--accent, #7c3aed);
+
+            .stat-value {
+                font-size: 32px;
+                font-weight: 700;
+                color: #0f172a;
+                letter-spacing: -0.02em;
+                line-height: 1.1;
             }
-            .rank-progress {
+
+            .stat-total {
+                font-size: 18px;
+                font-weight: 500;
+                color: #94a3b8;
+            }
+
+            .stat-unit {
+                font-size: 14px;
+                font-weight: 500;
+                color: #64748b;
+                margin-left: 4px;
+            }
+
+            .stat-subtitle {
+                font-size: 12px;
+                color: #94a3b8;
+                margin-top: 4px;
+            }
+
+            .stat-progress {
+                margin-top: 12px;
                 height: 4px;
-                background: var(--bg-tertiary, #333);
+                background: #e2e8f0;
                 border-radius: 2px;
-                margin: 8px 0 4px;
                 overflow: hidden;
             }
-            .rank-progress-bar {
+
+            .stat-progress-bar {
                 height: 100%;
-                background: var(--accent, #7c3aed);
-                transition: width 0.3s;
+                border-radius: 2px;
+                transition: width 0.3s ease;
             }
-            .rank-next {
-                font-size: 10px;
-                color: var(--text-secondary, #aaa);
+
+            /* Rank Card */
+            .rank-card {
+                border: 2px solid #ede9fe;
             }
+
+            .rank-progress {
+                margin-top: 12px;
+            }
+
+            .rank-progress-info {
+                font-size: 11px;
+                color: #94a3b8;
+                margin-bottom: 6px;
+            }
+
+            .rank-progress-bar {
+                height: 4px;
+                background: #e2e8f0;
+                border-radius: 2px;
+                overflow: hidden;
+            }
+
+            .rank-progress-fill {
+                height: 100%;
+                background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+                border-radius: 2px;
+                transition: width 0.3s ease;
+            }
+
+            /* Tabs */
             .achievements-tabs {
                 display: flex;
                 gap: 8px;
-                margin-bottom: 16px;
-                flex-wrap: wrap;
+                padding: 20px 32px;
+                border-bottom: 1px solid #f1f5f9;
+                overflow-x: auto;
             }
+
             .achievement-tab {
-                padding: 8px 16px;
-                background: var(--bg-tertiary, #16213e);
-                border: none;
-                border-radius: 20px;
-                color: var(--text-secondary, #aaa);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 16px;
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                color: #64748b;
                 cursor: pointer;
+                font-size: 14px;
+                font-weight: 500;
+                white-space: nowrap;
                 transition: all 0.2s;
             }
+
+            .achievement-tab:hover {
+                border-color: #cbd5e1;
+                color: #0f172a;
+            }
+
             .achievement-tab.active {
-                background: var(--accent, #7c3aed);
-                color: white;
+                background: #0f172a;
+                border-color: #0f172a;
+                color: #fff;
             }
+
+            .achievement-tab .material-symbols-outlined {
+                font-size: 18px;
+            }
+
+            .tab-count {
+                font-size: 12px;
+                padding: 2px 8px;
+                background: #f1f5f9;
+                border-radius: 20px;
+            }
+
+            .achievement-tab.active .tab-count {
+                background: rgba(255,255,255,0.2);
+            }
+
+            /* Achievement List */
             .achievements-list {
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
+                padding: 24px 32px 32px;
             }
+
             .achievements-category {
                 display: none;
             }
+
             .achievements-category.active {
                 display: block;
             }
+
+            .category-header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .category-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .category-icon .material-symbols-outlined {
+                font-size: 20px;
+                color: #fff;
+            }
+
+            .category-title {
+                font-size: 16px;
+                font-weight: 600;
+                color: #0f172a;
+            }
+
+            .category-count {
+                margin-left: auto;
+                font-size: 13px;
+                color: #94a3b8;
+                font-weight: 500;
+            }
+
+            .achievements-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 12px;
+            }
+
+            /* Achievement Card */
             .achievement-card {
                 display: flex;
                 align-items: center;
                 gap: 16px;
                 padding: 16px;
-                background: var(--bg-tertiary, #16213e);
-                border-radius: 12px;
-                transition: transform 0.2s;
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 14px;
+                transition: all 0.2s;
+                position: relative;
             }
+
             .achievement-card:hover {
-                transform: translateX(4px);
+                border-color: #cbd5e1;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+                transform: translateY(-2px);
             }
+
+            .achievement-card.earned {
+                border-color: #dbeafe;
+            }
+
             .achievement-card.locked {
-                filter: grayscale(0.5);
+                background: #f8fafc;
             }
+
             .achievement-icon {
-                width: 56px;
-                height: 56px;
-                border-radius: 12px;
+                width: 48px;
+                height: 48px;
+                border-radius: 14px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 28px;
                 flex-shrink: 0;
             }
+
             .achievement-icon .material-symbols-outlined {
-                color: white;
+                font-size: 24px;
+                color: #fff;
             }
+
             .achievement-info {
                 flex: 1;
+                min-width: 0;
             }
+
             .achievement-name {
-                font-weight: bold;
-                font-size: 16px;
-                color: var(--text-primary, #fff);
-                margin-bottom: 4px;
+                font-weight: 600;
+                font-size: 15px;
+                color: #0f172a;
+                margin-bottom: 2px;
             }
+
             .achievement-desc {
                 font-size: 13px;
-                color: var(--text-secondary, #aaa);
-                margin-bottom: 8px;
+                color: #64748b;
+                margin-bottom: 6px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
+
             .achievement-meta {
                 display: flex;
                 gap: 12px;
                 font-size: 12px;
             }
+
             .achievement-points {
-                color: var(--accent, #7c3aed);
-                font-weight: bold;
+                color: #8b5cf6;
+                font-weight: 600;
             }
+
             .achievement-rarity {
                 text-transform: uppercase;
-                font-weight: bold;
+                font-weight: 600;
+                font-size: 11px;
             }
+
             .achievement-check {
                 width: 28px;
                 height: 28px;
                 border-radius: 50%;
-                background: #22c55e;
+                background: #10b981;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                color: white;
-                font-weight: bold;
+                flex-shrink: 0;
             }
+
+            .achievement-check .material-symbols-outlined {
+                font-size: 18px;
+                color: #fff;
+            }
+
+            .no-achievements {
+                grid-column: 1 / -1;
+                text-align: center;
+                padding: 40px;
+                color: #94a3b8;
+                font-size: 14px;
+            }
+
+            /* Responsive */
             @media (max-width: 768px) {
                 .achievements-stats {
                     grid-template-columns: repeat(2, 1fr);
+                    padding: 16px;
+                }
+
+                .achievements-header,
+                .achievements-tabs,
+                .achievements-list {
+                    padding-left: 16px;
+                    padding-right: 16px;
+                }
+
+                .achievements-grid {
+                    grid-template-columns: 1fr;
                 }
             }
         </style>
     `;
+}
+
+function getCategoryBg(category: string): string {
+    switch (category) {
+        case 'problem': return 'linear-gradient(135deg, #3b82f6, #1d4ed8)';
+        case 'streak': return 'linear-gradient(135deg, #f59e0b, #d97706)';
+        case 'time': return 'linear-gradient(135deg, #10b981, #059669)';
+        case 'chapter': return 'linear-gradient(135deg, #8b5cf6, #7c3aed)';
+        case 'special': return 'linear-gradient(135deg, #ec4899, #db2777)';
+        default: return 'linear-gradient(135deg, #64748b, #475569)';
+    }
 }
 
 function showAchievementsModal() {
@@ -410,12 +709,10 @@ function closeAchievementsModal() {
 }
 
 function switchAchievementTab(category: string) {
-    // Update tab buttons
     document.querySelectorAll('.achievement-tab').forEach(tab => {
         tab.classList.toggle('active', tab.getAttribute('data-category') === category);
     });
 
-    // Update category visibility
     document.querySelectorAll('.achievements-category').forEach(cat => {
         cat.classList.toggle('active', cat.id === 'category-' + category);
     });
@@ -433,7 +730,6 @@ async function loadAndShowAchievements() {
         const modal = document.getElementById('achievements-modal');
         if (modal) {
             modal.innerHTML = renderAchievementsPanel(data);
-            // Show first category by default
             switchAchievementTab('problem');
             showAchievementsModal();
         }

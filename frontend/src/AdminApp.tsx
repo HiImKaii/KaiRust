@@ -163,28 +163,45 @@ export default function AdminApp() {
   if (isAuthenticated === null) {
     return (
       <div className="admin-loading">
-        <div className="spinner"></div>
+        <div className="loading-spinner"></div>
       </div>
     )
   }
 
   if (!isAuthenticated) {
     return (
-      <div className="admin-login">
-        <div className="login-card">
-          <h1>KaiRust Admin</h1>
-          <p>Quản lý hệ thống học tập</p>
+      <div className="login-wrapper">
+        <div className="login-container">
+          <div className="login-header">
+            <div className="login-logo">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <rect width="40" height="40" rx="12" fill="url(#logoGrad)"/>
+                <path d="M12 28V12L20 20L28 12V28L20 20L12 28Z" fill="white" fillOpacity="0.9"/>
+                <defs>
+                  <linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40">
+                    <stop stopColor="#3B82F6"/>
+                    <stop offset="1" stopColor="#8B5CF6"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <h1>KaiRust Admin</h1>
+            <p>Quản lý hệ thống học tập</p>
+          </div>
           {error && <div className="login-error">{error}</div>}
-          <form onSubmit={login}>
-            <input
-              type="password"
-              placeholder="Mật khẩu admin"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button type="submit" disabled={loading}>
-              {loading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
+          <form onSubmit={login} className="login-form">
+            <div className="form-group">
+              <label>Mật khẩu</label>
+              <input
+                type="password"
+                placeholder="Nhập mật khẩu admin"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" disabled={loading} className="login-btn">
+              {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
             </button>
           </form>
         </div>
@@ -193,46 +210,173 @@ export default function AdminApp() {
   }
 
   return (
-    <div className="admin-layout">
-      <header className="admin-header">
-        <div className="admin-brand">
-          <span className="brand-text">KaiRust Admin</span>
+    <div className="admin-wrapper">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <div className="sidebar-header">
+          <div className="sidebar-logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <rect width="32" height="32" rx="8" fill="url(#logoGrad2)"/>
+              <path d="M9 22V10L16 16L23 10V22L16 16L9 22Z" fill="white" fillOpacity="0.9"/>
+              <defs>
+                <linearGradient id="logoGrad2" x1="0" y1="0" x2="32" y2="32">
+                  <stop stopColor="#3B82F6"/>
+                  <stop offset="1" stopColor="#8B5CF6"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <span>KaiRust</span>
+          </div>
         </div>
-        <nav className="admin-nav">
+        <nav className="sidebar-nav">
           <button
-            className={activeTab === 'dashboard' ? 'active' : ''}
+            className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
             onClick={() => setActiveTab('dashboard')}
           >
-            Dashboard
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/>
+              <rect x="14" y="14" width="7" height="7" rx="1"/>
+            </svg>
+            <span>Tổng quan</span>
           </button>
           <button
-            className={activeTab === 'users' ? 'active' : ''}
+            className={`nav-item ${activeTab === 'users' ? 'active' : ''}`}
             onClick={() => setActiveTab('users')}
           >
-            Users
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span>Người dùng</span>
           </button>
         </nav>
-        <button className="logout-btn" onClick={logout}>
-          Đăng xuất
-        </button>
-      </header>
+        <div className="sidebar-footer">
+          <button className="logout-btn" onClick={logout}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16,17 21,12 16,7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span>Đăng xuất</span>
+          </button>
+        </div>
+      </aside>
 
-      <main className="admin-main">
+      {/* Main Content */}
+      <main className="main-content">
         {activeTab === 'dashboard' && (
           <div className="dashboard">
-            <h2>Tổng quan hệ thống</h2>
+            <div className="page-header">
+              <div>
+                <h1>Tổng quan</h1>
+                <p>Thống kê hệ thống</p>
+              </div>
+              <span className="header-badge">Admin Panel</span>
+            </div>
+
+            {/* Stats Cards */}
             <div className="stats-grid">
               <div className="stat-card">
-                <div className="stat-value">{stats?.total_users || 0}</div>
-                <div className="stat-label">Tổng số học viên</div>
+                <div className="stat-icon users">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                  </svg>
+                </div>
+                <div className="stat-info">
+                  <span className="stat-label">Tổng học viên</span>
+                  <span className="stat-value">{stats?.total_users || 0}</span>
+                </div>
               </div>
               <div className="stat-card">
-                <div className="stat-value">{stats?.total_lessons || 0}</div>
-                <div className="stat-label">Bài học đã tiếp cận</div>
+                <div className="stat-icon lessons">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                  </svg>
+                </div>
+                <div className="stat-info">
+                  <span className="stat-label">Bài học</span>
+                  <span className="stat-value">{stats?.total_lessons || 0}</span>
+                </div>
               </div>
               <div className="stat-card">
-                <div className="stat-value">{stats?.total_completions || 0}</div>
-                <div className="stat-label">Tổng lượt hoàn thành</div>
+                <div className="stat-icon completed">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22,4 12,14.01 9,11.01"/>
+                  </svg>
+                </div>
+                <div className="stat-info">
+                  <span className="stat-label">Lượt hoàn thành</span>
+                  <span className="stat-value">{stats?.total_completions || 0}</span>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon rate">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="12" y1="20" x2="12" y2="10"/>
+                    <line x1="18" y1="20" x2="18" y2="4"/>
+                    <line x1="6" y1="20" x2="6" y2="16"/>
+                  </svg>
+                </div>
+                <div className="stat-info">
+                  <span className="stat-label">Tỷ lệ hoàn thành</span>
+                  <span className="stat-value">
+                    {stats?.total_lessons && stats.total_completions
+                      ? Math.round((stats.total_completions / stats.total_lessons) * 100)
+                      : 0}%
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="section">
+              <h2 className="section-title">Thao tác nhanh</h2>
+              <div className="actions-grid">
+                <button className="action-card" onClick={() => setActiveTab('users')}>
+                  <div className="action-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="11" cy="11" r="8"/>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                  </div>
+                  <div className="action-info">
+                    <span className="action-title">Tìm người dùng</span>
+                    <span className="action-desc">Tìm kiếm và quản lý</span>
+                  </div>
+                </button>
+                <button className="action-card" onClick={loadStats}>
+                  <div className="action-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/>
+                      <polyline points="17,6 23,6 23,12"/>
+                    </svg>
+                  </div>
+                  <div className="action-info">
+                    <span className="action-title">Xem thống kê</span>
+                    <span className="action-desc">Cập nhật dữ liệu</span>
+                  </div>
+                </button>
+                <button className="action-card">
+                  <div className="action-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="3"/>
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                  </div>
+                  <div className="action-info">
+                    <span className="action-title">Cài đặt</span>
+                    <span className="action-desc">Cấu hình hệ thống</span>
+                  </div>
+                </button>
               </div>
             </div>
           </div>
@@ -240,12 +384,23 @@ export default function AdminApp() {
 
         {activeTab === 'users' && (
           <div className="users-page">
-            <div className="users-header">
-              <h2>Quản lý người dùng</h2>
-              <div className="users-toolbar">
+            <div className="page-header">
+              <div>
+                <h1>Người dùng</h1>
+                <p>Quản lý tài khoản học viên</p>
+              </div>
+            </div>
+
+            {/* Search */}
+            <div className="toolbar">
+              <div className="search-input">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
                 <input
                   type="text"
-                  placeholder="Tìm kiếm theo tên hoặc email..."
+                  placeholder="Tìm theo tên hoặc email..."
                   value={search}
                   onChange={(e) => {
                     setSearch(e.target.value)
@@ -255,41 +410,57 @@ export default function AdminApp() {
               </div>
             </div>
 
-            <div className="users-table-wrapper">
-              <table className="users-table">
+            {/* Table */}
+            <div className="table-container">
+              <table className="data-table">
                 <thead>
                   <tr>
                     <th>ID</th>
                     <th>Người dùng</th>
                     <th>Email</th>
                     <th>Ngày tham gia</th>
-                    <th>Số bài tập</th>
-                    <th>Thời gian học</th>
+                    <th>Bài tập</th>
+                    <th>Thời gian</th>
                     <th>Thao tác</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((user) => (
                     <tr key={user.id}>
-                      <td style={{ fontWeight: 700, opacity: 0.5 }}>#{user.id}</td>
-                      <td style={{ fontWeight: 700 }}>{user.username}</td>
-                      <td>{user.email}</td>
+                      <td className="id-cell">#{user.id}</td>
+                      <td>
+                        <div className="user-cell">
+                          <div className="user-avatar">{user.username.charAt(0).toUpperCase()}</div>
+                          <span className="user-name">{user.username}</span>
+                        </div>
+                      </td>
+                      <td className="email-cell">{user.email}</td>
                       <td>{new Date(user.created_at).toLocaleDateString('vi-VN')}</td>
-                      <td style={{ fontWeight: 700, color: '#7c3aed' }}>{user.completed_lessons}</td>
+                      <td className="lessons-cell">{user.completed_lessons}</td>
                       <td>{formatTime(user.total_time_spent)}</td>
                       <td>
-                        <button
-                          className="action-btn view"
-                          onClick={() => loadUserDetail(user.id)}
-                        >
-                          Chi tiết
-                        </button>
-                        <button
-                          className="action-btn delete"
-                          onClick={() => deleteUser(user.id)}
-                        >
-                          Xóa
-                        </button>
+                        <div className="action-buttons">
+                          <button
+                            className="btn-action view"
+                            onClick={() => loadUserDetail(user.id)}
+                            title="Xem chi tiết"
+                          >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                              <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                          </button>
+                          <button
+                            className="btn-action delete"
+                            onClick={() => deleteUser(user.id)}
+                            title="Xóa"
+                          >
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <polyline points="3,6 5,6 21,6"/>
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -297,72 +468,129 @@ export default function AdminApp() {
               </table>
             </div>
 
-            <div className="pagination">
-              <button disabled={page === 0} onClick={() => setPage(page - 1)}>
-                Trước
-              </button>
-              <span>
-                Trang {page + 1} / {Math.ceil(totalUsers / 20) || 1}
+            {/* Pagination */}
+            <div className="table-footer">
+              <span className="page-info">
+                Hiển thị {users.length} / {totalUsers} người dùng
               </span>
-              <button
-                disabled={(page + 1) * 20 >= totalUsers}
-                onClick={() => setPage(page + 1)}
-              >
-                Sau
-              </button>
+              <div className="pagination">
+                <button
+                  disabled={page === 0}
+                  onClick={() => setPage(page - 1)}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="15,18 9,12 15,6"/>
+                  </svg>
+                </button>
+                <span className="page-number">{page + 1}</span>
+                <button
+                  disabled={(page + 1) * 20 >= totalUsers}
+                  onClick={() => setPage(page + 1)}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="9,18 15,12 9,6"/>
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
         )}
       </main>
 
+      {/* Modal */}
       {selectedUser && (
         <div className="modal-overlay" onClick={() => setSelectedUser(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-container" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Hồ sơ: {selectedUser.user.username}</h3>
+              <div className="modal-user">
+                <div className="modal-avatar">
+                  {selectedUser.user.username.charAt(0).toUpperCase()}
+                </div>
+                <div className="modal-user-info">
+                  <h3>{selectedUser.user.username}</h3>
+                  <p>{selectedUser.user.email}</p>
+                </div>
+              </div>
               <button className="modal-close" onClick={() => setSelectedUser(null)}>
-                ×
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
               </button>
             </div>
             <div className="modal-body">
-              <div className="user-info">
-                <div>
-                  <p>Email liên hệ</p>
-                  <strong>{selectedUser.user.email}</strong>
+              {/* Stats */}
+              <div className="modal-stats">
+                <div className="modal-stat">
+                  <div className="modal-stat-icon blue">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <span className="modal-stat-label">Ngày đăng ký</span>
+                    <span className="modal-stat-value">
+                      {new Date(selectedUser.user.created_at).toLocaleDateString('vi-VN')}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <p>Mật khẩu</p>
-                  <strong>{selectedUser.user.password || '(trống)'}</strong>
+                <div className="modal-stat">
+                  <div className="modal-stat-icon purple">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="9,11 12,14 22,4"/>
+                      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <span className="modal-stat-label">Bài tập hoàn thành</span>
+                    <span className="modal-stat-value">{selectedUser.user.completed_lessons}</span>
+                  </div>
                 </div>
-                <div>
-                  <p>Ngày đăng ký</p>
-                  <strong>{new Date(selectedUser.user.created_at).toLocaleDateString('vi-VN')}</strong>
-                </div>
-                <div>
-                  <p>Bài tập đã xong</p>
-                  <strong>{selectedUser.user.completed_lessons} bài</strong>
-                </div>
-                <div>
-                  <p>Thời gian tích lũy</p>
-                  <strong>{formatTime(selectedUser.user.total_time_spent)}</strong>
+                <div className="modal-stat">
+                  <div className="modal-stat-icon green">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <polyline points="12,6 12,12 16,14"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <span className="modal-stat-label">Thời gian học</span>
+                    <span className="modal-stat-value">{formatTime(selectedUser.user.total_time_spent)}</span>
+                  </div>
                 </div>
               </div>
-              <h4>Tiến trình chi tiết</h4>
+
+              {/* Progress */}
+              <h4 className="modal-section-title">Tiến trình học tập</h4>
               <div className="progress-list">
                 {selectedUser.progress.length === 0 ? (
-                  <p className="no-data">Chưa có dữ liệu tiến trình</p>
+                  <div className="no-data">Chưa có dữ liệu tiến trình</div>
                 ) : (
-                  selectedUser.progress.map((p, i) => (
+                  selectedUser.progress.slice(0, 10).map((p, i) => (
                     <div key={i} className="progress-item">
-                      <span className="lesson-id">{p.lesson_id}</span>
-                      <span className="lesson-time">
+                      <div className="progress-info">
+                        <span className="lesson-tag">{p.lesson_id}</span>
+                        <span className="lesson-date">
+                          {new Date(p.completed_at).toLocaleDateString('vi-VN')}
+                        </span>
+                      </div>
+                      <span className="lesson-duration">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <polyline points="12,6 12,12 16,14"/>
+                        </svg>
                         {formatTime(p.time_spent_seconds)}
-                      </span>
-                      <span className="lesson-date">
-                        {new Date(p.completed_at).toLocaleDateString('vi-VN')}
                       </span>
                     </div>
                   ))
+                )}
+                {selectedUser.progress.length > 10 && (
+                  <div className="more-items">
+                    + {selectedUser.progress.length - 10} bài khác
+                  </div>
                 )}
               </div>
             </div>
@@ -376,5 +604,5 @@ export default function AdminApp() {
 function formatTime(seconds: number): string {
   if (seconds < 60) return `${seconds}s`
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
-  return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}m`
+  return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}p`
 }
