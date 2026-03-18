@@ -41,7 +41,7 @@ const ch21_07_lessons: Lesson[] = [
       <ul class="text-xs list-disc pl-4 mt-2 text-gray-700 space-y-2">
         <li><strong>Dấu hiệu:</strong> Train Loss ĐỤNG ĐÁY BẰNG $0$, Mọi thứ trên giáo trình thi 100đ. Nhưng Validation Loss ĐẠP TRẦN ĐI LÊN $\\to$ Ngu dốt khi ra đời thực.</li>
         <li><strong>Biểu hiện mô hình:</strong> Mạng quá Khổng Lồ, chằng chịt Weight đến mức Mạng học mẹo: Nhớ vân mặt của nốt ruồi thay vì nhớ Cấu trúc Gương mặt. Phương sai (Variance) cao chấn động.</li>
-        <li><strong>Đơn thuốc:</strong> Gom thêm Hàng Triệu Dữ liệu, Data Augmentation, và đặc biệt: <strong>Regularization (L1/L2, Dropout)</strong>.</li>
+        <li><strong>Đơn thuốc:</strong> Gom thêm Hàng Triệu Dữ liệu, Dahệ thống Augmentation, và đặc biệt: <strong>Regularization (L1/L2, Dropout)</strong>.</li>
       </ul>
     </div>
   </div>
@@ -52,7 +52,7 @@ const ch21_07_lessons: Lesson[] = [
 
 fn main() {
     println!("╔══════════════════════════════════════════════════════════════════════╗");
-    println!("║       OVERFITTING: KHI AI CHỈ ĐỦ KHÔN ĐỂ LỪA KỸ SƯ (HỌC BÀI)         ║");
+    println!("║       OVERFITTING: KHI AI chỉ ĐỦ KHÔN ĐỂ LỪA KỸ SƯ (HỌC BÀI)         ║");
     println!("╚══════════════════════════════════════════════════════════════════════╝");
 
     // Lịch sử cày cuốc (Training History) qua 50 Epochs cực điểm
@@ -102,7 +102,7 @@ fn main() {
         $L_{Total} = L_{Data} + \\lambda \\sum_{i=1}^{n} w_i^2$
       </div>
       <p>Lúc này để tìm Đáy Thung Lũng Cực Tiểu $L_{Total}$, Gradient Descent BUỘC PHẢI KHUẤT PHỤC ÉP ĐỒNG LOẠT VẠN TỶ $W$ Tụt Ngắn Lại Về Số Không. Chỉ những Feature Mũi Nhọn Cực Kì Quan Trọng Mới Đáng Đồng Tiền $\\lambda$ để nhô cái $W$ lên một tí.</p>
-      <p class="text-xs italic text-red-700 mt-2">Toán Học: $\\lambda$ điều chỉnh "Độ tát bạo lực". Càng to $\\to$ Trọng lượng thun càng chặt. Gọi là Weight Decay vì cập nhật weight lúc nào cũng $w = w - \\eta \\cdot \\lambda \\cdot w$, cứ liên tục bị mục rữa nhỏ lại.</p>
+      <p class="text-xs italic text-red-700 mt-2">Toán Học: $\\lambda$ điều chỉnh "Độ tát bạo lực". Càng to $\\to$ Trọng lượng thun càng chặt. Gọi là Weight Decay vì cập nhật weight lúc nào cũng $w = w - \\ehệ thống \\cdot \\lambda \\cdot w$, cứ liên tục bị mục rữa nhỏ lại.</p>
     </div>
   </div>
 
@@ -141,7 +141,7 @@ fn main() {
     println!("\\n[1] MẠNG BÌNH THƯỜNG (KHÔNG L2 PENALTY):");
     let mut w_no_reg = w_goc;
     for step in 1..=5 {
-        let grad_data = gradient_loss(w_no_reg); 
+        let grad_dahệ thống = gradient_loss(w_no_reg); 
         w_no_reg = w_no_reg - lr * grad_data;
         println!("- Bước {}: Cứ thong dong giảm nhẹ còn {:.2}", step, w_no_reg);
     }
@@ -151,11 +151,11 @@ fn main() {
     let lambda = 0.1; // Còng tay Weight Decay
     
     for step in 1..=5 {
-        let grad_data = gradient_loss(w_l2); 
+        let grad_dahệ thống = gradient_loss(w_l2); 
         
         // ĐẠO HÀM CỦA CÙM L2 (W^2 / 2) CHÍNH LÀ CON SỐ W!
-        // Gradient Đẩy Tổng = Đạo Hàm Data + Cùm Phạt (Lambda * W)
-        let grad_total = grad_data + lambda * w_l2; 
+        // Gradient Đẩy Tổng = Đạo Hàm Dahệ thống + Cùm Phạt (Lambda * W)
+        let grad_total = grad_dahệ thống + lambda * w_l2; 
         
         w_l2 = w_l2 - lr * grad_total;
         
@@ -175,14 +175,14 @@ fn main() {
 
   <h3>3.1. Dropout (Rút Phích Cắm Mạng Ngẫu Nhiên)</h3>
   <div class="definition-block mb-4">
-    <p>Thuật toán <strong>Dropout (Srivastava, 2014)</strong> chấn động giới AI vì triết lý lười biếng nhưng điên cuồng của nó: <em>"Trong quá trình huấn luyện, cứ mỗi lứa đưa Data vào, nhắm mắt TẮT ĐI THEO XÁC SUẤT 50% số Neuron tại Hidden Layer!"</em></p>
+    <p>Thuật toán <strong>Dropout (Srivastava, 2014)</strong> chấn động giới AI vì triết lý lười biếng nhưng điên cuồng của nó: <em>"Trong quá trình huấn luyện, cứ mỗi lứa đưa Dahệ thống vào, nhắm mắt TẮT ĐI THEO XÁC SUẤT 50% số Neuron tại Hidden Layer!"</em></p>
     <p>Toán học Pytorch: Sinh ra Ma trận Cờ Nhị Phân (Mask) ngẫu nhiên 0 và 1, rồi nhân Chấm (Dot) Element-wise đè lên mặt Ma trận Feature.</p>
   </div>
   
   <ul class="text-sm list-disc pl-5 my-2">
     <li><strong>Tại sao nó xịn?</strong> Phá vỡ rễ ăn bám Đồng Cấu (Co-adaptation). Nơ-ron A lúc nào cũng ỷ lại Nơ-ron B bắt mũi, giờ B bị điện giật rớt đài $\\to$ A phải tự phồng cánh mũi tự lập bắt đặc trưng.</li>
     <li><strong>Sự diệu kì Ensemble:</strong> Phá 50% ở mỗi step tương đương bạn đang đi Train TRÔNG TREO Hàng Tỷ Mạng Neural Network gầy còm, rồi lúc đi Thi Test múc hết lên gộp lại lấy trung bình. Quá bá đạo để diệt Overfit!</li>
-    <li><strong>Inverted Dropout (Tuyệt Kỹ Cân Bằng Năng Lượng):</strong> Khi cúp 50% diện tích, tín hiệu Data đứt gánh trôi qua Lớp sẽ bị TỌP ĐI MỘT NỬA. Coder ngày xưa phải bù bù đắp đắp lúc Test $\\to$ Nguy hiểm rườm rà. Code mới lúc nén Train <strong>Chia ngay cho tỷ lệ Khép Nhắm (Keep Prob) $(y / 0.5)$</strong>, kéo tụi sống sót giương năng lượng lên Bù đắp cho bọn tử trận ngay lúc đó!</li>
+    <li><strong>Inverted Dropout (Tuyệt Kỹ Cân Bằng Năng Lượng):</strong> Khi cúp 50% diện tích, tín hiệu Dahệ thống đứt gánh trôi qua Lớp sẽ bị TỌP ĐI MỘT NỬA. Coder ngày xưa phải bù bù đắp đắp lúc Test $\\to$ Nguy hiểm rườm rà. Code mới lúc nén Train <strong>Chia ngay cho tỷ lệ Khép Nhắm (Keep Prob) $(y / 0.5)$</strong>, kéo tụi sống sót giương năng lượng lên Bù đắp cho bọn tử trận ngay lúc đó!</li>
   </ul>
 
   <h3><span class="material-symbols-outlined">layers</span> 3.2. Batch Normalization</h3>
@@ -190,7 +190,7 @@ fn main() {
     <div class="callout-icon"><span class="material-symbols-outlined">health_and_safety</span></div>
     <div class="callout-content">
       <strong>Vá lỗi Internal Covariate Shift</strong>
-      <p>Data đi qua Vỏ Hành Lớp 1 bị băm vằm uốn xéo Matrix xong lại lòi ra thành Ma trận X_new dị hợm. Trọng số $W^{[2]}$ ở lớp 2 hì hục học theo X_new. Bỗng một ngày Weight $[1]$ nhảy nấc lên, X_new nổ tưng bừng thành X_Khác hên xui. Lớp 2 gục ngã ôm hận vì nền móng dưới chân cứ trượt rút mịt mù (ICS).</p>
+      <p>Dahệ thống đi qua Vỏ Hành Lớp 1 bị băm vằm uốn xéo Matrix xong lại lòi ra thành Ma trận X_new dị hợm. Trọng số $W^{[2]}$ ở lớp 2 hì hục học theo X_new. Bỗng một ngày Weight $[1]$ nhảy nấc lên, X_new nổ tưng bừng thành X_Khác hên xui. Lớp 2 gục ngã ôm hận vì nền móng dưới chân cứ trượt rút mịt mù (ICS).</p>
       
       <p class="font-bold border-t border-green-200 mt-2 pt-2">Thuật Toán Trấn An:</p>
       <div class="font-mono text-center my-2 bg-white border border-green-200 p-2 text-xs md:text-sm">
@@ -200,7 +200,7 @@ fn main() {
         $y_i = \\gamma \\hat{x}_i + \\beta$ 
       </div>
       <p class="text-xs">Chèn 1 lớp Trạm Thu Phí ngáng đúng khúc cuống họng xuất Tín hiệu $Z \\to Activation$. Bắt toàn bộ 64 Bức ảnh trong Lô (Mini-batch) xếp hàng Tính Trung Bình Cộng, Phương Sai, Ép lùi dẹt phẳng về Dạng Chuẩn Z-Score $(0, 1)$.</p>
-      <p class="text-xs font-bold mt-1 text-red-700">Điều kinh dị: Trạm thu phí đó CÓ 2 TÊN TÀI XẾ $\\gamma$ (Kéo giãn) VÀ $\\beta$ (Đẩy Tịnh Tiến) CŨNG TỰ ĐỘNG CẬP NHẬT BẰNG ĐẠO HÀM BACKPROP CÙNG WEIGHT ĐỂ CÓ THỂ MỞ RỘNG VÒNG KIM CÔ CỨU SỐNG NETWORK MỘT CÁCH LINH HOẠT!</p>
+      <p class="text-xs font-bold mt-1 text-red-700">Điều kinh dị: Trạm thu phí đó CÓ 2 TÊN TÀI XẾ $\\gamma$ (Kéo giãn) VÀ $\\beta$ (Đẩy Tịnh Tiến) CŨNG tự ĐỘNG CẬP NHẬT BẰNG ĐẠO HÀM BACKPROP CÙNG WEIGHT ĐỂ CÓ THỂ MỞ RỘNG VÒNG KIM CÔ CỨU SỐNG NETWORK MỘT CÁCH LINH HOẠT!</p>
     </div>
   </div>
 </div>

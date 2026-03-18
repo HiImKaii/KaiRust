@@ -22,9 +22,9 @@ export const ch21_02: Chapter = {
       <p>Lịch sử của Mạng Nơ-ron Nhân tạo (Artificial Neural Networks – ANN) bắt đầu từ rất lâu trước khi khái niệm "Trí tuệ Nhân tạo" trở nên phổ biến.</p>
       <p><strong>Cột mốc 1943:</strong> Nhà thần kinh học Warren McCulloch và nhà toán học Walter Pitts đã viết bài báo khoa học: "A Logical Calculus of the Ideas Immanent in Nervous Activity". Trong đó, họ chứng minh rằng tập hợp các tế bào thần kinh kết nối với nhau có khả năng thực hiện bất kỳ phép tính logic nào. Mô hình "McCulloch-Pitts Neuron" ra đời, chỉ nhận đầu vào 0 và 1. Tuy là một bước tiến, mô hình này thiếu khả năng <strong>Học Hỏi (Learning)</strong> — trọng số phải được thiết lập thủ công.</p>
       <p><strong>Cột mốc 1957: Sự ra đời của Perceptron:</strong><br/>
-      Năm 1957, tại Phòng thí nghiệm Hàng không Cornell (Cornell Aeronautical Laboratory), nhà tâm lý học <strong>Frank Rosenblatt</strong> đã tạo ra bước đột phá. Được tài trợ bởi Hải quân Hoa Kỳ, ông chế tạo cỗ máy <strong>Mark I Perceptron</strong>.</p>
+      Năm 1957, tại Phòng thí nghiệm Hàng không Cornell (Cornell Aeronautical Laboratory), nhà tâm lý học <strong>Frank Rosenblatt</strong> đã tạo ra bước đột phá. Được tài trợ bởi Hải quân Hoa Kỳ, ông chế tạo cỗ mô hình <strong>Mark I Perceptron</strong>.</p>
       <p>Đây là một thiết bị cơ khí nặng 5 tấn, với ma trận các điện trở chiết áp (potentiometers) được điều khiển bằng motor. Đầu vào là 400 tế bào quang điện cadmium sulfide, đóng vai trò như võng mạc. Điều quan trọng nhất: nó có thể <strong>tự động điều chỉnh</strong> các điện trở (tức Trọng số — Weights) để "học" cách phân biệt hình vuông và hình tam giác.<br/>
-      Khái niệm <strong>Machine Learning</strong> chính thức ra đời. Tờ New York Times đã đưa tin trang nhất: <em>"Hải quân công bố cỗ máy có thể nhìn và tự học!"</em></p>
+      Khái niệm <strong>Machine Learning</strong> chính thức ra đời. Tờ New York Times đã đưa tin trang nhất: <em>"Hải quân công bố cỗ mô hình có thể nhìn và tự học!"</em></p>
     </div>
   </div>
 
@@ -33,7 +33,7 @@ export const ch21_02: Chapter = {
   <!--================================================-->
   <h3>1.1. Giải phẫu Tế bào Thần kinh — Từ Sinh học đến Toán học</h3>
   
-  <p>Để hiểu cốt lõi của Trí tuệ Nhân tạo, ta bắt đầu từ cấu trúc bộ não con người (chứa ~86 tỷ neuron). Rosenblatt đã mô phỏng cấu trúc này để tạo ra Perceptron.</p>
+  <p>Để hiểu cốt lõi của Trí tuệ Nhân tạo, hệ thống bắt đầu từ cấu trúc bộ não con người (chứa ~86 tỷ neuron). Rosenblatt đã mô phỏng cấu trúc này để tạo ra Perceptron.</p>
 
   <div class="image-showcase">
     <img src="/images/ch21/perceptron_model_1773152558045.png" alt="Sơ đồ Mô hình Toán học Perceptron" />
@@ -90,7 +90,7 @@ export const ch21_02: Chapter = {
   <!--================================================-->
   <h3>1.2. Thuật toán học của Perceptron (Perceptron Learning Algorithm)</h3>
   
-  <p>Làm cách nào máy tự tìm được bộ tham số <strong>$[W, B]$</strong> phù hợp? Perceptron sử dụng quy tắc học (Learning Rule) gồm các bước sau:</p>
+  <p>Làm cách nào mô hình tự tìm được bộ tham số <strong>$[W, B]$</strong> phù hợp? Perceptron sử dụng quy tắc học (Learning Rule) gồm các bước sau:</p>
   
   <div class="concept-grid">
     <div class="concept-card">
@@ -325,7 +325,7 @@ pub fn main() {
         <li><strong>Tầng 2:</strong> $H_2 = W_2 \\times H_1 + b_2$</li>
         <li><strong>Tầng Output:</strong> $Y = W_3 \\times H_2 + b_3$</li>
       </ul>
-      <p>Thay ngược lại, ta có:</p>
+      <p>Thay ngược lại, hệ thống có:</p>
       <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
         <p class="font-mono text-lg">$Y = W_3 \\times [ W_2 \\times (W_1 \\times X + b_1) + b_2 ] + b_3$</p>
         <p class="font-mono text-lg">$Y = (W_3 \\times W_2 \\times W_1) \\times X + (W_3 W_2 b_1 + W_3 b_2 + b_3)$</p>
@@ -340,7 +340,7 @@ pub fn main() {
   <!--==========================================================-->
   <h2>2.2. Các Hàm Kích Hoạt Quan Trọng Qua Các Thời Kỳ</h2>
   
-  <p>Mỗi hàm kích hoạt đánh dấu một giai đoạn phát triển của AI. Chúng ta sẽ phân tích từ góc độ Giải tích (Calculus), vì quá trình <strong>Backpropagation</strong> bắt buộc phải sử dụng đạo hàm của hàm kích hoạt.</p>
+  <p>Mỗi hàm kích hoạt đánh dấu một giai đoạn phát triển của AI. Chúng hệ thống sẽ phân tích từ góc độ Giải tích (Calculus), vì quá trình <strong>Backpropagation</strong> bắt buộc phải sử dụng đạo hàm của hàm kích hoạt.</p>
 
   <div class="image-showcase">
     <img src="/images/ch21/ch21_02_activation_funcs.png" alt="Đồ thị các Hàm Kích Hoạt" />
@@ -573,7 +573,7 @@ pub fn main() {
   <div class="callout callout-warning">
     <div class="callout-content">
       <span class="callout-title">AI WINTER (MÙA ĐÔNG AI)</span>
-      <p>Cuối thập niên 1950 và đầu 1960, Perceptron của Rosenblatt tạo ra làn sóng lạc quan. Các viện nghiên cứu, quân đội Mỹ đổ hàng triệu đô-la vì tin rằng máy móc sẽ sớm có trí tuệ như con người.</p>
+      <p>Cuối thập niên 1950 và đầu 1960, Perceptron của Rosenblatt tạo ra làn sóng lạc quan. Các viện nghiên cứu, quân đội Mỹ đổ hàng triệu đô-la vì tin rằng mô hình móc sẽ sớm có trí tuệ như con người.</p>
       <p>Năm 1969, hai nhà khoa học từ MIT — <strong>Marvin Minsky và Seymour Papert</strong> — xuất bản cuốn sách <strong>"Perceptrons: An Introduction to Computational Geometry"</strong>.</p>
       <p>Thay vì tranh luận triết lý, họ chứng minh bằng hình học tọa độ rằng: Perceptron chỉ là một bộ phân tách tuyến tính (single linear separator). Nó có thể giải cổng AND, OR, <strong>nhưng vĩnh viễn không thể giải bài toán XOR</strong>.</p>
       <p>Hậu quả: DARPA cắt toàn bộ ngân sách cho Neural Networks. Các phòng thí nghiệm đóng cửa, giảng viên né tránh môn Machine Learning. <strong>AI Winter (Mùa Đông AI)</strong> kéo dài 15 năm (1969 – 1986).</p>
@@ -585,7 +585,7 @@ pub fn main() {
   <!--==========================================================-->
   <h3>3.2. Tại Sao Bài Toán XOR LÀ Bất Khả Thi Với Perceptron?</h3>
   
-  <p>XOR (Exclusive OR) trả về 1 <strong>chỉ khi hai đầu vào khác nhau</strong>. Giống nhau thì trả về 0.</p>
+  <p>XOR (Exclusive OR) trả về 1 <strong>chỉ khi hai đầu vào khác nhau</strong>. Khi các đầu vào giống nhau thì trả về 0.</p>
 
   <table class="comparison-table">
     <thead>
@@ -790,7 +790,7 @@ pub fn main() {
     println!("============================================================\\n");
 
     // Dữ liệu XOR
-    let data = vec![
+    let dahệ thống = vec![
         vec![0.0, 0.0],  // → 0
         vec![0.0, 1.0],  // → 1
         vec![1.0, 0.0],  // → 1
@@ -831,7 +831,7 @@ pub fn main() {
   <!--==========================================================-->
   <h2>4.1. Kiến Trúc Mạng Đa Tầng Fully Connected (MLP)</h2>
   
-  <p>Khi ghép nhiều Perceptron lại, ta được <strong>MLP (Multi-Layer Perceptron)</strong>, còn gọi là <strong>Dense Network</strong> hoặc <strong>Fully-Connected Network</strong>. "Fully connected" nghĩa là: mỗi neuron ở tầng sau kết nối với <strong>tất cả</strong> neuron ở tầng trước.</p>
+  <p>Khi ghép nhiều Perceptron lại, hệ thống được <strong>MLP (Multi-Layer Perceptron)</strong>, còn gọi là <strong>Dense Network</strong> hoặc <strong>Fully-Connected Network</strong>. "Fully connected" nghĩa là: mỗi neuron ở tầng sau kết nối với <strong>tất cả</strong> neuron ở tầng trước.</p>
   
   <p>Ví dụ: tầng Input có 784 pixels (ảnh 28x28), tầng Hidden có 100 neuron. Số lượng trọng số required cho lớp đó: $784 \\times 100 = 78,400$ weights. Đây là kích thước thực tế của ma trận trọng số $W_1$.</p>
 
@@ -1119,7 +1119,7 @@ pub fn main() {
       <div class="formula-block my-2 p-3 bg-gray-50 border-gray-300 font-bold text-center">
         $Z = X \\times W^T + B$
       </div>
-      <p>Các thư viện tính toán máy chủ (như BLAS/cuBLAS) thực hiện phép nhân ma trận nhanh hơn vòng lặp <code>for</code> thông thường từ <strong>hàng nghìn đến hàng vạn lần</strong>.</p>
+      <p>Các thư viện tính toán mô hình chủ (như BLAS/cuBLAS) thực hiện phép nhân ma trận nhanh hơn vòng lặp <code>for</code> thông thường từ <strong>hàng nghìn đến hàng vạn lần</strong>.</p>
     </div>
   </div>
 
@@ -1129,7 +1129,7 @@ pub fn main() {
   <!--==========================================================-->
   <h3>5.2. Softmax Và Vấn Đề Ổn Định Số Học (Numerical Stability)</h3>
   
-  <p>Khi dùng mạng nơ-ron để phân lớp đa danh mục (ví dụ: phân loại ảnh chó, mèo, ngựa), ta sử dụng hàm kích hoạt Softmax ở lớp cuối. Tên gọi "Soft" Max để phân biệt với "Hard" Max: thay vì chỉ chọn giá trị lớn nhất, Softmax chuyển đổi toàn bộ vector thành phân phối xác suất với tổng bằng 1.</p>
+  <p>Khi dùng mạng nơ-ron để phân lớp đa danh mục (ví dụ: phân loại ảnh chó, mèo, ngựa), hệ thống sử dụng hàm kích hoạt Softmax ở lớp cuối. Tên gọi "Soft" Max để phân biệt với "Hard" Max: thay vì chỉ chọn giá trị lớn nhất, Softmax chuyển đổi toàn bộ vector thành phân phối xác suất với tổng bằng 1.</p>
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
     <p>Công thức gốc của Softmax cho lớp thứ $i$:</p>
@@ -1139,7 +1139,7 @@ pub fn main() {
   <p><strong>Vấn đề ổn định số học (Numerical Stability):</strong> Nếu giá trị $Z_i$ quá lớn (ví dụ $Z_i = 1000$), phép tính <code>exp(1000)</code> sẽ cho kết quả $\\infty$ (Infinity). Khi chia cho Infinity, kết quả trở thành NaN (Not a Number) và lan truyền khắp quá trình huấn luyện, gây sụp đổ toàn bộ mô hình.</p>
   
   <p><strong>Giải pháp Toán Học — Stable Softmax:</strong></p>
-  <p>Theo giải tích, khi chia phân thức trên dưới cùng cơ số, nếu ta nhân cả 2 vế với cùng hệ số $e^{-C}$, kết quả Toán Học vĩnh viễn không thay đổi.</p>
+  <p>Theo giải tích, khi chia phân thức trên dưới cùng cơ số, nếu hệ thống nhân cả 2 vế với cùng hệ số $e^{-C}$, kết quả Toán Học vĩnh viễn không thay đổi.</p>
   <div class="formula-block my-4 p-4 border-indigo-300 bg-gray-50">
     <p class="font-mono">$P(i) = \\frac{e^{Z_i - C}}{\\sum e^{Z_j - C}}$</p>
     <p>Thuật toán <strong>Stable Softmax</strong> chọn $C = \\max(Z)$.</p>
@@ -1239,7 +1239,7 @@ pub fn main() {
     println!("============================================================\\n");
 
     // Tái tạo lại sự cố do Over-confidence (Giá trị Logits lớn khủng khiếp)
-    // Giả sử ta đang có Logits cho dự đoán 3 classes (Chó, Mèo, Gà) 
+    // Giả sử hệ thống đang có Logits cho dự đoán 3 classes (Chó, Mèo, Gà) 
     
     let raw_logits = vec![ 1205.0, 1000.0, 750.0 ];
     
@@ -1460,14 +1460,14 @@ pub fn main() {
     println!("  MINI-BATCH DATALOADER VÀ CƠ CHẾ SHUFFLE CHỐNG OVERFIT");
     println!("============================================================\\n");
 
-    let core_truedata = vec![
+    let core_truedahệ thống = vec![
         vec![ 1.0, 1.0 ], // Mẫu 0
         vec![ 2.0, 2.0 ], // Mẫu 1
         vec![ 3.0, 3.0 ], // Mẫu 2
         vec![ 4.0, 4.0 ], // Mẫu 3
         vec![ 5.0, 5.0 ], // Mẫu 4
     ];
-    let tag_truedata = vec![ 10.0, 20.0, 30.0, 40.0, 50.0 ];
+    let tag_truedahệ thống = vec![ 10.0, 20.0, 30.0, 40.0, 50.0 ];
 
     println!("[*] KHỞI TẠO: DATA 5 HÀNG, BATCH SIZE YÊU CẦU = 2 (Lẻ 1 mẫu cuối)");
     let mut loader = DataSetCore::SuperDataLoader::new(core_truedata, tag_truedata, 2, false);
@@ -1489,7 +1489,7 @@ pub fn main() {
         println!(" - Mẻ {} (Nhãn mục mới xếp rải rác: {:?})", i+1, lb_bat);
     }
     
-    println!("\\n[Kết luận] Shuffle thay đổi liên tục giúp hệ thống Mạng Nơron ăn lượng Data lộn xộn, ko dự đoán được chu kỳ và ko học vẹt pattern hàng dòng thô rác!");
+    println!("\\n[Kết luận] Shuffle thay đổi liên tục giúp hệ thống Mạng Nơron ăn lượng Dahệ thống lộn xộn, ko dự đoán được chu kỳ và ko học vẹt pattern hàng dòng thô rác!");
 }`
 }
 ]};

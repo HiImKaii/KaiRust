@@ -24,9 +24,9 @@ const ch21_04_lessons: Lesson[] = [
   <!-- ========================================= -->
   <!-- 1.1. TẠI SAO CẦN HÀM LOSS?               -->
   <!-- ========================================= -->
-  <h3>1.1. Tại sao máy tính cần Hàm Loss?</h3>
+  <h3>1.1. Tại sao mô hình tính cần Hàm Loss?</h3>
 
-  <p>Khi Neural Network đưa ra dự đoán, ta cần một cách để đánh giá mức độ sai lệch giữa dự đoán đó và kết quả thực tế. <strong>Loss Function (Hàm Suy Hao)</strong> chính là thước đo này.</p>
+  <p>Khi Neural Network đưa ra dự đoán, hệ thống cần một cách để đánh giá mức độ sai lệch giữa dự đoán đó và kết quả thực tế. <strong>Loss Function (Hàm Suy Hao)</strong> chính là thước đo này.</p>
 
   <div class="definition-block">
     <span class="definition-term">Loss Function (Hàm Suy Hao / Hàm Mất mát)</span>
@@ -60,7 +60,7 @@ const ch21_04_lessons: Lesson[] = [
     </div>
   </div>
 
-  <p>Vậy ta cần một hàm số <strong>liên tục và có đạo hàm</strong> để thay thế cho Accuracy. Đây chính là lý do <strong>Likelihood</strong> xuất hiện trong lý thuyết Machine Learning.</p>
+  <p>Vậy hệ thống cần một hàm số <strong>liên tục và có đạo hàm</strong> để thay thế cho Accuracy. Đây chính là lý do <strong>Likelihood</strong> xuất hiện trong lý thuyết Machine Learning.</p>
 
   <!-- ========================================= -->
   <!-- 1.2. KHÁI NIỆM LIKELIHOOD                 -->
@@ -91,7 +91,7 @@ const ch21_04_lessons: Lesson[] = [
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
     <p class="font-bold mb-2 text-center">Công thức Likelihood cho N mẫu dữ liệu:</p>
-    <p class="font-mono text-lg text-center">$L(\\theta) = P(data | \\theta) = \\prod_{i=1}^{N} P(x_i, y_i | \\theta)$</p>
+    <p class="font-mono text-lg text-center">$L(\\theta) = P(dahệ thống | \\theta) = \\prod_{i=1}^{N} P(x_i, y_i | \\theta)$</p>
     <p class="text-sm text-gray-600 mt-2">Trong đó: θ là bộ trọng số của mạng neural</p>
   </div>
 
@@ -180,7 +180,7 @@ const ch21_04_lessons: Lesson[] = [
     </tbody>
   </table>
 
-  <p>Vậy là Logarithm đã giải quyết được vấn đề Underflow. Tuy nhiên, vẫn còn một vấn đề cần giải quyết: <strong>Gradient Descent tìm cực tiểu (minimum)</strong>, trong khi với Likelihood ta cần <strong>cực đại (maximum)</strong>.</p>
+  <p>Vậy là Logarithm đã giải quyết được vấn đề Underflow. Tuy nhiên, vẫn còn một vấn đề cần giải quyết: <strong>Gradient Descent tìm cực tiểu (minimum)</strong>, trong khi với Likelihood hệ thống cần <strong>cực đại (maximum)</strong>.</p>
 
   <!-- ========================================= -->
   <!-- 1.4. NEGATIVE LOG-LIKELIHOOD (NLL)       -->
@@ -203,11 +203,11 @@ const ch21_04_lessons: Lesson[] = [
     <div class="callout-icon">💡</div>
     <div class="callout-content">
       <strong>Điểm mấu chốt:</strong>
-      <p>Minimize NLL = Maximize Likelihood. Gradient Descent tìm minimum (đáy), nên ta cần "lật" đồ thị để đỉnh cao nhất trở thành điểm thấp nhất. Đó là lý do có dấu "-" trong NLL.</p>
+      <p>Minimize NLL = Maximize Likelihood. Gradient Descent tìm minimum (đáy), nên hệ thống cần "lật" đồ thị để đỉnh cao nhất trở thành điểm thấp nhất. Đó là lý do có dấu "-" trong NLL.</p>
     </div>
   </div>
 
-  <p>Tuy nhiên, vẫn còn một vấn đề cần giải quyết: <strong>Gradient Descent tìm cực tiểu (minimum)</strong>, trong khi với Likelihood ta cần <strong>cực đại (maximum)</strong>.</p>
+  <p>Tuy nhiên, vẫn còn một vấn đề cần giải quyết: <strong>Gradient Descent tìm cực tiểu (minimum)</strong>, trong khi với Likelihood hệ thống cần <strong>cực đại (maximum)</strong>.</p>
 
   <div class="definition-block">
     <span class="definition-term">Negative Log-Likelihood (NLL)</span>
@@ -260,7 +260,7 @@ const ch21_04_lessons: Lesson[] = [
     </tbody>
   </table>
 
-  <p>Bây giờ ta đã có hàm Loss hoàn hảo. Tiếp theo, ta cần tìm hiểu <strong>cách tối ưu hóa</strong> hàm Loss này - đó chính là <strong>Gradient Descent</strong>.</p>
+  <p>Bây giờ hệ thống đã có hàm Loss hoàn hảo. Tiếp theo, hệ thống cần tìm hiểu <strong>cách tối ưu hóa</strong> hàm Loss này - đó chính là <strong>Gradient Descent</strong>.</p>
 
   <!-- ========================================= -->
   <!-- 1.5. GRADIENT DESCENT                     -->
@@ -284,7 +284,7 @@ const ch21_04_lessons: Lesson[] = [
     <div class="callout-icon">💡</div>
     <div class="callout-content">
       <strong>Tại sao "ngược gradient"?</strong>
-      <p>Gradient chỉ hướng TĂNG (đi lên). Để GIẢM Loss, ta đi ngược lại → trừ đi gradient. Công thức: $w_{new} = w_{old} - \\eta \\times gradient$</p>
+      <p>Gradient chỉ hướng TĂNG (đi lên). Để GIẢM Loss, hệ thống đi ngược lại → trừ đi gradient. Công thức: $w_{new} = w_{old} - \\ehệ thống \\times gradient$</p>
     </div>
   </div>
 
@@ -292,7 +292,7 @@ const ch21_04_lessons: Lesson[] = [
 
   <div class="formula-block my-4 p-4 bg-indigo-50 border-indigo-300">
     <p class="font-bold mb-2 text-center">Công thức cập nhật trọng số:</p>
-    <p class="font-mono text-lg text-center">$w_{new} = w_{old} - \\eta \\times \\frac{\\partial L}{\\partial w}$</p>
+    <p class="font-mono text-lg text-center">$w_{new} = w_{old} - \\ehệ thống \\times \\frac{\\partial L}{\\partial w}$</p>
     <p class="text-sm text-gray-600 mt-2">Trong đó: η (eta) là tốc độ học (learning rate), ∂L/∂w là gradient của Loss theo trọng số w</p>
   </div>
 
@@ -784,7 +784,7 @@ fn main() {
     <p class="font-bold mb-2 text-center">Công thức Huber Loss:</p>
     <p class="font-mono text-lg text-center">$L_{\\delta}(y, \\hat{y}) = \\frac{1}{n} \\sum_{i=1}^{n} L_{\\delta}(e_i)$</p>
     <p class="font-mono text-center mt-2">với $e_i = y_i - \\hat{y}_i$</p>
-    <p class="font-mono text-center mt-2">$L_{\\delta}(e) = \\begin{cases} \\frac{1}{2}e^2 & \\text{nếu } |e| \\le \\delta \\\\ \\delta|e| - \\frac{1}{2}\\delta^2 & \\text{nếu } |e| > \\delta \\end{cases}$</p>
+    <p class="font-mono text-center mt-2">$L_{\\delta}(e) = \\begin{cases} \\frac{1}{2}e^2 & \\text{nếu } |e| \\le \\delhệ thống \\\\ \\delta|e| - \\frac{1}{2}\\delta^2 & \\text{nếu } |e| > \\delhệ thống \\end{cases}$</p>
   </div>
 
   <div class="concept-grid">
@@ -844,10 +844,10 @@ fn mae(e: f64) -> f64 { e.abs() }
 
 fn huber_loss(error: f64, delta: f64) -> f64 {
     let abs_err = error.abs();
-    if abs_err <= delta {
+    if abs_err <= delhệ thống {
         0.5 * error * error                        // Nhánh MSE (Đầu mượt)
     } else {
-        delta * abs_err - 0.5 * delta * delta      // Nhánh MAE (Chống bạo động đỉnh)
+        delhệ thống * abs_err - 0.5 * delhệ thống * delhệ thống      // Nhánh MAE (Chống bạo động đỉnh)
     }
 }
 
@@ -867,7 +867,7 @@ fn main() {
     println!("- L2 (MSE)  phạt: {:.1} (BÙM CÚ TÁT NGÀN CÂN!)", mse(outlier_error));
 
     // Huber với ngưỡng bẻ lái = 1.0
-    let delta = 1.0;
+    let delhệ thống = 1.0;
     println!("\n[2] HUBER LOSS (Delta={}) - Kẻ Cân Bằng:", delta);
 
     println!("   + Sai số Mượt ({:.1}) -> Huber phán: {:.3} (Mượt như nhung chảo parabol)",
@@ -1065,7 +1065,7 @@ fn main() {
     <div class="callout-icon">💡</div>
     <div class="callout-content">
       <strong>Điểm khác biệt với BCE:</strong>
-      <p>Trong CCE, ta không chỉ có 1 prediction mà có N predictions (một cho mỗi class). Tổng của chúng = 1 (nhờ Softmax). Loss chỉ phụ thuộc vào xác suất của class <strong>đúng</strong>.</p>
+      <p>Trong CCE, hệ thống không chỉ có 1 prediction mà có N predictions (một cho mỗi class). Tổng của chúng = 1 (nhờ Softmax). Loss chỉ phụ thuộc vào xác suất của class <strong>đúng</strong>.</p>
     </div>
   </div>
 

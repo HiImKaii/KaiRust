@@ -2,14 +2,14 @@
 // Chương 21: MẠNG NEURAL NETWORK (Neural Networks)
 // Bài 1: NỀN TẢNG MACHINE LEARNING, PERCEPTRON & DATA PIPELINE
 //
-// ĐÂY LÀ BÀI HỌC NỀN TẢNG - TOÀN BỘ KIẾN THỨC CỐT LÕI
-// Mục tiêu của bài học này:
-// 1. Hiểu sâu Machine Learning: Supervised, Unsupervised, Reinforcement Learning
-// 2. Neuron sinh học → Neuron nhân tạo: giải phẫu từng thành phần
-// 3. Perceptron: cấu tạo, công thức, hạn chế XOR, Learning Rule
-// 4. Tensor: Scalar, Vector, Matrix, Rank, Shape, Phép toán
+// Bài học nền tảng về Machine Learning và Neural Networks
+// Nội dung bao gồm:
+// 1. Machine Learning: Supervised, Unsupervised, Reinforcement Learning
+// 2. Neuron sinh học → Neuron nhân tạo: cấu trúc và chức năng
+// 3. Perceptron: kiến trúc, công thức, hạn chế XOR, Learning Rule
+// 4. Tensor: Scalar, Vector, Matrix, Rank, Shape, phép toán
 // 5. Data Pipeline: Encoding, Normalization, Splitting, Batching
-// 6. Ví dụ code Rust chi tiết từng dòng cho mỗi khái niệm
+// 6. Ví dụ code Rust minh họa cho từng khái niệm
 // =====================================================
 
 import { Lesson, Chapter } from '../../courses';
@@ -35,50 +35,50 @@ const ch21_01_lessons: Lesson[] = [
   <!-- 1.1. LẬP TRÌNH TRUYỀN THỐNG VS ML        -->
   <!-- ========================================= -->
   <h3><span class="material-symbols-outlined">lightbulb</span> 1.1. Lập trình truyền thống vs Machine Learning</h3>
-  
-  <p>Trước khi nói về Neural Network, ta cần hiểu <strong>Machine Learning (ML)</strong> - nền tảng mà Neural Network được xây dựng trên đó. <strong>Machine Learning</strong> là một nhánh của Trí Tuệ Nhân Tạo (AI), cho phép máy tính <strong>"học" từ dữ liệu</strong> mà không cần lập trình viên viết code cho từng tình huống cụ thể.</p>
+
+  <p>Trước khi tìm hiểu về Neural Network, cần nắm vững khái niệm <strong>Machine Learning (ML)</strong> - nền tảng mà Neural Network được xây dựng. <strong>Machine Learning</strong> là một nhánh của Trí Tuệ Nhân Tạo (AI), cho phép hệ thống <strong>học từ dữ liệu</strong> mà không cần lập trình viên viết code xử lý từng trường hợp cụ thể.</p>
 
   <div class="concept-grid">
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">code</span></div>
       <h4>Lập trình truyền thống</h4>
-      <p><strong>Input + RULES (do con người viết) &rarr; Output</strong></p>
+      <p><strong>Input + RULES (do con người định nghĩa) &rarr; Output</strong></p>
       <p><em>Quy trình:</em></p>
       <ol>
         <li>Lập trình viên phân tích bài toán</li>
-        <li>Viết từng quy tắc IF/ELSE bằng tay</li>
-        <li>Test và sửa lỗi thủ công</li>
-        <li>Khi có tình huống mới → phải viết thêm code</li>
+        <li>Xây dựng các quy tắc IF/ELSE</li>
+        <li>Kiểm thử và sửa lỗi</li>
+        <li>Khi có trường hợp mới → cần cập nhật code</li>
       </ol>
-      <p><em>Ví dụ cụ thể - Bộ lọc Email Spam:</em></p>
+      <p><em>Ví dụ - Bộ lọc Email Spam:</em></p>
       <ul>
         <li>Rule 1: Nếu chứa từ "Viagra" → Spam</li>
         <li>Rule 2: Nếu sender trong blacklist → Spam</li>
         <li>Rule 3: Nếu có hơn 5 link → Spam</li>
         <li>Rule 4: Nếu toàn chữ HOA → Spam</li>
-        <li>... phải viết hàng trăm rules</li>
+        <li>... cần viết hàng trăm rules</li>
       </ul>
-      <p><strong>Nhược điểm:</strong> Con người không thể lường trước tất cả tình huống. Spammer thay đổi chiến thuật liên tục → rules cũ bị vô hiệu hóa.</p>
+      <p><strong>Nhược điểm:</strong> Không thể dự đoán tất cả các trường hợp. Kẻ gửi spam liên tục thay đổi chiến thuật khiến các rules trở nên lỗi thời.</p>
     </div>
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">model_training</span></div>
       <h4>Machine Learning</h4>
-      <p><strong>Input + Output (dữ liệu mẫu) &rarr; RULES (máy tự học)</strong></p>
+      <p><strong>Input + Output (dữ liệu mẫu) &rarr; RULES (mô hình tự học)</strong></p>
       <p><em>Quy trình:</em></p>
       <ol>
         <li>Thu thập dữ liệu có nhãn (ví dụ: 100,000 email đã được đánh dấu spam/không spam)</li>
         <li>Đưa dữ liệu vào mô hình ML</li>
-        <li>Mô hình TỰ TÌM RA patterns và rules</li>
+        <li>Mô hình tự động tìm kiếm các patterns và quy tắc</li>
         <li>Khi có dữ liệu mới → mô hình tự cập nhật</li>
       </ol>
-      <p><em>Ví dụ cụ thể - ML lọc Email Spam:</em></p>
+      <p><em>Ví dụ - ML lọc Email Spam:</em></p>
       <ul>
-        <li>Cho máy xem 100,000 email spam và 100,000 email không spam</li>
-        <li>Máy TỰ phát hiện: "email spam thường có nhiều link, chữ hoa, sender lạ..."</li>
-        <li>Máy TỰ tạo ra bộ lọc phức tạp hơn con người có thể viết</li>
-        <li>Khi spammer thay đổi → train lại với dữ liệu mới</li>
+        <li>Huấn luyện mô hình với 100,000 email spam và 100,000 email không spam</li>
+        <li>Mô hình tự động phát hiện: "email spam thường có nhiều link, chữ hoa, sender lạ..."</li>
+        <li>Mô hình tạo ra bộ lọc phức tạp hơn so với quy tắc thủ công</li>
+        <li>Khi kẻ gửi spam thay đổi chiến thuật → huấn luyện lại với dữ liệu mới</li>
       </ul>
-      <p><strong>Ưu điểm:</strong> Phát hiện patterns mà con người không nhìn thấy. Tự thích nghi với dữ liệu mới.</p>
+      <p><strong>Ưu điểm:</strong> Phát hiện các patterns mà con người khó nhận diện. Tự động thích nghi với dữ liệu mới.</p>
     </div>
   </div>
 
@@ -86,9 +86,9 @@ const ch21_01_lessons: Lesson[] = [
     <span class="material-symbols-outlined">stars</span>
     <div class="callout-content">
       <span class="callout-title">Sự khác biệt cốt lõi</span>
-      <p>Lập trình truyền thống: Con người viết rules → máy chấp hành.</p>
-      <p>Machine Learning: Con người cung cấp dữ liệu → máy TỰ tìm ra rules.</p>
-      <p>Đây là sự đảo ngược hoàn toàn tư duy lập trình. Thay vì "dạy máy làm gì", ta "cho máy dữ liệu để nó tự học".</p>
+      <p>Lập trình truyền thống: Con người định nghĩa rules → mô hình thực thi.</p>
+      <p>Machine Learning: Con người cung cấp dữ liệu → mô hình tự động tìm ra rules.</p>
+      <p>Đây là sự thay đổi cơ bản trong tư duy lập trình. Thay vì "dạy mô hình làm gì", hệ thống được "cung cấp dữ liệu để tự học".</p>
     </div>
   </div>
 
@@ -96,15 +96,15 @@ const ch21_01_lessons: Lesson[] = [
   <!-- 1.2. BA LOẠI MACHINE LEARNING             -->
   <!-- ========================================= -->
   <h3><span class="material-symbols-outlined">category</span> 1.2. Ba loại Machine Learning chính</h3>
-  
-  <p>Machine Learning được chia thành 3 nhánh chính dựa trên cách dữ liệu được cung cấp cho mô hình:</p>
+
+  <p>Machine Learning được phân chia thành 3 nhánh chính dựa trên phương thức dữ liệu được cung cấp cho mô hình:</p>
 
   <div class="concept-grid">
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">school</span></div>
       <h4>Supervised Learning (Học có giám sát)</h4>
-      <p><strong>Đặc điểm:</strong> Có cả DỮ LIỆU và NHÃN (đáp án).</p>
-      <p><em>Giống như:</em> Học sinh làm bài tập có đáp án. Mỗi bài sai, thầy giáo chỉ ra lỗi.</p>
+      <p><strong>Đặc điểm:</strong> Dữ liệu huấn luyện bao gồm cả input và nhãn (đáp án) tương ứng.</p>
+      <p><em>Tương tự:</em> Học sinh làm bài tập có đáp án. Giáo viên chỉ ra lỗi sai để học sinh điều chỉnh.</p>
       <p><strong>Hai dạng bài toán:</strong></p>
       <ul>
         <li><strong>Classification (Phân loại):</strong> Output là loại rời rạc.<br/>
@@ -124,9 +124,9 @@ const ch21_01_lessons: Lesson[] = [
     </div>
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">travel_explore</span></div>
-      <h4>Unsupervised Learning (Không giám sát)</h4>
-      <p><strong>Đặc điểm:</strong> Chỉ có DỮ LIỆU, KHÔNG có nhãn. Máy tự tìm cấu trúc ẩn.</p>
-      <p><em>Giống như:</em> Cho một đống đồ chơi lẫn lộn, tự phân loại mà không ai chỉ cách.</p>
+      <h4>Unsupervised Learning (Học không giám sát)</h4>
+      <p><strong>Đặc điểm:</strong> Chỉ có dữ liệu, không có nhãn. Mô hình tự khám phá cấu trúc ẩn trong dữ liệu.</p>
+      <p><em>Tương tự:</em> Phân loại một đống đồ vật lẫn lộn mà không có hướng dẫn trước.</p>
       <p><strong>Các dạng bài toán:</strong></p>
       <ul>
         <li><strong>Clustering (Phân cụm):</strong> Gom nhóm dữ liệu tương tự.<br/>
@@ -148,8 +148,8 @@ const ch21_01_lessons: Lesson[] = [
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">sports_esports</span></div>
       <h4>Reinforcement Learning (Học tăng cường)</h4>
-      <p><strong>Đặc điểm:</strong> Học bằng THỬ VÀ SAI, nhận thưởng/phạt từ môi trường.</p>
-      <p><em>Giống như:</em> Dạy chó: làm đúng → cho bánh, làm sai → phạt. Chó tự tìm ra hành vi tốt nhất.</p>
+      <p><strong>Đặc điểm:</strong> Học thông qua tương tác với môi trường, nhận phản hồi dạng thưởng/phạt.</p>
+      <p><em>Tương tự:</em> Huấn luyện động vật: thưởng khi thực hiện đúng, phạt khi thực hiện sai. Agent tự tìm ra hành vi tối ưu.</p>
       <p><strong>Các thành phần:</strong></p>
       <ul>
         <li><strong>Agent:</strong> Người chơi (AI đang học)</li>
@@ -173,7 +173,7 @@ const ch21_01_lessons: Lesson[] = [
     <span class="material-symbols-outlined">info</span>
     <div class="callout-content">
       <span class="callout-title">Neural Network nằm ở đâu?</span>
-      <p>Neural Network (mạng nơ-ron) chủ yếu được dùng trong <strong>Supervised Learning</strong> - ta cho nó dữ liệu và đáp án, nó tự tìm ra quy luật. Tuy nhiên, Neural Network cũng được dùng trong cả 3 nhánh:</p>
+      <p>Neural Network (mạng nơ-ron) chủ yếu được sử dụng trong <strong>Supervised Learning</strong> - cung cấp dữ liệu và đáp án, mô hình tự tìm ra quy luật. Tuy nhiên, Neural Network cũng được ứng dụng trong cả 3 nhánh:</p>
       <ul>
         <li><strong>Supervised:</strong> CNN phân loại ảnh, RNN dịch ngôn ngữ</li>
         <li><strong>Unsupervised:</strong> Autoencoders nén dữ liệu, GANs tạo ảnh giả</li>
@@ -185,9 +185,9 @@ const ch21_01_lessons: Lesson[] = [
   <!-- ========================================= -->
   <!-- 1.3. TRAINING DATA VS TEST DATA           -->
   <!-- ========================================= -->
-  <h3><span class="material-symbols-outlined">dataset</span> 1.3. Training Data vs Test Data - Tại sao phải chia dữ liệu?</h3>
-  
-  <p>Khi có dữ liệu (ví dụ 10,000 ảnh), ta KHÔNG BAO GIỜ cho máy học toàn bộ. Phải chia ra:</p>
+  <h3><span class="material-symbols-outlined">dataset</span> 1.3. Training Data vs Test Data</h3>
+
+  <p>Khi có dữ liệu (ví dụ 10,000 ảnh), cần phân chia dữ liệu thành các tập riêng biệt:</p>
 
   <table class="comparison-table">
     <thead>
@@ -203,23 +203,23 @@ const ch21_01_lessons: Lesson[] = [
       <tr>
         <td><strong>Training Set</strong></td>
         <td>60-80%</td>
-        <td>Máy "học" từ đây</td>
-        <td>Trong quá trình training</td>
-        <td>Giống học sinh làm bài tập trong sách</td>
+        <td>Dữ liệu huấn luyện</td>
+        <td>Trong quá trình huấn luyện</td>
+        <td>Dùng để mô hình học các quy tắc</td>
       </tr>
       <tr>
         <td><strong>Validation Set</strong></td>
         <td>10-20%</td>
-        <td>Điều chỉnh hyperparameters</td>
-        <td>Sau mỗi epoch training</td>
-        <td>Giống học sinh làm đề thi thử</td>
+        <td>Điều chỉnh siêu tham số</td>
+        <td>Sau mỗi epoch huấn luyện</td>
+        <td>Dùng để đánh giá và điều chỉnh mô hình</td>
       </tr>
       <tr>
         <td><strong>Test Set</strong></td>
         <td>10-20%</td>
         <td>Đánh giá cuối cùng</td>
-        <td>CHỈ dùng 1 lần cuối</td>
-        <td>Giống học sinh đi thi đại học THẬT</td>
+        <td>Chỉ sử dụng một lần sau khi hoàn thành huấn luyện</td>
+        <td>Dùng để đánh giá khả năng tổng quát của mô hình</td>
       </tr>
     </tbody>
   </table>
@@ -228,8 +228,8 @@ const ch21_01_lessons: Lesson[] = [
     <span class="material-symbols-outlined">warning</span>
     <div class="callout-content">
       <span class="callout-title">Overfitting vs Underfitting</span>
-      <p><strong>Overfitting (Quá khớp):</strong> Mô hình thuộc lòng dữ liệu training, nhưng gặp dữ liệu mới thì dự đoán sai nghiêm trọng. Tương tự học sinh chỉ thuộc đáp án bài tập, gặp đề mới là không giải được.</p>
-      <p><strong>Underfitting (Dưới khớp):</strong> Mô hình quá đơn giản, không nắm bắt được quy luật trong dữ liệu. Tương tự học sinh lướt qua bài một lần rồi đi thi.</p>
+      <p><strong>Overfitting (Quá khớp):</strong> Mô hình ghi nhớ dữ liệu huấn luyện thay vì học các quy tắc tổng quát. Khi gặp dữ liệu mới, mô hình dự đoán sai nghiêm trọng.</p>
+      <p><strong>Underfitting (Dưới khớp):</strong> Mô hình quá đơn giản, không nắm bắt được quy luật trong dữ liệu. Nguyên nhân có thể do nội dung quá khó hoặc không đủ thời gian huấn luyện.</p>
       <p><strong>Mục tiêu:</strong> Tìm điểm cân bằng — mô hình đủ phức tạp để nắm bắt quy luật, nhưng không quá phức tạp đến mức ghi nhớ cả nhiễu (noise) trong dữ liệu.</p>
     </div>
   </div>
@@ -237,7 +237,7 @@ const ch21_01_lessons: Lesson[] = [
   <!-- ========================================= -->
   <!-- 1.4. NEURON SINH HỌC                      -->
   <!-- ========================================= -->
-  <h3><span class="material-symbols-outlined">biotech</span> 1.4. Neuron sinh học - Cơ sở cảm hứng</h3>
+  <h3><span class="material-symbols-outlined">biotech</span> 1.4. Neuron sinh học - Cơ sở lý thuyết</h3>
   
   <p>Neural Network nhân tạo <strong>mô phỏng</strong> quá trình gửi/nhận tín hiệu của não bộ. Não người có khoảng <strong>86 tỷ neuron</strong>, mỗi neuron kết nối với khoảng <strong>7,000 neuron khác</strong> thông qua <strong>synapse</strong>.</p>
 
@@ -254,7 +254,7 @@ const ch21_01_lessons: Lesson[] = [
   <div class="definition-block">
     <span class="definition-term">Nguyên tắc Hebb (1949): "Neurons that fire together, wire together"</span>
     <p>Những neuron cùng "bắn" tín hiệu sẽ có kết nối <strong>mạnh hơn</strong>. Đây là cơ chế hình thành trí nhớ và học tập.</p>
-    <p><em>Ví dụ:</em> Lần đầu chạm lửa → đau → neuron "lửa" và neuron "đau" cùng bắn → kết nối mạnh lên. Lần sau chỉ nhìn lửa → não tự liên kết đến "đau" → rụt tay lại.</p>
+    <p><em>Ví dụ:</em> Khi chạm lửa lần đầu → cảm giác đau → neuron "lửa" và neuron "đau" cùng kích hoạt → kết nối giữa hai neuron được củng cố. Ở lần tiếp theo, khi chỉ nhìn thấy lửa → não tự động liên kết đến cảm giác đau → rút tay lại.</p>
     <p><em>Trong AI:</em> Khi mô hình dự đoán đúng, các weights (kết nối) được tăng cường. Dự đoán sai → weights bị giảm. Đây chính là quá trình "learning" (học).</p>
   </div>
 
@@ -291,7 +291,7 @@ const ch21_01_lessons: Lesson[] = [
         <td><strong>Threshold</strong> (Ngưỡng)</td>
         <td>Bias</td>
         <td>$b$</td>
-        <td>Điều chỉnh "ngưỡng kích hoạt" của neuron. Bias dương → dễ kích hoạt (dễ bắn). Bias âm → khó kích hoạt. Giống như chỉnh ngưỡng nhạy của cảm biến khói.</td>
+        <td>Điều chỉnh "ngưỡng kích hoạt" của neuron. Bias dương → dễ kích hoạt. Bias âm → khó kích hoạt. Tương tự như điều chỉnh độ nhạy của cảm biến khói.</td>
       </tr>
       <tr>
         <td><strong>Axon hillock</strong> (Đồi sợi trục)</td>
@@ -321,15 +321,15 @@ const ch21_01_lessons: Lesson[] = [
   <p><strong>Giải thích đơn giản:</strong></p>
   <ul>
     <li>Về mặt lý thuyết, Neural Network có thể "học" bất kỳ mối quan hệ nào giữa input và output.</li>
-    <li>Muốn phân biệt chó/mèo? NN làm được.</li>
-    <li>Muốn dự đoán giá nhà? NN làm được.</li>
-    <li>Muốn dịch tiếng Anh sang tiếng Việt? NN làm được.</li>
+    <li>Phân biệt chó/mèo: NN có thể thực hiện.</li>
+    <li>Dự đoán giá nhà: NN có thể thực hiện.</li>
+    <li>Dịch tiếng Anh sang tiếng Việt: NN có thể thực hiện.</li>
   </ul>
 
   <p><strong>Nhưng có 2 vấn đề:</strong></p>
   <ol>
-    <li><strong>Theorem chỉ nói "CÓ THỂ"</strong>, không nói "làm sao để tìm" weights đúng. Đó là lý do ta phải "train" mô hình - tìm bộ weights tối ưu.</li>
-    <li><strong>"Đủ số neurons"</strong> có thể là rất nhiều. Với bài toán phức tạp, cần hàng triệu neurons → cần nhiều data và GPU mạnh.</li>
+    <li><strong>Định lý chỉ ra "CÓ THỂ"</strong>, không đưa ra phương pháp tìm weights đúng. Đây là lý do cần huấn luyện mô hình để tìm bộ weights tối ưu.</li>
+    <li><strong>"Đủ số neurons"</strong> có thể là rất nhiều. Với bài toán phức tạp, cần hàng triệu neurons → cần nhiều dahệ thống và GPU mạnh.</li>
   </ol>
 
   <div class="callout callout-info">
@@ -472,7 +472,7 @@ const ch21_01_lessons: Lesson[] = [
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">layers</span></div>
       <h4>Hidden Layer(s) (Lớp ẩn)</h4>
-      <p><strong>Vai trò:</strong> Trích xuất đặc trưng (features) từ data ở nhiều mức trừu tượng.</p>
+      <p><strong>Vai trò:</strong> Trích xuất đặc trưng (features) từ dahệ thống ở nhiều mức trừu tượng.</p>
       <p><strong>Số layers:</strong> 1 (shallow) → hàng trăm (deep). Càng sâu → càng trừu tượng.</p>
       <p><strong>Số neurons mỗi layer:</strong> Hyperparameter cần tuning.</p>
       <p><em>VD nhận diện ảnh:</em></p>
@@ -556,7 +556,7 @@ fn main() {
     // BƯỚC 2: KHỞI TẠO WEIGHTS VÀ BIAS
     // =========================================================
     // Neural Network cần "đoán" các tham số w và b.
-    // Ban đầu, ta không biết giá trị đúng, nên khởi tạo tùy ý.
+    // Ban đầu, không biết giá trị đúng, nên khởi tạo ngẫu nhiên.
     // Thường khởi tạo gần 0 hoặc random nhỏ.
     
     // Weight (trọng số) - ban đầu đặt = 0
@@ -661,7 +661,7 @@ fn main() {
     println!("\\n=== KẾT LUẬN ===");
     println!("  Model ban đầu (w=0, b=0): Dự đoán hoàn toàn sai, MSE rất lớn");
     println!("  Model thử (w=3, b=0): CHÍNH XÁC HOÀN HẢO, MSE = 0");
-    println!("\\n  Vấn đề: Làm sao TỰ ĐỘNG tìm w=3 mà không đoán bừa?");
+    println!("\\n  Vấn đề: Làm sao tự động tìm w=3 mà không đoán ngẫu nhiên?");
     println!("  Đáp án: GRADIENT DESCENT → sẽ học ở bài sau!");
 }`
   },
@@ -736,7 +736,7 @@ fn main() {
   <div class="features-grid">
     <div class="feature-card">
       <p><strong>Là gì:</strong> Dữ liệu đưa vào Perceptron. <strong>PHẢI là dạng số.</strong></p>
-      <p><strong>Từ đâu ra:</strong> Từ dữ liệu thô (raw data) sau khi preprocessing (tiền xử lý).</p>
+      <p><strong>Nguồn gốc:</strong> Từ dữ liệu thô (raw data) sau khi tiền xử lý (preprocessing).</p>
       <p><strong>Ví dụ cụ thể:</strong></p>
       <ul>
         <li>Nhận diện ảnh 28x28: 784 inputs (mỗi pixel = 1 input, giá trị 0~255)</li>
@@ -758,7 +758,7 @@ fn main() {
         <li><strong>Weight ≈ 0:</strong> Input này gần như không ảnh hưởng</li>
         <li><strong>Weight âm (-3.0):</strong> Input này tỷ lệ NGHỊCH với output</li>
       </ul>
-      <p><strong>Ai quyết định giá trị weight?</strong> KHÔNG phải con người. Weights được máy tự điều chỉnh qua quá trình training (Gradient Descent + Backpropagation).</p>
+      <p><strong>Ai quyết định giá trị weight?</strong> Không phải con người. Weights được tự động điều chỉnh thông qua quá trình huấn luyện (Gradient Descent + Backpropagation).</p>
       <p><strong>Khởi tạo:</strong> Ban đầu weights được set random nhỏ (vd: Gaussian với mean=0, std=0.01). Trong quá trình training, weights thay đổi dần để giảm loss.</p>
       <p><strong>Ví dụ dự đoán giá nhà:</strong></p>
       <ul>
@@ -1015,7 +1015,7 @@ fn main() {
     <span class="material-symbols-outlined">crisis_alert</span>
     <div class="callout-content">
       <span class="callout-title">AI Winter (1969-1986)</span>
-      <p>Năm 1969, Marvin Minsky và Seymour Papert công bố cuốn sách "Perceptrons" chứng minh giới hạn XOR. Hậu quả: Nguồn tài trợ nghiên cứu AI bị cắt đứt gần như hoàn toàn. Hàng loạt nhà nghiên cứu bỏ lĩnh vực. AI rơi vào "mùa đông" kéo dài gần 20 năm.</p>
+      <p>Năm 1969, Marvin Minsky và Seymour Papert công bố cuốn sách "Perceptrons" chứng minh giới hạn XOR. Hậu quả: Nguồn tài trợ nghiên cứu AI bị cắt đứt gần như hoàn toàn. Hàng loạt nhà nghiên cứu rời bỏ lĩnh vực. AI bước vào giai đoạn trì hoãn kéo dài gần 20 năm.</p>
     </div>
   </div>
 
@@ -1054,8 +1054,8 @@ fn main() {
       <div class="step-number">4</div>
       <div class="step-content">
         <h4>Update Weights</h4>
-        <p>$w_i \\leftarrow w_i + \\eta \\cdot error \\cdot x_i$</p>
-        <p>$b \\leftarrow b + \\eta \\cdot error$</p>
+        <p>$w_i \\leftarrow w_i + \\ehệ thống \\cdot error \\cdot x_i$</p>
+        <p>$b \\leftarrow b + \\ehệ thống \\cdot error$</p>
         <p><strong>Giải thích:</strong></p>
         <ul>
           <li>$\\eta$ (eta) = learning rate: tốc độ học. Lớn → học nhanh nhưng dao động. Nhỏ → học chậm nhưng ổn định.</li>
@@ -1206,10 +1206,10 @@ impl Perceptron {
         // Bước 3: Update weights (chỉ khi sai)
         if error != 0 {
             for i in 0..self.weights.len() {
-                // w_i += eta * error * x_i
+                // w_i += ehệ thống * error * x_i
                 self.weights[i] += self.learning_rate * error as f64 * inputs[i];
             }
-            // b += eta * error
+            // b += ehệ thống * error
             self.bias += self.learning_rate * error as f64;
         }
     }
@@ -1234,7 +1234,7 @@ fn main() {
     println!("║      PERCEPTRON - ĐƠN VỊ CƠ BẢN CỦA NEURAL NETWORK           ║");
     println!("╚════════════════════════════════════════════════════════════════╝");
 
-    // Training data cho các logic gates
+    // Training dahệ thống cho các logic gates
     let inputs = vec![
         vec![0.0, 0.0],
         vec![0.0, 1.0],
@@ -1773,7 +1773,7 @@ fn main() {
     <span class="material-symbols-outlined">priority_high</span>
     <div class="callout-content">
       <span class="callout-title">Tại sao không đưa text trực tiếp vào Neural Network?</span>
-      <p>Máy tính lưu trữ mọi thứ dưới dạng số nhị phân (0 và 1). Neural Network thực hiện các phép toán số học (nhân, cộng). Nếu input là "Chó", "Mèo", "Chim" - máy không biết nhân "Chó" × 0.5 là bao nhiêu!</p>
+      <p>Máy tính lưu trữ mọi thứ dưới dạng số nhị phân (0 và 1). Neural Network thực hiện các phép toán số học (nhân, cộng). Nếu input là "Chó", "Mèo", "Chim" - mô hình không biết nhân "Chó" × 0.5 là bao nhiêu!</p>
       <p>Do đó, mọi categorical data phải được encode (mã hóa) thành số trước.</p>
     </div>
   </div>
@@ -2102,7 +2102,7 @@ fn main() {
     type: 'theory',
     content: `
 <div class="article-content">
-  <h2><span class="material-symbols-outlined">electric_meter</span> 5. Data Normalization - Tại sao phải chuẩn hóa dữ liệu?</h2>
+  <h2><span class="material-symbols-outlined">electric_meter</span> 5. Data Normalization - Chuẩn hóa dữ liệu</h2>
 
   <!-- ========================================= -->
   <!-- 5.1. VẤN ĐỀ CỦA DỮ LIỆU THÔ              -->
@@ -2334,7 +2334,7 @@ fn main() {
         <td>[-1, 1]</td>
         <td>Bảo toàn sparse structure</td>
         <td>Nhạy outliers</td>
-        <td>Sparse data, data đã center</td>
+        <td>Sparse data, dahệ thống đã center</td>
       </tr>
       <tr>
         <td><strong>Log Transform</strong></td>
@@ -2590,7 +2590,7 @@ fn main() {
   <!-- ========================================= -->
   <h3><span class="material-symbols-outlined">content_cut</span> 6.1. Data Splitting - Chia dữ liệu (chi tiết)</h3>
 
-  <p>Phần 1 đã giới thiệu sơ lược Train/Test split. Ở đây ta đi sâu vào từng chiến lược chia dữ liệu và tại sao mỗi chiến lược quan trọng.</p>
+  <p>Phần 1 đã giới thiệu sơ lược Train/Test split. Ở đây hệ thống đi sâu vào từng chiến lược chia dữ liệu và tại sao mỗi chiến lược quan trọng.</p>
 
   <h4>a) Hold-out Split (Chia đơn giản)</h4>
   <div class="features-grid">
@@ -2621,7 +2621,7 @@ fn main() {
       <p><strong>Data Leakage (Rò rỉ dữ liệu)</strong> xảy ra khi thông tin từ Test Set "rò rỉ" vào Training Set. Hậu quả: Model đạt accuracy cao giả, thực tế performance tệ.</p>
       <p><strong>Ví dụ Data Leakage phổ biến:</strong></p>
       <ul>
-        <li><strong>Normalize TRƯỚC khi split:</strong> Nếu tính mean/std trên TOÀN BỘ dataset (bao gồm test), thì mean/std đã "nhìn thấy" test data → leakage!</li>
+        <li><strong>Normalize TRƯỚC khi split:</strong> Nếu tính mean/std trên TOÀN BỘ dataset (bao gồm test), thì mean/std đã "nhìn thấy" test dahệ thống → leakage!</li>
         <li><strong>Đúng:</strong> Split trước → Tính mean/std chỉ trên Training Set → Dùng mean/std đó để transform Validation và Test Set.</li>
         <li><strong>Duplicate samples:</strong> 1 ảnh xuất hiện cả trong train và test → model "thuộc bài" → accuracy cao giả.</li>
         <li><strong>Temporal leakage:</strong> Trong time series, nếu dùng dữ liệu tương lai để dự đoán quá khứ → leakage.</li>
@@ -2853,7 +2853,7 @@ fn main() {
     <div class="callout-content">
       <span class="callout-title">Pipeline trong PyTorch (tham khảo)</span>
       <pre style="font-size: 12px;">
-# 1. Load data
+# 1. Load dahệ thống
 df = pd.read_csv("houses.csv")
 
 # 2. Clean
@@ -2890,7 +2890,7 @@ train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 // =====================================================
 //
 // End-to-end pipeline:
-// 1. Raw data → Clean
+// 1. Raw dahệ thống → Clean
 // 2. Feature Engineering
 // 3. Encode
 // 4. Split (Train/Test)
@@ -2950,7 +2950,7 @@ impl ZScoreScaler {
         self.stds = vec![0.0; n_features];
         
         // Tính mean cho từng feature
-        for sample in data {
+        for sample in dahệ thống {
             for j in 0..n_features {
                 self.means[j] += sample[j];
             }
@@ -2960,7 +2960,7 @@ impl ZScoreScaler {
         }
         
         // Tính std cho từng feature
-        for sample in data {
+        for sample in dahệ thống {
             for j in 0..n_features {
                 let diff = sample[j] - self.means[j];
                 self.stds[j] += diff * diff;
@@ -2997,7 +2997,7 @@ fn train_test_split(
     let train_size = n - test_size;
     
     // Lưu ý: trong thực tế phải shuffle trước khi split!
-    // Ở đây để đơn giản ta split tuần tự
+    // Ở đây để đơn giản hệ thống split tuần tự
     let x_train = features[..train_size].to_vec();
     let y_train = labels[..train_size].to_vec();
     let x_test = features[train_size..].to_vec();
@@ -3092,13 +3092,13 @@ fn main() {
     let x_train_norm = scaler.transform(&x_train);
     let x_test_norm = scaler.transform(&x_test);
     
-    println!("\\n  Training data sau normalize:");
+    println!("\\n  Training dahệ thống sau normalize:");
     for (i, sample) in x_train_norm.iter().enumerate() {
         println!("    Mẫu {}: [{:.3}, {:.3}, {:.3}]", 
             i+1, sample[0], sample[1], sample[2]);
     }
     
-    println!("\\n  Test data sau normalize:");
+    println!("\\n  Test dahệ thống sau normalize:");
     for (i, sample) in x_test_norm.iter().enumerate() {
         println!("    Mẫu {}: [{:.3}, {:.3}, {:.3}]", 
             i+1, sample[0], sample[1], sample[2]);
@@ -3150,7 +3150,7 @@ fn main() {
     }
     
     println!("\\n=== PIPELINE HOÀN TẤT ===");
-    println!("  Raw data → Split → Normalize → Batch → Forward Pass → Done!");
+    println!("  Raw dahệ thống → Split → Normalize → Batch → Forward Pass → Done!");
     println!("  Bước tiếp theo: BACKWARD PASS (tính gradient) → UPDATE WEIGHTS");
     println!("  → Lặp lại nhiều epochs cho đến khi loss giảm về gần 0");
 }`
@@ -3284,7 +3284,7 @@ fn main() {
 
   <p><strong>Tại sao cần chọn features?</strong></p>
   <ul>
-    <li><strong>Curse of Dimensionality:</strong> Quá nhiều features → cần nhiều data hơn → dễ overfit</li>
+    <li><strong>Curse of Dimensionality:</strong> Quá nhiều features → cần nhiều dahệ thống hơn → dễ overfit</li>
     <li><strong>Noise:</strong> Features vô nghĩa thêm noise → giảm accuracy</li>
     <li><strong>Tốc độ:</strong> Ít features → training nhanh hơn</li>
     <li><strong>Interpretability:</strong> Ít features → dễ hiểu model hơn</li>
@@ -3329,10 +3329,10 @@ fn main() {
     <span class="material-symbols-outlined">lightbulb</span>
     <div class="callout-content">
       <span class="callout-title">Neural Networks và Feature Engineering</span>
-      <p>Một trong những lý do Deep Learning thành công vượt bậc: <strong>Neural Networks TỰ ĐỘNG học features tốt hơn con người tạo</strong> (representation learning).</p>
+      <p>Một trong những lý do Deep Learning thành công vượt bậc: <strong>Neural Networks tự động học features tốt hơn con người tạo</strong> (representation learning).</p>
       <ul>
         <li><strong>ML truyền thống:</strong> Con người tạo features thủ công → tốn thời gian, cần domain knowledge</li>
-        <li><strong>Deep Learning:</strong> Đưa raw data vào → mạng TỰ học features → từ cạnh, góc → hình dạng → đối tượng</li>
+        <li><strong>Deep Learning:</strong> Đưa raw dahệ thống vào → mạng TỰ học features → từ cạnh, góc → hình dạng → đối tượng</li>
       </ul>
       <p>Tuy nhiên, thực tế cho thấy: <strong>Feature engineering + Neural Network vẫn tốt hơn Neural Network alone</strong> trong nhiều bài toán tabular (dữ liệu bảng).</p>
     </div>
@@ -3343,7 +3343,7 @@ fn main() {
   <!-- ========================================= -->
   <h3><span class="material-symbols-outlined">add_photo_alternate</span> 7.3. Data Augmentation (Tăng cường dữ liệu)</h3>
 
-  <p>Khi dataset nhỏ, ta có thể <strong>tạo thêm dữ liệu mới</strong> từ dữ liệu có sẵn bằng cách biến đổi.</p>
+  <p>Khi dataset nhỏ, hệ thống có thể <strong>tạo thêm dữ liệu mới</strong> từ dữ liệu có sẵn bằng cách biến đổi.</p>
 
   <h4>Augmentation cho ảnh:</h4>
   <table class="comparison-table">
@@ -3390,7 +3390,7 @@ fn main() {
 // 2. Polynomial features
 // 3. Binning
 // 4. Correlation analysis
-// 5. Simple data augmentation
+// 5. Simple dahệ thống augmentation
 //
 // =====================================================
 
@@ -3546,7 +3546,7 @@ fn main() {
     // 5. DATA AUGMENTATION (Ví dụ đơn giản)
     // =========================================================
     println!("\\n=== 5. DATA AUGMENTATION (VÍ DỤ ĐƠN GIẢN) ===");
-    println!("  Thêm noise nhỏ vào data để tạo samples mới:\\n");
+    println!("  Thêm noise nhỏ vào dahệ thống để tạo samples mới:\\n");
     
     println!("  Gốc: diện_tích = {:?}", dien_tich);
     
@@ -3571,7 +3571,7 @@ fn main() {
     println!("  2. Polynomial: Thêm x², x³ cho quan hệ phi tuyến");
     println!("  3. Binning: Nhóm số liên tục thành danh mục");
     println!("  4. Correlation: Loại features thừa (>0.9 correlation)");
-    println!("  5. Augmentation: Tạo data mới từ data cũ");
+    println!("  5. Augmentation: Tạo dahệ thống mới từ dahệ thống cũ");
 }`
   },
   // ==========================================================
@@ -3586,7 +3586,7 @@ fn main() {
 <div class="article-content">
   <h2><span class="material-symbols-outlined">play_arrow</span> 8. Forward Pass End-to-End - Hành trình dữ liệu qua Neural Network</h2>
 
-  <p>Bây giờ chúng ta sẽ kết hợp TẤT CẢ kiến thức từ bài 1-7 để theo dõi một ví dụ hoàn chỉnh: dữ liệu đi vào Neural Network như thế nào và cho ra kết quả gì.</p>
+  <p>Phần này sẽ kết hợp TẤT CẢ kiến thức từ bài 1-7 để theo dõi một ví dụ hoàn chỉnh: dữ liệu đi vào Neural Network như thế nào và cho ra kết quả gì.</p>
 
   <!-- ========================================= -->
   <!-- 8.1. BÀI TOÁN                               -->
@@ -3792,7 +3792,7 @@ fn main() {
       <p>Forward Pass chỉ là NỬA BÀI. Nó cho ra dự đoán và loss. Để model "HỌC", cần Backward Pass:</p>
       <ol>
         <li>Tính gradient: $\\frac{\\partial L}{\\partial W}$ (Loss thay đổi bao nhiêu khi W thay đổi?)</li>
-        <li>Update weights: $W \\leftarrow W - \\eta \\times \\frac{\\partial L}{\\partial W}$</li>
+        <li>Update weights: $W \\leftarrow W - \\ehệ thống \\times \\frac{\\partial L}{\\partial W}$</li>
         <li>Lặp lại Forward → Backward → Update hàng ngàn/triệu lần</li>
       </ol>
       <p>→ Chi tiết ở các bài tiếp theo: Gradient Descent (21.5), Backpropagation (21.6)</p>
@@ -4097,7 +4097,7 @@ fn main() {
     <li><strong>Early Stopping:</strong> Dừng training khi val loss bắt đầu tăng</li>
     <li><strong>Dropout:</strong> Tắt random 20-50% neurons mỗi forward pass → model không phụ thuộc 1 neuron</li>
     <li><strong>L1/L2 Regularization:</strong> Phạt weights quá lớn → giữ model đơn giản</li>
-    <li><strong>Data Augmentation:</strong> Tạo thêm data → model có nhiều data hơn để học</li>
+    <li><strong>Data Augmentation:</strong> Tạo thêm dahệ thống → model có nhiều dahệ thống hơn để học</li>
     <li><strong>Giảm model size:</strong> Bớt layers, bớt neurons</li>
     <li><strong>Batch Normalization:</strong> Regularization effect nhẹ</li>
   </ul>
@@ -4112,7 +4112,7 @@ fn main() {
     <div class="callout-content">
       <span class="callout-title">Bias-Variance Tradeoff</span>
       <p><strong>Bias:</strong> Sai số do model quá đơn giản → bỏ qua patterns quan trọng → UNDERFITTING.</p>
-      <p><strong>Variance:</strong> Sai số do model quá nhạy cảm với training data cụ thể → OVerfitting.</p>
+      <p><strong>Variance:</strong> Sai số do model quá nhạy cảm với training data cụ thể → Overfitting.</p>
       <p><strong>Tradeoff:</strong> Giảm Bias → tăng Variance (và ngược lại). Mục tiêu: tìm điểm CÂN BẰNG.</p>
     </div>
   </div>
@@ -4229,7 +4229,7 @@ fn main() {
     println!("\\n=== PHÂN TÍCH ===");
     println!("  Epoch 1-20: Cả train và val loss đều giảm → Model đang HỌC");
     println!("  Epoch 20+: Train loss tiếp tục giảm, val loss TĂNG LẠI");
-    println!("  → Model bắt đầu THUỘC LÒNG training data (overfitting)!");
+    println!("  → Model bắt đầu THUỘC LÒNG training dahệ thống (overfitting)!");
     println!("  → Nên dùng model tại epoch {} (val loss thấp nhất)", best_epoch);
     
     println!("\\n=== GIẢI PHÁP ===");
@@ -4316,13 +4316,13 @@ fn main() {
         <td><strong>Cross-Validation</strong></td>
         <td>Kiểm định chéo</td>
         <td>K-Fold</td>
-        <td>Chia data thành K phần, lần lượt dùng mỗi phần làm test. Đánh giá model ổn định hơn hold-out split.</td>
+        <td>Chia dahệ thống thành K phần, lần lượt dùng mỗi phần làm test. Đánh giá model ổn định hơn hold-out split.</td>
       </tr>
       <tr>
         <td><strong>Data Augmentation</strong></td>
         <td>Tăng cường dữ liệu</td>
         <td>-</td>
-        <td>Tạo data mới từ data cũ bằng biến đổi (flip, rotate, crop ảnh). Chỉ cho training set.</td>
+        <td>Tạo dahệ thống mới từ dahệ thống cũ bằng biến đổi (flip, rotate, crop ảnh). Chỉ cho training set.</td>
       </tr>
       <tr>
         <td><strong>Data Leakage</strong></td>
@@ -4382,7 +4382,7 @@ fn main() {
         <td><strong>Gradient Descent</strong></td>
         <td>Hạ gradient</td>
         <td>GD</td>
-        <td>Thuật toán tối ưu: $W = W - \\eta \\nabla L$. Đi ngược hướng gradient để giảm loss.</td>
+        <td>Thuật toán tối ưu: $W = W - \\ehệ thống \\nabla L$. Đi ngược hướng gradient để giảm loss.</td>
       </tr>
       <tr>
         <td><strong>Hidden Layer</strong></td>
@@ -4436,7 +4436,7 @@ fn main() {
         <td><strong>Min-Max Scaling</strong></td>
         <td>Chuẩn hóa tối thiểu-tối đa</td>
         <td>-</td>
-        <td>Scale data về [0, 1]: $(X - X_{min}) / (X_{max} - X_{min})$</td>
+        <td>Scale dahệ thống về [0, 1]: $(X - X_{min}) / (X_{max} - X_{min})$</td>
       </tr>
       <tr>
         <td><strong>MLP</strong></td>
@@ -4484,7 +4484,7 @@ fn main() {
         <td><strong>Overfitting</strong></td>
         <td>Quá khớp / Học vẹt</td>
         <td>-</td>
-        <td>Model học thuộc training data (loss train rất thấp) nhưng test trên data mới tệ.</td>
+        <td>Model học thuộc training dahệ thống (loss train rất thấp) nhưng test trên dahệ thống mới tệ.</td>
       </tr>
       <tr>
         <td><strong>Parameter</strong></td>
@@ -4538,7 +4538,7 @@ fn main() {
         <td><strong>Shuffle</strong></td>
         <td>Xáo trộn</td>
         <td>-</td>
-        <td>Xáo trộn thứ tự data mỗi epoch. Ngăn model học thứ tự thay vì nội dung.</td>
+        <td>Xáo trộn thứ tự dahệ thống mỗi epoch. Ngăn model học thứ tự thay vì nội dung.</td>
       </tr>
       <tr>
         <td><strong>Sigmoid</strong></td>
@@ -4556,7 +4556,7 @@ fn main() {
         <td><strong>Supervised Learning</strong></td>
         <td>Học có giám sát</td>
         <td>-</td>
-        <td>Có data + label. Model học mapping input→output. VD: ảnh → "chó", nhà → giá.</td>
+        <td>Có dahệ thống + label. Model học mapping input→output. VD: ảnh → "chó", nhà → giá.</td>
       </tr>
       <tr>
         <td><strong>Tensor</strong></td>
@@ -4610,7 +4610,7 @@ fn main() {
         <td><strong>Z-Score</strong></td>
         <td>Điểm Z / Chuẩn hóa</td>
         <td>-</td>
-        <td>$(X - \\mu) / \\sigma$. Scale data về mean=0, std=1. Phương pháp mặc định cho NN.</td>
+        <td>$(X - \\mu) / \\sigma$. Scale dahệ thống về mean=0, std=1. Phương pháp mặc định cho NN.</td>
       </tr>
     </tbody>
   </table>
@@ -4654,15 +4654,15 @@ fn main() {
     <img src="/images/ch21/gradient_descent_3d_1773152807591.png" alt="Gradient Descent 3D" style="max-width: 400px; border-radius: 8px;" />
   </div>
   <div class="formula-block my-3 p-3 bg-yellow-50 border-yellow-200">
-    <p class="font-mono">$W \\leftarrow W - \\eta \\cdot \\frac{\\partial L}{\\partial W}$</p>
-    <p class="font-mono mt-1">$b \\leftarrow b - \\eta \\cdot \\frac{\\partial L}{\\partial b}$</p>
+    <p class="font-mono">$W \\leftarrow W - \\ehệ thống \\cdot \\frac{\\partial L}{\\partial W}$</p>
+    <p class="font-mono mt-1">$b \\leftarrow b - \\ehệ thống \\cdot \\frac{\\partial L}{\\partial b}$</p>
     <p class="mt-2">$\\eta$ = Learning rate, $\\frac{\\partial L}{\\partial W}$ = gradient (đạo hàm riêng Loss theo W)</p>
   </div>
 
   <h4>Perceptron Learning Rule:</h4>
   <div class="formula-block my-3 p-3 bg-gray-50 border-gray-200">
-    <p class="font-mono">$w_i \\leftarrow w_i + \\eta \\cdot (y_{true} - \\hat{y}) \\cdot x_i$</p>
-    <p class="font-mono mt-1">$b \\leftarrow b + \\eta \\cdot (y_{true} - \\hat{y})$</p>
+    <p class="font-mono">$w_i \\leftarrow w_i + \\ehệ thống \\cdot (y_{true} - \\hat{y}) \\cdot x_i$</p>
+    <p class="font-mono mt-1">$b \\leftarrow b + \\ehệ thống \\cdot (y_{true} - \\hat{y})$</p>
   </div>
 
   <!-- ========================================= -->
@@ -4822,7 +4822,7 @@ fn main() {
     println!("\\n=== 1. DỮ LIỆU THÔ ===");
     
     // [điểm_lý_thuyết, điểm_bài_tập, số_buổi_vắng]
-    let raw_data = vec![
+    let raw_dahệ thống = vec![
         (vec![85.0, 90.0,  2.0], 1.0),  // Đậu
         (vec![40.0, 50.0, 15.0], 0.0),  // Rớt
         (vec![70.0, 80.0,  5.0], 1.0),  // Đậu
@@ -4846,8 +4846,8 @@ fn main() {
     // 2. SPLIT: 6 train + 2 test
     // =========================================================
     println!("\\n=== 2. SPLIT DATA ===");
-    let train_data = &raw_data[..6];
-    let test_data = &raw_data[6..];
+    let train_dahệ thống = &raw_data[..6];
+    let test_dahệ thống = &raw_data[6..];
     println!("  Training: {} mẫu, Test: {} mẫu", train_data.len(), test_data.len());
 
     // =========================================================
@@ -4855,17 +4855,17 @@ fn main() {
     // =========================================================
     println!("\\n=== 3. NORMALIZE (Z-Score) ===");
     
-    // Tính mean, std từ training data
+    // Tính mean, std từ training dahệ thống
     let n_train = train_data.len() as f64;
     let mut means = vec![0.0; 3];
     let mut stds = vec![0.0; 3];
     
-    for (features, _) in train_data {
+    for (features, _) in train_dahệ thống {
         for j in 0..3 { means[j] += features[j]; }
     }
     for j in 0..3 { means[j] /= n_train; }
     
-    for (features, _) in train_data {
+    for (features, _) in train_dahệ thống {
         for j in 0..3 {
             let diff = features[j] - means[j];
             stds[j] += diff * diff;
@@ -4878,7 +4878,7 @@ fn main() {
         println!("  {}: mean={:.1}, std={:.1}", feature_names[j], means[j], stds[j]);
     }
     
-    // Normalize train data
+    // Normalize train dahệ thống
     let train_norm: Vec<(Vec<f64>, f64)> = train_data.iter().map(|(f, l)| {
         let norm: Vec<f64> = f.iter().enumerate()
             .map(|(j, &x)| (x - means[j]) / stds[j])
@@ -4886,7 +4886,7 @@ fn main() {
         (norm, *l)
     }).collect();
     
-    // Normalize test data (dùng mean/std từ train!)
+    // Normalize test dahệ thống (dùng mean/std từ train!)
     let test_norm: Vec<(Vec<f64>, f64)> = test_data.iter().map(|(f, l)| {
         let norm: Vec<f64> = f.iter().enumerate()
             .map(|(j, &x)| (x - means[j]) / stds[j])
@@ -5051,10 +5051,10 @@ export const ch21_01: Chapter = {
     <h3>Các câu hỏi thường gặp (FAQ)</h3>
     <ul>
       <li><strong>Q: Tôi cần biết toán nhiều không?</strong><br/>A: Cần biết cộng, nhân, đạo hàm cơ bản. Bài học giải thích mọi công thức từng bước. Không cần proof toán formal.</li>
-      <li><strong>Q: Deep Learning khác Machine Learning thế nào?</strong><br/>A: Deep Learning là MỘT NHÁNH của Machine Learning, dùng Neural Networks nhiều layers (deep). ML bao gồm cả các phương pháp không dùng NN như Decision Tree, SVM, KNN.</li>
+      <li><strong>Q: Deep Learning khác Machine Learning như thế nào?</strong><br/>A: Deep Learning là MỘT NHÁNH của Machine Learning, dùng Neural Networks nhiều layers (deep). ML bao gồm cả các phương pháp không dùng NN như Decision Tree, SVM, KNN.</li>
       <li><strong>Q: Tại sao dùng Rust mà không phải Python?</strong><br/>A: Rust giúp hiểu rõ từng bước tính toán ở mức thấp (no magic). Trong thực tế, Python + PyTorch/TensorFlow phổ biến hơn vì có GPU acceleration. Nhưng hiểu Rust implementation → hiểu bản chất sâu hơn.</li>
       <li><strong>Q: Bao lâu hoàn thành bài này?</strong><br/>A: Khoảng 8-12 giờ học nghiêm túc. Mỗi bài con ~60-90 phút. Nên đọc kỹ lý thuyết → chạy code → tự sửa code để thử nghiệm.</li>
-      <li><strong>Q: Neural Network thực tế có gì khác bài học?</strong><br/>A: Bài học dùng for loops cho rõ ràng. Thực tế dùng matrix operations (BLAS) trên GPU, nhanh hơn triệu lần. Framework (PyTorch) lo phần optimization, ta chỉ cần define architecture.</li>
+      <li><strong>Q: Neural Network thực tế có gì khác bài học?</strong><br/>A: Bài học dùng for loops cho rõ ràng. Thực tế dùng matrix operations (BLAS) trên GPU, nhanh hơn triệu lần. Framework (PyTorch) lo phần optimization, hệ thống chỉ cần define architecture.</li>
       <li><strong>Q: Activation Function nào nên dùng?</strong><br/>A: Hidden layers: ReLU (mặc định). Output: Sigmoid (binary classification), Softmax (multi-class), Linear (regression). Chi tiết hơn ở bài 21.2.</li>
     </ul>
 

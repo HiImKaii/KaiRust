@@ -47,8 +47,15 @@ npm run preview      # Preview production build
 cd backend
 cargo build          # Build the project
 cargo run            # Run with Docker sandbox (default, requires Docker)
-RUN_LOCAL=1 cargo run  # Run without Docker (local dev only)
+RUN_LOCAL=1 cargo run  # Run without Docker (local dev only, no Docker required)
 cargo check         # Type-check without full build
+```
+
+### Local Development Script
+```bash
+./dev.sh             # Start both frontend and backend (backend uses RUN_LOCAL=1)
+# Logs: tail -f /tmp/kairust-backend.log /tmp/kairust-frontend.log
+# Stop: pkill -f kairust-backend; pkill -f vite
 ```
 
 ### Docker (Full Stack - Production Only)

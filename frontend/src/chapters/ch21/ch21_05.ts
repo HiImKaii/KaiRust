@@ -35,7 +35,7 @@ const ch21_05_lessons: Lesson[] = [
       Trong Machine Learning, mục tiêu chính là tìm các tham số của mô hình sao cho hàm mất mát (Loss) đạt giá trị nhỏ nhất.
     </p>
     <p class="mt-2 text-amber-800">
-      Để giải quyết bài toán tối ưu này, ta sử dụng <strong>Gradient Descent</strong> - một thuật toán lặp dựa trên đạo hàm để tìm cực tiểu của hàm số.
+      Để giải quyết bài toán tối ưu này, hệ thống sử dụng <strong>Gradient Descent</strong> - một thuật toán lặp dựa trên đạo hàm để tìm cực tiểu của hàm số.
     </p>
   </div>
 
@@ -94,7 +94,7 @@ const ch21_05_lessons: Lesson[] = [
 
   <!-- CHUYỂN TIẾP: Từ đạo hàm sang gradient -->
   <div class="my-4 p-3 bg-gray-50 border-l-4 border-gray-400 rounded">
-    <p class="text-sm"><strong>Từ đạo hàm đến gradient:</strong> Phần trên ta đã học về đạo hàm với hàm 1 biến. Tuy nhiên, Neural Network có hàng triệu weights - tức là hàng triệu biến. Vậy làm sao tính đạo hàm cho tất cả? Câu trả lời là <strong>Gradient</strong> - vector chứa tất cả đạo hàm riêng phần!</p>
+    <p class="text-sm"><strong>Từ đạo hàm đến gradient:</strong> Phần trên hệ thống đã học về đạo hàm với hàm 1 biến. Tuy nhiên, Neural Network có hàng triệu weights - tức là hàng triệu biến. Vậy làm sao tính đạo hàm cho tất cả? Câu trả lời là <strong>Gradient</strong> - vector chứa tất cả đạo hàm riêng phần!</p>
   </div>
 
   <!-- 1.2. GRADIENT - TẬP HỢP TẤT CẢ ĐẠO HÀM -->
@@ -132,7 +132,7 @@ const ch21_05_lessons: Lesson[] = [
   <!-- VÍ DỤ CHI TIẾT VỀ ĐẠO HÀM RIÊNG PHẦN -->
   <div class="my-4 p-4 bg-yellow-50 border border-yellow-300 rounded">
     <h4 class="font-bold text-yellow-900 mb-3">Ví dụ chi tiết: Đạo hàm riêng phần trong Neural Network</h4>
-    <p class="text-sm mb-3">Giả sử ta có hàm mất mát đơn giản với 2 weights:</p>
+    <p class="text-sm mb-3">Giả sử hệ thống có hàm mất mát đơn giản với 2 weights:</p>
     <p class="font-mono text-center my-2">$$L(w_1, w_2) = w_1^2 + 2w_2^2$$</p>
     <p class="text-sm mb-3">Hãy tính đạo hàm riêng phần tại điểm (w₁ = 1, w₂ = 2):</p>
 
@@ -170,7 +170,7 @@ const ch21_05_lessons: Lesson[] = [
 
       <div>
         <p class="font-bold">2. Weight Update (Cập nhật trọng số):</p>
-        <p class="text-indigo-800">Sau khi có gradient, ta biết cần điều chỉnh mỗi weight bao nhiêu để giảm Loss. Weight nào có gradient lớn (tuyệt đối) → ảnh hưởng mạnh → cần điều chỉnh nhiều.</p>
+        <p class="text-indigo-800">Sau khi có gradient, hệ thống biết cần điều chỉnh mỗi weight bao nhiêu để giảm Loss. Weight nào có gradient lớn (tuyệt đối) → ảnh hưởng mạnh → cần điều chỉnh nhiều.</p>
       </div>
 
       <div>
@@ -191,14 +191,14 @@ const ch21_05_lessons: Lesson[] = [
     <ul class="mt-2 text-sm">
       <li>Neural Network có <strong>HÀNG TRIỆU weights</strong>, không phải 1 biến</li>
       <li>Mỗi weight đều cần được cập nhật dựa trên ảnh hưởng của nó đến Loss</li>
-      <li>Gradient tổng hợp tất cả thông tin này thành một vector → ta biết cần điều chỉnh <strong>từng weight</strong> bao nhiêu</li>
-      <li>Không có gradient, ta như "mù" trong không gian hàng triệu chiều!</li>
+      <li>Gradient tổng hợp tất cả thông tin này thành một vector → hệ thống biết cần điều chỉnh <strong>từng weight</strong> bao nhiêu</li>
+      <li>Không có gradient, hệ thống như "mù" trong không gian hàng triệu chiều!</li>
     </ul>
   </div>
 
   <!-- CHUYỂN TIẾP: Từ gradient sang gradient descent -->
   <div class="my-4 p-3 bg-gray-50 border-l-4 border-gray-400 rounded">
-    <p class="text-sm"><strong>Từ gradient đến Gradient Descent:</strong> Ta đã biết gradient chỉ hướng "dốc lên" - tức làm Loss tăng. Nhưng ta muốn GIẢM Loss! Làm sao đây? Câu trả lời nằm ở <strong>dấu trừ</strong> trong công thức!</p>
+    <p class="text-sm"><strong>Từ gradient đến Gradient Descent:</strong> Ta đã biết gradient chỉ hướng "dốc lên" - tức làm Loss tăng. Nhưng hệ thống muốn GIẢM Loss! Làm sao đây? Câu trả lời nằm ở <strong>dấu trừ</strong> trong công thức!</p>
   </div>
 
   <!-- 1.3. MŨI TÊN NGƯỢC - GRADIENT DESCENT -->
@@ -210,7 +210,7 @@ const ch21_05_lessons: Lesson[] = [
       Về mặt toán học thuần túy, vector Gradient ∇L <strong>luôn luôn chỉ hướng dốc lên</strong> - tức là hướng làm cho Loss TĂNG lên chứ không phải giảm!
     </p>
     <p class="mt-2 font-bold text-red-800">
-      Nếu bạn để máy tự nhiên cập nhật: W = W + ∇L, thì Loss sẽ <strong>phi mã lên trời</strong> và mô hình AI sẽ nổ tung trong vài miligiây!
+      Nếu bạn để mô hình tự nhiên cập nhật: W = W + ∇L, thì Loss sẽ <strong>phi mã lên trời</strong> và mô hình AI sẽ nổ tung trong vài miligiây!
     </p>
     <p class="mt-2 text-red-700"><strong>Đây là lỗi phổ biến nhất của người mới học Machine Learning!</strong></p>
   </div>
@@ -222,7 +222,7 @@ const ch21_05_lessons: Lesson[] = [
 
   <div class="formula-block my-4 p-4 bg-red-50 border-red-300 text-center">
     <p class="text-xl font-bold text-red-900 mb-2">Công thức Gradient Descent</p>
-    <p class="text-2xl font-mono my-4">$$W_{new} = W_{old} - \\eta \\times \\nabla L$$</p>
+    <p class="text-2xl font-mono my-4">$$W_{new} = W_{old} - \\ehệ thống \\times \\nabla L$$</p>
     <div class="text-sm text-red-700 space-y-1">
       <p>Trong đó:</p>
       <ul class="inline-block text-left">
@@ -245,7 +245,7 @@ const ch21_05_lessons: Lesson[] = [
 
       <div class="p-2 bg-white rounded">
         <p class="font-bold">2. ∇L (Gradient của Loss):</p>
-        <p>Vector chỉ hướng "dốc lên" - hướng làm Loss TĂNG. Đây là "la bàn" cho ta biết hướng nào làm mô hình kém hơn.</p>
+        <p>Vector chỉ hướng "dốc lên" - hướng làm Loss TĂNG. Đây là "la bàn" cho hệ thống biết hướng nào làm mô hình kém hơn.</p>
       </div>
 
       <div class="p-2 bg-white rounded">
@@ -265,7 +265,7 @@ const ch21_05_lessons: Lesson[] = [
   <!-- VÍ DỤ TÍNH TOÁN CỤ THỂ -->
   <div class="my-4 p-4 bg-yellow-50 border border-yellow-300 rounded">
     <h4 class="font-bold text-yellow-900 mb-3">Ví dụ tính toán cụ thể</h4>
-    <p class="text-sm mb-3">Giả sử ta có một Neural Network đơn giản với 1 weight w, và hàm mất mát L = w²</p>
+    <p class="text-sm mb-3">Giả sử hệ thống có một Neural Network đơn giản với 1 weight w, và hàm mất mát L = w²</p>
 
     <div class="space-y-3 text-sm">
       <p class="font-bold">Tính gradient: ∂L/∂w = 2w</p>
@@ -307,7 +307,7 @@ const ch21_05_lessons: Lesson[] = [
       <li>Nếu đang dốc lên → bạn đi <strong>NGƯỢC</strong> lại hướng đó để xuống núi</li>
       <li>Learning rate quyết định bạn đi <strong>bao xa</strong> trong mỗi bước</li>
     </ul>
-    <p class="mt-2 font-bold">Gradient Descent chính là thuật toán "leo núi trong sương mù" cho máy tính!</p>
+    <p class="mt-2 font-bold">Gradient Descent chính là thuật toán "leo núi trong sương mù" cho mô hình tính!</p>
   </div>
 
   <!-- CÁC ĐIỀU KIỆN DỪNG -->
@@ -374,7 +374,7 @@ const ch21_05_lessons: Lesson[] = [
         <p class="font-bold text-blue-800">Bước 1: Định nghĩa đạo hàm (Derivative)</p>
         <p class="mt-2">Theo <strong>định nghĩa đạo hàm bằng giới hạn</strong>:</p>
         <div class="formula-block my-3 p-3 bg-white border border-blue-300">
-          <p class="font-mono text-base text-center">$$f'(x) = \\lim_{\\Delta x \\to 0} \\frac{f(x + \\Delta x) - f(x)}{\\Delta x}$$</p>
+          <p class="font-mono text-base text-center">$$f'(x) = \\lim_{\\Delhệ thống x \\to 0} \\frac{f(x + \\Delhệ thống x) - f(x)}{\\Delhệ thống x}$$</p>
         </div>
         <p>Đạo hàm $f'(x)$ cho biết <strong>tốc độ thay đổi</strong> của hàm số tại điểm $x$.</p>
       </div>
@@ -382,27 +382,27 @@ const ch21_05_lessons: Lesson[] = [
       <!-- Bước 2: Xấp xỉ -->
       <div>
         <p class="font-bold text-blue-800">Bước 2: Xấp xỉ với bước nhỏ</p>
-        <p class="mt-2">Với $\\Delta x$ nhỏ, ta có thể xấp xỉ:</p>
+        <p class="mt-2">Với $\\Delhệ thống x$ nhỏ, hệ thống có thể xấp xỉ:</p>
         <div class="formula-block my-3 p-3 bg-white border border-blue-300">
-          <p class="font-mono text-base text-center">$$\\Delta f = f(x + \\Delta x) - f(x) \\approx f'(x) \\cdot \\Delta x$$</p>
+          <p class="font-mono text-base text-center">$$\\Delhệ thống f = f(x + \\Delhệ thống x) - f(x) \\approx f'(x) \\cdot \\Delhệ thống x$$</p>
         </div>
         <p>Trong đó:</p>
         <ul class="list-disc pl-5 mt-1">
-          <li>$\\Delta f$ = độ thay đổi của hàm số</li>
-          <li>$\\Delta x$ = độ dài bước di chuyển</li>
+          <li>$\\Delhệ thống f$ = độ thay đổi của hàm số</li>
+          <li>$\\Delhệ thống x$ = độ dài bước di chuyển</li>
           <li>$f'(x)$ = đạo hàm tại điểm $x$</li>
         </ul>
       </div>
 
       <!-- Bước 3: Phân tích dấu -->
       <div>
-        <p class="font-bold text-blue-800">Bước 3: Phân tích dấu của $\\Delta f$</p>
-        <p class="mt-2">Ta có: $\\Delta f \\approx f'(x) \\cdot \\Delta x$</p>
-        <p class="mt-2">Để hàm số <strong>giảm</strong> ($\\Delta f < 0$), cần:</p>
+        <p class="font-bold text-blue-800">Bước 3: Phân tích dấu của $\\Delhệ thống f$</p>
+        <p class="mt-2">Ta có: $\\Delhệ thống f \\approx f'(x) \\cdot \\Delhệ thống x$</p>
+        <p class="mt-2">Để hàm số <strong>giảm</strong> ($\\Delhệ thống f < 0$), cần:</p>
         <div class="formula-block my-3 p-3 bg-white border border-blue-300">
-          <p class="font-mono text-base text-center">$$f'(x) \\cdot \\Delta x < 0$$</p>
+          <p class="font-mono text-base text-center">$$f'(x) \\cdot \\Delhệ thống x < 0$$</p>
         </div>
-        <p>Tức là <strong>$f'(x)$ và $\\Delta x$ phải trái dấu nhau</strong>.</p>
+        <p>Tức là <strong>$f'(x)$ và $\\Delhệ thống x$ phải trái dấu nhau</strong>.</p>
       </div>
 
       <!-- Bước 4: Hai trường hợp -->
@@ -411,12 +411,12 @@ const ch21_05_lessons: Lesson[] = [
         <div class="mt-2 p-3 bg-yellow-50 border border-yellow-300 rounded">
           <p class="font-bold">Trường hợp 1: $f'(x) > 0$ (đang leo lên dốc)</p>
           <p>Đạo hàm dương → hàm đang tăng tại điểm này.</p>
-          <p>Để giảm: cần $\\Delta x < 0$ → <strong>đi về bên trái</strong>.</p>
+          <p>Để giảm: cần $\\Delhệ thống x < 0$ → <strong>đi về bên trái</strong>.</p>
         </div>
         <div class="mt-2 p-3 bg-blue-50 border border-blue-300 rounded">
           <p class="font-bold">Trường hợp 2: $f'(x) < 0$ (đang xuống dốc)</p>
           <p>Đạo hàm âm → hàm đang giảm tại điểm này.</p>
-          <p>Để giảm: cần $\\Delta x > 0$ → <strong>đi về bên phải</strong>.</p>
+          <p>Để giảm: cần $\\Delhệ thống x > 0$ → <strong>đi về bên phải</strong>.</p>
         </div>
       </div>
 
@@ -426,14 +426,14 @@ const ch21_05_lessons: Lesson[] = [
         <div class="mt-2 p-3 bg-green-50 border border-green-300 rounded">
           <p class="font-bold">Quy tắc:</p>
           <div class="formula-block my-3 p-3 bg-white border border-green-300">
-            <p class="font-mono text-lg text-center">$$\\Delta x = -\\eta \\cdot f'(x)$$</p>
+            <p class="font-mono text-lg text-center">$$\\Delhệ thống x = -\\ehệ thống \\cdot f'(x)$$</p>
           </div>
-          <p>với $\\eta > 0$ là learning rate.</p>
+          <p>với $\\ehệ thống > 0$ là learning rate.</p>
           <p class="mt-2">Khi đó:</p>
           <div class="formula-block my-3 p-3 bg-white border border-green-300">
-            <p class="font-mono text-base text-center">$$\\Delta f \\approx f'(x) \\cdot (-\\eta \\cdot f'(x)) = -\\eta \\cdot [f'(x)]^2 \\leq 0$$</p>
+            <p class="font-mono text-base text-center">$$\\Delhệ thống f \\approx f'(x) \\cdot (-\\ehệ thống \\cdot f'(x)) = -\\ehệ thống \\cdot [f'(x)]^2 \\leq 0$$</p>
           </div>
-          <p class="font-bold">Vì $[f'(x)]^2 \\geq 0$ và $\\eta > 0$, nên $\\Delta f \\leq 0$:</p>
+          <p class="font-bold">Vì $[f'(x)]^2 \\geq 0$ và $\\ehệ thống > 0$, nên $\\Delhệ thống f \\leq 0$:</p>
           <p><strong>Hàm số LUÔN giảm</strong> khi di chuyển ngược hướng đạo hàm!</p>
         </div>
       </div>
@@ -443,7 +443,7 @@ const ch21_05_lessons: Lesson[] = [
         <p class="font-bold text-orange-800">Trường hợp đặc biệt:</p>
         <ul class="list-disc pl-5 mt-2 space-y-1">
           <li>Khi $f'(x) = 0$: Đạo hàm bằng 0 → Đã đến <strong>điểm dừng</strong> (cực tiểu hoặc yên ngựa)</li>
-          <li>Khi $\\eta$ quá lớn: $\\Delta x$ quá lớn → có thể "nhảy qua" điểm cực tiểu → <strong>divergence</strong></li>
+          <li>Khi $\\eta$ quá lớn: $\\Delhệ thống x$ quá lớn → có thể "nhảy qua" điểm cực tiểu → <strong>divergence</strong></li>
         </ul>
         <p class="text-xs text-orange-700 mt-2"><strong>Thuật ngữ:</strong> <strong>Divergence</strong> (Phân kỳ) là hiện tượng mô hình không hội tụ mà ngược lại, Loss tăng dần đến vô cùng.</p>
       </div>
@@ -452,7 +452,7 @@ const ch21_05_lessons: Lesson[] = [
 
   <!-- CHUYỂN TIẾP: Từ gradient descent sang learning rate -->
   <div class="my-4 p-3 bg-gray-50 border-l-4 border-gray-400 rounded">
-    <p class="text-sm"><strong>Công thức đã có, nhưng cần thêm một yếu tố:</strong> Chúng ta đã biết <strong>W_new = W_old - η × ∇L</strong>. Nhưng <strong>η (Learning Rate)</strong> - độ lớn bước đi - quyết định TA ĐI BAO XA trong mỗi bước. Nếu bước quá lớn → nhảy qua đích; bước quá nhỏ → đi quá chậm!</p>
+    <p class="text-sm"><strong>Công thức đã có, nhưng cần thêm một yếu tố:</strong> Chúng hệ thống đã biết <strong>W_new = W_old - η × ∇L</strong>. Nhưng <strong>η (Learning Rate)</strong> - độ lớn bước đi - quyết định TA ĐI BAO XA trong mỗi bước. Nếu bước quá lớn → nhảy qua đích; bước quá nhỏ → đi quá chậm!</p>
   </div>
 
   <!-- 1.4. LEARNING RATE -->
@@ -495,7 +495,7 @@ const ch21_05_lessons: Lesson[] = [
     <ul class="space-y-2 mt-4">
       <li><strong>Đạo hàm (Derivative)</strong> = độ dốc tại một điểm - cho biết hàm đang tăng (+) hay giảm (-)</li>
       <li><strong>Gradient (∇L)</strong> = vector chứa tất cả đạo hàm riêng phần, luôn chỉ hướng <strong>dốc lên</strong> (làm Loss tăng)</li>
-      <li><strong>Gradient Descent</strong> = dùng dấu trừ để đảo ngược hướng, đi từ đỉnh về cực tiểu: $W_{new} = W_{old} - \\eta \\times \\nabla L$</li>
+      <li><strong>Gradient Descent</strong> = dùng dấu trừ để đảo ngược hướng, đi từ đỉnh về cực tiểu: $W_{new} = W_{old} - \\ehệ thống \\times \\nabla L$</li>
       <li><strong>Learning Rate (η)</strong> = độ dài bước đi - siêu tham số quan trọng cần điều chỉnh</li>
     </ul>
   </div>
@@ -589,7 +589,7 @@ fn main() {
       Ở bài trước, chúng ta đã học về Gradient Descent cơ bản với công thức <strong>W_new = W_old - η × ∇L</strong>. Tuy nhiên, đó mới chỉ là phiên bản đơn giản nhất.
     </p>
     <p class="mt-2 text-slate-800">
-      Trong thực tế, với tập dữ liệu có hàng triệu mẫu, ta cần các phiên bản tối ưu hơn để tăng tốc độ huấn luyện. Có ba cách chính để tính gradient: sử dụng toàn bộ dữ liệu (Batch), sử dụng từng mẫu một (Stochastic), hoặc sử dụng một mini-batch. Mỗi phương pháp có ưu và nhược điểm riêng về tốc độ tính toán và chất lượng hội tụ.
+      Trong thực tế, với tập dữ liệu có hàng triệu mẫu, hệ thống cần các phiên bản tối ưu hơn để tăng tốc độ huấn luyện. Có ba cách chính để tính gradient: sử dụng toàn bộ dữ liệu (Batch), sử dụng từng mẫu một (Stochastic), hoặc sử dụng một mini-batch. Mỗi phương pháp có ưu và nhược điểm riêng về tốc độ tính toán và chất lượng hội tụ.
     </p>
   </div>
 
@@ -598,13 +598,13 @@ fn main() {
 
   <div class="definition-block mb-4">
     <span class="definition-term">Định nghĩa</span>
-    <p><strong>Batch Gradient Descent</strong> (còn gọi là Vanilla Gradient Descent) là thuật toán tính gradient trên <em>toàn bộ</em> tập dữ liệu huấn luyện trước khi cập nhật weights một lần. Nói cách khác, trong mỗi epoch (một lần duyệt qua toàn bộ dữ liệu), ta chỉ cập nhật weights một lần duy nhất sau khi đã tính toán gradient cho tất cả n mẫu dữ liệu.</p>
+    <p><strong>Batch Gradient Descent</strong> (còn gọi là Vanilla Gradient Descent) là thuật toán tính gradient trên <em>toàn bộ</em> tập dữ liệu huấn luyện trước khi cập nhật weights một lần. Nói cách khác, trong mỗi epoch (một lần duyệt qua toàn bộ dữ liệu), hệ thống chỉ cập nhật weights một lần duy nhất sau khi đã tính toán gradient cho tất cả n mẫu dữ liệu.</p>
   </div>
 
   <div class="formula-block my-4 p-4 bg-blue-50 border-blue-300">
     <h4 class="font-bold text-blue-900 mb-2">Công thức Batch GD:</h4>
     <p class="text-lg font-mono">$\\nabla L = \\frac{1}{n} \\times \\sum_{i=1}^{n} \\nabla L(x_i, y_i)$</p>
-    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\eta \\times \\nabla L$</p>
+    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\ehệ thống \\times \\nabla L$</p>
   </div>
 
   <div class="my-4 p-4 bg-yellow-50 border border-yellow-300 rounded">
@@ -646,20 +646,20 @@ fn main() {
 
   <div class="definition-block mb-4">
     <span class="definition-term">Định nghĩa</span>
-    <p><strong>Stochastic Gradient Descent (SGD)</strong> - hay còn gọi là "Gradient Descent ngẫu nhiên" - là phiên bản mà ta tính gradient và cập nhật weights cho <em>từng mẫu dữ liệu một một</em>, ngay lập tức sau khi xử lý mỗi mẫu. Từ "stochastic" có nghĩa là "ngẫu nhiên", phản ánh việc ta không duyệt tuần tự mà thường xáo trộn (shuffle) dữ liệu trước khi huấn luyện.</p>
+    <p><strong>Stochastic Gradient Descent (SGD)</strong> - hay còn gọi là "Gradient Descent ngẫu nhiên" - là phiên bản mà hệ thống tính gradient và cập nhật weights cho <em>từng mẫu dữ liệu một một</em>, ngay lập tức sau khi xử lý mỗi mẫu. Từ "stochastic" có nghĩa là "ngẫu nhiên", phản ánh việc hệ thống không duyệt tuần tự mà thường xáo trộn (shuffle) dữ liệu trước khi huấn luyện.</p>
   </div>
 
   <div class="formula-block my-4 p-4 bg-green-50 border-green-300">
     <h4 class="font-bold text-green-900 mb-2">Công thức SGD:</h4>
     <p class="text-lg font-mono">$\\nabla L_i = \\nabla L(x_i, y_i)$</p>
-    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\eta \\times \\nabla L_i$</p>
+    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\ehệ thống \\times \\nabla L_i$</p>
     <p class="text-sm text-green-700 mt-2">Trong đó i là chỉ số của mẫu dữ liệu hiện tại đang được xử lý.</p>
   </div>
 
   <div class="my-4 p-4 bg-yellow-50 border border-yellow-300 rounded">
     <h4 class="font-bold text-yellow-900 mb-3">Giải thích chi tiết</h4>
     <div class="space-y-2 text-sm">
-      <p>SGD khác với Batch GD ở chỗ: thay vì đợi xử lý hết tất cả n mẫu rồi mới cập nhật, SGD cập nhật ngay sau mỗi mẫu. Điều này có nghĩa là trong một epoch, ta sẽ có n lần cập nhật weights thay vì chỉ 1 lần!</p>
+      <p>SGD khác với Batch GD ở chỗ: thay vì đợi xử lý hết tất cả n mẫu rồi mới cập nhật, SGD cập nhật ngay sau mỗi mẫu. Điều này có nghĩa là trong một epoch, hệ thống sẽ có n lần cập nhật weights thay vì chỉ 1 lần!</p>
       <p class="mt-2">Quy trình hoạt động: (1) Xáo trộn ngẫu nhiên n mẫu dữ liệu (2) Với mỗi mẫu: tính gradient của mẫu đó → cập nhật weights ngay lập tức → chuyển sang mẫu tiếp theo.</p>
     </div>
   </div>
@@ -682,7 +682,7 @@ fn main() {
 
   <div class="callout callout-info my-4">
     <span class="callout-title">Tại sao SGD lại "ngẫu nhiên"?</span>
-    <p class="mt-2">Tên gọi "ngẫu nhiên" (stochastic) đến từ việc ta sử dụng gradient của một mẫu đơn lẻ như một "ước lượng nhiễu" (noisy estimate) của gradient thực. Ước lượng này có giá trị kỳ vọng đúng (expected value) bằng gradient thực, nhưng có phương sai (variance) lớn - chính vì vậy đường đi không mượt.</p>
+    <p class="mt-2">Tên gọi "ngẫu nhiên" (stochastic) đến từ việc hệ thống sử dụng gradient của một mẫu đơn lẻ như một "ước lượng nhiễu" (noisy estimate) của gradient thực. Ước lượng này có giá trị kỳ vọng đúng (expected value) bằng gradient thực, nhưng có phương sai (variance) lớn - chính vì vậy đường đi không mượt.</p>
   </div>
 
   <!-- 2.3. MINI-BATCH GD -->
@@ -690,20 +690,20 @@ fn main() {
 
   <div class="definition-block mb-4">
     <span class="definition-term">Định nghĩa</span>
-    <p><strong>Mini-Batch Gradient Descent</strong> là phiên bản kết hợp giữa Batch GD và SGD. Thay vì dùng toàn bộ dữ liệu (Batch) hoặc chỉ một mẫu (SGD), ta chia dữ liệu thành các "batch" (lô) nhỏ, mỗi batch thường có kích thước từ 32, 64, 128 đến 256 mẫu. Gradient được tính trên mỗi batch và weights được cập nhật sau mỗi batch.</p>
+    <p><strong>Mini-Batch Gradient Descent</strong> là phiên bản kết hợp giữa Batch GD và SGD. Thay vì dùng toàn bộ dữ liệu (Batch) hoặc chỉ một mẫu (SGD), hệ thống chia dữ liệu thành các "batch" (lô) nhỏ, mỗi batch thường có kích thước từ 32, 64, 128 đến 256 mẫu. Gradient được tính trên mỗi batch và weights được cập nhật sau mỗi batch.</p>
   </div>
 
   <div class="formula-block my-4 p-4 bg-purple-50 border-purple-300">
     <h4 class="font-bold text-purple-900 mb-2">Công thức Mini-Batch GD:</h4>
     <p class="text-lg font-mono">$\\nabla L_{batch} = \\frac{1}{B} \\times \\sum_{i=1}^{B} \\nabla L(x_i, y_i)$</p>
-    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\eta \\times \\nabla L_{batch}$</p>
+    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\ehệ thống \\times \\nabla L_{batch}$</p>
     <p class="text-sm text-purple-700 mt-2">Trong đó B là kích thước batch (batch size), thường là 32, 64, 128 hoặc 256.</p>
   </div>
 
   <div class="my-4 p-4 bg-yellow-50 border border-yellow-300 rounded">
     <h4 class="font-bold text-yellow-900 mb-3">Ví dụ cụ thể</h4>
     <div class="space-y-2 text-sm">
-      <p>Giả sử ta có tập dữ liệu 10,000 mẫu và batch size = 32:</p>
+      <p>Giả sử hệ thống có tập dữ liệu 10,000 mẫu và batch size = 32:</p>
       <ul class="list-disc pl-5 space-y-1">
         <li>Mỗi epoch sẽ có: 10,000 / 32 = 312 batches (1 batch dư 16 mẫu)</li>
         <li>Mỗi epoch sẽ có 312 lần cập nhật weights</li>
@@ -797,7 +797,7 @@ fn main() {
     println!("\\n\\n2. SGD: Từng người một, đi ngay");
     let mut x_sgd = 4.0;
     for epoch in 1..=3 {
-        for &xi in &data {
+        for &xi in &dahệ thống {
             let grad = gradient(x_sgd);
             x_sgd = x_sgd - learning_rate * grad;
         }
@@ -886,8 +886,8 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-blue-50 border-blue-300">
     <h4 class="font-bold text-blue-900 mb-2">Công thức Momentum:</h4>
-    <p class="text-lg font-mono">$V_t = \\beta \\times V_{t-1} + \\nabla L$</p>
-    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\eta \\times V_t$</p>
+    <p class="text-lg font-mono">$V_t = \\behệ thống \\times V_{t-1} + \\nabla L$</p>
+    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\ehệ thống \\times V_t$</p>
     <p class="text-sm text-blue-700 mt-2">β (beta) = 0.9: Hệ số momentum, quyết định mức độ "đà" được giữ lại từ bước trước</p>
   </div>
 
@@ -904,7 +904,7 @@ fn main() {
 
       <p class="mt-3"><strong>Bước 2: Cập nhật Weights</strong></p>
       <p class="font-mono">W_new = W_old - η × V_t</p>
-      <p>Thay vì cập nhật theo gradient, ta cập nhật theo vận tốc đã tích lũy!</p>
+      <p>Thay vì cập nhật theo gradient, hệ thống cập nhật theo vận tốc đã tích lũy!</p>
 
       <p class="mt-3"><strong>Ví dụ số:</strong></p>
       <ul class="list-disc pl-5 space-y-1">
@@ -937,7 +937,7 @@ fn main() {
     </div>
     <div class="feature-card">
       <h4 class="font-bold mb-2">Nhược điểm:</h4>
-      <p><strong>Có thể "lướt qua" đích:</strong> Đà quá lớn khiến ta "nhảy qua" cực tiểu</p>
+      <p><strong>Có thể "lướt qua" đích:</strong> Đà quá lớn khiến hệ thống "nhảy qua" cực tiểu</p>
       <p class="mt-2"><strong>Cần điều chỉnh thêm tham số:</strong> Thêm β cần tuning</p>
       <p class="mt-2"><strong>Không điều chỉnh được learning rate:</strong> Vẫn dùng chung η cho tất cả weights</p>
     </div>
@@ -959,8 +959,8 @@ fn main() {
 
   <div class="formula-block my-4 p-4 bg-yellow-50 border-yellow-300">
     <h4 class="font-bold text-yellow-900 mb-2">Công thức RMSprop:</h4>
-    <p class="text-lg font-mono">$S_t = \\beta \\times S_{t-1} + (1 - \\beta) \\times (\\nabla L)^2$</p>
-    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\eta \\times \\nabla L / \\sqrt{S_t + \\varepsilon}$</p>
+    <p class="text-lg font-mono">$S_t = \\behệ thống \\times S_{t-1} + (1 - \\beta) \\times (\\nabla L)^2$</p>
+    <p class="text-lg font-mono mt-2">$W_{new} = W_{old} - \\ehệ thống \\times \\nabla L / \\sqrt{S_t + \\varepsilon}$</p>
     <p class="text-sm text-yellow-700 mt-2">β = 0.99 (thường dùng), ε = 1e-8 (tránh chia cho 0)</p>
   </div>
 
@@ -1032,7 +1032,7 @@ fn main() {
     <p class="text-lg font-mono mt-2">// Bias correction</p>
     <p class="text-lg font-mono">$\\hat{V}_t = V_t / (1 - \\beta_1^t), \\hat{S}_t = S_t / (1 - \\beta_2^t)$</p>
     <p class="text-lg font-mono mt-2">// Update weights</p>
-    <p class="text-lg font-mono">$W_{new} = W_{old} - \\eta \\times \\hat{V}_t / (\\sqrt{\\hat{S}_t + \\varepsilon})$</p>
+    <p class="text-lg font-mono">$W_{new} = W_{old} - \\ehệ thống \\times \\hat{V}_t / (\\sqrt{\\hat{S}_t + \\varepsilon})$</p>
     <p class="text-sm text-green-700 mt-2">β₁ = 0.9, β₂ = 0.999, ε = 1e-8</p>
   </div>
 
@@ -1147,11 +1147,11 @@ fn main() {
     println!("\\n\\n2. MOMENTUM (β=0.9):");
     let (mut w1, mut w2) = (4.0, 4.0);
     let (mut v1, mut v2) = (0.0, 0.0);
-    let beta = 0.9;
+    let behệ thống = 0.9;
     for _ in 1..=5 {
         let (g1, g2) = gradient(w1, w2);
-        v1 = beta * v1 + (1.0 - beta) * g1;
-        v2 = beta * v2 + (1.0 - beta) * g2;
+        v1 = behệ thống * v1 + (1.0 - beta) * g1;
+        v2 = behệ thống * v2 + (1.0 - beta) * g2;
         w1 -= lr * v1; w2 -= lr * v2;
         println!("  w1={:.3}, w2={:.3}, Loss={:.4}", w1, w2, loss_with_ravine(w1, w2));
     }
@@ -1227,7 +1227,7 @@ fn main() {
 
   <div class="definition-block mb-4">
     <span class="definition-term">Tại sao cần LR Scheduling?</span>
-    <p><strong>Learning Rate Scheduling</strong> (hay còn gọi là Learning Rate Decay) là kỹ thuật thay đổi learning rate theo thời gian trong quá trình huấn luyện. Thay vì giữ LR cố định suốt quá trình huấn luyện, ta điều chỉnh LR để đạt hiệu quả tối ưu ở từng giai đoạn.</p>
+    <p><strong>Learning Rate Scheduling</strong> (hay còn gọi là Learning Rate Decay) là kỹ thuật thay đổi learning rate theo thời gian trong quá trình huấn luyện. Thay vì giữ LR cố định suốt quá trình huấn luyện, hệ thống điều chỉnh LR để đạt hiệu quả tối ưu ở từng giai đoạn.</p>
     <p class="mt-2">LR cố định có hai vấn đề cơ bản:</p>
     <ul class="list-disc pl-5 mt-2 space-y-1">
       <li><strong>LR lớn:</strong> Ban đầu giúp hội tụ nhanh, nhưng khi gần đích sẽ "nhảy qua" cực tiểu, dao động không hội tụ</li>

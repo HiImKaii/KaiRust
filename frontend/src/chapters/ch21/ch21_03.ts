@@ -43,7 +43,7 @@ const ch21_03_lessons: Lesson[] = [
     <div class="callout-icon"><span class="material-symbols-outlined">help</span></div>
     <div class="callout-content">
       <span class="callout-title">Câu hỏi triệu đô:</span>
-      <p>"Điều gì xảy ra nếu ta chồng 100 lớp ẩn (Hidden Layers) lên nhau nhưng <strong>KHÔNG dùng hàm Activation nào</strong> (hoặc dùng hàm identity $f(x) = x$)?"</p>
+      <p>"Điều gì xảy ra nếu hệ thống chồng 100 lớp ẩn (Hidden Layers) lên nhau nhưng <strong>KHÔNG dùng hàm Activation nào</strong> (hoặc dùng hàm identity $f(x) = x$)?"</p>
     </div>
   </div>
 
@@ -54,7 +54,7 @@ const ch21_03_lessons: Lesson[] = [
     <div class="image-caption">Hình 0: Linear Collapse - Nhiều lớp Linear chỉ như một lớp</div>
   </div>
 
-  <p>Giả sử ta có mạng Neural với 3 lớp, mỗi lớp chỉ thực hiện phép nhân ma trận cộng bias (không có activation):</p>
+  <p>Giả sử hệ thống có mạng Neural với 3 lớp, mỗi lớp chỉ thực hiện phép nhân ma trận cộng bias (không có activation):</p>
 
   <div class="my-6 p-5 bg-red-50 border-l-4 border-red-500">
     <p class="font-bold text-red-800 mb-3">HIỆN TƯỢNG LINEAR COLLAPSE - MẠNG SỤP ĐỔ VỀ TUYẾN TÍNH!</p>
@@ -522,7 +522,7 @@ enum ActivationType {
 fn main() {
     println!("=== CHỨNG MINH: MẠNG KHÔNG CÓ ACTIVATION SỤP ĐỔ VỀ TUYẾN TÍNH ===");
 
-    // Ma trận (Để đơn giản ta cho X=1, W là số vô hướng)
+    // Ma trận (Để đơn giản hệ thống cho X=1, W là số vô hướng)
     let x = 5.0;
     let w1 = 2.0;
     let b1 = 1.0;
@@ -735,7 +735,7 @@ fn main() {
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
           $$\\sigma'(x) = \\frac{1 \\cdot e^{-x}}{e^x \\cdot (1 + e^{-x})^2} = \\frac{1}{e^x + 1} \\cdot \\frac{e^x}{e^x + 1}$$
         </div>
-        <p class="text-gray-600 mt-2">Vì $\\sigma(x) = \\frac{1}{1+e^{-x}} = \\frac{e^x}{e^x+1}$, ta có:</p>
+        <p class="text-gray-600 mt-2">Vì $\\sigma(x) = \\frac{1}{1+e^{-x}} = \\frac{e^x}{e^x+1}$, hệ thống có:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
           $$\\sigma'(x) = \\sigma(x) \\cdot (1 - \\sigma(x))$$
         </div>
@@ -744,7 +744,7 @@ fn main() {
 
     <div class="mt-4 p-3 bg-yellow-50 border-l-4 border-yellow-500">
       <p class="font-semibold">Ý nghĩa:</p>
-      <p class="text-sm mt-1">Đạo hàm σ'(x) được biểu diễn hoàn toàn qua σ(x), không cần tính riêng. Trong code, ta chỉ cần lưu output σ(x) từ forward pass để tính đạo hàm ở backward pass.</p>
+      <p class="text-sm mt-1">Đạo hàm σ'(x) được biểu diễn hoàn toàn qua σ(x), không cần tính riêng. Trong code, hệ thống chỉ cần lưu output σ(x) từ forward pass để tính đạo hàm ở backward pass.</p>
     </div>
   </div>
 
@@ -894,7 +894,7 @@ fn main() {
 
       <div class="step-derivation">
         <p class="font-semibold text-slate-700 mb-2">Bước 5: Biến đổi về dạng gọn</p>
-        <p class="text-gray-600">Từ định nghĩa $\\tanh(x) = \\frac{e^x - e^{-x}}{e^x + e^{-x}}$, ta có:</p>
+        <p class="text-gray-600">Từ định nghĩa $\\tanh(x) = \\frac{e^x - e^{-x}}{e^x + e^{-x}}$, hệ thống có:</p>
         <div class="formula-block-small my-3 p-3 bg-white border border-slate-300 rounded text-center font-mono">
           $$\\tanh^2(x) = \\left(\\frac{e^x - e^{-x}}{e^x + e^{-x}}\\right)^2 = \\frac{e^{2x} - 2 + e^{-2x}}{e^{2x} + 2 + e^{-2x}}$$
         </div>
@@ -1221,7 +1221,7 @@ fn main() {
           $$\\lim_{x \\to 0^-} f'(x) = \\lim_{x \\to 0^-} 0 = 0$$
         </div>
         <p class="text-gray-600 mt-2">Hai giới hạn một phía khác nhau → hàm không khả vi tại x = 0</p>
-        <p class="text-gray-600 mt-2">Trong thực tế, ta quy ước đạo hàm tại x = 0 bằng 0 hoặc 1</p>
+        <p class="text-gray-600 mt-2">Trong thực tế, hệ thống quy ước đạo hàm tại x = 0 bằng 0 hoặc 1</p>
       </div>
 
       <div class="step-derivation">
@@ -1236,7 +1236,7 @@ fn main() {
       <p class="font-semibold">Điểm quan trọng:</p>
       <ul class="text-sm mt-1 list-disc pl-4">
         <li>ReLU <strong>không khả vi</strong> tại x = 0 (điểm gãy)</li>
-        <li>Trong deep learning, ta thường <strong>quy ướt</strong> f'(0) = 0 hoặc f'(0) = 1 (không ảnh hưởng đáng kể)</li>
+        <li>Trong deep learning, hệ thống thường <strong>quy ướt</strong> f'(0) = 0 hoặc f'(0) = 1 (không ảnh hưởng đáng kể)</li>
         <li>Đạo hàm = 1 cho x > 0 → <strong>không có vanishing gradient</strong></li>
         <li>Đạo hàm = 0 cho x ≤ 0 → <strong>gradient bị chặn đứng</strong> (nguyên nhân của Dead ReLU)</li>
       </ul>
@@ -1313,7 +1313,7 @@ fn main() {
       <h4>PReLU (Parametric ReLU)</h4>
       <p class="font-mono">f(x) = x nếu x > 0, αx nếu x ≤ 0</p>
       <p class="text-sm mt-2">α là tham số học được!</p>
-      <p class="mt-2">Cho mạng tự học α tốt nhất. Nhưng dễ overfit nếu data không đủ.</p>
+      <p class="mt-2">Cho mạng tự học α tốt nhất. Nhưng dễ overfit nếu dahệ thống không đủ.</p>
     </div>
     <div class="concept-card">
       <div class="concept-icon"><span class="material-symbols-outlined">functions</span></div>
@@ -1610,7 +1610,7 @@ fn main() {
       <ul class="text-sm mt-1 list-disc pl-4">
         <li>GELU <strong>khả vi tại mọi điểm</strong> (trơn hoàn toàn)</li>
         <li>Đạo hàm tính phức tạp hơn ReLU nhiều (cần tanh, x²)</li>
-        <li>Trong code, ta thường tính GELU và GELU' cùng lúc</li>
+        <li>Trong code, hệ thống thường tính GELU và GELU' cùng lúc</li>
         <li>Với x lớn dương: GELU'(x) → 1; với x lớn âm: GELU'(x) → 0</li>
       </ul>
     </div>
@@ -1791,7 +1791,7 @@ fn main() {
   <div class="formula-block my-6 p-5 bg-pink-50 border-l-4 border-pink-500">
     <p class="font-bold text-pink-800 mb-3">Công thức Swish:</p>
     <div class="space-y-2 font-mono text-sm">
-      <p class="text-lg">$\\text{Swish}(x) = x \\cdot \\sigma(\\beta x)$</p>
+      <p class="text-lg">$\\text{Swish}(x) = x \\cdot \\sigma(\\behệ thống x)$</p>
       <p class="text-gray-600">Trong đó σ là sigmoid: $\\sigma(x) = \\frac{1}{1 + e^{-x}}$</p>
       <hr class="my-2"/>
       <p class="text-gray-600">Dạng đơn giản (β = 1) - gọi là SiLU:</p>
@@ -1972,15 +1972,15 @@ fn main() {
 
 use ndarray::Array2;
 
-/// Swish: x * sigmoid(beta * x)
-/// When beta = 1, this is SiLU (Sigmoid Linear Unit)
+/// Swish: x * sigmoid(behệ thống * x)
+/// When behệ thống = 1, this is SiLU (Sigmoid Linear Unit)
 fn swish(x: &Array2<f64>, beta: f64) -> Array2<f64> {
     x.mapv(|v| {
-        v * (beta * v).exp() / (1.0 + (beta * v).exp())
+        v * (behệ thống * v).exp() / (1.0 + (behệ thống * v).exp())
     })
 }
 
-/// SiLU: Swish with beta = 1 (most common in practice)
+/// SiLU: Swish with behệ thống = 1 (most common in practice)
 fn silu(x: &Array2<f64>) -> Array2<f64> {
     x.mapv(|v| {
         v / (1.0 + (-v).exp())
@@ -2015,7 +2015,7 @@ fn main() {
     }
 
     println!("\\n=== Key Observations ===");
-    println!("- SiLU(x) = Swish(x) with beta = 1 (most common)");
+    println!("- SiLU(x) = Swish(x) with behệ thống = 1 (most common)");
     println!("- SiLU has SMOOTH curve unlike ReLU's hard cut");
     println!("- SiLU allows NEGATIVE values for small negative inputs");
     println!("- Mish is a self-regularizing variant of SiLU");
@@ -2186,14 +2186,14 @@ fn gelu(x: &Array2<f64>) -> Array2<f64> {
     })
 }
 
-/// Swish: x * sigmoid(beta * x)
-/// When beta = 1, it's called SiLU
+/// Swish: x * sigmoid(behệ thống * x)
+/// When behệ thống = 1, it's called SiLU
 fn swish(x: &Array2<f64>, beta: f64) -> Array2<f64> {
-    let sigmoid = x.mapv(|v| 1.0 / (1.0 + (-beta * v).exp()));
+    let sigmoid = x.mapv(|v| 1.0 / (1.0 + (-behệ thống * v).exp()));
     x * &sigmoid
 }
 
-/// SiLU (Sigmoid Linear Unit) - Swish with beta = 1
+/// SiLU (Sigmoid Linear Unit) - Swish with behệ thống = 1
 fn silu(x: &Array2<f64>) -> Array2<f64> {
     swish(x, 1.0)
 }

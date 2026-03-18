@@ -66,7 +66,7 @@ const ch21_06_lessons: Lesson[] = [
     </div>
   </div>
 
-  <p>Để tính $\\frac{\\partial L}{\\partial w}$, ta sử dụng Chain Rule:</p>
+  <p>Để tính $\\frac{\\partial L}{\\partial w}$, hệ thống sử dụng Chain Rule:</p>
 
   <div class="formula-block text-lg mt-2 mb-4 p-4 text-center">
     $\\frac{\\partial L}{\\partial w} = \\frac{\\partial L}{\\partial a} \\times \\frac{\\partial a}{\\partial z} \\times \\frac{\\partial z}{\\partial w}$
@@ -233,7 +233,7 @@ fn main() {
   <ul class="text-sm list-disc pl-5 my-2">
     <li>Khi đi qua Node Nhân $w_1 \\cdot x_1$, đạo hàm theo $x_1$ (= w) và theo $w_1$ (= x₁) được lưu vào cache.</li>
     <li>Khi đi qua Node Cộng, đạo hàm bằng 1 được lưu vào cache.</li>
-    <li>Nếu không lưu cache, ta phải tính lại tất cả từ đầu - rất tốn thời gian!</li>
+    <li>Nếu không lưu cache, hệ thống phải tính lại tất cả từ đầu - rất tốn thời gian!</li>
   </ul>
 
   <div class="my-4 p-4 bg-blue-50 border border-blue-300 rounded">
@@ -243,7 +243,7 @@ fn main() {
       <ul class="list-disc pl-5 space-y-1">
         <li><strong>Forward:</strong> Tính z = 0.5 × 2 + 0.1 = 1.1</li>
         <li><strong>Cache:</strong> Lưu w = 0.5, x = 2, b = 0.1</li>
-        <li>Sau này trong Backward Pass, khi cần ∂z/∂w, ta chỉ việc lấy x từ cache = 2!</li>
+        <li>Sau này trong Backward Pass, khi cần ∂z/∂w, hệ thống chỉ việc lấy x từ cache = 2!</li>
       </ul>
     </div>
   </div>
@@ -264,7 +264,7 @@ fn main() {
   <div class="callout callout-info my-4">
     <span class="callout-title">Công thức Backward Pass</span>
     <p class="mt-2"><strong>Downstream = Upstream × Local</strong></p>
-    <p class="mt-2">Tại mỗi node, ta nhân gradient từ phía sau (upstream) với đạo hàm cục bộ (local gradient) để được gradient cần truyền về trước.</p>
+    <p class="mt-2">Tại mỗi node, hệ thống nhân gradient từ phía sau (upstream) với đạo hàm cục bộ (local gradient) để được gradient cần truyền về trước.</p>
   </div>
 
   <div class="my-4 p-4 bg-yellow-50 border border-yellow-300 rounded">
@@ -288,7 +288,7 @@ fn main() {
 
   <!-- CHUYỂN TIẾP -->
   <div class="my-4 p-3 bg-gray-50 border-l-4 border-gray-400 rounded">
-    <p class="text-sm"><strong>Từ lý thuyết đến ma trận:</strong> Chúng ta đã hiểu cơ chế với scalar. Nhưng Neural Network thực tế làm việc với ma trận hàng triệu phần tử! Làm sao tính gradient cho ma trận? Hãy xem phần tiếp theo.</p>
+    <p class="text-sm"><strong>Từ lý thuyết đến ma trận:</strong> Chúng hệ thống đã hiểu cơ chế với scalar. Nhưng Neural Network thực tế làm việc với ma trận hàng triệu phần tử! Làm sao tính gradient cho ma trận? Hãy xem phần tiếp theo.</p>
   </div>
 </div>
     `,
@@ -369,8 +369,8 @@ fn main() {
 
   <h3>3.1. Phép màu của Ma trận chuyển vị (Transpose)</h3>
   <div class="definition-block mb-4">
-    <p>Ở Bài 2 (Forward Pass), ta đã nâng cấp Tín hiệu thành dạng Ma trận Batch $Z = X \\cdot W + b$. Điều này đồng nghĩa với việc Backward Pass (Chain rule) cũng bị ép chuyển hệ từ Phép Nhân Điểm Sinh Viên chán ngắt lên <strong>Ma Trận Đạo Hàm Cấp Cao (Jacobian matrix)</strong>.</p>
-    <p>Thay vì $dL / dW = Lỗi \\times X$, giờ đây để Nhân ma trận với kích cỡ khớp lọt lòng với nhau, ta sẽ CẦN ĐẢO NGƯỢC X (Chuyển vị ma trận $X^T$) để cân bằng phép tính.</p>
+    <p>Ở Bài 2 (Forward Pass), hệ thống đã nâng cấp Tín hiệu thành dạng Ma trận Batch $Z = X \\cdot W + b$. Điều này đồng nghĩa với việc Backward Pass (Chain rule) cũng bị ép chuyển hệ từ Phép Nhân Điểm Sinh Viên chán ngắt lên <strong>Ma Trận Đạo Hàm Cấp Cao (Jacobian matrix)</strong>.</p>
+    <p>Thay vì $dL / dW = Lỗi \\times X$, giờ đây để Nhân ma trận với kích cỡ khớp lọt lòng với nhau, hệ thống sẽ CẦN ĐẢO NGƯỢC X (Chuyển vị ma trận $X^T$) để cân bằng phép tính.</p>
     
     <div class="font-mono text-center p-4 bg-purple-50 text-purple-900 border border-purple-300 font-bold mb-4 font-lg">
       $dW = X^T \\cdot dZ$ <br/><br/>
@@ -424,7 +424,7 @@ fn main() {
   <div class="example-block mb-4">
     <h4>Ví dụ cụ thể với Batch Size = 2, Input Features = 3, Output Neurons = 4</h4>
 
-    <p>Giả sử ta có:</p>
+    <p>Giả sử hệ thống có:</p>
     <ul>
       <li>Ma trận Input $X$ (batch=2, features=3):</li>
     </ul>
@@ -494,7 +494,7 @@ fn main() {
       <li>W (n_in × n_out) "đóng góp" vào mỗi cột của Z</li>
     </ul>
 
-    <p>Để gradient theo X phải "đi ngược" qua W, ta cần nhân với $W^T$. Tương tự, để gradient theo W phải "đi ngược" qua X, ta cần nhân với $X^T$.</p>
+    <p>Để gradient theo X phải "đi ngược" qua W, hệ thống cần nhân với $W^T$. Tương tự, để gradient theo W phải "đi ngược" qua X, hệ thống cần nhân với $X^T$.</p>
 
     <div class="warning-box p-4 bg-yellow-50 border-l-4 border-yellow-500">
       <p><strong>Lưu ý quan trọng:</strong> Thứ tự nhân ma trận rất quan trọng! $A \\cdot B \\neq B \\cdot A$ trong ma trận. Sai thứ tự sẽ cho kết quả sai hoàn toàn.</p>
@@ -503,7 +503,7 @@ fn main() {
 
   <h3>3.5. Kết nối với Activation Function</h3>
   <div class="mb-4">
-    <p>Sau khi tính $dZ^{[l]}$ từ $dA^{[l]}$ (qua activation derivative), ta tiếp tục quá trình lan truyền ngược:</p>
+    <p>Sau khi tính $dZ^{[l]}$ từ $dA^{[l]}$ (qua activation derivative), hệ thống tiếp tục quá trình lan truyền ngược:</p>
 
     <div class="font-mono text-center p-4 bg-indigo-50 text-indigo-900 border border-indigo-300 font-bold">
       $dA^{[l-1]} = dZ^{[l]} \\cdot (W^{[l]})^T$<br/>
@@ -532,7 +532,7 @@ fn main() {
     println!("║             LAN TRUYỀN NGƯỢC MATRIX FORM - TẬN CÙNG CÂU CHUYỆN       ║");
     println!("╚══════════════════════════════════════════════════════════════════════╝");
     
-    // Tưởng tượng mẻ Data Batch Size = 2 hình (Dòng), mỗi hình 3 Features (Cột). -> Matrix (2 x 3)
+    // Tưởng tượng mẻ Dahệ thống Batch Size = 2 hình (Dòng), mỗi hình 3 Features (Cột). -> Matrix (2 x 3)
     // Và Matrix Weight có chiều Size = (3 x 4) -> Đi vào Lớp Ẩn 4 Nơ-Rons.
     
     // Trực quan 1 node phép Nhân Bạo Lực Ma Trận: Z = X * W
@@ -545,7 +545,7 @@ fn main() {
     
     println!("1. Đạo Hàm Ma Trận đập vô Trọng Số: dW = X^T * dZ");
     println!("   > Kích cở ăn khớp hoàn mỹ (M_In x Batch) * (Batch x M_Out) => (M_In x M_Out)");
-    println!("\\n2. Đạo Hàm Ma Trận lừa vào Lùi Data ngược: dX = dZ * W^T");
+    println!("\\n2. Đạo Hàm Ma Trận lừa vào Lùi Dahệ thống ngược: dX = dZ * W^T");
     println!("   > Đi ngược lại tàn sát Lớp Layer đứng trước mình. Mạng Sâu ngàn Lớp đều bị Cầm Trịch Nhét Kẹo.");
     println!("\\n3. Đạo Hàm đập vô Bias vô dụng: db = Sum(dZ, dọc Vector Batch)");
     println!("   > Bias cưu chắp một hằng số trơ khấc cho mỗi nơ-ron, hứng đạn gom của cả Batch dồn chụm một cục.");
