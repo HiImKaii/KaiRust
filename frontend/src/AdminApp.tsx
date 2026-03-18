@@ -215,16 +215,6 @@ export default function AdminApp() {
       <aside className="sidebar">
         <div className="sidebar-header">
           <div className="sidebar-logo">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <rect width="32" height="32" rx="8" fill="url(#logoGrad2)"/>
-              <path d="M9 22V10L16 16L23 10V22L16 16L9 22Z" fill="white" fillOpacity="0.9"/>
-              <defs>
-                <linearGradient id="logoGrad2" x1="0" y1="0" x2="32" y2="32">
-                  <stop stopColor="#3B82F6"/>
-                  <stop offset="1" stopColor="#8B5CF6"/>
-                </linearGradient>
-              </defs>
-            </svg>
             <span>KaiRust</span>
           </div>
         </div>
