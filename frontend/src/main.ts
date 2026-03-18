@@ -1443,21 +1443,27 @@ function showForm(formId: string) {
 
 function updateAuthUI() {
     const settingsBtn = document.getElementById('settings-btn');
+    const achievementsBtn = document.getElementById('achievements-btn');
     if (!settingsBtn) return;
 
     if (currentUser) {
-        // User is logged in - show user info with achievements button
+        // User is logged in - show user name in settings button
         settingsBtn.innerHTML = `
             <div class="user-info">
-                <button class="achievements-btn" onclick="loadAndShowAchievements()" title="Thành tựu">
-                    <span class="material-symbols-outlined">emoji_events</span>
-                </button>
                 <div class="user-avatar">${currentUser.username.charAt(0).toUpperCase()}</div>
                 <span class="user-name">${currentUser.username}</span>
             </div>
         `;
+        // Show achievements button
+        if (achievementsBtn) {
+            achievementsBtn.style.display = 'flex';
+        }
     } else {
         settingsBtn.textContent = 'Đăng nhập';
+        // Hide achievements button
+        if (achievementsBtn) {
+            achievementsBtn.style.display = 'none';
+        }
     }
 }
 
