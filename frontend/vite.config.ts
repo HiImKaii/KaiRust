@@ -27,9 +27,9 @@ function cleanUrlPlugin(): Plugin {
                 // 3. Nếu request không có đuôi (ví dụ /practice) thì rewrite nội bộ sang .html
                 // để Vite có thể tìm thấy file practice.html mà URL vẫn đẹp
                 // Loại trừ các tệp tĩnh có dấu chấm (như .js, .css, .png) và các internal paths của Vite (/@...)
-                // và loại trừ /api/* vì đây là proxy endpoint
+                // và loại trừ /api/* và /ws/* vì đây là proxy endpoint
                 const [path, query] = url.split('?');
-                if (!path.includes('.') && path !== '/' && !path.startsWith('/@') && !path.startsWith('/api')) {
+                if (!path.includes('.') && path !== '/' && !path.startsWith('/@') && !path.startsWith('/api') && !path.startsWith('/ws')) {
                     req.url = path + '.html' + (query ? '?' + query : '');
                 }
 
