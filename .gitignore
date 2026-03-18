@@ -33,3 +33,4 @@ frontend/dist-admin/
 
 # Local dev scripts
 dev.sh
+backend/data/kairust.db
