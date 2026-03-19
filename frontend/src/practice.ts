@@ -485,7 +485,9 @@ const runNextTestCase = (code: string) => {
                         break;
                     case 'compile_error':
                         stopLoading('Compile failed', true);
-                        appendTerminal(`<span style="color:#ef4444">${escapeHtml(msg.stderr)}</span>`);
+                        if (!isHidden) {
+                            appendTerminal(`<span style="color:#ef4444">${escapeHtml(msg.stderr)}</span>`);
+                        }
                         pendingTestResults.push({ index: capturedIndex, input: tcInput, expected: tcExpected, actual: testOutput, passed: false });
                         testCompleted = true;
                         reenableButtons(); // Re-enable immediately on compile error
@@ -510,7 +512,9 @@ const runNextTestCase = (code: string) => {
                             `${msg.execution_time_ms}ms`
                         );
                         pendingTestResults.push({ index: capturedIndex, input: tcInput, expected: tcExpected, actual, passed, executionTimeMs: msg.execution_time_ms });
-                        appendTerminal(`<span class="${passed ? 'log-success' : 'log-error'}">[${passed ? 'PASS ✓' : 'FAIL ✗'}] ${msg.execution_time_ms}ms</span>`);
+                        if (!isHidden) {
+                            appendTerminal(`<span class="${passed ? 'log-success' : 'log-error'}">[${passed ? 'PASS ✓' : 'FAIL ✗'}] ${msg.execution_time_ms}ms</span>`);
+                        }
                         testCompleted = true;
                         reenableButtons(); // Re-enable immediately on exit, before ws.close() fires
                         ws.close();
