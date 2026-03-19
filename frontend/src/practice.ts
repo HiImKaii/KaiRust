@@ -384,9 +384,10 @@ const runNextTestCase = (code: string) => {
 
     const tc = pendingTestCases[pendingTestIndex];
     const testNum = pendingTestIndex + 1;
+    const isHidden = tc.hidden === true;
 
-    appendTerminal(`<br><span class="log-info">[Test ${testNum}/${pendingTestCases.length}]</span>`);
-    if (tc.input) {
+    appendTerminal(`<br><span class="log-info">[Test ${testNum}/${pendingTestCases.length}]${isHidden ? ' 🔒 (ẩn)' : ''}</span>`);
+    if (!isHidden && tc.input) {
         appendTerminal(`<span style="color:#64748b">Input:  ${escapeHtml(tc.input)}</span>`);
     }
 
@@ -469,7 +470,7 @@ const runNextTestCase = (code: string) => {
                         executionTimeMs: execTimeMs
                     });
 
-                    appendTerminal(`<span class="${passed ? 'log-success' : 'log-error'}">[${passed ? 'PASS' : 'FAIL'}] ${execTimeMs}ms</span>`);
+                    appendTerminal(`<span class="${passed ? 'log-success' : 'log-error'}">[${passed ? 'PASS ✓' : 'FAIL ✗'}] ${execTimeMs}ms</span>`);
                     testCompleted = true;
                     ws.close();
                     break;
@@ -550,8 +551,13 @@ const showTestResultsSummary = () => {
         appendTerminal('<br><span style="color:#f59e0b;font-weight:bold">Chi tiết các test case thất bại:</span>');
         pendingTestResults.forEach((r, i) => {
             if (!r.passed) {
-                appendTerminal(`<br><span style="color:#64748b">--- Test ${i + 1} ---</span>`);
-                if (r.input) appendTerminal(`<span style="color:#94a3b8">Input:     ${escapeHtml(r.input)}</span>`);
+                const tc = pendingTestCases[i];
+                const isHidden = tc?.hidden === true;
+                const label = isHidden ? `🔒 Test ẩn ${i + 1}` : `Test ${i + 1}`;
+                appendTerminal(`<br><span style="color:#64748b">--- ${label} ---</span>`);
+                if (!isHidden && r.input) {
+                    appendTerminal(`<span style="color:#94a3b8">Input:     ${escapeHtml(r.input)}</span>`);
+                }
                 appendTerminal(`<span style="color:#22c55e">Expected:  ${escapeHtml(r.expected)}</span>`);
                 appendTerminal(`<span style="color:#ef4444">Actual:    ${escapeHtml(r.actual) || '(no output)'}</span>`);
             }

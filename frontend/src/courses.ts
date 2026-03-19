@@ -68,6 +68,7 @@ export interface TestCase {
   input: string;
   expectedOutput: string;
   description?: string;
+  hidden?: boolean; // Hidden test cases (not shown in problem description)
 }
 
 export interface Example {

@@ -29,7 +29,13 @@ export const buoi1_lessons: Lesson[] = [
       <p>100 ÷ 5 = 20 dư 0 → In ra: 20 0</p>
     `,
     defaultCode: DEFAULT_CODE,
-    testCases: [{ input: '100 5', expectedOutput: '20 0' }],
+    testCases: [
+      { input: '100 5', expectedOutput: '20 0' },
+      { input: '17 5', expectedOutput: '3 2', hidden: true },
+      { input: '50 7', expectedOutput: '7 1', hidden: true },
+      { input: '-10 3', expectedOutput: '-3 -1', hidden: true },
+      { input: '0 5', expectedOutput: '0 0', hidden: true },
+    ],
     isExercise: true,
   },
   {
@@ -54,7 +60,13 @@ export const buoi1_lessons: Lesson[] = [
       <p>A(2) = 2³ + 3×2² + 2 + 1 = 8 + 12 + 2 + 1 = 23</p>
     `,
     defaultCode: DEFAULT_CODE,
-    testCases: [{ input: '2', expectedOutput: '23' }],
+    testCases: [
+      { input: '2', expectedOutput: '23' },
+      { input: '0', expectedOutput: '1', hidden: true },
+      { input: '1', expectedOutput: '6', hidden: true },
+      { input: '3', expectedOutput: '64', hidden: true },
+      { input: '10', expectedOutput: '1331', hidden: true },
+    ],
     isExercise: true,
   },
   {
@@ -76,7 +88,13 @@ export const buoi1_lessons: Lesson[] = [
       </table>
     `,
     defaultCode: DEFAULT_CODE,
-    testCases: [{ input: '10 2', expectedOutput: '12 8 20 5.00' }],
+    testCases: [
+      { input: '10 2', expectedOutput: '12 8 20 5.00' },
+      { input: '7 3', expectedOutput: '10 4 21 2.33', hidden: true },
+      { input: '-10 2', expectedOutput: '-8 -12 -20 -5.00', hidden: true },
+      { input: '5 2', expectedOutput: '7 3 10 2.50', hidden: true },
+      { input: '0 5', expectedOutput: '5 -5 0 0.00', hidden: true },
+    ],
     isExercise: true,
   },
   {
@@ -98,7 +116,13 @@ export const buoi1_lessons: Lesson[] = [
       </table>
     `,
     defaultCode: DEFAULT_CODE,
-    testCases: [{ input: '10', expectedOutput: '62.80 314.00' }],
+    testCases: [
+      { input: '10', expectedOutput: '62.80 314.00' },
+      { input: '1', expectedOutput: '6.28 3.14', hidden: true },
+      { input: '7', expectedOutput: '43.96 153.86', hidden: true },
+      { input: '3', expectedOutput: '18.84 28.26', hidden: true },
+      { input: '100', expectedOutput: '628.00 31400.00', hidden: true },
+    ],
     isExercise: true,
   },
   {
@@ -121,7 +145,13 @@ export const buoi1_lessons: Lesson[] = [
       </table>
     `,
     defaultCode: DEFAULT_CODE,
-    testCases: [{ input: '30', expectedOutput: '1' }],
+    testCases: [
+      { input: '30', expectedOutput: '1' },
+      { input: '15', expectedOutput: '1', hidden: true },
+      { input: '45', expectedOutput: '1', hidden: true },
+      { input: '9', expectedOutput: '0', hidden: true },
+      { input: '-30', expectedOutput: '1', hidden: true },
+    ],
     isExercise: true,
   },
   {
@@ -150,7 +180,13 @@ export const buoi1_lessons: Lesson[] = [
       </table>
     `,
     defaultCode: DEFAULT_CODE,
-    testCases: [{ input: '2020', expectedOutput: 'YES' }],
+    testCases: [
+      { input: '2020', expectedOutput: 'YES' },
+      { input: '2000', expectedOutput: 'YES', hidden: true },
+      { input: '1900', expectedOutput: 'NO', hidden: true },
+      { input: '2024', expectedOutput: 'YES', hidden: true },
+      { input: '0', expectedOutput: 'INVALID', hidden: true },
+    ],
     isExercise: true,
   },
   {
@@ -177,7 +213,13 @@ export const buoi1_lessons: Lesson[] = [
       </table>
     `,
     defaultCode: DEFAULT_CODE,
-    testCases: [{ input: '2 2021', expectedOutput: '28' }],
+    testCases: [
+      { input: '2 2021', expectedOutput: '28' },
+      { input: '1 2023', expectedOutput: '31', hidden: true },
+      { input: '4 2023', expectedOutput: '30', hidden: true },
+      { input: '13 2023', expectedOutput: 'INVALID', hidden: true },
+      { input: '2 1900', expectedOutput: '28', hidden: true },
+    ],
     isExercise: true,
   },
   {
@@ -200,7 +242,13 @@ export const buoi1_lessons: Lesson[] = [
       </table>
     `,
     defaultCode: DEFAULT_CODE,
-    testCases: [{ input: 'a', expectedOutput: 'YES' }],
+    testCases: [
+      { input: 'a', expectedOutput: 'YES' },
+      { input: 'z', expectedOutput: 'YES', hidden: true },
+      { input: 'm', expectedOutput: 'YES', hidden: true },
+      { input: '0', expectedOutput: 'NO', hidden: true },
+      { input: '@', expectedOutput: 'NO', hidden: true },
+    ],
     isExercise: true,
   },
   {
@@ -223,7 +271,13 @@ export const buoi1_lessons: Lesson[] = [
       </table>
     `,
     defaultCode: DEFAULT_CODE,
-    testCases: [{ input: 'A', expectedOutput: 'YES' }],
+    testCases: [
+      { input: 'A', expectedOutput: 'YES' },
+      { input: 'Z', expectedOutput: 'YES', hidden: true },
+      { input: 'K', expectedOutput: 'YES', hidden: true },
+      { input: '9', expectedOutput: 'NO', hidden: true },
+      { input: '[', expectedOutput: 'NO', hidden: true },
+    ],
     isExercise: true,
   },
   {
@@ -246,7 +300,13 @@ export const buoi1_lessons: Lesson[] = [
       </table>
     `,
     defaultCode: DEFAULT_CODE,
-    testCases: [{ input: '5', expectedOutput: 'YES' }],
+    testCases: [
+      { input: '5', expectedOutput: 'YES' },
+      { input: '0', expectedOutput: 'YES', hidden: true },
+      { input: '9', expectedOutput: 'YES', hidden: true },
+      { input: 'b', expectedOutput: 'NO', hidden: true },
+      { input: '!', expectedOutput: 'NO', hidden: true },
+    ],
     isExercise: true,
   },
   {
@@ -269,7 +329,13 @@ export const buoi1_lessons: Lesson[] = [
       </table>
     `,
     defaultCode: DEFAULT_CODE,
-    testCases: [{ input: 'A', expectedOutput: 'a' }],
+    testCases: [
+      { input: 'A', expectedOutput: 'a' },
+      { input: 'Z', expectedOutput: 'z', hidden: true },
+      { input: 'm', expectedOutput: 'm', hidden: true },
+      { input: '5', expectedOutput: '5', hidden: true },
+      { input: '#', expectedOutput: '#', hidden: true },
+    ],
     isExercise: true,
   },
   {
@@ -293,7 +359,13 @@ export const buoi1_lessons: Lesson[] = [
       </table>
     `,
     defaultCode: DEFAULT_CODE,
-    testCases: [{ input: '3 4 5', expectedOutput: 'YES' }],
+    testCases: [
+      { input: '3 4 5', expectedOutput: 'YES' },
+      { input: '5 5 5', expectedOutput: 'YES', hidden: true },
+      { input: '2 3 10', expectedOutput: 'NO', hidden: true },
+      { input: '1 2 3', expectedOutput: 'NO', hidden: true },
+      { input: '-1 2 3', expectedOutput: 'NO', hidden: true },
+    ],
     isExercise: true,
   },
 ];
