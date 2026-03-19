@@ -2,6 +2,11 @@
 
 import { Lesson } from '../../courses';
 
+const DEFAULT_CODE = `fn main() {
+    // Viết code ở đây
+}
+`;
+
 export const buoi3_lessons: Lesson[] = [
   {
     id: 'ch28_b3_01',
@@ -25,6 +30,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '5', expectedOutput: '15' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_02',
@@ -48,6 +54,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '3', expectedOutput: '14' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_03',
@@ -71,6 +78,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '10', expectedOutput: '18' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_04',
@@ -94,6 +102,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '3', expectedOutput: '1.833' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_05',
@@ -115,6 +124,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '3', expectedOutput: '1.83' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_06',
@@ -138,6 +148,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '4', expectedOutput: '2' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_07',
@@ -161,6 +172,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '3', expectedOutput: '12' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_08',
@@ -184,6 +196,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '3', expectedOutput: '9' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_09',
@@ -207,6 +220,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '3', expectedOutput: '36' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_10',
@@ -229,6 +243,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '5', expectedOutput: '120' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_11',
@@ -252,6 +267,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '2 3', expectedOutput: '8' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_12',
@@ -274,6 +290,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '123456789', expectedOutput: '9' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_13',
@@ -298,6 +315,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '12341', expectedOutput: '11' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_14',
@@ -321,6 +339,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '1234', expectedOutput: '6\n4' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_15',
@@ -342,6 +361,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '12111', expectedOutput: '1 4' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_16',
@@ -365,6 +385,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '1234567', expectedOutput: '4' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_17',
@@ -389,6 +410,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '111222', expectedOutput: 'YES' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_18',
@@ -413,6 +435,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '6', expectedOutput: '3' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_19',
@@ -434,6 +457,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '3 2', expectedOutput: '100' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_20',
@@ -455,6 +479,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '3\n3 5\n2 1\n4 2', expectedOutput: 'Mishka' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_21',
@@ -477,6 +502,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '14', expectedOutput: '4 4' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_22',
@@ -500,6 +526,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '4', expectedOutput: '0\n6\n28\n96' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_23',
@@ -523,6 +550,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '6 3', expectedOutput: '10' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_24',
@@ -546,6 +574,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '3 2', expectedOutput: '6' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_25',
@@ -567,6 +596,7 @@ export const buoi3_lessons: Lesson[] = [
     `,
     testCases: [{ input: '3', expectedOutput: '6' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b3_26',

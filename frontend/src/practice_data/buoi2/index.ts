@@ -2,6 +2,11 @@
 
 import { Lesson } from '../../courses';
 
+const DEFAULT_CODE = `fn main() {
+    // Viết code ở đây
+}
+`;
+
 export const buoi2_lessons: Lesson[] = [
   {
     id: 'ch28_b2_01',
@@ -25,6 +30,7 @@ export const buoi2_lessons: Lesson[] = [
     `,
     testCases: [{ input: '4 6 6', expectedOutput: '28' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b2_02',
@@ -49,6 +55,7 @@ export const buoi2_lessons: Lesson[] = [
     `,
     testCases: [{ input: '3 3', expectedOutput: '4' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b2_03',
@@ -73,6 +80,7 @@ export const buoi2_lessons: Lesson[] = [
     `,
     testCases: [{ input: '6 6 4', expectedOutput: '4' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b2_04',
@@ -102,6 +110,7 @@ export const buoi2_lessons: Lesson[] = [
     `,
     testCases: [{ input: '5 2 3', expectedOutput: '8' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b2_05',
@@ -126,6 +135,7 @@ export const buoi2_lessons: Lesson[] = [
     `,
     testCases: [{ input: '5 5 11', expectedOutput: 'NO' }, { input: '-5 5 12', expectedOutput: 'YES' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b2_06',
@@ -150,6 +160,7 @@ export const buoi2_lessons: Lesson[] = [
     `,
     testCases: [{ input: '3 1 3', expectedOutput: '3' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b2_07',
@@ -174,6 +185,7 @@ export const buoi2_lessons: Lesson[] = [
     `,
     testCases: [{ input: '6 16', expectedOutput: '3' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b2_08',
@@ -198,6 +210,7 @@ export const buoi2_lessons: Lesson[] = [
     `,
     testCases: [{ input: '125', expectedOutput: '3' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b2_09',
@@ -222,6 +235,7 @@ export const buoi2_lessons: Lesson[] = [
     `,
     testCases: [{ input: '10 2', expectedOutput: '6' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b2_10',
@@ -250,6 +264,7 @@ export const buoi2_lessons: Lesson[] = [
     `,
     testCases: [{ input: '10 20 30', expectedOutput: '60' }, { input: '1 3 2', expectedOutput: '6' }],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
   {
     id: 'ch28_b2_11',
