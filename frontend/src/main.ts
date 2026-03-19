@@ -505,7 +505,7 @@ const startCodeExecution = (is_test: boolean) => {
                                 appendTerminal(`<br><span class="log-success" style="font-weight:bold; font-size:1.1rem">CHÚC MỪNG BẠN ĐÃ TRẢ LỜI ĐÚNG!</span>`);
                                 appendTerminal(`<span class="log-info">Bạn đã xuất sắc hoàn thành tất cả các Testcase. Tiếp tục phát huy nhé!</span>`);
                                 const timeSpent = Math.floor((Date.now() - lessonStartTime) / 1000);
-                                ProgressManager.markCompleted(lesson.id, timeSpent);
+                                ProgressManager.markCompleted(lesson.id, timeSpent).catch(console.error);
                                 const activeEl = document.querySelector(`[data-lesson-id="${lesson.id}"]`);
                                 if (activeEl) {
                                     activeEl.classList.add('passed');
@@ -824,7 +824,7 @@ const checkUnlockNext = () => {
 
         if (timeSpent >= reqTimeMs) {
             const finalTimeSpent = Math.floor((Date.now() - lessonStartTime) / 1000);
-            ProgressManager.markCompleted(currentLesson.id, finalTimeSpent);
+            ProgressManager.markCompleted(currentLesson.id, finalTimeSpent).catch(console.error);
             const activeEl = document.querySelector(`[data-lesson-id="${currentLesson.id}"]`);
             if (activeEl) {
                 activeEl.classList.add('completed');
@@ -838,7 +838,7 @@ const checkUnlockNext = () => {
                     const latestIsAtBottom = scrollArea.scrollHeight - scrollArea.scrollTop - scrollArea.clientHeight <= 10;
                     if (latestIsAtBottom) {
                         const finalTimeSpent = Math.floor((Date.now() - lessonStartTime) / 1000);
-                        ProgressManager.markCompleted(currentLesson.id, finalTimeSpent);
+                        ProgressManager.markCompleted(currentLesson.id, finalTimeSpent).catch(console.error);
                         const activeEl = document.querySelector(`[data-lesson-id="${currentLesson.id}"]`);
                         if (activeEl) {
                             activeEl.classList.add('completed');

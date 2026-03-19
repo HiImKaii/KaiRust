@@ -131,6 +131,61 @@ const appendTerminal = (html: string) => {
     }
 };
 
+// ---- Loading State ----
+let loadingSpinnerId: number | null = null;
+let currentLoadingMessage = '';
+
+const SPINNERS = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧'];
+let spinnerFrame = 0;
+
+const startLoading = (message: string) => {
+    currentLoadingMessage = message;
+    const log = document.getElementById('terminal-log');
+    if (!log) return;
+
+    // Remove any existing loading line
+    const existing = log.querySelector('.loading-line');
+    if (existing) existing.remove();
+
+    const line = document.createElement('div');
+    line.className = 'loading-line';
+    line.innerHTML = `<span class="log-info">${SPINNERS[0]} ${message}</span>`;
+    log.appendChild(line);
+    const container = log.parentElement;
+    if (container) container.scrollTop = container.scrollHeight;
+
+    loadingSpinnerId = window.setInterval(() => {
+        const el = document.querySelector('.loading-line .log-info');
+        if (el) {
+            spinnerFrame = (spinnerFrame + 1) % SPINNERS.length;
+            el.textContent = `${SPINNERS[spinnerFrame]} ${currentLoadingMessage}`;
+        }
+    }, 100);
+};
+
+const updateLoading = (message: string) => {
+    currentLoadingMessage = message;
+    const el = document.querySelector('.loading-line .log-info');
+    if (el) {
+        el.textContent = `${SPINNERS[spinnerFrame]} ${message}`;
+    }
+};
+
+const stopLoading = (finalMessage: string, isError = false) => {
+    if (loadingSpinnerId !== null) {
+        clearInterval(loadingSpinnerId);
+        loadingSpinnerId = null;
+    }
+    const log = document.getElementById('terminal-log');
+    if (log) {
+        const line = log.querySelector('.loading-line');
+        if (line) {
+            line.innerHTML = `<span class="${isError ? 'log-error' : 'log-success'}">✓ ${finalMessage}</span>`;
+        }
+    }
+    spinnerFrame = 0;
+};
+
 const escapeHtml = (text: string): string => {
     const div = document.createElement('div');
     div.textContent = text;
@@ -140,6 +195,28 @@ const escapeHtml = (text: string): string => {
 // ---- Backend Connection Config ----
 const BACKEND_WS_URL = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/run';
 let activeWs: WebSocket | null = null;
+
+// ---- Test Case Runner State ----
+interface TestCaseResult {
+    index: number;
+    input: string;
+    expected: string;
+    actual: string;
+    passed: boolean;
+    executionTimeMs?: number;
+}
+
+let pendingTestCases: any[] = [];
+let pendingTestResults: TestCaseResult[] = [];
+let pendingTestIndex = 0;
+let pendingLessonId: string | null = null;
+let pendingLessonStartTime = 0;
+
+// ---- Reconnect State ----
+const MAX_RECONNECT_ATTEMPTS = 3;
+const RECONNECT_DELAY_MS = 2000;
+let reconnectAttempts = 0;
+let isReconnecting = false;
 
 // ---- Update Technical Stats ----
 const updateStats = (memory: string, execTime: string, memoryLimit?: string, timeLimit?: string) => {
@@ -175,34 +252,53 @@ const startCodeExecution = (is_test: boolean) => {
     }
 
     clearTerminal();
-
     isSubmitting = is_test;
+
     const runBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
     const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
     if (runBtn) runBtn.disabled = true;
     if (submitBtn) submitBtn.disabled = true;
 
-    if (is_test) {
-        appendTerminal(`<span class="log-prompt">></span> Đang chấm bài...`);
+    if (is_test && currentLessonIndex >= 0) {
+        const lesson = flatLessons[currentLessonIndex];
+        const lessonAny = lesson as any;
+        const testCases = lessonAny.testCases || [];
+
+        if (lesson.type === 'practice' && testCases.length > 0) {
+            // Multi-test-case mode
+            pendingTestCases = testCases;
+            pendingTestResults = [];
+            pendingTestIndex = 0;
+            pendingLessonId = lesson.id;
+            pendingLessonStartTime = lessonStartTime;
+
+            appendTerminal(`<span class="log-prompt">></span> Đang chấm bài... (${testCases.length} test cases)`);
+            appendTerminal('<span class="log-info">────────────────────────────────</span>');
+
+            runNextTestCase(code);
+            return;
+        }
+    }
+
+    // Single run mode (not test or no test cases)
+    reconnectAttempts = 0; // Reset reconnect counter for new run
+    runSingleWithReconnect(code);
+};
+
+const runSingleWithReconnect = (code: string) => {
+    startLoading('Compile & Run...');
+
+    if (activeWs) {
+        activeWs.close();
+        activeWs = null;
     }
 
     const ws = new WebSocket(BACKEND_WS_URL);
     activeWs = ws;
+    let testCompleted = false;
 
     ws.onopen = () => {
-        let payload: any = { type: 'run', code: code, is_test };
-
-        if (is_test && currentLessonIndex >= 0) {
-            const lesson = flatLessons[currentLessonIndex];
-            if (lesson.type === 'practice') {
-                payload.lesson_id = lesson.id;
-                const lessonAny = lesson as any;
-                if (lessonAny.testCases && lessonAny.testCases.length > 0) {
-                    payload.stdin = lessonAny.testCases[0].input;
-                }
-            }
-        }
-
+        const payload: any = { type: 'run', code: code, is_test: false };
         ws.send(JSON.stringify(payload));
     };
 
@@ -210,60 +306,184 @@ const startCodeExecution = (is_test: boolean) => {
         try {
             const msg = JSON.parse(event.data);
             switch (msg.type) {
+                case 'compiling':
+                    updateLoading('Compiling...');
+                    break;
+                case 'running':
+                    updateLoading('Running...');
+                    break;
                 case 'compile_error':
+                    stopLoading('Compile failed', true);
                     appendTerminal(`<span style="color:#ef4444">${escapeHtml(msg.stderr)}</span>`);
+                    testCompleted = true;
                     break;
                 case 'stdout':
                     appendTerminal(escapeHtml(msg.data));
-                    if (isSubmitting && currentLessonIndex >= 0) {
-                        const lesson = flatLessons[currentLessonIndex];
-                        const lessonAny = lesson as any;
-                        const hasExpected = lessonAny.expectedOutput !== undefined ||
-                            (lessonAny.testCases && lessonAny.testCases[0]?.expectedOutput);
-                        if (lesson.type === 'practice' && hasExpected) {
-                            (window as any).__testOutput = ((window as any).__testOutput || '') + msg.data;
-                        }
-                    }
                     break;
                 case 'stderr':
                     appendTerminal(`<span style="color:#f59e0b">${escapeHtml(msg.data)}</span>`);
                     break;
                 case 'exit':
+                    stopLoading(`Done in ${msg.execution_time_ms}ms`);
                     const exitClass = msg.code === 0 ? 'log-info' : 'log-error';
-                    appendTerminal(`<span class="${exitClass}">[${msg.code}] ${msg.execution_time_ms}ms</span>`);
+                    appendTerminal(`<span class="${exitClass}">[exit ${msg.code}] ${msg.execution_time_ms}ms</span>`);
+                    updateStats(
+                        msg.memory_usage_kb ? `${msg.memory_usage_kb} KB` : '—',
+                        `${msg.execution_time_ms}ms`
+                    );
+                    testCompleted = true;
+                    break;
+                case 'error':
+                    stopLoading('Runtime error', true);
+                    appendTerminal(`<span class="log-error">Error: ${escapeHtml(msg.message)}</span>`);
+                    testCompleted = true;
+                    break;
+            }
+        } catch {
+            // ignore parse errors
+        }
+    };
 
-                    if (isSubmitting && currentLessonIndex >= 0) {
-                        const lesson = flatLessons[currentLessonIndex];
-                        if (lesson.type === 'practice') {
-                            const lessonAny = lesson as any;
-                            const expectedOutput = lessonAny.expectedOutput ||
-                                (lessonAny.testCases && lessonAny.testCases[0]?.expectedOutput);
-                            const testOutput = (window as any).__testOutput || '';
-                            const testPassed = msg.code === 0 && expectedOutput && testOutput.trim() === expectedOutput.trim();
+    ws.onerror = () => {
+        if (testCompleted) return;
+        stopLoading('Connection failed', true);
+        appendTerminal(`<span class="log-error">Lỗi kết nối Backend.</span>`);
+    };
 
-                            if (testPassed) {
-                                appendTerminal(`<br><span style="color:#22c55e;font-weight:bold">✓ Đạt</span>`);
-                                const timeSpent = lessonStartTime > 0 ? Math.floor((Date.now() - lessonStartTime) / 1000) : 0;
-                                ProgressManager.markCompleted(lesson.id, timeSpent);
-                                const activeEl = document.querySelector(`[data-lesson-id="${lesson.id}"]`);
-                                if (activeEl) {
-                                    activeEl.classList.add('passed');
-                                    activeEl.classList.add('completed');
-                                }
-                            } else {
-                                appendTerminal(`<br><span style="color:#ef4444;font-weight:bold">✗ Chưa đạt</span>`);
-                                if (expectedOutput) {
-                                    appendTerminal(`<span style="color:#f59e0b">Đúng: ${escapeHtml(expectedOutput)}</span>`);
-                                    appendTerminal(`<span style="color:#ef4444">Sai: ${escapeHtml(testOutput.trim())}</span>`);
-                                }
-                            }
-                            (window as any).__testOutput = '';
-                        }
-                    }
+    ws.onclose = () => {
+        activeWs = null;
+
+        if (!testCompleted) {
+            if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+                reconnectAttempts++;
+                appendTerminal(`<span class="log-warning">Mất kết nối, thử kết nối lại (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...</span>`);
+                setTimeout(() => runSingleWithReconnect(code), RECONNECT_DELAY_MS);
+                return;
+            } else {
+                appendTerminal(`<span class="log-error">Không thể kết nối sau ${MAX_RECONNECT_ATTEMPTS} lần thử.</span>`);
+                reconnectAttempts = 0;
+            }
+        } else {
+            reconnectAttempts = 0;
+        }
+
+        const currentRunBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
+        const currentSubmitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+        if (currentRunBtn) currentRunBtn.disabled = false;
+        if (currentSubmitBtn) currentSubmitBtn.disabled = false;
+    };
+};
+
+// ---- Run next test case in sequence ----
+const runNextTestCase = (code: string) => {
+    if (pendingTestIndex >= pendingTestCases.length) {
+        // All test cases done — show summary
+        showTestResultsSummary();
+        return;
+    }
+
+    const tc = pendingTestCases[pendingTestIndex];
+    const testNum = pendingTestIndex + 1;
+
+    appendTerminal(`<br><span class="log-info">[Test ${testNum}/${pendingTestCases.length}]</span>`);
+    if (tc.input) {
+        appendTerminal(`<span style="color:#64748b">Input:  ${escapeHtml(tc.input)}</span>`);
+    }
+
+    startLoading(`Compile & Run Test ${testNum}...`);
+
+    if (activeWs) {
+        activeWs.close();
+        activeWs = null;
+    }
+
+    const ws = new WebSocket(BACKEND_WS_URL);
+    activeWs = ws;
+    let testOutput = '';
+    let exitCode = -1;
+    let execTimeMs = 0;
+    let isCompiling = true;
+    let testCompleted = false;
+
+    ws.onopen = () => {
+        updateLoading(`Compile & Run Test ${testNum}...`);
+        const payload = {
+            type: 'run',
+            code: code,
+            is_test: false,
+            lesson_id: pendingLessonId,
+            stdin: tc.input || ''
+        };
+        ws.send(JSON.stringify(payload));
+    };
+
+    ws.onmessage = (event) => {
+        try {
+            const msg = JSON.parse(event.data);
+            switch (msg.type) {
+                case 'compiling':
+                    updateLoading(`Compiling...`);
+                    break;
+                case 'running':
+                    isCompiling = false;
+                    updateLoading(`Running...`);
+                    break;
+                case 'compile_error':
+                    stopLoading('Compile failed', true);
+                    appendTerminal(`<span style="color:#ef4444">Compile Error:\n${escapeHtml(msg.stderr)}</span>`);
+                    pendingTestResults.push({
+                        index: pendingTestIndex,
+                        input: tc.input || '',
+                        expected: tc.expectedOutput || '',
+                        actual: testOutput,
+                        passed: false
+                    });
+                    testCompleted = true;
+                    ws.close();
+                    break;
+                case 'stdout':
+                    testOutput += msg.data;
+                    break;
+                case 'stderr':
+                    appendTerminal(`<span style="color:#f59e0b">${escapeHtml(msg.data)}</span>`);
+                    break;
+                case 'exit':
+                    stopLoading(`Done in ${msg.execution_time_ms}ms`);
+                    exitCode = msg.code;
+                    execTimeMs = msg.execution_time_ms || 0;
+                    updateStats(
+                        msg.memory_usage_kb ? `${msg.memory_usage_kb} KB` : '—',
+                        `${execTimeMs}ms`
+                    );
+
+                    const expected = tc.expectedOutput || '';
+                    const actual = testOutput.trim();
+                    const passed = exitCode === 0 && actual === expected.trim();
+
+                    pendingTestResults.push({
+                        index: pendingTestIndex,
+                        input: tc.input || '',
+                        expected: expected,
+                        actual: actual,
+                        passed: passed,
+                        executionTimeMs: execTimeMs
+                    });
+
+                    appendTerminal(`<span class="${passed ? 'log-success' : 'log-error'}">[${passed ? 'PASS' : 'FAIL'}] ${execTimeMs}ms</span>`);
+                    testCompleted = true;
                     ws.close();
                     break;
                 case 'error':
+                    stopLoading('Runtime error', true);
                     appendTerminal(`<span class="log-error">Error: ${escapeHtml(msg.message)}</span>`);
+                    pendingTestResults.push({
+                        index: pendingTestIndex,
+                        input: tc.input || '',
+                        expected: tc.expectedOutput || '',
+                        actual: '',
+                        passed: false
+                    });
+                    testCompleted = true;
                     ws.close();
                     break;
             }
@@ -273,18 +493,98 @@ const startCodeExecution = (is_test: boolean) => {
     };
 
     ws.onerror = () => {
-        appendTerminal(`<span class="log-error">Lỗi kết nối Backend. Đảm bảo bạn có kết nối internet và server đang chạy.</span>`);
+        if (testCompleted) return;
+        stopLoading('Connection failed', true);
+        appendTerminal(`<span class="log-error">Lỗi kết nối Backend.</span>`);
     };
 
     ws.onclose = () => {
         activeWs = null;
-        setTimeout(() => {
-            const currentRunBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
-            const currentSubmitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
-            if (currentRunBtn) currentRunBtn.disabled = false;
-            if (currentSubmitBtn) currentSubmitBtn.disabled = false;
-        }, 1000);
+
+        if (!testCompleted) {
+            // Connection lost before test completed — attempt reconnect
+            if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+                reconnectAttempts++;
+                appendTerminal(`<span class="log-warning">Mất kết nối, thử kết nối lại (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...</span>`);
+                setTimeout(() => runNextTestCase(code), RECONNECT_DELAY_MS);
+                return;
+            } else {
+                // Max retries reached
+                appendTerminal(`<span class="log-error">Không thể kết nối sau ${MAX_RECONNECT_ATTEMPTS} lần thử.</span>`);
+                pendingTestResults.push({
+                    index: pendingTestIndex,
+                    input: tc.input || '',
+                    expected: tc.expectedOutput || '',
+                    actual: '',
+                    passed: false
+                });
+                reconnectAttempts = 0;
+            }
+        } else {
+            reconnectAttempts = 0; // Reset on successful completion
+        }
+
+        pendingTestIndex++;
+        setTimeout(() => runNextTestCase(code), 200);
     };
+};
+
+// ---- Show test results summary ----
+const showTestResultsSummary = () => {
+    const total = pendingTestResults.length;
+    const passed = pendingTestResults.filter(r => r.passed).length;
+    const failed = total - passed;
+    const allPassed = failed === 0;
+
+    appendTerminal('<span class="log-info">────────────────────────────────</span>');
+
+    // Summary header
+    if (allPassed) {
+        appendTerminal(`<br><span style="color:#22c55e;font-size:1.1rem;font-weight:bold">✓ ĐẠT TẤT CẢ ${passed}/${total} TEST CASES!</span>`);
+    } else {
+        appendTerminal(`<br><span style="color:#ef4444;font-size:1.1rem;font-weight:bold">✗ ĐẠT ${passed}/${total} TEST CASES</span>`);
+    }
+
+    // Failed test details
+    if (failed > 0) {
+        appendTerminal('<br><span style="color:#f59e0b;font-weight:bold">Chi tiết các test case thất bại:</span>');
+        pendingTestResults.forEach((r, i) => {
+            if (!r.passed) {
+                appendTerminal(`<br><span style="color:#64748b">--- Test ${i + 1} ---</span>`);
+                if (r.input) appendTerminal(`<span style="color:#94a3b8">Input:     ${escapeHtml(r.input)}</span>`);
+                appendTerminal(`<span style="color:#22c55e">Expected:  ${escapeHtml(r.expected)}</span>`);
+                appendTerminal(`<span style="color:#ef4444">Actual:    ${escapeHtml(r.actual) || '(no output)'}</span>`);
+            }
+        });
+    }
+
+    // Mark complete if all passed
+    if (allPassed && pendingLessonId) {
+        const timeSpent = pendingLessonStartTime > 0
+            ? Math.floor((Date.now() - pendingLessonStartTime) / 1000)
+            : 0;
+        ProgressManager.markCompleted(pendingLessonId, timeSpent).catch(console.error);
+
+        const activeEl = document.querySelector(`[data-lesson-id="${pendingLessonId}"]`);
+        if (activeEl) {
+            activeEl.classList.add('passed');
+            activeEl.classList.add('completed');
+        }
+    }
+
+    // Reset state
+    pendingTestCases = [];
+    pendingTestResults = [];
+    pendingTestIndex = 0;
+    pendingLessonId = null;
+    pendingLessonStartTime = 0;
+    reconnectAttempts = 0;
+
+    // Re-enable buttons
+    const currentRunBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
+    const currentSubmitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+    if (currentRunBtn) currentRunBtn.disabled = false;
+    if (currentSubmitBtn) currentSubmitBtn.disabled = false;
 };
 
 // ---- Lesson Selection (Practice) ----
