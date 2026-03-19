@@ -195,6 +195,7 @@ const escapeHtml = (text: string): string => {
 // ---- Backend Connection Config ----
 const BACKEND_WS_URL = (window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/ws/run';
 let activeWs: WebSocket | null = null;
+let activeWsId = 0; // Track WebSocket ID to prevent stale callbacks
 
 // ---- Test Case Runner State ----
 interface TestCaseResult {
@@ -293,6 +294,7 @@ const runSingleWithReconnect = (code: string) => {
         activeWs = null;
     }
 
+    const wsId = ++activeWsId;
     const ws = new WebSocket(BACKEND_WS_URL);
     activeWs = ws;
     let testCompleted = false;
@@ -303,6 +305,9 @@ const runSingleWithReconnect = (code: string) => {
     };
 
     ws.onmessage = (event) => {
+        // Ignore messages from stale WebSockets
+        if (wsId !== activeWsId) return;
+
         try {
             const msg = JSON.parse(event.data);
             switch (msg.type) {
@@ -324,6 +329,7 @@ const runSingleWithReconnect = (code: string) => {
                     appendTerminal(`<span style="color:#f59e0b">${escapeHtml(msg.data)}</span>`);
                     break;
                 case 'exit':
+                    if (wsId !== activeWsId) return; // Double-check after async
                     stopLoading(`Done in ${msg.execution_time_ms}ms`);
                     const exitClass = msg.code === 0 ? 'log-info' : 'log-error';
                     appendTerminal(`<span class="${exitClass}">[exit ${msg.code}] ${msg.execution_time_ms}ms</span>`);
@@ -345,12 +351,15 @@ const runSingleWithReconnect = (code: string) => {
     };
 
     ws.onerror = () => {
-        if (testCompleted) return;
+        if (testCompleted || wsId !== activeWsId) return;
         stopLoading('Connection failed', true);
         appendTerminal(`<span class="log-error">Lỗi kết nối Backend.</span>`);
     };
 
     ws.onclose = () => {
+        // Only process if this is still the active WebSocket
+        if (wsId !== activeWsId) return;
+
         activeWs = null;
 
         if (!testCompleted) {
@@ -398,6 +407,7 @@ const runNextTestCase = (code: string) => {
         activeWs = null;
     }
 
+    const wsId = ++activeWsId;
     const ws = new WebSocket(BACKEND_WS_URL);
     activeWs = ws;
     let testOutput = '';
@@ -419,6 +429,9 @@ const runNextTestCase = (code: string) => {
     };
 
     ws.onmessage = (event) => {
+        // Ignore messages from stale WebSockets
+        if (wsId !== activeWsId) return;
+
         try {
             const msg = JSON.parse(event.data);
             switch (msg.type) {
@@ -430,6 +443,7 @@ const runNextTestCase = (code: string) => {
                     updateLoading(`Running...`);
                     break;
                 case 'compile_error':
+                    if (wsId !== activeWsId) return;
                     stopLoading('Compile failed', true);
                     appendTerminal(`<span style="color:#ef4444">Compile Error:\n${escapeHtml(msg.stderr)}</span>`);
                     pendingTestResults.push({
@@ -449,6 +463,7 @@ const runNextTestCase = (code: string) => {
                     appendTerminal(`<span style="color:#f59e0b">${escapeHtml(msg.data)}</span>`);
                     break;
                 case 'exit':
+                    if (wsId !== activeWsId) return;
                     stopLoading(`Done in ${msg.execution_time_ms}ms`);
                     exitCode = msg.code;
                     execTimeMs = msg.execution_time_ms || 0;
@@ -475,6 +490,7 @@ const runNextTestCase = (code: string) => {
                     ws.close();
                     break;
                 case 'error':
+                    if (wsId !== activeWsId) return;
                     stopLoading('Runtime error', true);
                     appendTerminal(`<span class="log-error">Error: ${escapeHtml(msg.message)}</span>`);
                     pendingTestResults.push({
@@ -494,12 +510,14 @@ const runNextTestCase = (code: string) => {
     };
 
     ws.onerror = () => {
-        if (testCompleted) return;
+        if (testCompleted || wsId !== activeWsId) return;
         stopLoading('Connection failed', true);
         appendTerminal(`<span class="log-error">Lỗi kết nối Backend.</span>`);
     };
 
     ws.onclose = () => {
+        // Only process if this is still the active WebSocket
+        if (wsId !== activeWsId) return;
         activeWs = null;
 
         if (!testCompleted) {
