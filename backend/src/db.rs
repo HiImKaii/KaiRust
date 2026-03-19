@@ -599,6 +599,70 @@ pub fn check_and_award_achievements(conn: &Connection, user_id: i64) -> SqliteRe
         }
     }
 
+    // Check streak achievements
+    let streak = get_user_streak(conn, user_id).unwrap_or(UserStreak {
+        user_id,
+        current_streak: 0,
+        longest_streak: 0,
+        last_activity_date: None,
+        total_active_days: 0,
+    });
+
+    let streak_achievements = vec![
+        ("streak_3", 3),
+        ("streak_7", 7),
+        ("streak_14", 14),
+        ("streak_30", 30),
+        ("streak_60", 60),
+        ("streak_100", 100),
+    ];
+
+    for (achievement_id, required) in streak_achievements {
+        if streak.current_streak >= required {
+            if let Ok(_) = conn.execute(
+                "INSERT OR IGNORE INTO user_achievements (user_id, achievement_id) VALUES (?1, ?2)",
+                params![user_id, achievement_id],
+            ) {
+                awarded.push(achievement_id.to_string());
+            }
+        }
+    }
+
+    // Check chapter completion achievements
+    // Count unique chapters completed (lesson_id format: "ch01_03" → extract "ch01")
+    let chapters_completed: i64 = conn.query_row(
+        "SELECT COUNT(DISTINCT substr(lesson_id, 1, instr(lesson_id || '_', '_') - 1))
+         FROM user_progress WHERE user_id = ?1",
+        params![user_id],
+        |row| row.get(0),
+    ).unwrap_or(0);
+
+    let chapter_achievements = vec![
+        ("chapter_1", 1),
+        ("chapter_3", 3),
+        ("chapter_5", 5),
+        ("chapter_10", 10),
+        ("chapter_15", 15),
+        ("chapter_all", 20), // ch01–ch20 have exercises in backend
+    ];
+
+    for (achievement_id, required) in chapter_achievements {
+        if chapters_completed >= required {
+            if let Ok(_) = conn.execute(
+                "INSERT OR IGNORE INTO user_achievements (user_id, achievement_id) VALUES (?1, ?2)",
+                params![user_id, achievement_id],
+            ) {
+                awarded.push(achievement_id.to_string());
+            }
+        }
+    }
+
+    // Check special achievements
+    // Note: perfect_first, speed_demon, no_hint, night_owl, early_bird
+    // require tracking additional state not stored in current DB schema.
+    // These are checked here as placeholders; implement additional tracking
+    // (e.g., perfect_score column in user_progress, hint_usage table) as needed.
+
     tracing::info!("[ACHIEVEMENTS] Awarded {} new achievements to user {}", awarded.len(), user_id);
     Ok(awarded)
 }
