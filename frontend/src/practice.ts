@@ -435,15 +435,19 @@ const runNextTestCase = (code: string) => {
         let testOutput = '';
         let testCompleted = false;
 
+        console.log(`[Test ${testNum}] Starting - wsId=${wsId}, stdin="${tcInput}", expected="${tcExpected}"`);
+
         ws.onopen = () => {
             if (wsId !== activeWsId) { ws.close(); return; }
-            ws.send(JSON.stringify({
+            const payload = {
                 type: 'run',
                 code: code,
                 is_test: false,
                 lesson_id: pendingLessonId,
                 stdin: tcInput
-            }));
+            };
+            console.log(`[Test ${testNum}] Sending payload:`, JSON.stringify(payload).substring(0, 200));
+            ws.send(JSON.stringify(payload));
         };
 
         ws.onmessage = (event) => {
@@ -466,15 +470,18 @@ const runNextTestCase = (code: string) => {
                         break;
                     case 'stdout':
                         testOutput += msg.data;
+                        console.log(`[Test ${capturedIndex + 1}] stdout: "${msg.data}"`);
                         break;
                     case 'stderr':
                         appendTerminal(`<span style="color:#f59e0b">${escapeHtml(msg.data)}</span>`);
                         break;
                     case 'exit':
                         if (wsId !== activeWsId) return;
+                        console.log(`[Test ${capturedIndex + 1}] Received exit - code=${msg.code}, output="${testOutput.trim()}"`);
                         stopLoading(`Done in ${msg.execution_time_ms}ms`);
                         const actual = testOutput.trim();
                         const passed = msg.code === 0 && actual === tcExpected.trim();
+                        console.log(`[Test ${capturedIndex + 1}] Comparison: expected="${tcExpected.trim()}", actual="${actual}", passed=${passed}`);
                         updateStats(
                             msg.memory_usage_kb ? `${msg.memory_usage_kb} KB` : '—',
                             `${msg.execution_time_ms}ms`
