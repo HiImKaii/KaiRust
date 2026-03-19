@@ -373,11 +373,13 @@ const runSingleWithReconnect = (code: string) => {
                         `${msg.execution_time_ms}ms`
                     );
                     testCompleted = true;
+                    reenableButtons(); // Re-enable immediately on exit
                     break;
                 case 'error':
                     stopLoading('Runtime error', true);
                     appendTerminal(`<span class="log-error">Error: ${escapeHtml(msg.message)}</span>`);
                     testCompleted = true;
+                    reenableButtons(); // Re-enable immediately on runtime error
                     break;
             }
         } catch {
@@ -389,6 +391,7 @@ const runSingleWithReconnect = (code: string) => {
         if (testCompleted || wsId !== activeWsId) return;
         stopLoading('Connection failed', true);
         appendTerminal(`<span class="log-error">Lỗi kết nối Backend.</span>`);
+        reenableButtons(); // Re-enable immediately on connection error
     };
 
     ws.onclose = () => {
@@ -411,6 +414,7 @@ const runSingleWithReconnect = (code: string) => {
             reconnectAttempts = 0;
         }
 
+        // Always re-enable buttons as a safety net
         reenableButtons();
     };
 };
@@ -484,6 +488,7 @@ const runNextTestCase = (code: string) => {
                         appendTerminal(`<span style="color:#ef4444">${escapeHtml(msg.stderr)}</span>`);
                         pendingTestResults.push({ index: capturedIndex, input: tcInput, expected: tcExpected, actual: testOutput, passed: false });
                         testCompleted = true;
+                        reenableButtons(); // Re-enable immediately on compile error
                         ws.close();
                         break;
                     case 'stdout':
@@ -507,6 +512,7 @@ const runNextTestCase = (code: string) => {
                         pendingTestResults.push({ index: capturedIndex, input: tcInput, expected: tcExpected, actual, passed, executionTimeMs: msg.execution_time_ms });
                         appendTerminal(`<span class="${passed ? 'log-success' : 'log-error'}">[${passed ? 'PASS ✓' : 'FAIL ✗'}] ${msg.execution_time_ms}ms</span>`);
                         testCompleted = true;
+                        reenableButtons(); // Re-enable immediately on exit, before ws.close() fires
                         ws.close();
                         break;
                     case 'error':
@@ -515,6 +521,7 @@ const runNextTestCase = (code: string) => {
                         appendTerminal(`<span class="log-error">Error: ${escapeHtml(msg.message)}</span>`);
                         pendingTestResults.push({ index: capturedIndex, input: tcInput, expected: tcExpected, actual: '', passed: false });
                         testCompleted = true;
+                        reenableButtons(); // Re-enable immediately on runtime error
                         ws.close();
                         break;
                 }
@@ -525,6 +532,7 @@ const runNextTestCase = (code: string) => {
             if (testCompleted || wsId !== activeWsId) return;
             stopLoading('Connection failed', true);
             appendTerminal(`<span class="log-error">Lỗi kết nối Backend.</span>`);
+            reenableButtons(); // Re-enable immediately on connection error
         };
 
         ws.onclose = () => {
@@ -546,7 +554,10 @@ const runNextTestCase = (code: string) => {
                 reconnectAttempts = 0;
             }
 
-            // Move to next test after delay
+            // Always re-enable buttons as a safety net
+            reenableButtons();
+
+            // Move to next test after delay (only if not reconnecting)
             pendingTestIndex++;
             pendingRunTimeout = setTimeout(() => runNextTestCase(code), 100);
         };
