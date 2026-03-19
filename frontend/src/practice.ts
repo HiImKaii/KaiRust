@@ -217,7 +217,16 @@ let pendingLessonStartTime = 0;
 const MAX_RECONNECT_ATTEMPTS = 3;
 const RECONNECT_DELAY_MS = 2000;
 let reconnectAttempts = 0;
-let isReconnecting = false;
+let pendingRunTimeout: ReturnType<typeof setTimeout> | null = null;
+
+// Cancel any pending timeouts - call this when starting new execution
+const cancelPendingTimeouts = () => {
+    if (pendingRunTimeout) {
+        clearTimeout(pendingRunTimeout);
+        pendingRunTimeout = null;
+    }
+    reconnectAttempts = 0;
+};
 
 // ---- Update Technical Stats ----
 const updateStats = (memory: string, execTime: string, memoryLimit?: string, timeLimit?: string) => {
@@ -247,14 +256,20 @@ const startCodeExecution = (is_test: boolean) => {
     if (!editorInstance) return;
     const code = editorInstance.getValue();
 
+    // Cancel any pending timeouts and reconnect attempts
+    cancelPendingTimeouts();
+
+    // Force close any existing WebSocket
     if (activeWs) {
         activeWs.close();
         activeWs = null;
     }
+    activeWsId++; // Increment to invalidate all previous callbacks
 
     clearTerminal();
     isSubmitting = is_test;
 
+    // Disable buttons while running
     const runBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
     const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
     if (runBtn) runBtn.disabled = true;
@@ -366,7 +381,7 @@ const runSingleWithReconnect = (code: string) => {
             if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
                 reconnectAttempts++;
                 appendTerminal(`<span class="log-warning">Mất kết nối, thử kết nối lại (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...</span>`);
-                setTimeout(() => runSingleWithReconnect(code), RECONNECT_DELAY_MS);
+                pendingRunTimeout = setTimeout(() => runSingleWithReconnect(code), RECONNECT_DELAY_MS);
                 return;
             } else {
                 appendTerminal(`<span class="log-error">Không thể kết nối sau ${MAX_RECONNECT_ATTEMPTS} lần thử.</span>`);
@@ -495,7 +510,7 @@ const runNextTestCase = (code: string) => {
                 if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
                     reconnectAttempts++;
                     appendTerminal(`<span class="log-warning">Mất kết nối, thử lại (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...</span>`);
-                    setTimeout(() => runNextTestCase(code), RECONNECT_DELAY_MS);
+                    pendingRunTimeout = setTimeout(() => runNextTestCase(code), RECONNECT_DELAY_MS);
                     return;
                 } else {
                     appendTerminal(`<span class="log-error">Không kết nối được sau ${MAX_RECONNECT_ATTEMPTS} lần.</span>`);
@@ -506,8 +521,9 @@ const runNextTestCase = (code: string) => {
                 reconnectAttempts = 0;
             }
 
+            // Move to next test after delay
             pendingTestIndex++;
-            setTimeout(() => runNextTestCase(code), 100);
+            pendingRunTimeout = setTimeout(() => runNextTestCase(code), 100);
         };
     }, 100);
 };
