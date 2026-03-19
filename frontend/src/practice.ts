@@ -386,7 +386,6 @@ const runSingleWithReconnect = (code: string) => {
 // ---- Run next test case in sequence ----
 const runNextTestCase = (code: string) => {
     if (pendingTestIndex >= pendingTestCases.length) {
-        // All test cases done — show summary
         showTestResultsSummary();
         return;
     }
@@ -394,10 +393,12 @@ const runNextTestCase = (code: string) => {
     const tc = pendingTestCases[pendingTestIndex];
     const testNum = pendingTestIndex + 1;
     const isHidden = tc.hidden === true;
+    const tcInput = tc.input || '';
+    const tcExpected = tc.expectedOutput || '';
 
     appendTerminal(`<br><span class="log-info">[Test ${testNum}/${pendingTestCases.length}]${isHidden ? ' 🔒 (ẩn)' : ''}</span>`);
-    if (!isHidden && tc.input) {
-        appendTerminal(`<span style="color:#64748b">Input:  ${escapeHtml(tc.input)}</span>`);
+    if (!isHidden && tcInput) {
+        appendTerminal(`<span style="color:#64748b">Input:  ${escapeHtml(tcInput)}</span>`);
     }
 
     startLoading(`Compile & Run Test ${testNum}...`);
@@ -408,144 +409,107 @@ const runNextTestCase = (code: string) => {
     }
 
     const wsId = ++activeWsId;
-    const ws = new WebSocket(BACKEND_WS_URL);
-    activeWs = ws;
-    let testOutput = '';
-    let exitCode = -1;
-    let execTimeMs = 0;
-    let isCompiling = true;
-    let testCompleted = false;
+    const capturedIndex = pendingTestIndex;
 
-    ws.onopen = () => {
-        updateLoading(`Compile & Run Test ${testNum}...`);
-        const payload = {
-            type: 'run',
-            code: code,
-            is_test: false,
-            lesson_id: pendingLessonId,
-            stdin: tc.input || ''
+    // Delay to ensure old connection fully closes
+    setTimeout(() => {
+        if (wsId !== activeWsId) return;
+
+        const ws = new WebSocket(BACKEND_WS_URL);
+        activeWs = ws;
+        let testOutput = '';
+        let testCompleted = false;
+
+        ws.onopen = () => {
+            if (wsId !== activeWsId) { ws.close(); return; }
+            ws.send(JSON.stringify({
+                type: 'run',
+                code: code,
+                is_test: false,
+                lesson_id: pendingLessonId,
+                stdin: tcInput
+            }));
         };
-        ws.send(JSON.stringify(payload));
-    };
 
-    ws.onmessage = (event) => {
-        // Ignore messages from stale WebSockets
-        if (wsId !== activeWsId) return;
+        ws.onmessage = (event) => {
+            if (wsId !== activeWsId) return;
+            try {
+                const msg = JSON.parse(event.data);
+                switch (msg.type) {
+                    case 'compiling':
+                        updateLoading('Compiling...');
+                        break;
+                    case 'running':
+                        updateLoading('Running...');
+                        break;
+                    case 'compile_error':
+                        stopLoading('Compile failed', true);
+                        appendTerminal(`<span style="color:#ef4444">${escapeHtml(msg.stderr)}</span>`);
+                        pendingTestResults.push({ index: capturedIndex, input: tcInput, expected: tcExpected, actual: testOutput, passed: false });
+                        testCompleted = true;
+                        ws.close();
+                        break;
+                    case 'stdout':
+                        testOutput += msg.data;
+                        break;
+                    case 'stderr':
+                        appendTerminal(`<span style="color:#f59e0b">${escapeHtml(msg.data)}</span>`);
+                        break;
+                    case 'exit':
+                        if (wsId !== activeWsId) return;
+                        stopLoading(`Done in ${msg.execution_time_ms}ms`);
+                        const actual = testOutput.trim();
+                        const passed = msg.code === 0 && actual === tcExpected.trim();
+                        updateStats(
+                            msg.memory_usage_kb ? `${msg.memory_usage_kb} KB` : '—',
+                            `${msg.execution_time_ms}ms`
+                        );
+                        pendingTestResults.push({ index: capturedIndex, input: tcInput, expected: tcExpected, actual, passed, executionTimeMs: msg.execution_time_ms });
+                        appendTerminal(`<span class="${passed ? 'log-success' : 'log-error'}">[${passed ? 'PASS ✓' : 'FAIL ✗'}] ${msg.execution_time_ms}ms</span>`);
+                        testCompleted = true;
+                        ws.close();
+                        break;
+                    case 'error':
+                        if (wsId !== activeWsId) return;
+                        stopLoading('Runtime error', true);
+                        appendTerminal(`<span class="log-error">Error: ${escapeHtml(msg.message)}</span>`);
+                        pendingTestResults.push({ index: capturedIndex, input: tcInput, expected: tcExpected, actual: '', passed: false });
+                        testCompleted = true;
+                        ws.close();
+                        break;
+                }
+            } catch { /* ignore */ }
+        };
 
-        try {
-            const msg = JSON.parse(event.data);
-            switch (msg.type) {
-                case 'compiling':
-                    updateLoading(`Compiling...`);
-                    break;
-                case 'running':
-                    isCompiling = false;
-                    updateLoading(`Running...`);
-                    break;
-                case 'compile_error':
-                    if (wsId !== activeWsId) return;
-                    stopLoading('Compile failed', true);
-                    appendTerminal(`<span style="color:#ef4444">Compile Error:\n${escapeHtml(msg.stderr)}</span>`);
-                    pendingTestResults.push({
-                        index: pendingTestIndex,
-                        input: tc.input || '',
-                        expected: tc.expectedOutput || '',
-                        actual: testOutput,
-                        passed: false
-                    });
-                    testCompleted = true;
-                    ws.close();
-                    break;
-                case 'stdout':
-                    testOutput += msg.data;
-                    break;
-                case 'stderr':
-                    appendTerminal(`<span style="color:#f59e0b">${escapeHtml(msg.data)}</span>`);
-                    break;
-                case 'exit':
-                    if (wsId !== activeWsId) return;
-                    stopLoading(`Done in ${msg.execution_time_ms}ms`);
-                    exitCode = msg.code;
-                    execTimeMs = msg.execution_time_ms || 0;
-                    updateStats(
-                        msg.memory_usage_kb ? `${msg.memory_usage_kb} KB` : '—',
-                        `${execTimeMs}ms`
-                    );
+        ws.onerror = () => {
+            if (testCompleted || wsId !== activeWsId) return;
+            stopLoading('Connection failed', true);
+            appendTerminal(`<span class="log-error">Lỗi kết nối Backend.</span>`);
+        };
 
-                    const expected = tc.expectedOutput || '';
-                    const actual = testOutput.trim();
-                    const passed = exitCode === 0 && actual === expected.trim();
+        ws.onclose = () => {
+            if (wsId !== activeWsId) return;
+            activeWs = null;
 
-                    pendingTestResults.push({
-                        index: pendingTestIndex,
-                        input: tc.input || '',
-                        expected: expected,
-                        actual: actual,
-                        passed: passed,
-                        executionTimeMs: execTimeMs
-                    });
-
-                    appendTerminal(`<span class="${passed ? 'log-success' : 'log-error'}">[${passed ? 'PASS ✓' : 'FAIL ✗'}] ${execTimeMs}ms</span>`);
-                    testCompleted = true;
-                    ws.close();
-                    break;
-                case 'error':
-                    if (wsId !== activeWsId) return;
-                    stopLoading('Runtime error', true);
-                    appendTerminal(`<span class="log-error">Error: ${escapeHtml(msg.message)}</span>`);
-                    pendingTestResults.push({
-                        index: pendingTestIndex,
-                        input: tc.input || '',
-                        expected: tc.expectedOutput || '',
-                        actual: '',
-                        passed: false
-                    });
-                    testCompleted = true;
-                    ws.close();
-                    break;
-            }
-        } catch {
-            // ignore parse errors
-        }
-    };
-
-    ws.onerror = () => {
-        if (testCompleted || wsId !== activeWsId) return;
-        stopLoading('Connection failed', true);
-        appendTerminal(`<span class="log-error">Lỗi kết nối Backend.</span>`);
-    };
-
-    ws.onclose = () => {
-        // Only process if this is still the active WebSocket
-        if (wsId !== activeWsId) return;
-        activeWs = null;
-
-        if (!testCompleted) {
-            // Connection lost before test completed — attempt reconnect
-            if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
-                reconnectAttempts++;
-                appendTerminal(`<span class="log-warning">Mất kết nối, thử kết nối lại (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...</span>`);
-                setTimeout(() => runNextTestCase(code), RECONNECT_DELAY_MS);
-                return;
+            if (!testCompleted) {
+                if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+                    reconnectAttempts++;
+                    appendTerminal(`<span class="log-warning">Mất kết nối, thử lại (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...</span>`);
+                    setTimeout(() => runNextTestCase(code), RECONNECT_DELAY_MS);
+                    return;
+                } else {
+                    appendTerminal(`<span class="log-error">Không kết nối được sau ${MAX_RECONNECT_ATTEMPTS} lần.</span>`);
+                    pendingTestResults.push({ index: capturedIndex, input: tcInput, expected: tcExpected, actual: '', passed: false });
+                    reconnectAttempts = 0;
+                }
             } else {
-                // Max retries reached
-                appendTerminal(`<span class="log-error">Không thể kết nối sau ${MAX_RECONNECT_ATTEMPTS} lần thử.</span>`);
-                pendingTestResults.push({
-                    index: pendingTestIndex,
-                    input: tc.input || '',
-                    expected: tc.expectedOutput || '',
-                    actual: '',
-                    passed: false
-                });
                 reconnectAttempts = 0;
             }
-        } else {
-            reconnectAttempts = 0; // Reset on successful completion
-        }
 
-        pendingTestIndex++;
-        setTimeout(() => runNextTestCase(code), 200);
-    };
+            pendingTestIndex++;
+            setTimeout(() => runNextTestCase(code), 100);
+        };
+    }, 100);
 };
 
 // ---- Show test results summary ----
