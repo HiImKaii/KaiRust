@@ -228,6 +228,20 @@ const cancelPendingTimeouts = () => {
     reconnectAttempts = 0;
 };
 
+// Re-enable both buttons - called from multiple places to ensure they always get re-enabled
+const reenableButtons = () => {
+    const runBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
+    const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+    if (runBtn) {
+        runBtn.disabled = false;
+        runBtn.removeAttribute('data-running');
+    }
+    if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.removeAttribute('data-running');
+    }
+};
+
 // ---- Update Technical Stats ----
 const updateStats = (memory: string, execTime: string, memoryLimit?: string, timeLimit?: string) => {
     const memEl = document.querySelector('.highlight-blue');
@@ -272,8 +286,14 @@ const startCodeExecution = (is_test: boolean) => {
     // Disable buttons while running
     const runBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
     const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
-    if (runBtn) runBtn.disabled = true;
-    if (submitBtn) submitBtn.disabled = true;
+    if (runBtn) {
+        runBtn.disabled = true;
+        runBtn.setAttribute('data-running', 'true');
+    }
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('data-running', 'true');
+    }
 
     if (is_test && currentLessonIndex >= 0) {
         const lesson = flatLessons[currentLessonIndex];
@@ -391,10 +411,7 @@ const runSingleWithReconnect = (code: string) => {
             reconnectAttempts = 0;
         }
 
-        const currentRunBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
-        const currentSubmitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
-        if (currentRunBtn) currentRunBtn.disabled = false;
-        if (currentSubmitBtn) currentSubmitBtn.disabled = false;
+        reenableButtons();
     };
 };
 
@@ -411,8 +428,9 @@ const runNextTestCase = (code: string) => {
     const tcInput = tc.input || '';
     const tcExpected = tc.expectedOutput || '';
 
-    appendTerminal(`<br><span class="log-info">[Test ${testNum}/${pendingTestCases.length}]${isHidden ? ' 🔒 (ẩn)' : ''}</span>`);
-    if (!isHidden && tcInput) {
+    // Chỉ hiển thị test case visible
+    if (!isHidden) {
+        appendTerminal(`<br><span class="log-info">[Test ${testNum}/${pendingTestCases.length}]</span>`);
         appendTerminal(`<span style="color:#64748b">Input:  ${escapeHtml(tcInput)}</span>`);
     }
 
@@ -589,6 +607,9 @@ const showTestResultsSummary = () => {
     pendingTestIndex = 0;
     pendingLessonId = null;
     pendingLessonStartTime = 0;
+
+    // Always re-enable buttons when done
+    reenableButtons();
     reconnectAttempts = 0;
 
     // Re-enable buttons

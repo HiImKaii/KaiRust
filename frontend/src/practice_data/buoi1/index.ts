@@ -2,8 +2,17 @@
 
 import { Lesson } from '../../courses';
 
-const DEFAULT_CODE = `fn main() {
-    // Viết code ở đây
+// Code mẫu: đọc 2 số từ stdin
+const DEFAULT_CODE = `use std::io;
+
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let mut iter = input.split_whitespace();
+    let a: i32 = iter.next().unwrap().parse().unwrap();
+    let b: i32 = iter.next().unwrap().parse().unwrap();
+
+    // Viết code xử lý ở đây
 }
 `;
 
