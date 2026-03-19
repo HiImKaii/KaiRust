@@ -181,6 +181,8 @@ const stopLoading = (finalMessage: string, isError = false) => {
         const line = log.querySelector('.loading-line');
         if (line) {
             line.innerHTML = `<span class="${isError ? 'log-error' : 'log-success'}">✓ ${finalMessage}</span>`;
+            // Remove loading line after a short delay so user can see the final state
+            setTimeout(() => line.remove(), 500);
         }
     }
     spinnerFrame = 0;
@@ -214,9 +216,6 @@ let pendingLessonId: string | null = null;
 let pendingLessonStartTime = 0;
 
 // ---- Reconnect State ----
-const MAX_RECONNECT_ATTEMPTS = 3;
-const RECONNECT_DELAY_MS = 2000;
-let reconnectAttempts = 0;
 let pendingRunTimeout: ReturnType<typeof setTimeout> | null = null;
 
 // Cancel any pending timeouts - call this when starting new execution
@@ -225,7 +224,6 @@ const cancelPendingTimeouts = () => {
         clearTimeout(pendingRunTimeout);
         pendingRunTimeout = null;
     }
-    reconnectAttempts = 0;
 };
 
 // Re-enable both buttons - called from multiple places to ensure they always get re-enabled
@@ -270,7 +268,7 @@ const startCodeExecution = (is_test: boolean) => {
     if (!editorInstance) return;
     const code = editorInstance.getValue();
 
-    // Cancel any pending timeouts and reconnect attempts
+    // Cancel any pending timeouts
     cancelPendingTimeouts();
 
     // Force close any existing WebSocket
@@ -317,7 +315,6 @@ const startCodeExecution = (is_test: boolean) => {
     }
 
     // Single run mode (not test or no test cases)
-    reconnectAttempts = 0; // Reset reconnect counter for new run
     runSingleWithReconnect(code);
 };
 
@@ -395,26 +392,8 @@ const runSingleWithReconnect = (code: string) => {
     };
 
     ws.onclose = () => {
-        // Only process if this is still the active WebSocket
         if (wsId !== activeWsId) return;
-
         activeWs = null;
-
-        if (!testCompleted) {
-            if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
-                reconnectAttempts++;
-                appendTerminal(`<span class="log-warning">Mất kết nối, thử kết nối lại (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...</span>`);
-                pendingRunTimeout = setTimeout(() => runSingleWithReconnect(code), RECONNECT_DELAY_MS);
-                return;
-            } else {
-                appendTerminal(`<span class="log-error">Không thể kết nối sau ${MAX_RECONNECT_ATTEMPTS} lần thử.</span>`);
-                reconnectAttempts = 0;
-            }
-        } else {
-            reconnectAttempts = 0;
-        }
-
-        // Always re-enable buttons as a safety net
         reenableButtons();
     };
 };
@@ -544,24 +523,18 @@ const runNextTestCase = (code: string) => {
             activeWs = null;
 
             if (!testCompleted) {
-                if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
-                    reconnectAttempts++;
-                    appendTerminal(`<span class="log-warning">Mất kết nối, thử lại (${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})...</span>`);
-                    pendingRunTimeout = setTimeout(() => runNextTestCase(code), RECONNECT_DELAY_MS);
-                    return;
-                } else {
-                    appendTerminal(`<span class="log-error">Không kết nối được sau ${MAX_RECONNECT_ATTEMPTS} lần.</span>`);
-                    pendingTestResults.push({ index: capturedIndex, input: tcInput, expected: tcExpected, actual: '', passed: false });
-                    reconnectAttempts = 0;
-                }
-            } else {
-                reconnectAttempts = 0;
+                appendTerminal(`<span class="log-error">Kết nối bị đóng trước khi hoàn thành.</span>`);
+                pendingTestResults.push({ index: capturedIndex, input: tcInput, expected: tcExpected, actual: '', passed: false });
+                reenableButtons();
+                pendingTestIndex++;
+                pendingRunTimeout = setTimeout(() => runNextTestCase(code), 100);
+                return;
             }
 
             // Always re-enable buttons as a safety net
             reenableButtons();
 
-            // Move to next test after delay (only if not reconnecting)
+            // Move to next test after delay
             pendingTestIndex++;
             pendingRunTimeout = setTimeout(() => runNextTestCase(code), 100);
         };
@@ -575,31 +548,11 @@ const showTestResultsSummary = () => {
     const failed = total - passed;
     const allPassed = failed === 0;
 
-    appendTerminal('<span class="log-info">────────────────────────────────</span>');
-
     // Summary header
     if (allPassed) {
         appendTerminal(`<br><span style="color:#22c55e;font-size:1.1rem;font-weight:bold">✓ ĐẠT TẤT CẢ ${passed}/${total} TEST CASES!</span>`);
     } else {
         appendTerminal(`<br><span style="color:#ef4444;font-size:1.1rem;font-weight:bold">✗ ĐẠT ${passed}/${total} TEST CASES</span>`);
-    }
-
-    // Failed test details
-    if (failed > 0) {
-        appendTerminal('<br><span style="color:#f59e0b;font-weight:bold">Chi tiết các test case thất bại:</span>');
-        pendingTestResults.forEach((r, i) => {
-            if (!r.passed) {
-                const tc = pendingTestCases[i];
-                const isHidden = tc?.hidden === true;
-                const label = isHidden ? `🔒 Test ẩn ${i + 1}` : `Test ${i + 1}`;
-                appendTerminal(`<br><span style="color:#64748b">--- ${label} ---</span>`);
-                if (!isHidden && r.input) {
-                    appendTerminal(`<span style="color:#94a3b8">Input:     ${escapeHtml(r.input)}</span>`);
-                }
-                appendTerminal(`<span style="color:#22c55e">Expected:  ${escapeHtml(r.expected)}</span>`);
-                appendTerminal(`<span style="color:#ef4444">Actual:    ${escapeHtml(r.actual) || '(no output)'}</span>`);
-            }
-        });
     }
 
     // Mark complete if all passed
@@ -625,13 +578,6 @@ const showTestResultsSummary = () => {
 
     // Always re-enable buttons when done
     reenableButtons();
-    reconnectAttempts = 0;
-
-    // Re-enable buttons
-    const currentRunBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
-    const currentSubmitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
-    if (currentRunBtn) currentRunBtn.disabled = false;
-    if (currentSubmitBtn) currentSubmitBtn.disabled = false;
 };
 
 // ---- Lesson Selection (Practice) ----
