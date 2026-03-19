@@ -9,11 +9,13 @@
   --bg-cream: #fafaf9;
   --bg-soft: #f5f5f4;
   --bg-surface: #ffffff;
+  --bg-panel: #f8f8f8;
 
   --color-purple: #a67c52;
   --color-purple-light: #c4a484;
   --color-blue: #3b82f6;
   --color-blue-light: #60a5fa;
+  --color-green: #22c55e;
   --color-teal: #16a34a;
   --color-pink: #ec4899;
   --color-amber: #f59e0b;
@@ -55,11 +57,13 @@
   --bg-cream: #12121a;
   --bg-soft: #0f0f14;
   --bg-surface: #16161e;
+  --bg-panel: #1a1a24;
 
   --color-purple: #22c55e;
   --color-purple-light: #7b61ff;
   --color-blue: #7b61ff;
   --color-blue-light: #9d85ff;
+  --color-green: #22c55e;
   --color-teal: #22c55e;
   --color-pink: #ffd60a;
   --color-amber: #ffd60a;
@@ -1075,6 +1079,104 @@ code {
   background: var(--bg-absolute);
 }
 
+/* Editor Header with Tabs */
+.editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-subtle);
+  min-height: 42px;
+}
+
+.editor-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.editor-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.editor-tab svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.editor-tab.active {
+  color: var(--color-purple);
+  border-bottom-color: var(--color-purple);
+  background: var(--bg-absolute);
+}
+
+.editor-tab.active svg {
+  opacity: 1;
+}
+
+.editor-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Run/Submit Buttons */
+.btn-run,
+.btn-submit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-run {
+  background: var(--color-green);
+  color: #fff;
+}
+
+.btn-run:hover {
+  background: #0d9668;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-submit {
+  background: var(--color-purple);
+  color: #fff;
+}
+
+.btn-submit:hover {
+  background: #7c3aed;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.btn-run svg,
+.btn-submit svg {
+  flex-shrink: 0;
+}
+
+.btn-run.hidden,
+.btn-submit.hidden {
+  display: none;
+}
+
 /* Terminal - takes 1/6 height */
 .terminal-panel {
   flex: 1;
@@ -1083,6 +1185,51 @@ code {
   min-height: 80px;
   background: var(--bg-absolute);
   border-top: 1px solid var(--border-subtle);
+}
+
+/* Terminal Header */
+.terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-subtle);
+  min-height: 36px;
+}
+
+.terminal-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-purple);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.terminal-title svg {
+  opacity: 0.8;
+}
+
+.btn-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-clear:hover {
+  background: var(--bg-panel);
+  color: var(--color-pink);
 }
 
 .file-name {
@@ -1170,16 +1317,6 @@ code {
   overflow: hidden;
 }
 
-.terminal-title {
-  font-family: var(--font-sans);
-  color: var(--color-purple);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  padding: 10px 16px;
-  background: var(--bg-cream);
-  border-bottom: 1px solid var(--border-subtle);
-}
 
 .terminal-content {
   flex: 1;
