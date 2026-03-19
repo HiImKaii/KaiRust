@@ -16,5 +16,5 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd ~/KaiRust
-            git pull origin main
-            docker compose up -d --build frontend backend
+            git pull origin main || { echo "❌ git pull failed"; exit 1; }
+            docker compose up -d --build --force-recreate frontend backend
