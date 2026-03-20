@@ -169,7 +169,8 @@ async fn run_play(
 ) {
     let session_id = Uuid::new_v4().to_string();
     let work_dir = PathBuf::from(SANDBOX_DIR).join(&session_id);
-    let timeout_secs = DEFAULT_TIMEOUT;
+    let exec_timeout_secs = DEFAULT_TIMEOUT; // timeout cho phần thực thi
+    const STDIN_TIMEOUT_SECS: u64 = 600;    // timeout cho phần đợi stdin (10 phút)
 
     // Clone template
     let template_dir = "/tmp/kairust_template";
@@ -233,7 +234,6 @@ async fn run_play(
     }
 
     // Cấu hình linh hoạt Docker Volume Mount
-    let exec_start = Instant::now(); // timer bắt đầu sau khi compile xong
     let is_dood = std::env::var("SANDBOX_VOLUME_NAME").is_ok();
     
     let volume_arg = if let Ok(vol_name) = std::env::var("SANDBOX_VOLUME_NAME") {
@@ -276,13 +276,40 @@ async fn run_play(
         }
     };
 
-    let child_stdin = child.stdin.take();
+    let mut child_stdin = child.stdin.take();
     let stdout = child.stdout.take();
     let stderr = child.stderr.take();
 
-    // Đóng stdin ngay (play mode không có initial_stdin)
-    // → child process nhận EOF, read_line() không block
-    drop(child_stdin);
+    // Play mode: không có stdin ban đầu → đợi user gõ (tối đa 10 phút)
+    let _ = tx.send(WsServerMessage::WaitingForInput { timeout_secs: STDIN_TIMEOUT_SECS }).await;
+
+    match tokio::time::timeout(
+        std::time::Duration::from_secs(STDIN_TIMEOUT_SECS),
+        stdin_rx.recv(),
+    ).await {
+        Ok(Some(data)) => {
+            // User gửi stdin
+            if let Some(ref mut stdin) = child_stdin {
+                use tokio::io::AsyncWriteExt;
+                let _ = stdin.write_all(data.as_bytes()).await;
+                let _ = stdin.shutdown().await;
+            }
+            drop(child_stdin);
+        }
+        Ok(None) | Err(_) => {
+            // Timeout hoặc channel đóng
+            drop(child_stdin);
+            let _ = tx.send(WsServerMessage::StdinTimeout {
+                message: format!("Hết thời gian chờ input ({} phút)", STDIN_TIMEOUT_SECS / 60),
+            }).await;
+            let _ = tokio::fs::remove_dir_all(&work_dir).await;
+            return;
+        }
+    }
+
+    // Bắt đầu tính execution time TỪ ĐÂY (sau khi stdin đã được gửi)
+    let exec_start = Instant::now();
+    let _ = tx.send(WsServerMessage::Running).await;
 
     // Stream stdout
     let tx_stdout = tx.clone();
@@ -320,10 +347,10 @@ async fn run_play(
                 Err(_) => -1,
             }
         }
-        _ = tokio::time::sleep(std::time::Duration::from_secs(timeout_secs + 2)) => {
+        _ = tokio::time::sleep(std::time::Duration::from_secs(exec_timeout_secs + 2)) => {
             let _ = child.kill().await;
             let _ = tx.send(WsServerMessage::Error {
-                message: format!("Chương trình chạy quá thời gian (timeout {}s)", timeout_secs),
+                message: format!("Chương trình chạy quá thời gian (timeout {}s)", exec_timeout_secs),
             }).await;
             -1
         }

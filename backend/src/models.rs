@@ -66,6 +66,12 @@ pub enum WsServerMessage {
     /// Program started running
     #[serde(rename = "running")]
     Running,
+    /// Waiting for user to type stdin input (up to timeout_secs seconds)
+    #[serde(rename = "waiting_for_input")]
+    WaitingForInput { timeout_secs: u64 },
+    /// User did not provide stdin within timeout
+    #[serde(rename = "stdin_timeout")]
+    StdinTimeout { message: String },
     /// stdout output from program
     #[serde(rename = "stdout")]
     Stdout { data: String },

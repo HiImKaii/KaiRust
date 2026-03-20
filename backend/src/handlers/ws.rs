@@ -335,13 +335,10 @@ async fn run_interactive(
         }
     }
 
-    // Step 2: Run with streaming output inside Docker Sandbox
-    let exec_start = Instant::now(); // timer bắt đầu sau khi compile xong
-    let _ = tx.send(WsServerMessage::Running).await;
-
+    // Step 2: Chạy trong Docker Sandbox
     // Cấu hình linh hoạt Docker Volume Mount
     let is_dood = std::env::var("SANDBOX_VOLUME_NAME").is_ok();
-    
+
     let volume_arg = if let Ok(vol_name) = std::env::var("SANDBOX_VOLUME_NAME") {
         format!("{}:/tmp/kairust_sandbox:ro", vol_name)
     } else {
@@ -356,15 +353,15 @@ async fn run_interactive(
 
     let mut child = match Command::new("docker")
         .arg("run")
-        .arg("--rm")                           // Tự hủy container khi xong
-        .arg("-i")                             // Cho phép stdin pipe
-        .arg("--read-only")                    // Cấm ghi filesystem
-        .arg("--tmpfs").arg("/tmp:size=16m")   // /tmp nhỏ cho chương trình
-        .arg("--network").arg("none")          // Cấm truy cập mạng
-        .arg("--memory").arg("128m")           // Giới hạn RAM
-        .arg("--cpus").arg("0.5")              // Giới hạn CPU
-        .arg("--pids-limit").arg("64")         // Chặn fork bomb
-        .arg("-v").arg(&volume_arg)            // Bind mount volume
+        .arg("--rm")
+        .arg("-i")
+        .arg("--read-only")
+        .arg("--tmpfs").arg("/tmp:size=16m")
+        .arg("--network").arg("none")
+        .arg("--memory").arg("128m")
+        .arg("--cpus").arg("0.5")
+        .arg("--pids-limit").arg("64")
+        .arg("-v").arg(&volume_arg)
         .arg("debian:bookworm-slim")
         .arg(&binary_in_sandbox)
         .stdin(std::process::Stdio::piped())
@@ -388,28 +385,50 @@ async fn run_interactive(
     let stdout = child.stdout.take();
     let stderr = child.stderr.take();
 
-    // Gửi stdin ban đầu (từ test case)
+    // Thời gian chờ stdin tối đa: 10 phút (600 giây)
+    const STDIN_TIMEOUT_SECS: u64 = 600;
+
+    // Gửi stdin ban đầu (từ test case - Submit) HOẶC đợi stdin từ user (Run)
     if let Some(initial) = initial_stdin {
+        // Submit: stdin có sẵn → gửi ngay
         if let Some(ref mut stdin) = child_stdin {
             use tokio::io::AsyncWriteExt;
             let _ = stdin.write_all(initial.as_bytes()).await;
             let _ = stdin.shutdown().await;
         }
+        drop(child_stdin);
     } else {
-        // Không có stdin → đóng pipe ngay để read_line() nhận EOF thay vì block vĩnh viễn
-        drop(child_stdin.take());
-    }
+        // Run: stdin không có → đợi user gõ (tối đa 10 phút)
+        let _ = tx.send(WsServerMessage::WaitingForInput { timeout_secs: STDIN_TIMEOUT_SECS }).await;
 
-    // Stream stdin (từ WebSocket)
-    let stdin_task = tokio::spawn(async move {
-        if let Some(ref mut stdin) = child_stdin {
-            use tokio::io::AsyncWriteExt;
-            while let Some(data) = stdin_rx.recv().await {
-                let _ = stdin.write_all(data.as_bytes()).await;
-                let _ = stdin.flush().await;
+        match tokio::time::timeout(
+            std::time::Duration::from_secs(STDIN_TIMEOUT_SECS),
+            stdin_rx.recv(),
+        ).await {
+            Ok(Some(data)) => {
+                // User gửi stdin
+                if let Some(ref mut stdin) = child_stdin {
+                    use tokio::io::AsyncWriteExt;
+                    let _ = stdin.write_all(data.as_bytes()).await;
+                    let _ = stdin.shutdown().await;
+                }
+                drop(child_stdin);
+            }
+            Ok(None) | Err(_) => {
+                // Timeout hoặc channel đóng
+                drop(child_stdin);
+                let _ = tx.send(WsServerMessage::StdinTimeout {
+                    message: format!("Hết thời gian chờ input ({} phút)", STDIN_TIMEOUT_SECS / 60),
+                }).await;
+                let _ = tokio::fs::remove_dir_all(&work_dir).await;
+                return;
             }
         }
-    });
+    }
+
+    // Bắt đầu tính execution time TỪ ĐÂY (sau khi stdin đã được gửi)
+    let exec_start = Instant::now();
+    let _ = tx.send(WsServerMessage::Running).await;
 
     // Stream stdout
     let tx_stdout = tx.clone();
@@ -467,7 +486,6 @@ async fn run_interactive(
     // Wait for output tasks to finish
     let _ = stdout_task.await;
     let _ = stderr_task.await;
-    stdin_task.abort();
 
     let elapsed = exec_start.elapsed().as_millis() as u64;
 
@@ -475,7 +493,7 @@ async fn run_interactive(
         .send(WsServerMessage::Exit {
             code: exit_code,
             execution_time_ms: elapsed,
-            memory_usage_kb: 0, // Docker giới hạn memory 128m, tracking riêng nếu cần
+            memory_usage_kb: 0,
         })
         .await;
 

@@ -471,6 +471,12 @@ const startCodeExecution = (is_test: boolean) => {
                 case 'running':
                     appendTerminal(`<span class="log-info">Running...</span>`);
                     break;
+                case 'waiting_for_input':
+                    appendTerminal(`<span class="log-info">Chờ nhập STDIN... (tối đa ${Math.floor(msg.timeout_secs / 60)} phút)</span>`);
+                    break;
+                case 'stdin_timeout':
+                    appendTerminal(`<span class="log-error">${escapeHtml(msg.message)}</span>`);
+                    break;
                 case 'stdout':
                     appendTerminal(`<span class="log-success">${escapeHtml(msg.data)}</span>`);
                     // Lưu output để so sánh khi là bài tập
@@ -690,6 +696,13 @@ const setupInlineCodeRunners = () => {
                                 if (!output) {
                                     outputArea.innerHTML = `<span class="output-label">Output</span><span style="color:var(--text-muted)">(Không có output)</span>`;
                                 }
+                                ws.close();
+                                break;
+                            case 'waiting_for_input':
+                                outputArea.innerHTML = `<span class="output-label">Chờ nhập STDIN...</span><span class="output-info"> (tối đa ${Math.floor(msg.timeout_secs / 60)} phút)</span>`;
+                                break;
+                            case 'stdin_timeout':
+                                outputArea.innerHTML = `<span class="output-label">Error</span><span class="output-error">${escapeHtml(msg.message)}</span>`;
                                 ws.close();
                                 break;
                             case 'error':

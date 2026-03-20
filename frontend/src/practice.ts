@@ -120,6 +120,7 @@ const clearTerminal = () => {
     if (stdinInput) {
         stdinInput.value = '';
     }
+    backendWaitingForInput = false;
 };
 
 const appendTerminal = (html: string) => {
@@ -217,6 +218,7 @@ let pendingLessonStartTime = 0;
 
 // ---- Reconnect State ----
 let pendingRunTimeout: ReturnType<typeof setTimeout> | null = null;
+let backendWaitingForInput = false; // true khi backend đang đợi stdin từ user
 
 // Cancel any pending timeouts - call this when starting new execution
 const cancelPendingTimeouts = () => {
@@ -330,6 +332,7 @@ const runSingleWithReconnect = (code: string) => {
     const ws = new WebSocket(BACKEND_WS_URL);
     activeWs = ws;
     let testCompleted = false;
+    let waitingForInput = false; // true khi backend đang đợi stdin
 
     ws.onopen = () => {
         const payload: any = { type: 'run', code: code, is_test: false };
@@ -346,8 +349,23 @@ const runSingleWithReconnect = (code: string) => {
                 case 'compiling':
                     updateLoading('Compiling...');
                     break;
+                case 'waiting_for_input':
+                    waitingForInput = true;
+                    backendWaitingForInput = true;
+                    updateLoading(`Chờ nhập STDIN... (tối đa ${Math.floor(msg.timeout_secs / 60)} phút)`);
+                    break;
                 case 'running':
+                    waitingForInput = false;
+                    backendWaitingForInput = false;
                     updateLoading('Running...');
+                    break;
+                case 'stdin_timeout':
+                    waitingForInput = false;
+                    backendWaitingForInput = false;
+                    stopLoading('Hết thời gian chờ input', true);
+                    appendTerminal(`<span class="log-error">${escapeHtml(msg.message)}</span>`);
+                    testCompleted = true;
+                    reenableButtons();
                     break;
                 case 'compile_error':
                     stopLoading('Compile failed', true);
@@ -729,14 +747,17 @@ const setupStdinInput = () => {
     stdin.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             const val = stdin.value;
-            if (activeWs && activeWs.readyState === WebSocket.OPEN && !isSubmitting) {
+            if (activeWs && activeWs.readyState === WebSocket.OPEN && backendWaitingForInput) {
                 appendTerminal(`<span class="user-input">${escapeHtml(val)}</span>`);
                 activeWs.send(JSON.stringify({ type: 'stdin', data: val + '\n' }));
                 stdin.value = '';
+                backendWaitingForInput = false; // đã gửi stdin
             } else if (!activeWs) {
                 appendTerminal(`<span class="log-warning">Terminal: Chưa có tiến trình nào đang chạy để nhận STDIN.</span>`);
             } else if (isSubmitting) {
                 appendTerminal(`<span class="log-warning">Terminal: Đang trong quá trình tự động Chấm Điểm, không thể nhập liệu.</span>`);
+            } else if (!backendWaitingForInput) {
+                appendTerminal(`<span class="log-warning">Terminal: Chương trình không yêu cầu STDIN hoặc đã kết thúc.</span>`);
             }
         }
     });
