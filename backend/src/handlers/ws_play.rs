@@ -280,16 +280,9 @@ async fn run_play(
     let stdout = child.stdout.take();
     let stderr = child.stderr.take();
 
-    // Stream stdin from WebSocket
-    let stdin_task = tokio::spawn(async move {
-        if let Some(mut stdin) = child_stdin {
-            use tokio::io::AsyncWriteExt;
-            while let Some(data) = stdin_rx.recv().await {
-                let _ = stdin.write_all(data.as_bytes()).await;
-                let _ = stdin.flush().await;
-            }
-        }
-    });
+    // Đóng stdin ngay (play mode không có initial_stdin)
+    // → child process nhận EOF, read_line() không block
+    drop(child_stdin);
 
     // Stream stdout
     let tx_stdout = tx.clone();
@@ -342,7 +335,6 @@ async fn run_play(
 
     let _ = stdout_task.await;
     let _ = stderr_task.await;
-    stdin_task.abort();
 
     let elapsed = exec_start.elapsed().as_millis() as u64;
 

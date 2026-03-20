@@ -395,6 +395,9 @@ async fn run_interactive(
             let _ = stdin.write_all(initial.as_bytes()).await;
             let _ = stdin.shutdown().await;
         }
+    } else {
+        // Không có stdin → đóng pipe ngay để read_line() nhận EOF thay vì block vĩnh viễn
+        drop(child_stdin.take());
     }
 
     // Stream stdin (từ WebSocket)
