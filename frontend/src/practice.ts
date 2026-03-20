@@ -371,6 +371,7 @@ const runSingleWithReconnect = (code: string) => {
                     stopLoading('Compile failed', true);
                     appendTerminal(`<span style="color:#ef4444">${escapeHtml(msg.stderr)}</span>`);
                     testCompleted = true;
+                    reenableButtons();
                     break;
                 case 'stdout':
                     appendTerminal(escapeHtml(msg.data));
