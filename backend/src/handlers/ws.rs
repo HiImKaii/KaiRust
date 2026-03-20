@@ -263,17 +263,8 @@ async fn run_interactive(
         eprintln!("[DEBUG] is_test=true with stdin from frontend, skipping backend test code");
     }
 
-    // Compute hash for caching - include stdin if provided, so different test cases get different cache entries
-    let cache_key = if let Some(ref stdin_data) = initial_stdin {
-        // Include stdin in cache key to differentiate test cases
-        let mut hasher = sha2::Sha256::new();
-        hasher.update(code.as_bytes());
-        hasher.update(b"__STDIN__");
-        hasher.update(stdin_data.as_bytes());
-        format!("{:x}", hasher.finalize())
-    } else {
-        compute_code_hash(&code)
-    };
+    // Compute hash for caching - chỉ hash theo code, stdin không ảnh hưởng cache
+    let cache_key = compute_code_hash(&code);
 
     let _ = tokio::fs::write(src_dir.join("main.rs"), &code).await;
 
