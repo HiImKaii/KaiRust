@@ -73,6 +73,14 @@ pub fn get_exercise_limits(lesson_id: &str) -> ExerciseLimits {
         "ch03_05_ex6" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
         "ch03_05_ex7" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
         "ch03_05_ex8" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        // ch01 theory
+        "ch01_04"       => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        // ch01 exercise
+        "ch01_04_01"    => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch01_04_02"    => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch01_04_03"    => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch01_04_04"    => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
+        "ch01_04_05"    => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
         // ch04 - Using 1s for simplicity
         // ch04 theory
         "ch04_01" => ExerciseLimits { time_limit_secs: 1.0, memory_limit_mb: 256 },
@@ -350,6 +358,12 @@ pub fn get_test_code(lesson_id: &str) -> Option<&'static str> {
         "ch01_01"       => Some(include_str!("ch01/ch01_01.rs")),
         "ch01_02"       => Some(include_str!("ch01/ch01_02.rs")),
         "ch01_03"       => Some(include_str!("ch01/ch01_03.rs")),
+        "ch01_04"       => Some(include_str!("ch01/ch01_04.rs")),
+        "ch01_04_01"    => Some(include_str!("ch01/ch01_04_01.rs")),
+        "ch01_04_02"    => Some(include_str!("ch01/ch01_04_02.rs")),
+        "ch01_04_03"    => Some(include_str!("ch01/ch01_04_03.rs")),
+        "ch01_04_04"    => Some(include_str!("ch01/ch01_04_04.rs")),
+        "ch01_04_05"    => Some(include_str!("ch01/ch01_04_05.rs")),
         // ch02
         "ch02_01"       => Some(include_str!("ch02/ch02_01.rs")),
         "ch02_02"       => Some(include_str!("ch02/ch02_02.rs")),
