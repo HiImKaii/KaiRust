@@ -443,6 +443,15 @@ const startCodeExecution = (is_test: boolean) => {
                     payload.stdin = lessonAny.testCases[0].input;
                 }
             }
+        } else if (!is_test) {
+            // Run mode: auto-detect stdin usage
+            const hasStdin = /read_line|read_to_string|lines\(\)|bytes\(\)|read\(/.test(code);
+            if (hasStdin) {
+                // Ưu tiên lấy stdin từ ô nhập liệu, nếu rỗng thì auto newline
+                const stdinEl = document.getElementById('terminal-stdin') as HTMLInputElement | null;
+                const userStdin = stdinEl?.value?.trim() ?? '';
+                payload.stdin = userStdin || '\n';
+            }
         }
 
         // Send compile/run command
@@ -672,7 +681,13 @@ const setupInlineCodeRunners = () => {
                 let output = '';
 
                 ws.onopen = () => {
-                    ws.send(JSON.stringify({ type: 'run', code }));
+                    // Auto-detect stdin usage
+                    const hasStdin = /read_line|read_to_string|lines\(\)|bytes\(\)|read\(/.test(code);
+                    const payload: any = { type: 'run', code };
+                    if (hasStdin) {
+                        payload.stdin = '\n';
+                    }
+                    ws.send(JSON.stringify(payload));
                 };
 
                 ws.onmessage = (event) => {
@@ -699,7 +714,8 @@ const setupInlineCodeRunners = () => {
                                 ws.close();
                                 break;
                             case 'waiting_for_input':
-                                outputArea.innerHTML = `<span class="output-label">Chờ nhập STDIN...</span>`;
+                                outputArea.innerHTML = `<span class="output-label">Error</span><span class="output-error">Code cần STDIN nhưng không có dữ liệu đầu vào. Vui lòng dùng chức năng "Chạy" trong trang Luyện tập để nhập liệu.</span>`;
+                                ws.close();
                                 break;
                             case 'stdin_timeout':
                                 outputArea.innerHTML = `<span class="output-label">Error</span><span class="output-error">${escapeHtml(msg.message)}</span>`;
