@@ -28,7 +28,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>S = 1 + 2 + 3 + 4 + 5 = 15</p>
     `,
-    testCases: [{ input: '5', expectedOutput: '15' }],
+    testCases: [
+      { input: '5', expectedOutput: '15' },
+      { input: '1', expectedOutput: '1', hidden: true },
+      { input: '10', expectedOutput: '55', hidden: true },
+      { input: '100', expectedOutput: '5050', hidden: true },
+      { input: '1000000000', expectedOutput: '500000000500000000', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -52,7 +58,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>S = 1² + 2² + 3² = 1 + 4 + 9 = 14</p>
     `,
-    testCases: [{ input: '3', expectedOutput: '14' }],
+    testCases: [
+      { input: '3', expectedOutput: '14' },
+      { input: '1', expectedOutput: '1', hidden: true },
+      { input: '5', expectedOutput: '55', hidden: true },
+      { input: '10', expectedOutput: '385', hidden: true },
+      { input: '100', expectedOutput: '338350', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -76,7 +88,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Các số chia hết cho 3 từ 1 đến 10: 3 + 6 + 9 = 18</p>
     `,
-    testCases: [{ input: '10', expectedOutput: '18' }],
+    testCases: [
+      { input: '10', expectedOutput: '18' },
+      { input: '1', expectedOutput: '0', hidden: true },
+      { input: '3', expectedOutput: '3', hidden: true },
+      { input: '9', expectedOutput: '9', hidden: true },
+      { input: '100', expectedOutput: '1683', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -100,7 +118,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>S = 1 + 1/2 + 1/3 = 1 + 0.5 + 0.333... = 1.833</p>
     `,
-    testCases: [{ input: '3', expectedOutput: '1.833' }],
+    testCases: [
+      { input: '3', expectedOutput: '1.833' },
+      { input: '1', expectedOutput: '1.000', hidden: true },
+      { input: '2', expectedOutput: '1.500', hidden: true },
+      { input: '5', expectedOutput: '2.283', hidden: true },
+      { input: '10', expectedOutput: '2.929', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -122,7 +146,13 @@ export const buoi3_lessons: Lesson[] = [
         <tr><td>3</td><td>1.83</td></tr>
       </table>
     `,
-    testCases: [{ input: '3', expectedOutput: '1.83' }],
+    testCases: [
+      { input: '3', expectedOutput: '1.83' },
+      { input: '1', expectedOutput: '1.00', hidden: true },
+      { input: '2', expectedOutput: '1.50', hidden: true },
+      { input: '5', expectedOutput: '2.28', hidden: true },
+      { input: '10', expectedOutput: '2.93', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -146,7 +176,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>S = -1 + 2 - 3 + 4 = 2</p>
     `,
-    testCases: [{ input: '4', expectedOutput: '2' }],
+    testCases: [
+      { input: '4', expectedOutput: '2' },
+      { input: '1', expectedOutput: '-1', hidden: true },
+      { input: '2', expectedOutput: '1', hidden: true },
+      { input: '3', expectedOutput: '-2', hidden: true },
+      { input: '1000000000', expectedOutput: '500000000', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -170,7 +206,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>S = 2 + 4 + 6 = 12</p>
     `,
-    testCases: [{ input: '3', expectedOutput: '12' }],
+    testCases: [
+      { input: '3', expectedOutput: '12' },
+      { input: '1', expectedOutput: '2', hidden: true },
+      { input: '2', expectedOutput: '6', hidden: true },
+      { input: '5', expectedOutput: '30', hidden: true },
+      { input: '10', expectedOutput: '110', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -194,7 +236,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>S = 1 + 3 + 5 = 9</p>
     `,
-    testCases: [{ input: '3', expectedOutput: '9' }],
+    testCases: [
+      { input: '3', expectedOutput: '9' },
+      { input: '1', expectedOutput: '1', hidden: true },
+      { input: '2', expectedOutput: '4', hidden: true },
+      { input: '5', expectedOutput: '25', hidden: true },
+      { input: '10', expectedOutput: '100', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -218,7 +266,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>S = 1³ + 2³ + 3³ = 1 + 8 + 27 = 36</p>
     `,
-    testCases: [{ input: '3', expectedOutput: '36' }],
+    testCases: [
+      { input: '3', expectedOutput: '36' },
+      { input: '1', expectedOutput: '1', hidden: true },
+      { input: '2', expectedOutput: '9', hidden: true },
+      { input: '5', expectedOutput: '225', hidden: true },
+      { input: '10', expectedOutput: '3025', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -241,7 +295,13 @@ export const buoi3_lessons: Lesson[] = [
         <tr><td>0</td><td>1</td></tr>
       </table>
     `,
-    testCases: [{ input: '5', expectedOutput: '120' }],
+    testCases: [
+      { input: '5', expectedOutput: '120' },
+      { input: '0', expectedOutput: '1', hidden: true },
+      { input: '1', expectedOutput: '1', hidden: true },
+      { input: '10', expectedOutput: '3628800', hidden: true },
+      { input: '12', expectedOutput: '479001600', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -265,7 +325,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>2^3 = 8</p>
     `,
-    testCases: [{ input: '2 3', expectedOutput: '8' }],
+    testCases: [
+      { input: '2 3', expectedOutput: '8' },
+      { input: '0 0', expectedOutput: '1', hidden: true },
+      { input: '10 0', expectedOutput: '1', hidden: true },
+      { input: '2 10', expectedOutput: '1024', hidden: true },
+      { input: '100 0', expectedOutput: '1', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -288,7 +354,13 @@ export const buoi3_lessons: Lesson[] = [
         <tr><td>0</td><td>1</td></tr>
       </table>
     `,
-    testCases: [{ input: '123456789', expectedOutput: '9' }],
+    testCases: [
+      { input: '123456789', expectedOutput: '9' },
+      { input: '0', expectedOutput: '1', hidden: true },
+      { input: '5', expectedOutput: '1', hidden: true },
+      { input: '100', expectedOutput: '3', hidden: true },
+      { input: '999999999999999999', expectedOutput: '18', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -313,7 +385,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>1 + 2 + 3 + 4 + 1 = 11</p>
     `,
-    testCases: [{ input: '12341', expectedOutput: '11' }],
+    testCases: [
+      { input: '12341', expectedOutput: '11' },
+      { input: '0', expectedOutput: '0', hidden: true },
+      { input: '5', expectedOutput: '5', hidden: true },
+      { input: '999', expectedOutput: '27', hidden: true },
+      { input: '999999999999999999', expectedOutput: '18', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -337,7 +415,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Chữ số chẵn: 2, 4 → 2+4=6<br>Chữ số lẻ: 1, 3 → 1+3=4</p>
     `,
-    testCases: [{ input: '1234', expectedOutput: '6\n4' }],
+    testCases: [
+      { input: '1234', expectedOutput: '6\n4' },
+      { input: '0', expectedOutput: '0\n0', hidden: true },
+      { input: '2222', expectedOutput: '8\n0', hidden: true },
+      { input: '13579', expectedOutput: '0\n25', hidden: true },
+      { input: '999999999999999999', expectedOutput: '0\n162', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -359,7 +443,13 @@ export const buoi3_lessons: Lesson[] = [
         <tr><td>12111</td><td>1 4</td></tr>
       </table>
     `,
-    testCases: [{ input: '12111', expectedOutput: '1 4' }],
+    testCases: [
+      { input: '12111', expectedOutput: '1 4' },
+      { input: '0', expectedOutput: '1 0', hidden: true },
+      { input: '2468', expectedOutput: '4 0', hidden: true },
+      { input: '13579', expectedOutput: '0 5', hidden: true },
+      { input: '999999999999999999', expectedOutput: '0 18', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -383,7 +473,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Các chữ số nguyên tố: 2, 3, 5, 7 → 4 chữ số</p>
     `,
-    testCases: [{ input: '1234567', expectedOutput: '4' }],
+    testCases: [
+      { input: '1234567', expectedOutput: '4' },
+      { input: '0', expectedOutput: '0', hidden: true },
+      { input: '13579', expectedOutput: '5', hidden: true },
+      { input: '24680', expectedOutput: '1', hidden: true },
+      { input: '999999999999999999', expectedOutput: '9', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -408,7 +504,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>111222 có 3 chữ số lẻ (1,1,1) và 3 chữ số chẵn (2,2,2)</p>
     `,
-    testCases: [{ input: '111222', expectedOutput: 'YES' }],
+    testCases: [
+      { input: '111222', expectedOutput: 'YES' },
+      { input: '0', expectedOutput: 'NO', hidden: true },
+      { input: '1', expectedOutput: 'NO', hidden: true },
+      { input: '123456789', expectedOutput: 'NO', hidden: true },
+      { input: '222222', expectedOutput: 'YES', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -433,7 +535,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>6 = 2 + 2 + 2 → 3 số hạng (toàn số 2)<br>7 là số nguyên tố → 1 số hạng</p>
     `,
-    testCases: [{ input: '6', expectedOutput: '3' }],
+    testCases: [
+      { input: '6', expectedOutput: '3' },
+      { input: '7', expectedOutput: '1', hidden: true },
+      { input: '2', expectedOutput: '1', hidden: true },
+      { input: '4', expectedOutput: '2', hidden: true },
+      { input: '100', expectedOutput: '50', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -455,7 +563,13 @@ export const buoi3_lessons: Lesson[] = [
         <tr><td>3 2</td><td>100</td></tr>
       </table>
     `,
-    testCases: [{ input: '3 2', expectedOutput: '100' }],
+    testCases: [
+      { input: '3 2', expectedOutput: '100' },
+      { input: '1 2', expectedOutput: '2', hidden: true },
+      { input: '2 5', expectedOutput: '10', hidden: true },
+      { input: '5 7', expectedOutput: '10003', hidden: true },
+      { input: '1 100', expectedOutput: '-1', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -477,7 +591,13 @@ export const buoi3_lessons: Lesson[] = [
         <tr><td>3<br>3 5<br>2 1<br>4 2</td><td>Mishka</td></tr>
       </table>
     `,
-    testCases: [{ input: '3\n3 5\n2 1\n4 2', expectedOutput: 'Mishka' }],
+    testCases: [
+      { input: '3\n3 5\n2 1\n4 2', expectedOutput: 'Mishka' },
+      { input: '3\n1 1\n2 2\n3 3', expectedOutput: 'Friendship is magic! ^_^', hidden: true },
+      { input: '3\n6 1\n5 2\n4 3', expectedOutput: 'Chris', hidden: true },
+      { input: '1\n3 4', expectedOutput: 'Chris', hidden: true },
+      { input: '5\n1 2\n2 1\n3 3\n4 5\n6 1', expectedOutput: 'Mishka', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -500,7 +620,13 @@ export const buoi3_lessons: Lesson[] = [
         <tr><td>15</td><td>4 6</td></tr>
       </table>
     `,
-    testCases: [{ input: '14', expectedOutput: '4 4' }],
+    testCases: [
+      { input: '14', expectedOutput: '4 4' },
+      { input: '15', expectedOutput: '4 6', hidden: true },
+      { input: '1', expectedOutput: '0 1', hidden: true },
+      { input: '7', expectedOutput: '2 2', hidden: true },
+      { input: '1000000', expectedOutput: '285714 285716', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -548,7 +674,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Công thức: C(n-1, m-1) = (n-1)! / ((m-1)!*(n-m)!)</p>
     `,
-    testCases: [{ input: '6 3', expectedOutput: '10' }],
+    testCases: [
+      { input: '6 3', expectedOutput: '10' },
+      { input: '3 1', expectedOutput: '1', hidden: true },
+      { input: '5 2', expectedOutput: '10', hidden: true },
+      { input: '10 5', expectedOutput: '126', hidden: true },
+      { input: '20 10', expectedOutput: '92378', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -572,7 +704,13 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Công thức: C(n+m-1, m-1) hoặc C(n+m-1, n)</p>
     `,
-    testCases: [{ input: '3 2', expectedOutput: '6' }],
+    testCases: [
+      { input: '3 2', expectedOutput: '6' },
+      { input: '1 1', expectedOutput: '1', hidden: true },
+      { input: '5 1', expectedOutput: '1', hidden: true },
+      { input: '5 3', expectedOutput: '21', hidden: true },
+      { input: '10 5', expectedOutput: '1001', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -594,7 +732,13 @@ export const buoi3_lessons: Lesson[] = [
         <tr><td>3</td><td>6</td></tr>
       </table>
     `,
-    testCases: [{ input: '3', expectedOutput: '6' }],
+    testCases: [
+      { input: '3', expectedOutput: '6' },
+      { input: '1', expectedOutput: '1', hidden: true },
+      { input: '10', expectedOutput: '3628800', hidden: true },
+      { input: '15', expectedOutput: '1307674368000', hidden: true },
+      { input: '20', expectedOutput: '2432902008176640000', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -618,7 +762,14 @@ export const buoi3_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Công thức: n/5 + n/25 + n/125 + ... (lấy phần nguyên)</p>
     `,
-    testCases: [{ input: '200000', expectedOutput: '49998' }],
+    testCases: [
+      { input: '200000', expectedOutput: '49998' },
+      { input: '1', expectedOutput: '0', hidden: true },
+      { input: '5', expectedOutput: '1', hidden: true },
+      { input: '100', expectedOutput: '24', hidden: true },
+      { input: '1000000000', expectedOutput: '249999998', hidden: true },
+    ],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
 ];

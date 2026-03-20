@@ -28,7 +28,13 @@ export const buoi2_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Cho 3 mặt có diện tích S1, S2, S3. Gọi 3 cạnh là a, b, c. Ta có: a*b=S1, b*c=S2, c*a=S3. Tổng 12 cạnh = 4*(a+b+c).</p>
     `,
-    testCases: [{ input: '4 6 6', expectedOutput: '28' }],
+    testCases: [
+      { input: '4 6 6', expectedOutput: '28' },
+      { input: '4 2 3', expectedOutput: '26', hidden: true },
+      { input: '1 1 1', expectedOutput: '12', hidden: true },
+      { input: '100 100 10000', expectedOutput: '4800', hidden: true },
+      { input: '3 5 15', expectedOutput: '64', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -53,7 +59,13 @@ export const buoi2_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Mỗi domino phủ 2 ô. Tổng số ô là M*N. Số domino tối đa = (M*N)/2 (lấy phần nguyên).</p>
     `,
-    testCases: [{ input: '3 3', expectedOutput: '4' }],
+    testCases: [
+      { input: '3 3', expectedOutput: '4' },
+      { input: '2 4', expectedOutput: '4', hidden: true },
+      { input: '3 5', expectedOutput: '7', hidden: true },
+      { input: '1000000 2', expectedOutput: '1000000', hidden: true },
+      { input: '1 2', expectedOutput: '1', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -78,7 +90,13 @@ export const buoi2_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Số gạch cần theo chiều dài = ceil(n/a) = (n+a-1)/a. Số gạch cần theo chiều rộng = ceil(m/a) = (m+a-1)/a. Tổng = tích của hai số này.</p>
     `,
-    testCases: [{ input: '6 6 4', expectedOutput: '4' }],
+    testCases: [
+      { input: '6 6 4', expectedOutput: '4' },
+      { input: '3 3 2', expectedOutput: '4', hidden: true },
+      { input: '10 5 3', expectedOutput: '8', hidden: true },
+      { input: '7 4 2', expectedOutput: '16', hidden: true },
+      { input: '1000000000 1000000000 1000000000', expectedOutput: '1', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -108,7 +126,13 @@ export const buoi2_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Vị trí = số lần nhảy phải * a - số lần nhảy trái * b. Với k lần: nếu k chẵn, số lần phải = số lần trái = k/2; nếu k lẻ, số lần phải = k/2 + 1, số lần trái = k/2.</p>
     `,
-    testCases: [{ input: '5 2 3', expectedOutput: '8' }],
+    testCases: [
+      { input: '5 2 3', expectedOutput: '8' },
+      { input: '1 1 1', expectedOutput: '1', hidden: true },
+      { input: '10 5 5', expectedOutput: '20', hidden: true },
+      { input: '7 3 6', expectedOutput: '7', hidden: true },
+      { input: '1 1 2', expectedOutput: '0', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -133,7 +157,13 @@ export const buoi2_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Số bước tối thiểu cần thiết = |a| + |b|. Để đi được trong đúng s bước: s >= min_steps VÀ (s - min_steps) phải là số chẵn.</p>
     `,
-    testCases: [{ input: '5 5 11', expectedOutput: 'NO' }, { input: '-5 5 12', expectedOutput: 'YES' }],
+    testCases: [
+      { input: '5 5 11', expectedOutput: 'NO' },
+      { input: '-5 5 12', expectedOutput: 'YES' },
+      { input: '0 0 0', expectedOutput: 'YES', hidden: true },
+      { input: '3 4 5', expectedOutput: 'YES', hidden: true },
+      { input: '5 3 7', expectedOutput: 'NO', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -158,7 +188,13 @@ export const buoi2_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>So sánh giá của 2 chai 1 lít (2*a) với giá của 1 chai 2 lít (b). Chọn loại chai rẻ hơn để tối ưu chi phí.</p>
     `,
-    testCases: [{ input: '3 1 3', expectedOutput: '3' }],
+    testCases: [
+      { input: '3 1 3', expectedOutput: '3' },
+      { input: '1 5 1', expectedOutput: '5', hidden: true },
+      { input: '2 100 50', expectedOutput: '50', hidden: true },
+      { input: '10 1 100', expectedOutput: '10', hidden: true },
+      { input: '5 10 5', expectedOutput: '25', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -183,7 +219,13 @@ export const buoi2_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Luôn dùng đồng xu có mệnh giá lớn nhất có thể (tối đa là n và không vượt quá S). Số lượng đồng xu = S/n (lấy phần nguyên) + phần dư (nếu có).</p>
     `,
-    testCases: [{ input: '6 16', expectedOutput: '3' }],
+    testCases: [
+      { input: '6 16', expectedOutput: '3' },
+      { input: '10 15', expectedOutput: '2', hidden: true },
+      { input: '1 100', expectedOutput: '100', hidden: true },
+      { input: '100 500', expectedOutput: '5', hidden: true },
+      { input: '1000 1234', expectedOutput: '8', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -208,7 +250,13 @@ export const buoi2_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Dùng thuật toán greedy: luôn dùng mệnh giá lớn nhất có thể trước. 125 = 100 + 20 + 5 → 3 tờ.</p>
     `,
-    testCases: [{ input: '125', expectedOutput: '3' }],
+    testCases: [
+      { input: '125', expectedOutput: '3' },
+      { input: '1', expectedOutput: '1', hidden: true },
+      { input: '500', expectedOutput: '5', hidden: true },
+      { input: '1000000000', expectedOutput: '10000000', hidden: true },
+      { input: '999', expectedOutput: '14', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -233,7 +281,13 @@ export const buoi2_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Số bước tối thiểu = ceil(n/2) (vì dùng toàn 2 bước). Tìm số bước nhỏ nhất >= min_steps và là bội của m. Nếu không có, in -1.</p>
     `,
-    testCases: [{ input: '10 2', expectedOutput: '6' }],
+    testCases: [
+      { input: '10 2', expectedOutput: '6' },
+      { input: '1 2', expectedOutput: '1', hidden: true },
+      { input: '3 4', expectedOutput: '-1', hidden: true },
+      { input: '7 5', expectedOutput: '5', hidden: true },
+      { input: '10000 10', expectedOutput: '5000', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -262,7 +316,13 @@ export const buoi2_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Các tuyến đường có thể: 2*(d1+d2), d1+d2+d3, 2*(d1+d3), 2*(d2+d3). Chọn min của 4 giá trị này.</p>
     `,
-    testCases: [{ input: '10 20 30', expectedOutput: '60' }, { input: '1 3 2', expectedOutput: '6' }],
+    testCases: [
+      { input: '10 20 30', expectedOutput: '60' },
+      { input: '1 3 2', expectedOutput: '6' },
+      { input: '5 5 5', expectedOutput: '20', hidden: true },
+      { input: '100 200 300', expectedOutput: '600', hidden: true },
+      { input: '1 1 1', expectedOutput: '4', hidden: true },
+    ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
   },
@@ -287,7 +347,14 @@ export const buoi2_lessons: Lesson[] = [
       <h3>Giải thích</h3>
       <p>Tổng tiền = k * (1 + 2 + ... + w) = k * w * (w+1) / 2. Số tiền cần mượn = max(0, total - n).</p>
     `,
-    testCases: [{ input: '3 17 4', expectedOutput: '13' }],
+    testCases: [
+      { input: '3 17 4', expectedOutput: '13' },
+      { input: '3 30 4', expectedOutput: '0' },
+      { input: '1 100 1', expectedOutput: '0', hidden: true },
+      { input: '1 0 1', expectedOutput: '1', hidden: true },
+      { input: '10 50 5', expectedOutput: '100', hidden: true },
+    ],
     isExercise: true,
+    defaultCode: DEFAULT_CODE,
   },
 ];
