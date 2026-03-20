@@ -1,3 +1,25 @@
+                                     Internet
+                                        |
+                          Cloudflare Tunnel (public access)
+                                        |
+                                     Caddy (HTTPS reverse proxy)
+                                        |
+               +------------------------+------------------------+
+               |                                                 |
+          Port 80/443                                     Port 3001
+               |                                                 |
+      +--------v--------+                             +----------v---------+
+      |    Frontend     |                             |   Backend        |
+      |   (Vite/Nginx) | <-- REST/WebSocket --------> |   (Rust/Axum)   |
+      |    Port 80     |                             |   Port 3001     |
+      +--------+-------+                             +--------+--------+
+               |                                                 |
+               |                                         +------v--------+
+               |                                         |   Code Executor|
+               |                                         | (Docker Sandbox)|
+               |                                         +---------------+
+
+
 # KaiRust - Học Lập Trình Rust Trực Tuyến
 
 KaiRust là một nền tảng học Rust trực tuyến với giao diện bài tập theo phong cách LeetCode, cho phép người dùng viết code Rust trực tiếp trên trình duyệt và nộp bài để kiểm tra.
@@ -10,14 +32,14 @@ KaiRust là một nền tảng học Rust trực tuyến với giao diện bài 
 4. [Cấu Trúc Dự Án](#cấu-trúc-dự-án)
 5. [Công Nghệ Sử Dụng](#công-nghệ-sử-dụng)
 6. [Cài Đặt](#cài-đặt)
-   - [Yêu Cầu Hệ Thống](#yêu-cầu-hệ-thống)
-   - [Cài Đặt Môi Trường Phát Triển](#cài-đặt-môi-trường-phát-triển)
-   - [Chạy Trên Máy Ảo (Docker)](#chạy-trên-máy-ảo-docker)
+    - [Yêu Cầu Hệ Thống](#yêu-cầu-hệ-thống)
+    - [Cài Đặt Môi Trường Phát Triển](#cài-đặt-môi-trường-phát-triển)
+    - [Chạy Trên Máy Ảo (Docker)](#chạy-trên-máy-ảo-docker)
 7. [Hướng Dẫn Sử Dụng](#hướng-dẫn-sử-dụng)
-   - [Đăng Nhập](#đăng-nhập)
-   - [Học Lý Thuyết](#học-lý-thuyết)
-   - [Làm Bài Tập Thực Hành](#làm-bài-tập-thực-hành)
-   - [Nộp Bài Và Chấm Điểm](#nộp-bài-và-chấm-điểm)
+    - [Đăng Nhập](#đăng-nhập)
+    - [Học Lý Thuyết](#học-lý-thuyết)
+    - [Làm Bài Tập Thực Hành](#làm-bài-tập-thực-hành)
+    - [Nộp Bài Và Chấm Điểm](#nộp-bài-và-chấm-điểm)
 8. [Cấu Trúc Bài Tập](#cấu-trúc-bài-tập)
 9. [Quy Trình Chấm Bài](#quy-trình-chấm-bài)
 10. [Triển Khai Sản Xuất](#triển-khai-sản-xuất)
@@ -65,40 +87,14 @@ Dự án nhắm đến việc giúp người học tiếp cận Rust một cách
 
 ## Kiến Trúc Hệ Thống
 
-```
-                              Internet
-                                 |
-                                 v
-                    +------------------------+
-                    |   Cloudflare Tunnel    |
-                    |   (Public Access)      |
-                    +------------------------+
-                                 |
-                                 v
-                    +------------------------+
-                    |   Caddy Reverse Proxy  |
-                    |   (HTTPS + HTTP/WS)   |
-                    +------------------------+
-                       |                |
-               Port 80/443          Port 8080
-                       |                |
-            +----------v--------+     |
-            |    Frontend       |     |
-            |    (Vite/Nginx)   |     |
-            |    Port 80        |     |
-            +------------------+     |
-                                        |
-                              +---------v---------+
-                              |   Backend         |
-                              |   (Rust/Axum)     |
-                              |   Port 3001       |
-                              +------------------+
-                                        |
-                              +---------v---------+
-                              |  Code Executor    |
-                              |  (Docker Sandbox)|
-                              |  + Rust Compiler |
-                              +------------------+
+```mermaid
+graph TD
+    A[Internet] --> B[Cloudflare Tunnel<br/>(Public Access)]
+    B --> C[Caddy<br/>(HTTPS Reverse Proxy)]
+    C --> D[Frontend<br/>(Vite/Nginx)<br/>Port 80]
+    C --> E[Backend<br/>(Rust/Axum)<br/>Port 3001]
+    D -->|REST/WebSocket| E
+    E --> F[Code Executor<br/>(Docker Sandbox)]
 ```
 
 ### Thành Phần Chính
@@ -296,10 +292,10 @@ Khi nộp bài, hệ thống sẽ:
 2. Chạy với tất cả test case (bất kỳ dòng nào cũng được chạy)
 3. So sánh output với expected output
 4. Hiển thị kết quả:
-   - **Accepted**: Tất cả test case đều đúng
-   - **Wrong Answer**: Có test case sai
-   - **Time Limit Exceeded**: Chạy quá thời gian cho phép
-   - **Compilation Error**: Lỗi biên dịch
+    - **Accepted**: Tất cả test case đều đúng
+    - **Wrong Answer**: Có test case sai
+    - **Time Limit Exceeded**: Chạy quá thời gian cho phép
+    - **Compilation Error**: Lỗi biên dịch
 
 ---
 
@@ -357,64 +353,64 @@ Mỗi bài tập được định nghĩa với các trường sau:
 
 ```
 Người dùng bấm "Nộp bài"
-           |
-           v
+            |
+            v
 Frontend gửi WebSocket message
 (type="run", code, lesson_id, is_test=true)
-           |
-           v
+            |
+            v
 Backend nhận được yêu cầu
-           |
-    +------v-------+
-    | Tạo workspace |
-    | tạm (session) |
-    +------v-------+
-           |
-    +------v-------+
-    | Ghi code vào |
-    | src/main.rs  |
-    +------v-------+
-           |
-    +------v-------+
-    | Thêm test    |
-    | code (nếu có)|
-    +------v-------+
-           |
-    +------v-------+
-    | Cargo build  |
-    | --release    |
-    +------+-------+
-           |
-     +-----+-----+
-     | Compile   |
-     | Error?    |
-     +-----+-----+
-      Yes |  No
-          v
-    +------v-------+
-    | Backend trả |
-    | về lỗi biên |
-    | dịch (stderr)|
-    +------v-------+
-           |
-    +------v-------+
-    | Docker run   |
-    | trong sandbox|
-    | (isolated)   |
-    +------v-------+
-           |
-    +------v-------+
-    | So sánh      |
-    | output với   |
-    | expected     |
-    +------+-------+
-           |
-     +-----+-----+
-     | Passed?   |
-     +-----+-----+
-      Yes |  No
-          v        v
-    Accepted   Wrong Answer
+            |
+     +------v-------+
+     | Tạo workspace |
+     | tạm (session) |
+     +------v-------+
+            |
+     +------v-------+
+     | Ghi code vào |
+     | src/main.rs  |
+     +------v-------+
+            |
+     +------v-------+
+     | Thêm test    |
+     | code (nếu có)|
+     +------v-------+
+            |
+     +------v-------+
+     | Cargo build  |
+     | --release    |
+     +------+-------+
+            |
+      +-----+-----+
+      | Compile   |
+      | Error?    |
+      +-----+-----+
+       Yes |  No
+           v
+     +------v-------+
+     | Backend trả |
+     | về lỗi biên |
+     | dịch (stderr)|
+     +------v-------+
+            |
+     +------v-------+
+     | Docker run   |
+     | trong sandbox|
+     | (isolated)   |
+     +------v-------+
+            |
+     +------v-------+
+     | So sánh      |
+     | output với   |
+     | expected     |
+     +------+-------+
+            |
+      +-----+-----+
+      | Passed?   |
+      +-----+-----+
+       Yes |  No
+           v        v
+     Accepted   Wrong Answer
 ```
 
 ### Giới Hạn Sandbox
@@ -438,24 +434,24 @@ Container Docker chạy code người dùng với các giới hạn:
 ### Cấu Hình Domain
 
 1. **Sử dụng DuckDNS** (miễn phí):
-   - Tạo tài khoản tại https://www.duckdns.org
-   - Tạo subdomain (vd: kairust.duckdns.org)
-   - Lấy token API
+    - Tạo tài khoản tại https://www.duckdns.org
+    - Tạo subdomain (vd: kairust.duckdns.org)
+    - Lấy token API
 
 2. **Cấu Hình Caddy**:
-   Chỉnh sửa `Caddyfile`:
-   ```
-   :8080 {
-       reverse_proxy frontend:80
-       reverse_proxy /ws/* backend:3001
-   }
-   ```
+    Chỉnh sửa `Caddyfile`:
+    ```
+    :8080 {
+        reverse_proxy frontend:80
+        reverse_proxy /ws/* backend:3001
+    }
+    ```
 
 3. **Cấu Hình Cloudflare Tunnel**:
-   Nếu không có domain, có thể sử dụng Cloudflare Tunnel:
-   ```bash
-   cloudflared tunnel --url http://caddy:8080
-   ```
+    Nếu không có domain, có thể sử dụng Cloudflare Tunnel:
+    ```bash
+    cloudflared tunnel --url http://caddy:8080
+    ```
 
 ### Cấu Hình SSL/TLS
 

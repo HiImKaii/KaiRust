@@ -2,13 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-After edit any file in this project, update CLAUDE.md file.
+After editing any file in this project, update CLAUDE.md accordingly to keep it accurate.
 
 ## Project Overview
 
 KaiRust is an online Rust learning platform with two learning modes:
-- **Theory/Course Mode** (`/`): Structured curriculum (ch01–ch23, appendix, final project) with free-run code editor
-- **Practice Mode** (`/practice`): Exercise-based curriculum with automated test case grading
+- **Theory/Course Mode** (`/`): Structured curriculum (ch01–ch23, final_project, appendix) with a free-run code editor
+- **Practice Mode** (`/practice`): Exercise-based curriculum (ch01–ch20 exercises + ch28 28Tech curriculum) with automated test case grading
 
 Users write Rust code in a browser-based Monaco Editor, submit it, and the backend compiles and runs it in an isolated Docker sandbox for automated grading.
 
@@ -23,11 +23,11 @@ Users write Rust code in a browser-based Monaco Editor, submit it, and the backe
                                        |
               +------------------------+------------------------+
               |                                                 |
-         Port 80/443                                     Port 8080
+         Port 80/443                                     Port 3001
               |                                                 |
      +--------v--------+                             +----------v---------+
      |    Frontend     |                             |   Backend        |
-     |   (Vite/Nginx) | <-- REST/WebSocket -------> |   (Rust/Axum)   |
+     |   (Vite/Nginx) | <-- REST/WebSocket --------> |   (Rust/Axum)   |
      |    Port 80     |                             |   Port 3001     |
      +--------+-------+                             +--------+--------+
               |                                                 |
@@ -39,7 +39,7 @@ Users write Rust code in a browser-based Monaco Editor, submit it, and the backe
 
 The backend uses **template pre-compilation** (compiles a base Rust project at startup) and **binary caching** (SHA256 of code → cached compiled binary) to minimize cold-start latency.
 
-> **Note:** `backend/Cargo.toml` uses `edition = "2024"` (unstable at time of writing — requires nightly Rust). The stable alternative is `edition = "2021"`.
+> **Note:** `backend/Cargo.toml` uses `edition = "2024"` (unstable — requires nightly Rust).
 
 ## Common Commands
 
@@ -47,6 +47,7 @@ The backend uses **template pre-compilation** (compiles a base Rust project at s
 ```bash
 cd frontend
 npm run dev          # Dev server at http://localhost:5173 (proxies /ws, /api to backend)
+npm run dev:admin    # Dev server for admin SPA at http://localhost:5173
 npm run build        # Build both SPAs (theory → dist/, admin → dist-admin/)
 npm run build:admin  # Build admin React SPA only → dist-admin/
 npm run preview      # Preview production build
@@ -88,55 +89,62 @@ docker-compose down              # Stop all services
 ```
 KaiRust/
 ├── backend/                    # Rust Axum backend
+│   ├── Cargo.toml             # edition = "2024", dependencies
 │   └── src/
-│       ├── main.rs             # Entry point: template pre-compilation, DB/JWT/CORS init
-│       ├── router.rs           # API route definitions (REST + WebSocket)
-│       ├── db.rs               # SQLite via rusqlite; all migrations & queries
-│       ├── auth.rs             # JWT + Argon2 auth; register/login/forgot-password
-│       ├── models.rs           # Request/response types (RunRequest, WsMessages)
-│       ├── exercises/          # ~200 embedded test code files (ch01–ch20)
-│       │   ├── mod.rs          # get_test_code() via include_str!(), get_exercise_limits()
-│       │   ├── ch01/           # Each lesson has a .rs file with full test harness
-│       │   └── ... ch20/
+│       ├── main.rs            # Entry point: template pre-compilation, DB/JWT/CORS init
+│       ├── router.rs          # API route definitions (REST + WebSocket)
+│       ├── db.rs              # SQLite via rusqlite; all migrations & queries
+│       ├── auth.rs            # JWT + Argon2 auth; register/login/forgot-password
+│       ├── models.rs          # Request/response types (RunRequest, WsMessages)
+│       ├── exercises/         # Embedded test code files (ch01–ch20)
+│       │   ├── mod.rs         # get_test_code() via include_str!(), get_exercise_limits()
+│       │   ├── ch01/ ... ch20/  # Each lesson has .rs test harness files
+│       │   └── chXX/chXX_XX_ex.rs  # e.g. ch20_01_ex.rs, ch20_02_ex.rs
 │       └── handlers/
-│           ├── executor.rs     # REST POST /run — compile & run (non-WS)
-│           ├── ws.rs           # WS /ws/run — practice mode with test cases
-│           ├── ws_play.rs      # WS /ws/play — theory mode (free run, no tests)
-│           ├── code.rs         # POST /api/code/save, GET /api/code/{lesson_id}
-│           ├── admin.rs        # Admin login/logout + React SPA serving
-│           ├── progress.rs     # POST /api/progress/save
-│           └── achievements.rs # GET /api/achievements, stats, rank, streak
+│           ├── executor.rs    # REST POST /run — compile & run (non-WS)
+│           ├── ws.rs          # WS /ws/run — practice mode with test cases
+│           ├── ws_play.rs     # WS /ws/play — theory mode (free run, no tests)
+│           ├── code.rs        # POST /api/code/save, GET /api/code/{lesson_id}
+│           ├── admin.rs       # Admin login/logout + React SPA serving
+│           ├── progress.rs    # POST /api/progress/save
+│           ├── achievements.rs # GET /api/achievements, stats, rank, streak
+│           └── mod.rs         # Handler module re-exports
 │
 ├── frontend/                   # TypeScript + Vite (two SPAs built together)
 │   ├── index.html              # Theory SPA entry (served as /)
-│   ├── practice.html           # Practice SPA entry (served as /practice)
-│   ├── admin.html              # Admin SPA entry (built to dist-admin/)
-│   ├── dist/                    # Built theory SPA (nginx served)
-│   ├── dist-admin/              # Built admin React SPA
+│   ├── practice.html          # Practice SPA entry (served as /practice)
+│   ├── admin.html             # Admin SPA entry (built to dist-admin/)
+│   ├── dist/                   # Built theory SPA (nginx served)
+│   ├── dist-admin/             # Built admin React SPA
 │   ├── src/
-│   │   ├── main.ts             # Theory SPA: course nav, Monaco editor, auth modal
-│   │   ├── practice.ts         # Practice SPA: exercise UI, test runner
-│   │   ├── courses.ts          # courseData (ch01–ch23) + generateCPContent()
-│   │   ├── progress.ts         # ProgressManager: localStorage + server sync
-│   │   ├── achievements.ts     # Achievements UI (~750 lines, embedded CSS)
-│   │   ├── AdminApp.tsx        # Admin React root component
-│   │   ├── admin-main.tsx       # React bootstrap (creates AdminApp)
-│   │   ├── admin.css           # Admin panel styles
-│   │   ├── style.css           # Main app styles
-│   │   ├── chapters/           # ch01–ch23, final_project, appendix lesson content
-│   │   └── practice_data/      # ch28 (28Tech curriculum: buoi1–buoi3 implemented; buoi4–buoi24 PDFs in 28tech/ but unimplemented)
-│   ├── nginx.conf              # Clean URLs: / → index.html, /practice → practice.html
-│   ├── vite.config.ts          # Theory + practice SPA build (cleanUrlPlugin)
-│   └── vite.admin.config.ts    # Separate admin SPA build → dist-admin/
+│   │   ├── main.ts            # Theory SPA: course nav, Monaco editor, auth modal (~1724 lines)
+│   │   ├── practice.ts        # Practice SPA: exercise UI, test runner (~1403 lines)
+│   │   ├── courses.ts         # courseData (ch01–ch23) + generateCPContent() (~167 lines)
+│   │   ├── progress.ts        # ProgressManager: localStorage + server sync (~213 lines)
+│   │   ├── achievements.ts    # Achievements UI (~748 lines, embedded CSS)
+│   │   ├── AdminApp.tsx       # Admin React root component (Pastel Pop UI, style #5)
+│   │   ├── admin-main.tsx     # React bootstrap (creates AdminApp)
+│   │   ├── admin.css          # Admin panel styles (Pastel Pop — gradient blobs, pill badges)
+│   │   ├── style.css         # Main app styles
+│   │   ├── vite-env.d.ts     # Vite type declarations
+│   │   ├── chapters/          # ch01–ch23, final_project, appendix lesson content
+│   │   └── practice_data/    # ch28 (28Tech curriculum: buoi1–buoi3 implemented;
+│   │                           #   buoi4–buoi24 PDFs in 28tech/ but unimplemented)
+│   ├── nginx.conf             # Clean URLs: / → index.html, /practice → practice.html
+│   ├── vite.config.ts         # Theory + practice SPA build (cleanUrlPlugin)
+│   ├── vite.admin.config.ts   # Separate admin SPA build → dist-admin/
+│   └── package.json           # Scripts: dev, build, build:admin, preview
 │
 ├── 28tech/                     # Source PDFs for ch28 curriculum (buoi4–buoi24, unimplemented)
 ├── caddy/                      # Caddy Docker build context with DuckDNS plugin
 ├── data/                       # SQLite database (gitignored)
+├── tmp/                        # Temporary build/compile artifacts
 ├── docker-compose.yml          # Production: backend, frontend, caddy, cloudflared
 ├── docker-compose.local.yml    # Local dev: backend only
 ├── Caddyfile                   # Root-level Caddy config (DuckDNS + proxy)
 ├── dev.sh                      # Convenience script to run both services
-├── .env                        # Environment variables (gitignored)
+├── README.md                   # Project README
+├── ui-detail.html              # UI detail page
 └── CLAUDE.md
 ```
 
