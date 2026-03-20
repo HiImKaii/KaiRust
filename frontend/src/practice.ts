@@ -646,9 +646,10 @@ const selectLesson = async (lesson: Lesson) => {
 
     // Update editor - load saved code or use default
     if (editorInstance && lesson.defaultCode) {
+        // Set lessonId TRƯỚC setValue để auto-save bắn đúng lessonId
+        currentSavingLessonId = lesson.id;
         const savedCode = await loadSavedCode(lesson.id, lesson.defaultCode);
         editorInstance.setValue(savedCode);
-        currentSavingLessonId = lesson.id;
     }
 
     // Clear terminal and reset stats
