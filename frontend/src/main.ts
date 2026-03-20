@@ -462,6 +462,11 @@ const startCodeExecution = (is_test: boolean) => {
                     ws.close();
                     // Reset test output
                     (window as any).__testOutput = '';
+                    // Re-enable buttons immediately on compile error
+                    const compileErrRunBtn = document.getElementById('run-btn') as HTMLButtonElement | null;
+                    const compileErrSubmitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+                    if (compileErrRunBtn) compileErrRunBtn.disabled = false;
+                    if (compileErrSubmitBtn) compileErrSubmitBtn.disabled = false;
                     break;
                 case 'running':
                     appendTerminal(`<span class="log-info">Running...</span>`);

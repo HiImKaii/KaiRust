@@ -276,8 +276,6 @@ async fn run_interactive(
 
     let _ = tokio::fs::write(src_dir.join("main.rs"), &code).await;
 
-    let start = Instant::now();
-
     // Step 1: Check cache first
     let mut use_cache = false;
 
@@ -338,6 +336,7 @@ async fn run_interactive(
     }
 
     // Step 2: Run with streaming output inside Docker Sandbox
+    let exec_start = Instant::now(); // timer bắt đầu sau khi compile xong
     let _ = tx.send(WsServerMessage::Running).await;
 
     // Cấu hình linh hoạt Docker Volume Mount
@@ -467,7 +466,7 @@ async fn run_interactive(
     let _ = stderr_task.await;
     stdin_task.abort();
 
-    let elapsed = start.elapsed().as_millis() as u64;
+    let elapsed = exec_start.elapsed().as_millis() as u64;
 
     let _ = tx
         .send(WsServerMessage::Exit {

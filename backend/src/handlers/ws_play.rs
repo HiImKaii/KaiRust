@@ -191,8 +191,6 @@ async fn run_play(
     let cache_key = compute_code_hash(&code);
     let _ = tokio::fs::write(src_dir.join("main.rs"), &code).await;
 
-    let start = Instant::now();
-
     // Check cache
     let mut use_cache = false;
     if let Some(cached_path) = get_cached_binary(&cache_key).await {
@@ -235,6 +233,7 @@ async fn run_play(
     }
 
     // Cấu hình linh hoạt Docker Volume Mount
+    let exec_start = Instant::now(); // timer bắt đầu sau khi compile xong
     let is_dood = std::env::var("SANDBOX_VOLUME_NAME").is_ok();
     
     let volume_arg = if let Ok(vol_name) = std::env::var("SANDBOX_VOLUME_NAME") {
@@ -345,7 +344,7 @@ async fn run_play(
     let _ = stderr_task.await;
     stdin_task.abort();
 
-    let elapsed = start.elapsed().as_millis() as u64;
+    let elapsed = exec_start.elapsed().as_millis() as u64;
 
     let _ = tx.send(WsServerMessage::Exit {
         code: exit_code,

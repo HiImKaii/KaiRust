@@ -469,8 +469,11 @@ const runNextTestCase = (code: string) => {
                         }
                         pendingTestResults.push({ index: capturedIndex, input: tcInput, expected: tcExpected, actual: testOutput, passed: false });
                         testCompleted = true;
-                        reenableButtons(); // Re-enable immediately on compile error
+                        reenableButtons();
                         ws.close();
+                        // Don't advance to next test case on compile error — stop here
+                        pendingTestIndex = pendingTestCases.length;
+                        showTestResultsSummary();
                         break;
                     case 'stdout':
                         testOutput += msg.data;
