@@ -352,7 +352,7 @@ const runSingleWithReconnect = (code: string) => {
                 case 'waiting_for_input':
                     waitingForInput = true;
                     backendWaitingForInput = true;
-                    updateLoading(`Chờ nhập STDIN... (tối đa ${Math.floor(msg.timeout_secs / 60)} phút)`);
+                    updateLoading('Chờ nhập STDIN...');
                     break;
                 case 'running':
                     waitingForInput = false;

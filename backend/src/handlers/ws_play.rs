@@ -170,7 +170,6 @@ async fn run_play(
     let session_id = Uuid::new_v4().to_string();
     let work_dir = PathBuf::from(SANDBOX_DIR).join(&session_id);
     let exec_timeout_secs = DEFAULT_TIMEOUT; // timeout cho phần thực thi
-    const STDIN_TIMEOUT_SECS: u64 = 600;    // timeout cho phần đợi stdin (10 phút)
 
     // Clone template
     let template_dir = "/tmp/kairust_template";
@@ -276,40 +275,27 @@ async fn run_play(
         }
     };
 
-    let mut child_stdin = child.stdin.take();
     let stdout = child.stdout.take();
     let stderr = child.stderr.take();
 
-    // Play mode: không có stdin ban đầu → đợi user gõ (tối đa 10 phút)
-    let _ = tx.send(WsServerMessage::WaitingForInput { timeout_secs: STDIN_TIMEOUT_SECS }).await;
+    // Gửi message đang đợi stdin
+    let _ = tx.send(WsServerMessage::WaitingForInput { timeout_secs: 0 }).await;
 
-    match tokio::time::timeout(
-        std::time::Duration::from_secs(STDIN_TIMEOUT_SECS),
-        stdin_rx.recv(),
-    ).await {
-        Ok(Some(data)) => {
-            // User gửi stdin
-            if let Some(ref mut stdin) = child_stdin {
-                use tokio::io::AsyncWriteExt;
-                let _ = stdin.write_all(data.as_bytes()).await;
-                let _ = stdin.shutdown().await;
-            }
-            drop(child_stdin);
-        }
-        Ok(None) | Err(_) => {
-            // Timeout hoặc channel đóng
-            drop(child_stdin);
-            let _ = tx.send(WsServerMessage::StdinTimeout {
-                message: format!("Hết thời gian chờ input ({} phút)", STDIN_TIMEOUT_SECS / 60),
-            }).await;
-            let _ = tokio::fs::remove_dir_all(&work_dir).await;
-            return;
-        }
-    }
-
-    // Bắt đầu tính execution time TỪ ĐÂY (sau khi stdin đã được gửi)
+    // Bắt đầu timer từ đây (ws_play.rs không cần quá chính xác)
     let exec_start = Instant::now();
     let _ = tx.send(WsServerMessage::Running).await;
+
+    // Stream stdin từ user
+    let mut child_stdin = child.stdin.take();
+    let stdin_task = tokio::spawn(async move {
+        if let Some(ref mut stdin) = child_stdin {
+            use tokio::io::AsyncWriteExt;
+            while let Some(data) = stdin_rx.recv().await {
+                let _ = stdin.write_all(data.as_bytes()).await;
+                let _ = stdin.flush().await;
+            }
+        }
+    });
 
     // Stream stdout
     let tx_stdout = tx.clone();
@@ -362,6 +348,7 @@ async fn run_play(
 
     let _ = stdout_task.await;
     let _ = stderr_task.await;
+    stdin_task.abort();
 
     let elapsed = exec_start.elapsed().as_millis() as u64;
 

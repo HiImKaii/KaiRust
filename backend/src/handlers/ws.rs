@@ -11,6 +11,7 @@ use futures::{SinkExt, StreamExt};
 use sha2::{Sha256, Digest};
 use std::path::PathBuf;
 use std::time::Instant;
+use std::os::unix::process::ExitStatusExt;
 use tokio::process::Command;
 use uuid::Uuid;
 
@@ -385,50 +386,18 @@ async fn run_interactive(
     let stdout = child.stdout.take();
     let stderr = child.stderr.take();
 
-    // Thời gian chờ stdin tối đa: 10 phút (600 giây)
-    const STDIN_TIMEOUT_SECS: u64 = 600;
-
-    // Gửi stdin ban đầu (từ test case - Submit) HOẶC đợi stdin từ user (Run)
+    // Gửi stdin ban đầu (từ test case - Submit)
     if let Some(initial) = initial_stdin {
-        // Submit: stdin có sẵn → gửi ngay
         if let Some(ref mut stdin) = child_stdin {
             use tokio::io::AsyncWriteExt;
             let _ = stdin.write_all(initial.as_bytes()).await;
             let _ = stdin.shutdown().await;
         }
         drop(child_stdin);
-    } else {
-        // Run: stdin không có → đợi user gõ (tối đa 10 phút)
-        let _ = tx.send(WsServerMessage::WaitingForInput { timeout_secs: STDIN_TIMEOUT_SECS }).await;
-
-        match tokio::time::timeout(
-            std::time::Duration::from_secs(STDIN_TIMEOUT_SECS),
-            stdin_rx.recv(),
-        ).await {
-            Ok(Some(data)) => {
-                // User gửi stdin
-                if let Some(ref mut stdin) = child_stdin {
-                    use tokio::io::AsyncWriteExt;
-                    let _ = stdin.write_all(data.as_bytes()).await;
-                    let _ = stdin.shutdown().await;
-                }
-                drop(child_stdin);
-            }
-            Ok(None) | Err(_) => {
-                // Timeout hoặc channel đóng
-                drop(child_stdin);
-                let _ = tx.send(WsServerMessage::StdinTimeout {
-                    message: format!("Hết thời gian chờ input ({} phút)", STDIN_TIMEOUT_SECS / 60),
-                }).await;
-                let _ = tokio::fs::remove_dir_all(&work_dir).await;
-                return;
-            }
-        }
+        let exec_start = Instant::now();
+        let _ = tx.send(WsServerMessage::Running).await;
+        return run_with_docker(tx, child, stdout, stderr, exec_start, timeout_secs, kill_rx, work_dir).await;
     }
-
-    // Bắt đầu tính execution time TỪ ĐÂY (sau khi stdin đã được gửi)
-    let exec_start = Instant::now();
-    let _ = tx.send(WsServerMessage::Running).await;
 
     // Stream stdout
     let tx_stdout = tx.clone();
@@ -438,9 +407,7 @@ async fn run_interactive(
             let mut reader = BufReader::new(stdout).lines();
             while let Ok(Some(line)) = reader.next_line().await {
                 let _ = tx_stdout
-                    .send(WsServerMessage::Stdout {
-                        data: format!("{}\n", line),
-                    })
+                    .send(WsServerMessage::Stdout { data: format!("{}\n", line) })
                     .await;
             }
         }
@@ -454,9 +421,97 @@ async fn run_interactive(
             let mut reader = BufReader::new(stderr).lines();
             while let Ok(Some(line)) = reader.next_line().await {
                 let _ = tx_stderr
-                    .send(WsServerMessage::Stderr {
-                        data: format!("{}\n", line),
-                    })
+                    .send(WsServerMessage::Stderr { data: format!("{}\n", line) })
+                    .await;
+            }
+        }
+    });
+
+    // Đợi 0.5s — nếu child exit → code không cần stdin
+    let exit_code = tokio::time::timeout(std::time::Duration::from_millis(500), child.wait()).await;
+
+    if exit_code.is_ok() {
+        // Child exit trong 2s → code không cần stdin
+        let _ = stdout_task.await;
+        let _ = stderr_task.await;
+        drop(child_stdin); // đóng stdin
+        let elapsed = 0; // < 2ms
+        let code = exit_code.unwrap().unwrap_or_else(|_| std::process::ExitStatus::from_raw(-1));
+        let _ = tx.send(WsServerMessage::Exit {
+            code: code.code().unwrap_or(-1),
+            execution_time_ms: elapsed,
+            memory_usage_kb: 0,
+        }).await;
+        let _ = tokio::fs::remove_dir_all(&work_dir).await;
+        return;
+    }
+
+    // Child vẫn chạy sau 2s → code CẦN stdin
+    // stdin mở → child đang chờ input → gửi message cho user
+    let _ = tx.send(WsServerMessage::WaitingForInput { timeout_secs: 0 }).await;
+
+    // Đợi stdin từ user (vô thời hạn)
+    match stdin_rx.recv().await {
+        Some(data) => {
+            // User gửi stdin → gửi vào child đang chạy
+            if let Some(ref mut stdin) = child_stdin {
+                use tokio::io::AsyncWriteExt;
+                let _ = stdin.write_all(data.as_bytes()).await;
+                let _ = stdin.shutdown().await;
+            }
+            drop(child_stdin);
+            let _ = stdout_task.await;
+            let _ = stderr_task.await;
+            let exec_start = Instant::now();
+            let _ = tx.send(WsServerMessage::Running).await;
+            return run_with_docker(tx, child, None, None, exec_start, timeout_secs, kill_rx, work_dir).await;
+        }
+        None => {
+            // User đóng WS
+            drop(child_stdin);
+            let _ = stdout_task.await;
+            let _ = stderr_task.await;
+            let _ = child.kill().await;
+            let _ = tokio::fs::remove_dir_all(&work_dir).await;
+            return;
+        }
+    }
+}
+
+/// Chạy child process đã có stdin đã gửi, stream output và đợi exit
+async fn run_with_docker(
+    tx: tokio::sync::mpsc::Sender<WsServerMessage>,
+    mut child: tokio::process::Child,
+    stdout: Option<tokio::process::ChildStdout>,
+    stderr: Option<tokio::process::ChildStderr>,
+    exec_start: std::time::Instant,
+    timeout_secs: u64,
+    mut kill_rx: tokio::sync::oneshot::Receiver<()>,
+    work_dir: PathBuf,
+) {
+    // Stream stdout
+    let tx_stdout = tx.clone();
+    let stdout_task = tokio::spawn(async move {
+        if let Some(stdout) = stdout {
+            use tokio::io::{AsyncBufReadExt, BufReader};
+            let mut reader = BufReader::new(stdout).lines();
+            while let Ok(Some(line)) = reader.next_line().await {
+                let _ = tx_stdout
+                    .send(WsServerMessage::Stdout { data: format!("{}\n", line) })
+                    .await;
+            }
+        }
+    });
+
+    // Stream stderr
+    let tx_stderr = tx.clone();
+    let stderr_task = tokio::spawn(async move {
+        if let Some(stderr) = stderr {
+            use tokio::io::{AsyncBufReadExt, BufReader};
+            let mut reader = BufReader::new(stderr).lines();
+            while let Ok(Some(line)) = reader.next_line().await {
+                let _ = tx_stderr
+                    .send(WsServerMessage::Stderr { data: format!("{}\n", line) })
                     .await;
             }
         }
@@ -483,7 +538,6 @@ async fn run_interactive(
         }
     };
 
-    // Wait for output tasks to finish
     let _ = stdout_task.await;
     let _ = stderr_task.await;
 
@@ -497,6 +551,6 @@ async fn run_interactive(
         })
         .await;
 
-    // Cleanup
     let _ = tokio::fs::remove_dir_all(&work_dir).await;
 }
+
