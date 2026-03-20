@@ -31,7 +31,7 @@ Cam on!</code></pre>
 <h3 class="task-heading">Gợi ý</h3>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
-  <pre><code>use std::io;
+  <pre><code>use std::io::Read;
 
 fn main() {
     let mut input = String::new();
@@ -44,7 +44,7 @@ fn main() {
   <strong>Mẹo:</strong> Dùng <code>print!()</code> thay vì <code>println!()</code> để in chính xác nội dung (không thêm dòng trắng cuối).
 </div>
 `,
-    defaultCode: `use std::io;
+    defaultCode: `use std::io::Read;
 
 fn main() {
     let mut input = String::new();

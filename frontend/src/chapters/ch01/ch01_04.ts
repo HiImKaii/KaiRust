@@ -82,7 +82,7 @@ fn main() {
 
 <div class="code-snippet">
   <span class="code-lang">rust</span>
-  <pre><code>use std::io;
+  <pre><code>use std::io::Read;
 
 fn main() {
     let mut all_input = String::new();
@@ -110,7 +110,7 @@ Toi 20 tuoi</code></pre>
 
 <div class="code-snippet">
   <span class="code-lang">rust</span>
-  <pre><code>use std::io::{self, Read};
+  <pre><code>use std::io::Read;
 
 fn main() {
     let mut input = String::new();
@@ -151,7 +151,7 @@ fn main() {
 
 <div class="code-snippet">
   <span class="code-lang">rust</span>
-  <pre><code>use std::io::{self, Read};
+  <pre><code>use std::io::Read;
 
 fn main() {
     let mut input = String::new();
@@ -181,7 +181,7 @@ Các byte: 65 66 67 10</code></pre>
 
 <div class="code-snippet">
   <span class="code-lang">rust</span>
-  <pre><code>use std::io::{self, Read};
+  <pre><code>use std::io::Read;
 
 fn main() {
     let mut buffer = [0u8; 8]; // Buffer 8 byte

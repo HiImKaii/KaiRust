@@ -34,7 +34,7 @@ edition = "2021"
 rand = "0.8"
 "#;
     let _ = tokio::fs::write(template_dir.join("Cargo.toml"), cargo_toml).await;
-    let _ = tokio::fs::write(src_dir.join("main.rs"), "fn main() {}").await;
+    let _ = tokio::fs::write(src_dir.join("main.rs"), "use std::io::Read;\nfn main() {}").await;
 
     tracing::info!("Pre-compiling base template dependencies...");
     let result = tokio::process::Command::new("cargo")

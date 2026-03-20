@@ -33,7 +33,7 @@ Rust programming</code></pre>
 <h3 class="task-heading">Gợi ý</h3>
 <div class="code-snippet">
   <span class="code-lang">rust</span>
-  <pre><code>use std::io::{self, Read};
+  <pre><code>use std::io::Read;
 
 fn main() {
     let mut input = String::new();
@@ -55,7 +55,7 @@ fn main() {
   Luôn dùng <code>split_whitespace()</code> để đếm từ chính xác hơn.
 </div>
 `,
-    defaultCode: `use std::io::{self, Read};
+    defaultCode: `use std::io::Read;
 
 fn main() {
     let mut input = String::new();
