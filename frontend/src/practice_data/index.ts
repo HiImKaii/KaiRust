@@ -7,6 +7,7 @@ import { Chapter } from '../courses';
 import { buoi1_lessons } from './buoi1';
 import { buoi2_lessons } from './buoi2';
 import { buoi3_lessons } from './buoi3';
+import { buoi4_lessons } from './buoi4';
 
 // =====================================================
 // Export all chapters - Each session is a chapter with multiple lessons
@@ -31,7 +32,12 @@ export const ch28_chapters: Chapter[] = [
     introduction: '<p>Buổi 3 - Các bài tập về vòng lặp, tính toán tổng, giai thừa, và xử lý số</p>',
     lessons: buoi3_lessons,
   },
-  // More chapters will be added as we read more PDFs
+  {
+    id: 'ch28_buoi4',
+    title: 'Buổi 4: Số nguyên tố và các dạng đặc biệt',
+    introduction: '<p>Buổi 4 - Các bài tập về số nguyên tố, số hoàn hảo, số Armstrong, số Fibonacci, và các dạng số đặc biệt khác</p>',
+    lessons: buoi4_lessons,
+  },
 ];
 
 export default ch28_chapters;

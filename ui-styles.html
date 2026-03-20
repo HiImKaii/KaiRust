@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>14 Phong Cách Giao Diện</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,900;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Orbitron:wght@400;700;900&family=Syne:wght@400;700;800&family=Chakra+Petch:wght@300;400;600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Faster+One&family=Unbounded:wght@300;700;900&family=Albert+Sans:wght@100;400;800&family=Fraunces:ital,wght@0,100;0,900;1,100;1,700&family=DM+Serif+Display:ital@0;1&family=Instrument+Serif:ital@0;1&family=Raleway:wght@100;200;900" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#111;color:#fff;font-family:sans-serif}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(8,8,8,0.97);backdrop-filter:blur(12px);padding:10px 20px;display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid #1e1e1e}
+.nav a{color:#555;text-decoration:none;font-size:10px;font-family:'Space Mono',monospace;padding:4px 8px;border:1px solid #222;border-radius:3px;transition:all 0.2s;white-space:nowrap}
+.nav a:hover{color:#eee;border-color:#555}
+.section{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 48px 48px;scroll-margin-top:52px}
+.tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;color:#444;margin-bottom:36px;text-transform:uppercase}
+@keyframes blink{50%{opacity:0}}
+@keyframes marq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ══ 01 BRUTALIST ══ */
+#s1{background:#fff;color:#000;border-top:8px solid #000}
+.brut-grid{display:grid;grid-template-columns:1fr 1fr;border:4px solid #000;max-width:900px}
+.brut-cell{padding:40px;border:2px solid #000}
+.brut-h1{font-family:'Bebas Neue',cursive;font-size:clamp(60px,10vw,140px);line-height:0.9}
+.brut-body{font-family:'Space Mono';font-size:12px;line-height:1.9;margin-top:20px}
+.brut-btn{display:inline-block;margin-top:20px;padding:12px 24px;background:#000;color:#fff;font-family:'Space Mono';font-size:12px;border:3px solid #000;cursor:pointer;transition:all 0.1s}
+.brut-btn:hover{background:#fff;color:#000}
+.brut-accent{background:#ff0;color:#000}
+.brut-num{font-family:'Bebas Neue';font-size:200px;line-height:1;color:#eee;position:absolute;bottom:-20px;right:20px}
+
+/* ══ 02 EDITORIAL ══ */
+#s2{background:#faf6f0;color:#1a1a1a}
+.mag-layout{display:grid;grid-template-columns:1fr 2px 2fr;gap:0;align-items:start;max-width:900px}
+.mag-divider{background:#1a1a1a;min-height:300px}
+.mag-left{padding-right:40px}
+.mag-right{padding-left:48px}
+.mag-cat{font-family:'Space Mono';font-size:10px;letter-spacing:4px;color:#999;text-transform:uppercase}
+.mag-h{font-family:'Playfair Display';font-size:clamp(40px,7vw,88px);line-height:0.95;font-weight:900;margin-top:16px}
+.mag-issue{font-family:'Playfair Display';font-style:italic;font-size:18px;color:#888;margin-top:32px}
+.mag-drop{font-family:'Playfair Display';font-size:96px;font-weight:900;float:left;line-height:0.8;margin:8px 12px 0 0;color:#1a1a1a}
+.mag-body{font-family:'Libre Baskerville';font-size:15px;line-height:1.85;color:#444}
+.mag-pull{font-family:'Playfair Display';font-style:italic;font-size:26px;line-height:1.4;border-top:2px solid #1a1a1a;border-bottom:2px solid #1a1a1a;padding:20px 0;margin:32px 0}
+
+/* ══ 03 CYBERPUNK ══ */
+#s3{background:#000;overflow:hidden;position:relative}
+#s3::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(0,255,200,0.03) 0px,transparent 1px,transparent 40px);pointer-events:none}
+.cyber-frame{border:1px solid #00ffc8;padding:48px;position:relative;max-width:680px;background:rgba(0,255,200,0.02)}
+.cyber-frame::before{content:'SYS.BOOT // VER.4.2.1';position:absolute;top:-10px;left:20px;background:#000;padding:0 8px;font-family:'Space Mono';font-size:10px;color:#00ffc8;letter-spacing:2px}
+.cyber-h{font-family:'Orbitron';font-size:clamp(28px,5vw,64px);font-weight:900;color:#00ffc8;text-shadow:0 0 20px rgba(0,255,200,0.5);line-height:1.1}
+.cyber-sub{font-family:'Chakra Petch';font-size:13px;color:#00ffc8;opacity:0.6;letter-spacing:3px;margin-top:12px}
+.cyber-bar{height:2px;background:linear-gradient(90deg,#00ffc8,transparent);margin:24px 0}
+.cyber-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:24px}
+.cyber-stat{border:1px solid rgba(0,255,200,0.2);padding:16px;background:rgba(0,255,200,0.03)}
+.cyber-stat-n{font-family:'Orbitron';font-size:32px;color:#00ffc8;text-shadow:0 0 10px rgba(0,255,200,0.5)}
+.cyber-stat-l{font-family:'Chakra Petch';font-size:10px;color:#00ffc8;opacity:0.5;letter-spacing:2px;margin-top:4px}
+.cyber-btn{display:inline-block;margin-top:24px;padding:14px 32px;background:transparent;border:1px solid #00ffc8;color:#00ffc8;font-family:'Orbitron';font-size:12px;letter-spacing:3px;cursor:pointer;position:relative;overflow:hidden;transition:color 0.3s}
+.cyber-btn::before{content:'';position:absolute;inset:0;background:#00ffc8;transform:translateX(-101%);transition:transform 0.3s;z-index:-1}
+.cyber-btn:hover{color:#000}.cyber-btn:hover::before{transform:translateX(0)}
+.cyber-scan{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#00ffc8,transparent);animation:cscan 3s linear infinite;opacity:0.5}
+@keyframes cscan{0%{top:0}100%{top:100%}}
+
+/* ══ 04 Y2K ══ */
+#s4{background:#ff6eb4}
+.y2k-window{background:#fff;border:3px solid #000;box-shadow:6px 6px 0 #000;max-width:560px}
+.y2k-titlebar{background:linear-gradient(90deg,#0050ef,#00cfff);padding:6px 12px;display:flex;align-items:center;gap:8px}
+.y2k-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(0,0,0,0.3)}
+.y2k-dot:nth-child(1){background:#ff5f57}.y2k-dot:nth-child(2){background:#ffbd2e}.y2k-dot:nth-child(3){background:#28c840}
+.y2k-title{font-family:'Space Mono';font-size:11px;color:#fff;margin-left:8px}
+.y2k-content{padding:28px}
+.y2k-h{font-family:'Faster One',cursive;font-size:48px;color:#0050ef;text-shadow:3px 3px 0 #ff6eb4}
+.y2k-blink{animation:blink 1s step-end infinite;color:#ff0050;font-family:'Space Mono';font-size:12px}
+.y2k-marquee{background:#0050ef;color:#fff;font-family:'Space Mono';font-size:11px;padding:4px 0;overflow:hidden;margin:16px -28px}
+.y2k-marquee-inner{white-space:nowrap;animation:marq 8s linear infinite;display:inline-block;padding-left:100%}
+.y2k-body{font-family:'Space Mono';font-size:12px;color:#333;line-height:1.8;margin-top:16px}
+.y2k-star{color:#ff6eb4}
+.y2k-btn{margin-top:20px;padding:8px 20px;background:linear-gradient(180deg,#e0e0e0,#b0b0b0);border:2px solid #000;font-family:'Space Mono';font-size:12px;cursor:pointer;box-shadow:2px 2px 0 #000}
+
+/* ══ 05 PAPER CRAFT ══ */
+#s5{background:#f5f0e8;color:#2a1f14}
+.paper-wrap{max-width:600px}
+.paper-card{background:#fffdf7;border:1px solid #e0d8c8;border-radius:2px;padding:48px;box-shadow:2px 4px 12px rgba(0,0,0,0.08);position:relative}
+.paper-fold{position:absolute;top:0;right:0;width:0;height:0;border-style:solid;border-width:0 32px 32px 0;border-color:transparent #f5f0e8 transparent transparent}
+.paper-h{font-family:'Libre Baskerville';font-size:40px;font-weight:700;color:#2a1f14;line-height:1.2}
+.paper-h em{font-style:italic;color:#8b6a3a}
+.paper-rule{height:1px;background:repeating-linear-gradient(90deg,#ccc,#ccc 4px,transparent 4px,transparent 8px);margin:24px 0}
+.paper-body{font-family:'Libre Baskerville';font-size:14px;line-height:2;color:#5a4a35}
+.paper-note{background:#fef9c3;border-left:3px solid #f59e0b;padding:12px 16px;margin-top:24px;font-family:'Libre Baskerville';font-style:italic;font-size:13px;color:#78350f}
+.paper-tags{display:flex;gap:8px;margin-top:24px;flex-wrap:wrap}
+.paper-tag{padding:4px 12px;border:1px dashed #c4a87a;border-radius:2px;font-family:'Space Mono';font-size:10px;color:#8b6a3a;letter-spacing:1px}
+
+/* ══ 06 TERMINAL ══ */
+#s6{background:#0d1117}
+.term-window{background:#1c2128;border:1px solid #30363d;border-radius:12px;overflow:hidden;max-width:680px;font-family:'Space Mono'}
+.term-bar{background:#2d333b;padding:12px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #30363d}
+.term-c{width:12px;height:12px;border-radius:50%}
+.term-c.red{background:#f85149}.term-c.yel{background:#e3b341}.term-c.grn{background:#3fb950}
+.term-path{font-size:12px;color:#8b949e;margin-left:12px}
+.term-body{padding:24px;min-height:320px;font-size:13px;line-height:2}
+.term-line{display:flex}
+.term-prompt{color:#3fb950;margin-right:8px}
+.term-cmd{color:#79c0ff}
+.term-out{color:#8b949e;padding-left:24px}
+.term-val{color:#56d364}
+.term-str{color:#a5d6ff}
+.term-cursor{display:inline-block;width:8px;height:14px;background:#3fb950;animation:blink 1s step-end infinite;vertical-align:middle}
+.term-warn{color:#e3b341;padding-left:24px}
+
+/* ══ 07 CLAYMORPHISM ══ */
+#s7{background:linear-gradient(160deg,#e8d5ff 0%,#d4e8ff 50%,#d4ffe8 100%)}
+.clay-wrap{display:flex;gap:24px;flex-wrap:wrap;max-width:840px;align-items:flex-start}
+.clay-card{border-radius:28px;padding:32px;flex:1;min-width:220px;box-shadow:0 8px 0 rgba(0,0,0,0.12),0 20px 40px rgba(0,0,0,0.08),inset 0 -4px 0 rgba(0,0,0,0.08);position:relative;overflow:hidden}
+.clay-card::before{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:rgba(255,255,255,0.35);border-radius:28px 28px 0 0;pointer-events:none}
+.clay-card.c1{background:#ff7eb3}.clay-card.c2{background:#7eb8ff}.clay-card.c3{background:#7effd4}
+.clay-icon{font-size:40px;margin-bottom:16px;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.2))}
+.clay-h{font-family:'Unbounded';font-size:20px;font-weight:700;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,0.2)}
+.clay-sub{font-family:'DM Sans';font-size:13px;color:rgba(255,255,255,0.75);margin-top:8px;line-height:1.6}
+.clay-btn{display:inline-block;margin-top:20px;padding:10px 22px;background:rgba(255,255,255,0.3);border-radius:20px;font-family:'DM Sans';font-size:13px;font-weight:600;color:#fff;border:2px solid rgba(255,255,255,0.5);cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,0.1)}
+
+/* ══ 08 BENTO GRID ══ */
+#s8{background:#0c0c0f}
+.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:900px}
+.bento-cell{background:#17171d;border:1px solid #23232d;border-radius:20px;padding:28px;transition:border-color 0.3s}
+.bento-cell:hover{border-color:#404050}
+.bento-cell.span2{grid-column:span 2}.bento-cell.span3{grid-column:span 3}
+.bn-label{font-family:'DM Sans';font-size:11px;letter-spacing:2px;color:#444;text-transform:uppercase;margin-bottom:8px}
+.bn-h{font-family:'Syne';font-size:clamp(22px,3vw,38px);font-weight:800;color:#e8e8f0;line-height:1.1}
+.bn-sub{font-family:'DM Sans';font-size:13px;color:#555;margin-top:10px;line-height:1.7}
+.bn-big{font-family:'Unbounded';font-size:clamp(48px,7vw,88px);font-weight:900;line-height:1}
+.bn-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-family:'DM Sans';font-size:11px;font-weight:600}
+.bn-badge.green{background:rgba(52,211,153,0.12);color:#34d399;border:1px solid rgba(52,211,153,0.2)}
+.bn-badge.blue{background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.2)}
+.bn-badge.pink{background:rgba(244,114,182,0.12);color:#f472b6;border:1px solid rgba(244,114,182,0.2)}
+.bn-avatar-row{display:flex;margin-top:12px}
+.bn-avatar{width:32px;height:32px;border-radius:50%;border:2px solid #17171d;margin-left:-8px}
+.bn-avatar:first-child{margin-left:0}
+.bn-sparkline{display:flex;align-items:flex-end;gap:4px;height:48px;margin-top:16px}
+.bn-spark{flex:1;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#60a5fa,rgba(96,165,250,0.2))}
+
+/* ══ 09 PIXEL ARCADE ══ */
+#s9{background:#0a0a1a}
+.px-wrap{max-width:640px}
+.px-screen{background:#0a1a0a;border:4px solid #33ff33;box-shadow:0 0 0 8px #111,0 0 0 12px #33ff33,0 0 40px rgba(51,255,51,0.2);padding:40px;font-family:'Space Mono';position:relative}
+.px-scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px);pointer-events:none}
+.px-title{font-size:clamp(28px,5vw,52px);color:#33ff33;text-shadow:0 0 10px #33ff33,0 0 20px #33ff33;letter-spacing:6px;text-transform:uppercase;line-height:1}
+.px-subtitle{color:#33ff3380;font-size:12px;letter-spacing:4px;margin-top:12px}
+.px-divider{color:#33ff3330;margin:20px 0;font-size:12px}
+.px-menu{list-style:none;margin-top:20px}
+.px-menu li{color:#33ff33;font-size:16px;letter-spacing:4px;padding:8px 0;cursor:pointer}
+.px-menu li.selected::before{content:'► '}.px-menu li:not(.selected)::before{content:'  '}
+.px-coins{color:#ffcc00;font-size:12px;letter-spacing:2px;margin-top:24px;animation:blink 1.2s step-end infinite}
+.px-score{display:flex;justify-content:space-between;border-top:1px solid #33ff3330;margin-top:20px;padding-top:16px}
+.px-score-l{font-size:10px;color:#33ff3360;letter-spacing:2px}
+.px-score-n{font-size:22px;color:#33ff33;text-shadow:0 0 8px #33ff33}
+
+/* ══ 10 LONG-FORM READING ══ */
+#s10{background:#fffef9;color:#1a1a1a}
+.read-wrap{max-width:680px;margin:0 auto}
+.read-meta{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.read-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-family:'DM Sans';font-size:16px;font-weight:700;color:#fff}
+.read-author{font-family:'DM Sans';font-size:14px;font-weight:600;color:#1a1a1a}
+.read-date{font-family:'DM Sans';font-size:13px;color:#999;margin-top:2px}
+.read-h{font-family:'DM Serif Display',serif;font-size:clamp(32px,5vw,56px);line-height:1.15;color:#1a1a1a;font-weight:400}
+.read-deck{font-family:'DM Sans';font-size:18px;color:#555;margin-top:16px;line-height:1.6;font-weight:300}
+.read-rule{height:1px;background:#e8e8e8;margin:28px 0}
+.read-body{font-family:'Instrument Serif',serif;font-size:20px;line-height:1.85;color:#333}
+.read-body p{margin-bottom:24px}
+.read-body .first::first-letter{font-size:64px;float:left;line-height:0.8;margin:8px 8px 0 0;font-family:'DM Serif Display';color:#1a1a1a}
+.read-blockquote{border-left:3px solid #1a1a1a;padding:4px 24px;margin:28px 0}
+.read-blockquote p{font-family:'DM Serif Display';font-style:italic;font-size:22px;color:#444;margin:0}
+.read-footer{display:flex;align-items:center;gap:16px;margin-top:32px;padding-top:24px;border-top:1px solid #e8e8e8}
+.read-like{font-family:'DM Sans';font-size:14px;color:#999;cursor:pointer}
+.read-sub-btn{padding:10px 24px;background:#1a1a1a;color:#fff;border:none;border-radius:6px;font-family:'DM Sans';font-size:14px;font-weight:600;cursor:pointer}
+
+/* ══ 11 KINETIC TYPOGRAPHY ══ */
+#s11{background:#0a0a0a;overflow:hidden}
+.kine-wrap{position:relative;max-width:900px}
+.kine-ticker{overflow:hidden;white-space:nowrap;border-top:1px solid #222;border-bottom:1px solid #222;padding:12px 0;margin-bottom:40px}
+.kine-ticker-inner{display:inline-block;animation:ktick 12s linear infinite;font-family:'Unbounded';font-size:14px;font-weight:300;letter-spacing:4px;color:#444}
+@keyframes ktick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.kine-lines{overflow:hidden}
+.kine-line{display:flex;overflow:hidden}
+.kine-line-text{font-family:'Unbounded';font-size:clamp(32px,6vw,80px);font-weight:900;line-height:1.05;animation:kslide 0.8s cubic-bezier(0.16,1,0.3,1) both}
+.kine-line:nth-child(1) .kine-line-text{color:#fff;animation-delay:0.1s}
+.kine-line:nth-child(2) .kine-line-text{color:transparent;-webkit-text-stroke:1px #555;animation-delay:0.2s}
+.kine-line:nth-child(3) .kine-line-text{color:#ff3d00;animation-delay:0.3s}
+.kine-line:nth-child(4) .kine-line-text{color:#fff;animation-delay:0.4s}
+@keyframes kslide{from{transform:translateY(110%);opacity:0}to{transform:translateY(0);opacity:1}}
+.kine-meta{display:flex;justify-content:space-between;margin-top:40px;border-top:1px solid #1e1e1e;padding-top:24px}
+.kine-year{font-family:'Unbounded';font-size:12px;color:#333;letter-spacing:4px}
+.kine-scroll{font-family:'Space Mono';font-size:10px;color:#333;letter-spacing:3px}
+
+/* ══ 12 FINANCE/TRADING ══ */
+#s12{background:#0b0e13}
+.fin-wrap{max-width:860px}
+.fin-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #1a2030;padding-bottom:20px;margin-bottom:24px}
+.fin-brand{font-family:'Syne';font-size:18px;font-weight:800;color:#e2e8f0}
+.fin-time{font-family:'Space Mono';font-size:11px;color:#4a5568}
+.fin-asset{display:flex;align-items:flex-end;gap:16px;margin-bottom:28px}
+.fin-ticker{font-family:'Unbounded';font-size:13px;font-weight:700;color:#718096;letter-spacing:2px}
+.fin-price{font-family:'Unbounded';font-size:clamp(36px,6vw,72px);font-weight:900;color:#e2e8f0;line-height:1}
+.fin-change-up{font-family:'Space Mono';font-size:16px;color:#48bb78;margin-bottom:8px}
+.fin-chart-area{position:relative;height:120px;margin:20px 0}
+.fin-chart-svg{width:100%;height:100%}
+.fin-axis{display:flex;justify-content:space-between;font-family:'Space Mono';font-size:9px;color:#2d3748;margin-top:4px}
+.fin-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+.fin-card{background:#111720;border:1px solid #1a2030;border-radius:8px;padding:16px}
+.fin-card-l{font-family:'DM Sans';font-size:11px;color:#4a5568}
+.fin-card-v{font-family:'Space Mono';font-size:16px;color:#e2e8f0;margin-top:4px;font-weight:700}
+.fin-card-d{font-family:'Space Mono';font-size:11px;margin-top:4px}
+.fin-card-d.up{color:#48bb78}.fin-card-d.dn{color:#fc8181}
+.fin-btns{display:flex;gap:10px;margin-top:20px}
+.fin-buy{flex:1;padding:14px;background:#276749;border:1px solid #2f855a;border-radius:6px;color:#68d391;font-family:'Syne';font-size:14px;font-weight:700;cursor:pointer}
+.fin-sell{flex:1;padding:14px;background:#742a2a;border:1px solid #9b2c2c;border-radius:6px;color:#fc8181;font-family:'Syne';font-size:14px;font-weight:700;cursor:pointer}
+
+/* ══ 13 BLOB MORPH ══ */
+#s13{background:#fdf4ff;color:#1a1a1a;overflow:hidden}
+.blob-bg-1{position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,#f0abfc 0%,transparent 70%);animation:bmove 6s ease-in-out infinite alternate}
+.blob-bg-2{position:absolute;bottom:-150px;left:-150px;width:500px;height:500px;background:radial-gradient(circle,#c4b5fd 0%,transparent 70%);animation:bmove 8s ease-in-out infinite alternate-reverse}
+@keyframes bmove{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.2) translate(30px,20px)}}
+.blob-content{position:relative;z-index:1;max-width:600px}
+.blob-h{font-family:'Fraunces',serif;font-size:clamp(44px,8vw,96px);font-weight:900;line-height:1;color:#1a1a1a}
+.blob-wave{display:inline-block;animation:wave 0.5s ease-in-out infinite alternate}
+.blob-wave:nth-child(2){animation-delay:0.1s}.blob-wave:nth-child(3){animation-delay:0.2s}
+@keyframes wave{0%{transform:translateY(0)}100%{transform:translateY(-6px)}}
+.blob-sub{font-family:'Albert Sans';font-size:16px;color:#6b7280;margin-top:20px;line-height:1.75;font-weight:300}
+.blob-pill-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+.blob-pill{padding:10px 22px;border-radius:40px;font-family:'Albert Sans';font-size:14px;font-weight:600;cursor:pointer;transition:transform 0.2s;border:none}
+.blob-pill:hover{transform:scale(1.05)}
+.blob-pill.p1{background:#f0abfc;color:#701a75}.blob-pill.p2{background:#c4b5fd;color:#3730a3}
+.blob-pill.p3{background:#fde68a;color:#78350f}.blob-pill.p4{background:#a7f3d0;color:#064e3b}
+.blob-card-row{display:flex;gap:16px;margin-top:32px}
+.blob-card{background:rgba(255,255,255,0.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.8);border-radius:20px;padding:24px;flex:1}
+.blob-card-n{font-family:'Fraunces';font-size:36px;font-weight:900;color:#7c3aed}
+.blob-card-l{font-family:'Albert Sans';font-size:13px;color:#6b7280;margin-top:4px}
+
+/* ══ 14 WEATHER ══ */
+#s14{background:linear-gradient(180deg,#1a2a4a 0%,#0f1a2e 60%,#0a1020 100%);position:relative;overflow:hidden}
+.weather-stars{position:absolute;inset:0;pointer-events:none}
+.weather-star{position:absolute;border-radius:50%;background:#fff;animation:twinkle 3s ease-in-out infinite alternate}
+@keyframes twinkle{0%{opacity:0.2;transform:scale(1)}100%{opacity:0.8;transform:scale(1.3)}}
+.weather-card{position:relative;z-index:1;max-width:400px}
+.weather-city{font-family:'Raleway';font-size:13px;font-weight:200;letter-spacing:6px;color:rgba(255,255,255,0.5);text-transform:uppercase}
+.weather-temp{font-family:'Raleway';font-size:clamp(80px,14vw,160px);font-weight:100;line-height:1;color:#fff;letter-spacing:-4px;margin-top:8px}
+.weather-temp span{font-size:0.35em;vertical-align:top;margin-top:20px;display:inline-block;color:rgba(255,255,255,0.5);font-weight:200}
+.weather-desc{font-family:'Raleway';font-size:22px;font-weight:200;color:rgba(255,255,255,0.6);letter-spacing:4px;margin-top:8px}
+.weather-moon{font-size:80px;position:absolute;top:0;right:0;filter:drop-shadow(0 0 20px rgba(200,220,255,0.3))}
+.weather-row{display:flex;gap:0;margin-top:40px;border-top:1px solid rgba(255,255,255,0.08);padding-top:24px}
+.weather-col{flex:1;text-align:center;border-right:1px solid rgba(255,255,255,0.06)}
+.weather-col:last-child{border-right:none}
+.weather-col-icon{font-size:24px;margin-bottom:8px}
+.weather-col-v{font-family:'Raleway';font-size:20px;font-weight:300;color:#fff}
+.weather-col-l{font-family:'Raleway';font-size:11px;font-weight:200;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+.weather-week{display:flex;gap:8px;margin-top:24px}
+.weather-day{flex:1;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:12px 8px;text-align:center}
+.weather-day.today{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.15)}
+.weather-day-name{font-family:'Raleway';font-size:11px;font-weight:300;color:rgba(255,255,255,0.4);letter-spacing:1px}
+.weather-day-icon{font-size:20px;margin:8px 0}
+.weather-day-t{font-family:'Raleway';font-size:14px;font-weight:300;color:#fff}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#s1">01·Brutalist</a>
+  <a href="#s2">02·Editorial</a>
+  <a href="#s3">03·Cyberpunk</a>
+  <a href="#s4">04·Y2K Retro</a>
+  <a href="#s5">05·Paper Craft</a>
+  <a href="#s6">06·Terminal</a>
+  <a href="#s7">07·Claymorphism</a>
+  <a href="#s8">08·Bento Grid</a>
+  <a href="#s9">09·Pixel Arcade</a>
+  <a href="#s10">10·Long-form Read</a>
+  <a href="#s11">11·Kinetic Type</a>
+  <a href="#s12">12·Finance/Trading</a>
+  <a href="#s13">13·Blob Morph</a>
+  <a href="#s14">14·Weather</a>
+</nav>
+
+<!-- 01 BRUTALIST -->
+<section id="s1" class="section">
+  <div class="tag" style="color:#aaa">01 / Brutalist</div>
+  <div class="brut-grid">
+    <div class="brut-cell brut-accent">
+      <div class="brut-h1">BRUTAL<br>DESIGN<br>WORKS</div>
+      <p class="brut-body">Form follows function.<br>No decoration. No compromise.<br>Raw honesty in every pixel.</p>
+      <button class="brut-btn">ENTER →</button>
+    </div>
+    <div class="brut-cell" style="position:relative;overflow:hidden;">
+      <div style="font-family:'Space Mono';font-size:11px;letter-spacing:3px;color:#999;">COLLECTIONS / 2026</div>
+      <div style="font-family:'Bebas Neue';font-size:100px;line-height:0.85;margin-top:16px;">RAW<br>POWER</div>
+      <div class="brut-num">04</div>
+    </div>
+    <div class="brut-cell" style="grid-column:1/-1;display:flex;gap:24px;align-items:center;">
+      <div style="flex:1;height:4px;background:#000;"></div>
+      <span style="font-family:'Space Mono';font-size:11px;letter-spacing:4px;">SCROLL TO EXPLORE</span>
+      <div style="flex:1;height:4px;background:#ff0;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 EDITORIAL -->
+<section id="s2" class="section">
+  <div class="tag" style="color:#aaa">02 / Editorial Magazine</div>
+  <div class="mag-layout">
+    <div class="mag-left">
+      <div class="mag-cat">The quarterly review</div>
+      <h1 class="mag-h">DESIGN<br>MATTERS</h1>
+      <div class="mag-issue">Vol. XII, Issue 4<br>Spring 2026</div>
+    </div>
+    <div class="mag-divider"></div>
+    <div class="mag-right">
+      <div class="mag-pull">"Good design is not what looks beautiful — it is what solves a problem elegantly."</div>
+      <div class="mag-body"><span class="mag-drop">W</span>hen we think about interface design, we often default to convention. The safe path. But the work that truly endures is built on genuine curiosity and a willingness to question every assumption.<br><br>Typography is the voice of design. Color is its emotion. Layout is its logic. Only when these three forces align does something extraordinary emerge.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 CYBERPUNK -->
+<section id="s3" class="section">
+  <div class="tag" style="color:#00ffc840">03 / Cyberpunk</div>
+  <div class="cyber-scan"></div>
+  <div class="cyber-frame">
+    <h1 class="cyber-h">NEURAL<br>INTERFACE<br>v4.2</h1>
+    <div class="cyber-sub">CONNECTING TO MAINFRAME // SECURE CHANNEL</div>
+    <div class="cyber-bar"></div>
+    <div class="cyber-stats">
+      <div class="cyber-stat"><div class="cyber-stat-n">98.7%</div><div class="cyber-stat-l">Uptime</div></div>
+      <div class="cyber-stat"><div class="cyber-stat-n">4.2ms</div><div class="cyber-stat-l">Latency</div></div>
+      <div class="cyber-stat"><div class="cyber-stat-n">1.2PB</div><div class="cyber-stat-l">Storage</div></div>
+    </div>
+    <button class="cyber-btn">INITIALIZE SEQUENCE</button>
+  </div>
+</section>
+
+<!-- 04 Y2K -->
+<section id="s4" class="section">
+  <div class="tag" style="color:rgba(0,0,0,0.3)">04 / Y2K Retro</div>
+  <div class="y2k-window">
+    <div class="y2k-titlebar">
+      <div class="y2k-dot"></div><div class="y2k-dot"></div><div class="y2k-dot"></div>
+      <span class="y2k-title">✨ Welcome to the Future! — version 2.0.0.1</span>
+    </div>
+    <div class="y2k-content">
+      <div class="y2k-h">WELCOME</div>
+      <div class="y2k-blink">► YOU'VE GOT MAIL! ◄</div>
+      <div class="y2k-marquee"><span class="y2k-marquee-inner">⚡ NEW FEATURES AVAILABLE &nbsp;&nbsp; 🌟 CHECK OUT OUR PORTAL &nbsp;&nbsp; 💾 DOWNLOAD NOW FREE &nbsp;&nbsp; 🔥 HOT DEALS INSIDE &nbsp;&nbsp; ⚡ NEW FEATURES AVAILABLE &nbsp;&nbsp; 🌟 CHECK OUT OUR PORTAL &nbsp;&nbsp; 💾 DOWNLOAD NOW FREE &nbsp;&nbsp; 🔥 HOT DEALS INSIDE &nbsp;&nbsp;</span></div>
+      <div class="y2k-body"><span class="y2k-star">★</span> Welcome to the most RADICAL website on the internet!<br><span class="y2k-star">★</span> Compatible with Netscape 4.0 and Internet Explorer 5!<br><span class="y2k-star">★</span> Best viewed at 800×600 resolution!</div>
+      <button class="y2k-btn">ENTER SITE &gt;&gt;</button>
+    </div>
+  </div>
+</section>
+
+<!-- 05 PAPER CRAFT -->
+<section id="s5" class="section">
+  <div class="tag" style="color:#8b6a3a">05 / Paper Craft</div>
+  <div class="paper-wrap">
+    <div class="paper-card">
+      <div class="paper-fold"></div>
+      <h1 class="paper-h">The Art of<br><em>Making Things</em></h1>
+      <div class="paper-rule"></div>
+      <p class="paper-body">There is something irreplaceable about the handmade. The slight imperfection of a brushstroke, the warmth of pressed paper, the texture that no screen can fully render. This interface honors that tradition.</p>
+      <div class="paper-note">💡 "The best design is one that goes unnoticed—until you try to live without it."</div>
+      <div class="paper-tags"><span class="paper-tag">ANALOG</span><span class="paper-tag">TEXTURE</span><span class="paper-tag">WARMTH</span><span class="paper-tag">CRAFT</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 TERMINAL -->
+<section id="s6" class="section">
+  <div class="tag">06 / Terminal CLI</div>
+  <div class="term-window">
+    <div class="term-bar">
+      <div class="term-c red"></div><div class="term-c yel"></div><div class="term-c grn"></div>
+      <span class="term-path">~/projects/awesome-app — zsh</span>
+    </div>
+    <div class="term-body">
+      <div class="term-line"><span class="term-prompt">user@mac</span><span style="color:#8b949e">:</span><span style="color:#79c0ff">~/projects</span><span style="color:#8b949e">$</span>&nbsp;<span class="term-cmd">npx create-next-app@latest my-app</span></div>
+      <div class="term-out">✔ TypeScript? <span class="term-val">Yes</span> &nbsp; Tailwind? <span class="term-val">Yes</span> &nbsp; App Router? <span class="term-val">Yes</span></div>
+      <div class="term-out">Creating app in <span class="term-str">~/projects/my-app</span></div>
+      <div class="term-out" style="color:#56d364;">✔ Installation complete!</div>
+      <div style="margin-top:12px" class="term-line"><span class="term-prompt">user@mac</span><span style="color:#8b949e">:</span><span style="color:#79c0ff">~/projects</span><span style="color:#8b949e">$</span>&nbsp;<span class="term-cmd">cd my-app && npm run dev</span></div>
+      <div class="term-out"><span class="term-val">ready</span> — started server on 0.0.0.0:3000</div>
+      <div class="term-out"><span class="term-val">event</span> — compiled successfully in 842ms</div>
+      <div class="term-warn">⚠  Fast Refresh performed a full reload.</div>
+      <div style="margin-top:12px" class="term-line"><span class="term-prompt">user@mac</span><span style="color:#8b949e">:</span><span style="color:#79c0ff">~/projects/my-app</span><span style="color:#8b949e">$</span>&nbsp;<span class="term-cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 CLAYMORPHISM -->
+<section id="s7" class="section">
+  <div class="tag" style="color:#a855f7">07 / Claymorphism</div>
+  <div class="clay-wrap">
+    <div class="clay-card c1"><div class="clay-icon">🎨</div><div class="clay-h">Design Studio</div><div class="clay-sub">Create stunning visuals with our AI-powered canvas and smart tools.</div><button class="clay-btn">Open Canvas →</button></div>
+    <div class="clay-card c2"><div class="clay-icon">⚡</div><div class="clay-h">Fast Deploy</div><div class="clay-sub">Ship to production in seconds. Zero config, maximum speed and reliability.</div><button class="clay-btn">Get Started →</button></div>
+    <div class="clay-card c3"><div class="clay-icon">🌿</div><div class="clay-h">Green Infra</div><div class="clay-sub">100% renewable energy. Carbon neutral by design, not just offset.</div><button class="clay-btn">Learn More →</button></div>
+  </div>
+</section>
+
+<!-- 08 BENTO GRID -->
+<section id="s8" class="section">
+  <div class="tag">08 / Bento Grid</div>
+  <div class="bento">
+    <div class="bento-cell span2"><div class="bn-label">Platform</div><div class="bn-h">Build anything,<br>ship everywhere.</div><div class="bn-sub">From MVP to scale, our platform grows with you at every step.</div></div>
+    <div class="bento-cell" style="display:flex;flex-direction:column;justify-content:center;"><div class="bn-label">Active Users</div><div class="bn-big" style="color:#60a5fa;">2.4M</div><div class="bn-badge blue" style="margin-top:8px;">↑ 24% MoM</div></div>
+    <div class="bento-cell" style="display:flex;flex-direction:column;justify-content:center;"><div class="bn-label">Status</div><div class="bn-badge green" style="font-size:13px;padding:8px 16px;">● All systems go</div><div class="bn-sub" style="margin-top:12px;font-size:12px;">99.99% uptime last 90 days</div></div>
+    <div class="bento-cell span3"><div class="bn-label">Weekly Revenue</div><div class="bn-sparkline" id="bento-spark"></div><div style="display:flex;justify-content:space-between;font-family:'DM Sans';font-size:11px;color:#333;margin-top:4px;"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></div>
+    <div class="bento-cell"><div class="bn-label">Team</div><div class="bn-avatar-row"><div class="bn-avatar" style="background:linear-gradient(135deg,#f472b6,#a855f7)"></div><div class="bn-avatar" style="background:linear-gradient(135deg,#60a5fa,#34d399)"></div><div class="bn-avatar" style="background:linear-gradient(135deg,#fb923c,#f43f5e)"></div><div class="bn-avatar" style="background:linear-gradient(135deg,#a3e635,#06b6d4)"></div></div><div class="bn-sub" style="margin-top:10px;">+12 contributors</div></div>
+    <div class="bento-cell span2" style="background:linear-gradient(135deg,#1a1a30,#17171d);"><div class="bn-label">Integrations</div><div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;"><span class="bn-badge pink">Stripe</span><span class="bn-badge blue">GitHub</span><span class="bn-badge green">Vercel</span><span class="bn-badge pink">Slack</span><span class="bn-badge blue">Linear</span></div></div>
+    <div class="bento-cell"><div class="bn-label">NPS Score</div><div class="bn-big" style="color:#34d399;font-size:64px;">72</div><div class="bn-badge green" style="margin-top:8px;">Excellent</div></div>
+  </div>
+</section>
+
+<!-- 09 PIXEL ARCADE -->
+<section id="s9" class="section">
+  <div class="tag" style="color:#33ff3340">09 / Pixel Arcade</div>
+  <div class="px-wrap">
+    <div class="px-screen">
+      <div class="px-scanlines"></div>
+      <div class="px-title">SPACE<br>QUEST</div>
+      <div class="px-subtitle">/// ADVENTURE AWAITS ///</div>
+      <div class="px-divider">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+      <ul class="px-menu"><li class="selected">NEW GAME</li><li>LOAD SAVE</li><li>SETTINGS</li><li>HIGH SCORES</li></ul>
+      <div class="px-coins">★ INSERT COIN TO CONTINUE ★</div>
+      <div class="px-score">
+        <div class="px-score-item"><div class="px-score-l">HI-SCORE</div><div class="px-score-n">98720</div></div>
+        <div class="px-score-item"><div class="px-score-l">LEVEL</div><div class="px-score-n">07</div></div>
+        <div class="px-score-item"><div class="px-score-l">LIVES</div><div class="px-score-n">♥♥♥</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 LONG-FORM READING -->
+<section id="s10" class="section">
+  <div class="tag" style="color:#999">10 / Long-form Reading</div>
+  <div class="read-wrap">
+    <div class="read-meta"><div class="read-avatar">M</div><div><div class="read-author">Minh Thư Nguyễn</div><div class="read-date">March 20, 2026 · 6 min read</div></div></div>
+    <h1 class="read-h">The quiet revolution happening in interface design</h1>
+    <p class="read-deck">Why the most influential UX work of this decade won't come from Silicon Valley—and what that means for the rest of us.</p>
+    <div class="read-rule"></div>
+    <div class="read-body">
+      <p class="first">Something is shifting. You can feel it in the products that quietly become indispensable—not because of their marketing, but because of how they feel to use. A weight. A texture. A rhythm.</p>
+      <div class="read-blockquote"><p>The interface that disappears is not the one that's invisible—it's the one you stop thinking about because it thinks with you.</p></div>
+      <p>We have spent twenty years optimizing for retention. For engagement. For time-on-site. The tools have gotten sharper. But something is breaking.</p>
+    </div>
+    <div class="read-footer"><div class="read-like">♥ 2.4k</div><div class="read-like">💬 148</div><div style="flex:1;text-align:right;"><button class="read-sub-btn">Subscribe</button></div></div>
+  </div>
+</section>
+
+<!-- 11 KINETIC TYPOGRAPHY -->
+<section id="s11" class="section">
+  <div class="tag">11 / Kinetic Typography</div>
+  <div class="kine-wrap">
+    <div class="kine-ticker"><span class="kine-ticker-inner">WE BUILD · WE SHIP · WE ITERATE · WE GROW · WE CREATE · WE DISRUPT · WE BUILD · WE SHIP · WE ITERATE · WE GROW · WE CREATE · WE DISRUPT ·&nbsp;</span></div>
+    <div class="kine-lines">
+      <div class="kine-line"><div class="kine-line-text">MAKE IT</div></div>
+      <div class="kine-line"><div class="kine-line-text">MAKE IT</div></div>
+      <div class="kine-line"><div class="kine-line-text">HAPPEN.</div></div>
+      <div class="kine-line" style="margin-top:8px;"><div class="kine-line-text" style="font-size:clamp(14px,2vw,22px);font-weight:300;letter-spacing:8px;color:#444;">DESIGN · STRATEGY · TECHNOLOGY</div></div>
+    </div>
+    <div class="kine-meta"><div class="kine-year">© 2026</div><div class="kine-scroll">SCROLL ↓</div></div>
+  </div>
+</section>
+
+<!-- 12 FINANCE TRADING -->
+<section id="s12" class="section">
+  <div class="tag">12 / Finance · Trading</div>
+  <div class="fin-wrap">
+    <div class="fin-header"><div class="fin-brand">◈ TradeDesk</div><div class="fin-time" id="fin-time"></div></div>
+    <div class="fin-asset">
+      <div><div class="fin-ticker">BTC / USD</div><div class="fin-price">$87,412</div></div>
+      <div class="fin-change-up">▲ +2,341 (+2.75%)</div>
+    </div>
+    <div class="fin-chart-area">
+      <svg class="fin-chart-svg" viewBox="0 0 860 120" preserveAspectRatio="none">
+        <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#48bb78" stop-opacity="0.3"/><stop offset="100%" stop-color="#48bb78" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0,90 C40,85 60,70 100,65 C140,60 160,72 200,68 C240,64 260,50 300,45 C340,40 360,55 400,48 C440,41 460,30 500,25 C540,20 560,35 600,28 C640,21 660,15 700,18 C740,21 760,10 800,8 C830,6 845,5 860,4 L860,120 L0,120 Z" fill="url(#cg)"/>
+        <path d="M0,90 C40,85 60,70 100,65 C140,60 160,72 200,68 C240,64 260,50 300,45 C340,40 360,55 400,48 C440,41 460,30 500,25 C540,20 560,35 600,28 C640,21 660,15 700,18 C740,21 760,10 800,8 C830,6 845,5 860,4" fill="none" stroke="#48bb78" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="fin-axis"><span>09:00</span><span>11:00</span><span>13:00</span><span>15:00</span><span>17:00</span></div>
+    <div class="fin-cards">
+      <div class="fin-card"><div class="fin-card-l">24h High</div><div class="fin-card-v">$89,100</div><div class="fin-card-d up">↑ 3.9%</div></div>
+      <div class="fin-card"><div class="fin-card-l">24h Low</div><div class="fin-card-v">$84,200</div><div class="fin-card-d dn">↓ 1.4%</div></div>
+      <div class="fin-card"><div class="fin-card-l">Volume</div><div class="fin-card-v">$4.2B</div><div class="fin-card-d up">↑ 18%</div></div>
+      <div class="fin-card"><div class="fin-card-l">Market Cap</div><div class="fin-card-v">$1.7T</div><div class="fin-card-d up">↑ 2.1%</div></div>
+    </div>
+    <div class="fin-btns"><button class="fin-buy">▲ BUY</button><button class="fin-sell">▼ SELL</button></div>
+  </div>
+</section>
+
+<!-- 13 BLOB MORPH -->
+<section id="s13" class="section">
+  <div class="blob-bg-1"></div><div class="blob-bg-2"></div>
+  <div class="blob-content">
+    <div class="tag" style="color:#a855f7">13 / Blob Morphing UI</div>
+    <h1 class="blob-h"><span class="blob-wave">De</span><span class="blob-wave">li</span><span class="blob-wave">ght</span><br>in every<br>interaction.</h1>
+    <p class="blob-sub">Soft, playful interfaces that respond to you. Every tap and hover designed to delight.</p>
+    <div class="blob-pill-row"><button class="blob-pill p1">🎨 Design</button><button class="blob-pill p2">✨ Motion</button><button class="blob-pill p3">🔥 Interactions</button><button class="blob-pill p4">🌿 Accessible</button></div>
+    <div class="blob-card-row">
+      <div class="blob-card"><div class="blob-card-n">98%</div><div class="blob-card-l">Joy score</div></div>
+      <div class="blob-card"><div class="blob-card-n">4.9★</div><div class="blob-card-l">User rating</div></div>
+      <div class="blob-card"><div class="blob-card-n">∞</div><div class="blob-card-l">Possibilities</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 WEATHER -->
+<section id="s14" class="section">
+  <div id="weather-stars" class="weather-stars"></div>
+  <div class="tag" style="color:rgba(255,255,255,0.2)">14 / Weather · Ambient</div>
+  <div class="weather-card">
+    <div style="position:relative;">
+      <div class="weather-moon">🌕</div>
+      <div class="weather-city">Hà Nội, Việt Nam</div>
+      <div class="weather-temp">24<span>°C</span></div>
+      <div class="weather-desc">Clear Night</div>
+    </div>
+    <div class="weather-row">
+      <div class="weather-col"><div class="weather-col-icon">💧</div><div class="weather-col-v">78%</div><div class="weather-col-l">Humidity</div></div>
+      <div class="weather-col"><div class="weather-col-icon">💨</div><div class="weather-col-v">12km/h</div><div class="weather-col-l">Wind</div></div>
+      <div class="weather-col"><div class="weather-col-icon">👁</div><div class="weather-col-v">10km</div><div class="weather-col-l">Visibility</div></div>
+    </div>
+    <div class="weather-week">
+      <div class="weather-day today"><div class="weather-day-name">NOW</div><div class="weather-day-icon">🌕</div><div class="weather-day-t">24°</div></div>
+      <div class="weather-day"><div class="weather-day-name">FRI</div><div class="weather-day-icon">⛅</div><div class="weather-day-t">28°</div></div>
+      <div class="weather-day"><div class="weather-day-name">SAT</div><div class="weather-day-icon">🌧</div><div class="weather-day-t">22°</div></div>
+      <div class="weather-day"><div class="weather-day-name">SUN</div><div class="weather-day-icon">☀️</div><div class="weather-day-t">30°</div></div>
+      <div class="weather-day"><div class="weather-day-name">MON</div><div class="weather-day-icon">⛅</div><div class="weather-day-t">27°</div></div>
+    </div>
+  </div>
+</section>
+
+<script>
+const spark=document.getElementById('bento-spark');
+[30,55,42,70,60,85,75].forEach(v=>{const b=document.createElement('div');b.className='bn-spark';b.style.height=v+'%';spark.appendChild(b)});
+function updateClock(){const el=document.getElementById('fin-time');if(el)el.textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+updateClock();setInterval(updateClock,1000);
+const sw=document.getElementById('weather-stars');
+for(let i=0;i<60;i++){const s=document.createElement('div');s.className='weather-star';s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${Math.random()*2+1}px;height:${Math.random()*2+1}px;animation-delay:${Math.random()*3}s;animation-duration:${2+Math.random()*3}s`;sw.appendChild(s)}
+document.querySelectorAll('.nav a').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'})})});
+</script>
+</body>
+</html>
