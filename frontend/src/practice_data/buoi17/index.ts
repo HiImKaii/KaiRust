@@ -384,7 +384,7 @@ export const buoi17_lessons: Lesson[] = [
     `,
     testCases: [
       { input: '4\nword\nlocalization\ninternationalization\npneumonoultramicroscopicsilicovolcanoconiosis', expectedOutput: 'word\nl10n\ni18n\np43s' },
-      { input: '2\nab\nabcde</td><td>ab\nabcde', hidden: true },
+      { input: '2\nab\nabcde', expectedOutput: 'ab\nabcde', hidden: true },
     ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,

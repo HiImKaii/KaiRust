@@ -25,6 +25,9 @@ import { buoi18_lessons } from './buoi18';
 import { buoi19_lessons } from './buoi19';
 import { buoi20_lessons } from './buoi20';
 import { buoi21_lessons } from './buoi21';
+import { buoi22_lessons } from './buoi22';
+import { buoi23_lessons } from './buoi23';
+import { buoi24_lessons } from './buoi24';
 
 // =====================================================
 // Export all chapters - Each session is a chapter with multiple lessons
@@ -156,6 +159,24 @@ export const ch28_chapters: Chapter[] = [
     title: 'Buổi 21: Ôn Tập Tổng Hợp',
     introduction: '<p>Buổi 21 - Các bài ôn tập tổng hợp: quản lý sinh viên menu-driven, từ thuận nghịch, phân số, sắp xếp mặt hàng/thí sinh, tìm thủ khoa</p>',
     lessons: buoi21_lessons,
+  },
+  {
+    id: 'ch28_buoi22',
+    title: 'Buổi 22: File & Struct Nâng cao',
+    introduction: '<p>Buổi 22 - Các bài menu-driven với struct và file nhị phân: chi tiêu, sản phẩm, thiết bị, sinh viên</p>',
+    lessons: buoi22_lessons,
+  },
+  {
+    id: 'ch28_buoi23',
+    title: 'Buổi 23: Con Trỏ (Pointers)',
+    introduction: '<p>Buổi 23 - Các bài tập về con trỏ (Pointer) trong C: gán giá trị, hoán đổi, tổng mảng, độ dài chuỗi, số nguyên tố, ma trận, viết hoa/thường</p>',
+    lessons: buoi23_lessons,
+  },
+  {
+    id: 'ch28_buoi24',
+    title: 'Buổi 24: Danh Sách Liên Kết Đơn',
+    introduction: '<p>Buổi 24 - Các bài tập về danh sách liên kết đơn (Singly Linked List): thêm, xóa, tìm kiếm, sắp xếp nhân viên, học sinh, hộp sữa</p>',
+    lessons: buoi24_lessons,
   },
 ];
 
