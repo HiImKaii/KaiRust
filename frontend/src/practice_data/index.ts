@@ -22,6 +22,7 @@ import { buoi15_lessons } from './buoi15';
 import { buoi16_lessons } from './buoi16';
 import { buoi17_lessons } from './buoi17';
 import { buoi18_lessons } from './buoi18';
+import { buoi19_lessons } from './buoi19';
 
 // =====================================================
 // Export all chapters - Each session is a chapter with multiple lessons
@@ -135,6 +136,12 @@ export const ch28_chapters: Chapter[] = [
     title: 'Buổi 18: Xử lý Chuỗi Nâng cao',
     introduction: '<p>Buổi 18 - Các bài tập xử lý chuỗi nâng cao: chuẩn hóa tên, tạo email, tách/tách đảo ngược, đếm tần suất, loại bỏ từ trùng</p>',
     lessons: buoi18_lessons,
+  },
+  {
+    id: 'ch28_buoi19',
+    title: 'Buổi 19: Xử lý Chuỗi - Codeforces',
+    introduction: '<p>Buổi 19 - Các bài tập xử lý chuỗi từ Codeforces: bàn phím, trai gái, chat, dịch thuật, đếm, pangram, và các bài toán chuỗi nâng cao</p>',
+    lessons: buoi19_lessons,
   },
 ];
 

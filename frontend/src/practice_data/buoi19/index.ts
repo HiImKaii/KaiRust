@@ -298,7 +298,7 @@ export const buoi19_lessons: Lesson[] = [
     testCases: [
       { input: '35\nTheQuickBrownFoxJumpsOverTheLazyDog', expectedOutput: 'YES' },
       { input: '10\nabcdefghij', expectedOutput: 'NO', hidden: true },
-      { input: '26\nTheQuickBrownFoxJumpsOver</td><td>NO', expectedOutput: 'NO', hidden: true },
+      { input: '26\nTheQuickBrownFoxJumps', expectedOutput: 'NO', hidden: true },
     ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
@@ -342,10 +342,17 @@ export const buoi19_lessons: Lesson[] = [
       <h3>Output</h3>
       <p>Với mỗi test case, in một dòng: số 0 tối thiểu cần xóa.</p>
       <h3>Ví dụ</h3>
-      <table class="comparison-table">
-        <tr><th>Input</th><th>Output</th></tr>
-        <tr><td>4<br>aaa bbb ccc abc bca bca aabb bbaa baba imi mii iim</td><td>NO YES YES NO</td></tr>
-      </table>
+      <pre><b>Input</b>
+4
+010011
+0011
+1111
+010
+<b>Output</b>
+1
+0
+0
+0</pre>
     `,
     testCases: [
       { input: '4\n010011\n0011\n1111\n010', expectedOutput: '1\n0\n0\n0' },
@@ -367,14 +374,19 @@ export const buoi19_lessons: Lesson[] = [
       <h3>Output</h3>
       <p>Mỗi test: "YES" hoặc "NO".</p>
       <h3>Ví dụ</h3>
-      <table class="comparison-table">
-        <tr><th>Input</th><th>Output</th></tr>
-        <tr><td>2</td></tr>
-      </table>
+      <pre><b>Input</b>
+2
+13
+7818005553535
+11
+31415926535
+<b>Output</b>
+YES
+NO</pre>
     `,
     testCases: [
-      { input: '2\n13\n31415926535\n11\n80011223388', expectedOutput: 'NO\nYES' },
-      { input: '2\n5\n80000\n11\n70011223388', expectedOutput: 'NO\nNO', hidden: true },
+      { input: '2\n13\n7818005553535\n11\n31415926535', expectedOutput: 'YES\nNO' },
+      { input: '2\n5\n80000\n11\n70011223388', expectedOutput: 'YES\nNO', hidden: true },
     ],
     isExercise: true,
     defaultCode: DEFAULT_CODE,
@@ -394,7 +406,7 @@ export const buoi19_lessons: Lesson[] = [
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
-        <tr><td>4<br>aaa bbb ccc abc bca bca aabb bbaa baba imi mii iim</td><td>NO YES YES NO</td></tr>
+        <tr><td>4 1234</td><td>6</td></tr>
       </table>
     `,
     testCases: [
@@ -420,7 +432,7 @@ export const buoi19_lessons: Lesson[] = [
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
-        <tr><td>4<br>aaa bbb ccc abc bca bca aabb bbaa baba imi mii iim</td><td>NO YES YES NO</td></tr>
+        <tr><td>4 3 aaa bbb ccc abc bca bca aabb bbaa baba imi mii iim</td><td>NO YES YES NO</td></tr>
       </table>
     `,
     testCases: [
@@ -445,7 +457,7 @@ export const buoi19_lessons: Lesson[] = [
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
-        <tr><td>4<br>aaa bbb ccc abc bca bca aabb bbaa baba imi mii iim</td><td>NO YES YES NO</td></tr>
+        <tr><td>4 bbbb</td><td>2 abab</td></tr>
       </table>
     `,
     testCases: [
@@ -576,7 +588,7 @@ export const buoi19_lessons: Lesson[] = [
       <h3>Ví dụ</h3>
       <table class="comparison-table">
         <tr><th>Input</th><th>Output</th></tr>
-        <tr><td>4<br>aaa bbb ccc abc bca bca aabb bbaa baba imi mii iim</td><td>NO YES YES NO</td></tr>
+        <tr><td>4 a zzaaz ccff cbddbb</td><td>a z a c</td></tr>
       </table>
     `,
     testCases: [
