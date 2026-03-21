@@ -23,6 +23,8 @@ import { buoi16_lessons } from './buoi16';
 import { buoi17_lessons } from './buoi17';
 import { buoi18_lessons } from './buoi18';
 import { buoi19_lessons } from './buoi19';
+import { buoi20_lessons } from './buoi20';
+import { buoi21_lessons } from './buoi21';
 
 // =====================================================
 // Export all chapters - Each session is a chapter with multiple lessons
@@ -142,6 +144,18 @@ export const ch28_chapters: Chapter[] = [
     title: 'Buổi 19: Xử lý Chuỗi - Codeforces',
     introduction: '<p>Buổi 19 - Các bài tập xử lý chuỗi từ Codeforces: bàn phím, trai gái, chat, dịch thuật, đếm, pangram, và các bài toán chuỗi nâng cao</p>',
     lessons: buoi19_lessons,
+  },
+  {
+    id: 'ch28_buoi20',
+    title: 'Buổi 20: Struct (Cấu trúc dữ liệu)',
+    introduction: '<p>Buổi 20 - Các bài tập về cấu trúc (Struct) trong C: nhân viên, học sinh, điểm, hộp sữa, phòng khách sạn, sách, tỉnh, vé xem phim, mặt hàng, chuyến bay</p>',
+    lessons: buoi20_lessons,
+  },
+  {
+    id: 'ch28_buoi21',
+    title: 'Buổi 21: Ôn Tập Tổng Hợp',
+    introduction: '<p>Buổi 21 - Các bài ôn tập tổng hợp: quản lý sinh viên menu-driven, từ thuận nghịch, phân số, sắp xếp mặt hàng/thí sinh, tìm thủ khoa</p>',
+    lessons: buoi21_lessons,
   },
 ];
 
