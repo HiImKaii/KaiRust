@@ -32,7 +32,7 @@ export interface Course {
 export const theoryCourse: Course = {
     id: 'kairust_theory',
     title: 'The Rust Programming Language',
-    title_vi: 'Lập trình Rust từ cơ bản đến nâng cao',
+    title_vi: 'The Rust',
     description: 'Học Rust qua cuốn sách "The Rust Programming Language" (The Book) — tài liệu chính thức từ đội ngũ phát triển Rust.',
     icon: 'menu_book',
     gradient: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
@@ -46,7 +46,7 @@ export const theoryCourse: Course = {
 export const practiceCourse: Course = {
     id: 'kairust_28tech_c',
     title: '28Tech - Lập trình C',
-    title_vi: '28Tech - Lập trình C',
+    title_vi: 'Luyện Tập',
     description: 'Khóa học lập trình C bài bản theo giáo trình 28Tech — từ cơ bản đến nâng cao với hơn 350 bài tập thực hành.',
     icon: 'code',
     gradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',

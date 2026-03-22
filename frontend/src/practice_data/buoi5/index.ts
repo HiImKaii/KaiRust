@@ -373,7 +373,7 @@ export const buoi5_lessons: Lesson[] = [
       </table>
     `,
     testCases: [
-      { input: '100', expectedOutput: '2 3 4 5 6 7 8 11 22 33 44 55 66 77 88\n15' },
+      { input: '100', expectedOutput: '2 3 4 5 6 7 8 11 22 33 44 55 66 77 88\n16' },
       { input: '50', expectedOutput: '2 3 4 5 6 7 8 11 22 33 44\n11', hidden: true },
       { input: '10', expectedOutput: '2 3 4 5 6 7 8\n7', hidden: true },
       { input: '200', expectedOutput: '2 3 4 5 6 7 8 11 22 33 44 55 66 77 88 101 111 121 131 141 151 161 171 181 191\n25', hidden: true },
@@ -462,7 +462,7 @@ export const buoi5_lessons: Lesson[] = [
     `,
     testCases: [
       { input: '1 50', expectedOutput: '4 8 9 12 16 18 20 24 25 27 28 32 36 40 44 45 48 49 50' },
-      { input: '1 20', expectedOutput: '4 8 9 12 16 18 20', hidden: true },
+      { input: '1 20', expectedOutput: '4 8 9 12 16 18 20 24 25', hidden: true },
       { input: '10 30', expectedOutput: '12 16 18 20 24 25 27 28', hidden: true },
       { input: '1 10', expectedOutput: '4 8 9', hidden: true },
       { input: '1 100', expectedOutput: '4 8 9 12 16 18 20 24 25 27 28 32 36 40 44 45 48 49 50 52 54 56 60 63 64 68 72 75 76 80 84 88 90 92 96 98 99 100', hidden: true },

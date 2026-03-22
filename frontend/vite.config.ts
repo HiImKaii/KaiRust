@@ -8,8 +8,15 @@ function cleanUrlPlugin(): Plugin {
             server.middlewares.use((req: any, res: any, next: any) => {
                 const url = req.url || '';
                 
-                // 1. Nếu URL là /index.html thì redirect về /
+                // 1. Nếu URL là /index.html thì redirect về /theory
                 if (url === '/index.html') {
+                    res.writeHead(301, { Location: '/theory' });
+                    res.end();
+                    return;
+                }
+
+                // 1b. /dashboard.html → /
+                if (url === '/dashboard.html') {
                     res.writeHead(301, { Location: '/' });
                     res.end();
                     return;
@@ -29,8 +36,12 @@ function cleanUrlPlugin(): Plugin {
                 // Loại trừ các tệp tĩnh có dấu chấm (như .js, .css, .png) và các internal paths của Vite (/@...)
                 // và loại trừ /api/* và /ws/* vì đây là proxy endpoint
                 const [path, query] = url.split('?');
-                if (!path.includes('.') && path !== '/' && !path.startsWith('/@') && !path.startsWith('/api') && !path.startsWith('/ws')) {
-                    req.url = path + '.html' + (query ? '?' + query : '');
+                if (!path.includes('.') && !path.startsWith('/@') && !path.startsWith('/api') && !path.startsWith('/ws')) {
+                    let mapped = path;
+                    if (mapped === '/') mapped = '/dashboard.html';
+                    else if (mapped === '/theory') mapped = '/index.html';
+                    else mapped = mapped + '.html';
+                    req.url = mapped + (query ? '?' + query : '');
                 }
 
                 next();
@@ -57,9 +68,9 @@ export default defineConfig({
     build: {
         rollupOptions: {
             input: {
-                main: 'index.html',
-                practice: 'practice.html',
-                dashboard: 'dashboard.html'
+                dashboard: 'dashboard.html',
+                theory: 'index.html',
+                practice: 'practice.html'
             }
         }
     }
