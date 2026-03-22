@@ -745,4 +745,5 @@ async function loadAndShowAchievements() {
 (window as any).showAchievementsModal = showAchievementsModal;
 
 // Export for use in other modules
-export { loadAndShowAchievements, showAchievementsModal };
+export { loadAndShowAchievements, showAchievementsModal, fetchAchievements, getCachedAchievements };
+export type { AchievementStats };

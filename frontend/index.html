@@ -291,6 +291,117 @@
   <div id="achievements-modal" class="modal-overlay hidden">
   </div>
 
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal-overlay hidden">
+    <div class="modal-content settings-modal">
+      <div class="modal-header">
+        <h2 id="settings-modal-title">Cài đặt tài khoản</h2>
+        <button class="modal-close" id="settings-modal-close">&times;</button>
+      </div>
+      <div class="modal-body settings-body">
+        <!-- Profile Header Card -->
+        <div class="settings-profile-header">
+          <div class="settings-avatar-wrapper">
+            <div class="settings-avatar" id="settings-avatar-preview">U</div>
+            <button class="settings-avatar-edit" id="settings-avatar-edit-btn" title="Đổi ảnh đại diện">
+              <span class="material-symbols-outlined">edit</span>
+            </button>
+          </div>
+          <div class="settings-profile-info">
+            <div class="settings-username" id="settings-display-name">Username</div>
+            <div class="settings-email" id="settings-email-display">email@example.com</div>
+            <div class="settings-join-date" id="settings-join-date"></div>
+          </div>
+        </div>
+
+        <!-- Bento Grid Settings -->
+        <div class="settings-bento-grid">
+          <!-- Card 1: Thông tin cơ bản -->
+          <div class="settings-bento-card settings-card-primary">
+            <div class="settings-card-header">
+              <span class="material-symbols-outlined settings-card-icon">person</span>
+              <h3>Thông tin cơ bản</h3>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-group">
+                <label for="settings-fullname">Họ và tên</label>
+                <input type="text" id="settings-fullname" placeholder="Nhập họ và tên của bạn" maxlength="100">
+              </div>
+              <div class="form-group">
+                <label for="settings-company">Trường học / Công ty</label>
+                <input type="text" id="settings-company" placeholder="Ví dụ: Đại học Bách Khoa" maxlength="100">
+              </div>
+              <div class="form-group">
+                <label for="settings-location">Địa điểm</label>
+                <input type="text" id="settings-location" placeholder="Ví dụ: TP. Hồ Chí Minh" maxlength="100">
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Giới thiệu -->
+          <div class="settings-bento-card settings-card-secondary">
+            <div class="settings-card-header">
+              <span class="material-symbols-outlined settings-card-icon">info</span>
+              <h3>Giới thiệu</h3>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-group">
+                <label for="settings-bio">Tiểu sử</label>
+                <textarea id="settings-bio" rows="4" placeholder="Giới thiệu về bản thân bạn..." maxlength="500"></textarea>
+                <span class="char-counter"><span id="bio-char-count">0</span>/500</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Liên kết & Kết nối -->
+          <div class="settings-bento-card settings-card-accent">
+            <div class="settings-card-header">
+              <span class="material-symbols-outlined settings-card-icon">link</span>
+              <h3>Liên kết & Kết nối</h3>
+            </div>
+            <div class="settings-card-body">
+              <div class="form-group">
+                <label for="settings-github">
+                  <span class="material-symbols-outlined input-icon">code</span>
+                  GitHub
+                </label>
+                <input type="text" id="settings-github" placeholder="username" maxlength="50">
+              </div>
+              <div class="form-group">
+                <label for="settings-website">
+                  <span class="material-symbols-outlined input-icon">language</span>
+                  Website
+                </label>
+                <input type="url" id="settings-website" placeholder="https://yourwebsite.com" maxlength="200">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Avatar URL Modal (hidden by default) -->
+        <div class="settings-avatar-url-panel hidden" id="settings-avatar-panel">
+          <label for="settings-avatar-url">Nhập URL ảnh đại diện</label>
+          <input type="url" id="settings-avatar-url" placeholder="https://example.com/avatar.png">
+          <div class="settings-avatar-preview-small">
+            <img id="settings-avatar-img-preview" src="" alt="Avatar preview" style="display:none;">
+          </div>
+        </div>
+
+        <!-- Account Actions -->
+        <div class="settings-account-actions">
+          <button class="btn btn-secondary" id="settings-logout-btn">
+            <span class="material-symbols-outlined">logout</span>
+            Đăng xuất
+          </button>
+          <button class="btn btn-primary glow-purple" id="settings-save-btn">
+            <span class="material-symbols-outlined">save</span>
+            Lưu thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="/src/main.ts"></script>
 </body>
 

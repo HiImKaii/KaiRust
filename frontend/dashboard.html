@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/jpeg" href="/Web_icon.jpg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KaiRust — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/dashboard.css" />
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="dash-modal-overlay hidden">
+    <div class="dash-modal-content settings-modal">
+      <div class="dash-modal-header">
+        <h2>Cài đặt tài khoản</h2>
+        <button class="dash-modal-close" id="settings-modal-close">&times;</button>
+      </div>
+      <div class="dash-modal-body">
+        <!-- Profile Header -->
+        <div class="dash-settings-profile-header">
+          <div class="dash-settings-avatar-wrapper">
+            <div class="dash-settings-avatar" id="dash-settings-avatar">U</div>
+            <button class="dash-settings-avatar-edit" id="dash-settings-avatar-edit" title="Đổi ảnh đại diện">Sửa</button>
+          </div>
+          <div class="dash-settings-profile-info">
+            <div class="dash-settings-username" id="dash-settings-username">Username</div>
+            <div class="dash-settings-email" id="dash-settings-email">email@example.com</div>
+          </div>
+        </div>
+
+        <!-- Avatar Upload Panel -->
+        <div class="dash-settings-avatar-panel hidden" id="dash-settings-avatar-panel">
+          <label for="dash-settings-avatar-file">Tải ảnh lên</label>
+          <input type="file" id="dash-settings-avatar-file" accept="image/*">
+          <div class="dash-settings-avatar-preview">
+            <img id="dash-settings-img-preview" src="" alt="preview" style="display:none;">
+          </div>
+        </div>
+
+        <!-- Bento Grid -->
+        <div class="dash-settings-bento">
+          <!-- Card 1: Thông tin cơ bản -->
+          <div class="dash-settings-card">
+            <div class="dash-settings-card-header">
+              <h3>Thông tin cơ bản</h3>
+            </div>
+            <div class="dash-settings-card-body">
+              <div class="dash-form-group">
+                <label for="dash-settings-fullname">Họ và tên</label>
+                <input type="text" id="dash-settings-fullname" placeholder="Nhập họ và tên của bạn" maxlength="100">
+              </div>
+              <div class="dash-form-group">
+                <label for="dash-settings-company">Trường học / Công ty</label>
+                <input type="text" id="dash-settings-company" placeholder="Ví dụ: Đại học Bách Khoa" maxlength="100">
+              </div>
+              <div class="dash-form-group">
+                <label for="dash-settings-location">Địa điểm</label>
+                <input type="text" id="dash-settings-location" placeholder="Ví dụ: TP. Hồ Chí Minh" maxlength="100">
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Giới thiệu -->
+          <div class="dash-settings-card">
+            <div class="dash-settings-card-header">
+              <h3>Giới thiệu</h3>
+            </div>
+            <div class="dash-settings-card-body">
+              <div class="dash-form-group">
+                <label for="dash-settings-bio">Tiểu sử</label>
+                <textarea id="dash-settings-bio" rows="4" placeholder="Giới thiệu về bản thân bạn..." maxlength="500"></textarea>
+                <span class="dash-char-counter"><span id="dash-bio-count">0</span>/500</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Liên kết & Kết nối -->
+          <div class="dash-settings-card">
+            <div class="dash-settings-card-header">
+              <h3>Liên kết & Kết nối</h3>
+            </div>
+            <div class="dash-settings-card-body">
+              <div class="dash-form-group">
+                <label for="dash-settings-github">GitHub</label>
+                <input type="text" id="dash-settings-github" placeholder="username" maxlength="50">
+              </div>
+              <div class="dash-form-group">
+                <label for="dash-settings-website">Website</label>
+                <input type="url" id="dash-settings-website" placeholder="https://yourwebsite.com" maxlength="200">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="dash-settings-actions">
+          <button class="btn-primary-black" id="dash-settings-logout" style="background: transparent; color: #6b7280; border: 1px solid #e5e7eb;">
+            Đăng xuất
+          </button>
+          <button class="btn-primary-black" id="dash-settings-save">
+            Lưu thay đổi
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/src/dashboard_main.ts"></script>
+</body>
+</html>

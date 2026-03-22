@@ -60,6 +60,15 @@ fn run_migrations(conn: &Connection) -> SqliteResult<()> {
     // Add password column if not exists (for existing databases)
     conn.execute("ALTER TABLE users ADD COLUMN password TEXT NOT NULL DEFAULT ''", []).ok();
 
+    // Add profile columns if not exist (for existing databases)
+    conn.execute("ALTER TABLE users ADD COLUMN full_name TEXT NOT NULL DEFAULT ''", []).ok();
+    conn.execute("ALTER TABLE users ADD COLUMN bio TEXT NOT NULL DEFAULT ''", []).ok();
+    conn.execute("ALTER TABLE users ADD COLUMN avatar_url TEXT NOT NULL DEFAULT ''", []).ok();
+    conn.execute("ALTER TABLE users ADD COLUMN location TEXT NOT NULL DEFAULT ''", []).ok();
+    conn.execute("ALTER TABLE users ADD COLUMN github_username TEXT NOT NULL DEFAULT ''", []).ok();
+    conn.execute("ALTER TABLE users ADD COLUMN website TEXT NOT NULL DEFAULT ''", []).ok();
+    conn.execute("ALTER TABLE users ADD COLUMN company_school TEXT NOT NULL DEFAULT ''", []).ok();
+
     // Create user_sessions table
     conn.execute(
         "CREATE TABLE IF NOT EXISTS user_sessions (

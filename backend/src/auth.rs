@@ -8,7 +8,7 @@ use axum::{
     extract::State,
     http::{HeaderMap, StatusCode},
     response::{IntoResponse, Json, Response},
-    routing::{get, post},
+    routing::{get, post, put},
     Router,
 };
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
@@ -57,6 +57,24 @@ pub struct UserInfo {
     pub id: i64,
     pub username: String,
     pub email: String,
+    pub full_name: String,
+    pub bio: String,
+    pub avatar_url: String,
+    pub location: String,
+    pub github_username: String,
+    pub website: String,
+    pub company_school: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ProfileUpdateRequest {
+    pub full_name: Option<String>,
+    pub bio: Option<String>,
+    pub avatar_url: Option<String>,
+    pub location: Option<String>,
+    pub github_username: Option<String>,
+    pub website: Option<String>,
+    pub company_school: Option<String>,
 }
 
 // ============== JWT Secret ==============
@@ -88,6 +106,7 @@ pub fn create_auth_router(state: AuthState) -> Router {
         .route("/api/auth/login", post(login))
         .route("/api/auth/forgot-password", post(forgot_password))
         .route("/api/auth/me", get(get_current_user))
+        .route("/api/auth/profile", put(update_profile))
         .with_state(state)
 }
 
@@ -166,13 +185,23 @@ pub async fn register(
         ).map_err(|e| e.to_string())?;
 
         // Get the inserted user
-        let mut stmt = conn.prepare("SELECT id, username, email FROM users WHERE email = ?1")
-            .map_err(|e| e.to_string())?;
+        let mut stmt = conn.prepare(
+            "SELECT id, username, email, COALESCE(full_name, ''), COALESCE(bio, ''),
+             COALESCE(avatar_url, ''), COALESCE(location, ''), COALESCE(github_username, ''),
+             COALESCE(website, ''), COALESCE(company_school, '') FROM users WHERE email = ?1"
+        ).map_err(|e| e.to_string())?;
         let user = stmt.query_row(params![&email], |row| {
             Ok(UserInfo {
                 id: row.get(0)?,
                 username: row.get(1)?,
                 email: row.get(2)?,
+                full_name: row.get(3)?,
+                bio: row.get(4)?,
+                avatar_url: row.get(5)?,
+                location: row.get(6)?,
+                github_username: row.get(7)?,
+                website: row.get(8)?,
+                company_school: row.get(9)?,
             })
         }).map_err(|e| e.to_string())?;
 
@@ -247,21 +276,31 @@ pub async fn login(
         let db_path = std::path::PathBuf::from(db_dir).join("kairust.db");
         let conn = Connection::open(&db_path).map_err(|e| e.to_string())?;
 
-        let mut stmt = conn.prepare("SELECT id, username, email, password_hash FROM users WHERE email = ?1 OR username = ?1")
-            .map_err(|e| e.to_string())?;
+        let mut stmt = conn.prepare(
+            "SELECT id, username, email, COALESCE(full_name, ''), COALESCE(bio, ''),
+             COALESCE(avatar_url, ''), COALESCE(location, ''), COALESCE(github_username, ''),
+             COALESCE(website, ''), COALESCE(company_school, ''), password_hash FROM users WHERE email = ?1 OR username = ?1"
+        ).map_err(|e| e.to_string())?;
         let user = stmt.query_row(params![&email], |row| {
             Ok((
                 row.get::<_, i64>(0)?,
                 row.get::<_, String>(1)?,
                 row.get::<_, String>(2)?,
                 row.get::<_, String>(3)?,
+                row.get::<_, String>(4)?,
+                row.get::<_, String>(5)?,
+                row.get::<_, String>(6)?,
+                row.get::<_, String>(7)?,
+                row.get::<_, String>(8)?,
+                row.get::<_, String>(9)?,
+                row.get::<_, String>(10)?,
             ))
         }).map_err(|e| e.to_string())?;
 
         Ok::<_, String>(user)
     }).await;
 
-    let (user_id, username, email, stored_hash) = match result {
+    let (user_id, username, email, full_name, bio, avatar_url, location, github_username, website, company_school, stored_hash) = match result {
         Ok(Ok(r)) => r,
         _ => {
             return (
@@ -317,6 +356,13 @@ pub async fn login(
         id: user_id,
         username: username.clone(),
         email: email.clone(),
+        full_name,
+        bio,
+        avatar_url,
+        location,
+        github_username,
+        website,
+        company_school,
     };
 
     // Generate JWT token
@@ -328,11 +374,7 @@ pub async fn login(
             success: true,
             message: "Login successful".to_string(),
             token,
-            user: Some(UserInfo {
-                id: user_id,
-                username,
-                email,
-            }),
+            user: Some(user),
         }),
     )
     .into_response()
@@ -479,13 +521,23 @@ pub async fn get_current_user(
         let db_path = std::path::PathBuf::from(db_dir).join("kairust.db");
         let conn = Connection::open(&db_path).map_err(|e| e.to_string())?;
 
-        let mut stmt = conn.prepare("SELECT id, username, email FROM users WHERE id = ?1")
-            .map_err(|e| e.to_string())?;
+        let mut stmt = conn.prepare(
+            "SELECT id, username, email, COALESCE(full_name, ''), COALESCE(bio, ''),
+             COALESCE(avatar_url, ''), COALESCE(location, ''), COALESCE(github_username, ''),
+             COALESCE(website, ''), COALESCE(company_school, '') FROM users WHERE id = ?1"
+        ).map_err(|e| e.to_string())?;
         let user = stmt.query_row(params![user_id], |row| {
             Ok(UserInfo {
                 id: row.get(0)?,
                 username: row.get(1)?,
                 email: row.get(2)?,
+                full_name: row.get(3)?,
+                bio: row.get(4)?,
+                avatar_url: row.get(5)?,
+                location: row.get(6)?,
+                github_username: row.get(7)?,
+                website: row.get(8)?,
+                company_school: row.get(9)?,
             })
         }).map_err(|e| e.to_string())?;
 
@@ -518,6 +570,144 @@ pub async fn get_current_user(
         }),
     )
     .into_response()
+}
+
+/// Update current user profile
+pub async fn update_profile(
+    State(state): State<AuthState>,
+    headers: HeaderMap,
+    Json(payload): Json<ProfileUpdateRequest>,
+) -> Response {
+    // Get token from Authorization header
+    let token = match headers.get("authorization") {
+        Some(value) => match value.to_str() {
+            Ok(s) if s.starts_with("Bearer ") => s[7..].to_string(),
+            _ => {
+                return (
+                    StatusCode::UNAUTHORIZED,
+                    Json(AuthResponse {
+                        success: false,
+                        message: "Invalid authorization header".to_string(),
+                        token: None,
+                        user: None,
+                    }),
+                )
+                .into_response();
+            }
+        },
+        None => {
+            return (
+                StatusCode::UNAUTHORIZED,
+                Json(AuthResponse {
+                    success: false,
+                    message: "Missing authorization header".to_string(),
+                    token: None,
+                    user: None,
+                }),
+            )
+            .into_response();
+        }
+    };
+
+    // Verify token
+    let secret = state.jwt_secret.get();
+    let claims = match decode::<Claims>(
+        &token,
+        &DecodingKey::from_secret(secret.as_bytes()),
+        &Validation::default(),
+    ) {
+        Ok(c) => c.claims,
+        Err(_) => {
+            return (
+                StatusCode::UNAUTHORIZED,
+                Json(AuthResponse {
+                    success: false,
+                    message: "Invalid token".to_string(),
+                    token: None,
+                    user: None,
+                }),
+            )
+            .into_response();
+        }
+    };
+
+    let user_id: i64 = claims.sub.parse().unwrap_or(0);
+
+    // Build update fields dynamically
+    let full_name = payload.full_name.unwrap_or_default();
+    let bio = payload.bio.unwrap_or_default();
+    let avatar_url = payload.avatar_url.unwrap_or_default();
+    let location = payload.location.unwrap_or_default();
+    let github_username = payload.github_username.unwrap_or_default();
+    let website = payload.website.unwrap_or_default();
+    let company_school = payload.company_school.unwrap_or_default();
+
+    let user_id_clone = user_id;
+
+    let result = tokio::task::spawn_blocking(move || {
+        use rusqlite::Connection;
+        let db_dir = std::env::var("DATA_DIR")
+            .unwrap_or_else(|_| "data".to_string());
+        let db_path = std::path::PathBuf::from(db_dir).join("kairust.db");
+        let conn = Connection::open(&db_path).map_err(|e| e.to_string())?;
+
+        conn.execute(
+            "UPDATE users SET full_name = ?1, bio = ?2, avatar_url = ?3,
+             location = ?4, github_username = ?5, website = ?6, company_school = ?7,
+             updated_at = CURRENT_TIMESTAMP WHERE id = ?8",
+            params![&full_name, &bio, &avatar_url, &location, &github_username, &website, &company_school, user_id_clone],
+        ).map_err(|e| e.to_string())?;
+
+        // Fetch updated user
+        let mut stmt = conn.prepare(
+            "SELECT id, username, email, full_name, bio, avatar_url, location, github_username, website, company_school FROM users WHERE id = ?1"
+        ).map_err(|e| e.to_string())?;
+
+        let user = stmt.query_row(params![user_id_clone], |row| {
+            Ok(UserInfo {
+                id: row.get(0)?,
+                username: row.get(1)?,
+                email: row.get(2)?,
+                full_name: row.get(3)?,
+                bio: row.get(4)?,
+                avatar_url: row.get(5)?,
+                location: row.get(6)?,
+                github_username: row.get(7)?,
+                website: row.get(8)?,
+                company_school: row.get(9)?,
+            })
+        }).map_err(|e| e.to_string())?;
+
+        Ok::<_, String>(user)
+    }).await;
+
+    match result {
+        Ok(Ok(user)) => {
+            tracing::info!("Profile updated for user {}", user_id);
+            (
+                StatusCode::OK,
+                Json(AuthResponse {
+                    success: true,
+                    message: "Profile updated successfully".to_string(),
+                    token: None,
+                    user: Some(user),
+                }),
+            )
+            .into_response()
+        }
+        _ => {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(AuthResponse {
+                    success: false,
+                    message: "Failed to update profile".to_string(),
+                    token: None,
+                    user: None,
+                }),
+            )
+            .into_response()
+        }
+    }
 }
 
 // ============== Helper Functions ==============

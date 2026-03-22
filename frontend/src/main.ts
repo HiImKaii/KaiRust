@@ -1288,6 +1288,13 @@ interface UserInfo {
     id: number;
     username: string;
     email: string;
+    full_name: string;
+    bio: string;
+    avatar_url: string;
+    location: string;
+    github_username: string;
+    website: string;
+    company_school: string;
 }
 
 interface AuthResponse {
@@ -1481,11 +1488,13 @@ function updateAuthUI() {
     if (!settingsBtn) return;
 
     if (currentUser) {
-        // User is logged in - show user name in settings button
+        // User is logged in - show user name in settings button (full_name if available)
+        const displayName = currentUser.full_name || currentUser.username;
+        const initial = displayName.charAt(0).toUpperCase();
         settingsBtn.innerHTML = `
             <div class="user-info">
-                <div class="user-avatar">${currentUser.username.charAt(0).toUpperCase()}</div>
-                <span class="user-name">${currentUser.username}</span>
+                <div class="user-avatar">${initial}</div>
+                <span class="user-name">${displayName}</span>
             </div>
         `;
         // Show achievements button
@@ -1537,10 +1546,8 @@ function setupAuthModal() {
     // Open modal on settings button click
     settingsBtn?.addEventListener('click', () => {
         if (currentUser) {
-            // If logged in, could show user menu or logout option
-            if (confirm('Bạn có muốn đăng xuất?')) {
-                clearAuth();
-            }
+            // Open settings modal when logged in
+            openSettingsModal();
         } else {
             showForm('login-form');
             showAuthModal();
@@ -1677,6 +1684,179 @@ function setupAuthModal() {
 }
 
 // =====================================================
+// Settings Modal
+// =====================================================
+
+function showSettingsModal() {
+    const modal = document.getElementById('settings-modal');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function hideSettingsModal() {
+    const modal = document.getElementById('settings-modal');
+    if (modal) modal.classList.add('hidden');
+}
+
+async function openSettingsModal() {
+    // Populate current user data
+    if (!currentUser) return;
+
+    // Update header info
+    const displayName = document.getElementById('settings-display-name');
+    const emailDisplay = document.getElementById('settings-email-display');
+    const avatarPreview = document.getElementById('settings-avatar-preview');
+    const avatarImg = document.getElementById('settings-avatar-img-preview') as HTMLImageElement | null;
+    const avatarUrlInput = document.getElementById('settings-avatar-url') as HTMLInputElement;
+    const avatarPanel = document.getElementById('settings-avatar-panel');
+
+    if (displayName) {
+        displayName.textContent = currentUser.full_name || currentUser.username;
+    }
+    if (emailDisplay) emailDisplay.textContent = currentUser.email;
+
+    // Avatar
+    if (currentUser.avatar_url && currentUser.avatar_url.trim()) {
+        if (avatarPreview) {
+            avatarPreview.innerHTML = `<img src="${currentUser.avatar_url}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        }
+        if (avatarImg) {
+            avatarImg.src = currentUser.avatar_url;
+            avatarImg.style.display = 'block';
+        }
+        if (avatarUrlInput) avatarUrlInput.value = currentUser.avatar_url;
+    } else {
+        const initial = (currentUser.full_name || currentUser.username).charAt(0).toUpperCase();
+        if (avatarPreview) avatarPreview.textContent = initial;
+        if (avatarImg) avatarImg.style.display = 'none';
+        if (avatarUrlInput) avatarUrlInput.value = '';
+    }
+
+    // Populate form fields
+    const setVal = (id: string, val: string) => {
+        const el = document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | null;
+        if (el) el.value = val;
+    };
+    setVal('settings-fullname', currentUser.full_name || '');
+    setVal('settings-company', currentUser.company_school || '');
+    setVal('settings-location', currentUser.location || '');
+    setVal('settings-bio', currentUser.bio || '');
+    setVal('settings-github', currentUser.github_username || '');
+    setVal('settings-website', currentUser.website || '');
+
+    // Char counter
+    const bioEl = document.getElementById('settings-bio') as HTMLTextAreaElement | null;
+    const bioCounter = document.getElementById('bio-char-count');
+    if (bioEl && bioCounter) bioCounter.textContent = bioEl.value.length.toString();
+
+    // Show modal
+    showSettingsModal();
+}
+
+function setupSettingsModal() {
+    const modal = document.getElementById('settings-modal');
+    const modalClose = document.getElementById('settings-modal-close');
+    const logoutBtn = document.getElementById('settings-logout-btn');
+    const saveBtn = document.getElementById('settings-save-btn') as HTMLButtonElement | null;
+    const avatarEditBtn = document.getElementById('settings-avatar-edit-btn');
+    const avatarPanel = document.getElementById('settings-avatar-panel');
+    const avatarUrlInput = document.getElementById('settings-avatar-url') as HTMLInputElement | null;
+    const avatarImgPreview = document.getElementById('settings-avatar-img-preview') as HTMLImageElement | null;
+    const avatarPreview = document.getElementById('settings-avatar-preview');
+    const bioEl = document.getElementById('settings-bio') as HTMLTextAreaElement | null;
+    const bioCounter = document.getElementById('bio-char-count');
+
+    // Close modal
+    modalClose?.addEventListener('click', hideSettingsModal);
+    modal?.addEventListener('click', (e) => {
+        if (e.target === modal) hideSettingsModal();
+    });
+
+    // Bio character counter
+    bioEl?.addEventListener('input', () => {
+        if (bioCounter) bioCounter.textContent = bioEl.value.length.toString();
+    });
+
+    // Avatar URL live preview
+    avatarUrlInput?.addEventListener('input', () => {
+        const url = avatarUrlInput.value.trim();
+        if (url && avatarPreview) {
+            avatarPreview.innerHTML = `<img src="${url}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent='${(currentUser?.full_name || currentUser?.username || 'U').charAt(0).toUpperCase()}'">`;
+        }
+    });
+
+    // Toggle avatar URL panel
+    avatarEditBtn?.addEventListener('click', () => {
+        avatarPanel?.classList.toggle('hidden');
+    });
+
+    // Logout button
+    logoutBtn?.addEventListener('click', () => {
+        if (confirm('Bạn có muốn đăng xuất?')) {
+            clearAuth();
+            hideSettingsModal();
+        }
+    });
+
+    // Save button
+    saveBtn?.addEventListener('click', async () => {
+        if (!currentUser) return;
+
+        const saveBtnEl = saveBtn;
+        const originalText = saveBtnEl.textContent;
+        saveBtnEl.disabled = true;
+        saveBtnEl.textContent = 'Đang lưu...';
+
+        const payload = {
+            full_name: (document.getElementById('settings-fullname') as HTMLInputElement)?.value || '',
+            company_school: (document.getElementById('settings-company') as HTMLInputElement)?.value || '',
+            location: (document.getElementById('settings-location') as HTMLInputElement)?.value || '',
+            bio: (document.getElementById('settings-bio') as HTMLTextAreaElement)?.value || '',
+            github_username: (document.getElementById('settings-github') as HTMLInputElement)?.value || '',
+            website: (document.getElementById('settings-website') as HTMLInputElement)?.value || '',
+            avatar_url: avatarUrlInput?.value || '',
+        };
+
+        try {
+            const token = localStorage.getItem('kairust_token');
+            if (!token) throw new Error('No token');
+
+            const response = await fetch(`${API_BASE}/profile`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+            if (data.success && data.user) {
+                // Update local state
+                localStorage.setItem('kairust_user', JSON.stringify(data.user));
+                currentUser = data.user;
+                updateAuthUI();
+
+                // Show success feedback
+                saveBtnEl.textContent = '✓ Đã lưu!';
+                setTimeout(() => {
+                    saveBtnEl.textContent = originalText;
+                    saveBtnEl.disabled = false;
+                }, 1500);
+            } else {
+                alert(data.message || 'Lưu thất bại');
+                saveBtnEl.textContent = originalText;
+                saveBtnEl.disabled = false;
+            }
+        } catch (err) {
+            console.error('Failed to save profile:', err);
+            alert('Không thể kết nối server. Vui lòng thử lại.');
+            saveBtnEl.textContent = originalText;
+            saveBtnEl.disabled = false;
+        }
+    });
+}
+
+// =====================================================
 // Main Init
 // =====================================================
 // Setup Luyện Tập button - redirect to separate practice page
@@ -1704,6 +1884,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupResizers();
     setupCookieBanner();
     setupAuthModal();
+    setupSettingsModal();
     setupAutoSave();
 
     // Setup resume popup and check if we should resume

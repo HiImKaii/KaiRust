@@ -2415,3 +2415,341 @@ code {
   color: var(--text-secondary);
   font-size: 1.05rem;
 }
+/* =====================================================
+   Settings Modal Styles — Bento Grid
+   ===================================================== */
+
+.settings-modal {
+  max-width: 680px;
+  max-height: 92vh;
+}
+
+/* Profile Header */
+.settings-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, rgba(166, 124, 82, 0.08), rgba(59, 130, 246, 0.05));
+  border-radius: 16px;
+  margin-bottom: 1.25rem;
+}
+
+.settings-avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.settings-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-purple), #7c3aed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+  font-family: var(--font-sans);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(166, 124, 82, 0.3);
+}
+
+.settings-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.settings-avatar-edit {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-purple);
+  border: 2px solid var(--bg-absolute);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: background 0.2s;
+}
+
+.settings-avatar-edit:hover {
+  background: var(--color-purple-light);
+}
+
+.settings-avatar-edit .material-symbols-outlined {
+  font-size: 14px;
+}
+
+.settings-profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-username {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.settings-email {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.settings-join-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Bento Grid */
+.settings-bento-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.settings-bento-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 1.1rem;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.settings-bento-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.settings-card-primary {
+  grid-column: 1 / 2;
+  grid-row: 1;
+}
+
+.settings-card-secondary {
+  grid-column: 2 / 3;
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-card-accent {
+  grid-column: 1 / 2;
+  grid-row: 2;
+}
+
+.settings-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.settings-card-header h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+.settings-card-icon {
+  font-size: 1.1rem;
+  color: var(--color-purple);
+}
+
+.settings-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.settings-card-secondary .settings-card-body {
+  flex: 1;
+}
+
+/* Form elements in settings */
+.settings-modal .form-group {
+  gap: 0.4rem;
+}
+
+.settings-modal .form-group label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.settings-modal .form-group .input-icon {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.settings-modal .form-group input,
+.settings-modal .form-group textarea {
+  width: 100%;
+  padding: 0.55rem 0.85rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.settings-modal .form-group input:focus,
+.settings-modal .form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-purple);
+  box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.12);
+  background: var(--bg-absolute);
+}
+
+.settings-modal .form-group textarea {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.5;
+}
+
+.char-counter {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: -0.25rem;
+}
+
+/* Avatar URL Panel */
+.settings-avatar-url-panel {
+  background: var(--bg-soft);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.settings-avatar-url-panel label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+.settings-avatar-url-panel.hidden {
+  display: none;
+}
+
+.settings-avatar-preview-small {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.settings-avatar-preview-small img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-light);
+}
+
+/* Account Actions */
+.settings-account-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+  gap: 0.75rem;
+}
+
+.settings-account-actions .btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  padding: 0.55rem 1.1rem;
+}
+
+.settings-account-actions .btn .material-symbols-outlined {
+  font-size: 1rem;
+}
+
+/* Dark mode adjustments for settings */
+.dark-mode .settings-profile-header {
+  background: linear-gradient(135deg, rgba(166, 124, 82, 0.12), rgba(59, 130, 246, 0.08));
+}
+
+.dark-mode .settings-bento-card {
+  background: var(--bg-panel);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.dark-mode .settings-modal .form-group input,
+.dark-mode .settings-modal .form-group textarea {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary-dark);
+}
+
+.dark-mode .settings-modal .form-group input:focus,
+.dark-mode .settings-modal .form-group textarea:focus {
+  border-color: var(--color-purple);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dark-mode .settings-avatar-url-panel {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .settings-modal {
+    max-width: 95vw;
+  }
+
+  .settings-bento-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-card-primary,
+  .settings-card-secondary,
+  .settings-card-accent {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .settings-profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .settings-account-actions {
+    flex-direction: column-reverse;
+  }
+
+  .settings-account-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

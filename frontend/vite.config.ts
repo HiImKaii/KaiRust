@@ -58,7 +58,8 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 main: 'index.html',
-                practice: 'practice.html'
+                practice: 'practice.html',
+                dashboard: 'dashboard.html'
             }
         }
     }
